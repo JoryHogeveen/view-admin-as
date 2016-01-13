@@ -1,0 +1,76 @@
+/**
+ * Plugin Name: View Admin As
+ * Description: View the WordPress admin as a specific role, switch between users and non-destructively change your capabilities.
+ * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
+ * Version:     1.3.2
+ * Author:      Jory Hogeveen
+ * Author URI:  http://www.keraweb.nl
+ * Text Domain: view-admin-as
+ * Domain Path: /languages/
+ * License: 	GPLv2
+ */
+
+#vaa-loading {position: fixed; top: 0; left: 0; height: 100%; width: 100%; background: rgba(255,255,255,0.85); display: none; z-index: 999999999;}
+#vaa-loading .vaa-loader-icon {position: fixed; width: 40px; height: 40px; top: 50%; left: 50%; margin: -20px 0 0 -20px; display: block; }
+
+#vaa-loading.inner {position: absolute;}
+#vaa-loading.inner .vaa-loader-icon {position: absolute;}
+
+#wpadminbar .vaa-update-error {display:inline-block;color:#c00;background:#fff;padding:0 10px;}
+#wpadminbar .vaa-update-error .ab-icon:before {color:#c00;}
+
+#wpadminbar #wp-admin-bar-view-as.menupop .menupop > .ab-item:before {top: 1px;}
+
+#wpadminbar #wp-admin-bar-view-as.menupop .ab-sub-title .ab-item.ab-empty-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
+#wpadminbar #wp-admin-bar-view-as .current > .ab-item,
+#wpadminbar #wp-admin-bar-view-as .current-parent > .ab-item {font-weight: bold;}
+#wpadminbar #wp-admin-bar-view-as .current > .ab-item::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 1.3em; vertical-align: middle; font-weight: normal;}
+
+#wpadminbar #wp-admin-bar-view-as .ab-item .user-role,
+#wpadminbar #wp-admin-bar-view-as .ab-item .user-count {font-style: italic; line-height: 26px; font-weight: normal;}
+
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-search .ab-item,
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-filter .ab-item,
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-select .ab-item {height: auto;}
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-search .ab-item input,
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-filter .ab-item input,
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-select .ab-item select {padding: 3px; border: 0; line-height: normal; height: auto; margin: 5px 0; width: 100%; box-sizing: border-box;}
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-select .ab-item select {padding: 2px 3px;}
+/*#wpadminbar #wp-admin-bar-view-as .ab-vaa-select .ab-item select {border: 0; margin-top: 6px;}*/
+
+#wpadminbar #wp-admin-bar-view-as ul li.vaa-column-one-half {width: 50%; display: block; float: left; clear: none;}
+#wpadminbar #wp-admin-bar-view-as ul li.vaa-column-one-half .ab-item {min-width: 0;}
+#wpadminbar #wp-admin-bar-view-as ul li.vaa-column-one-half.vaa-column-first .ab-item {padding-right: 1px;}
+#wpadminbar #wp-admin-bar-view-as ul li.vaa-column-one-half.vaa-column-last .ab-item {padding-left: 1px;}
+#wpadminbar #wp-admin-bar-view-as ul li.vaa-clear-float {clear: both;}
+
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
+
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; padding: 0; border: 0 solid transparent; border-width: 0 10px 10px 0;}
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps .ab-item input.checkbox {height: 16px; margin: 0 5px;}
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps .ab-item input.checkbox:first-child {margin: 0 5px 0 0;}
+
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
+#wpadminbar #wp-admin-bar-view-as button {text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle;}
+#wpadminbar #wp-admin-bar-view-as .vaa-icon {padding: 0 2px 1px;}
+#wpadminbar #wp-admin-bar-view-as .vaa-icon .ab-icon {margin: 0;}
+#wpadminbar #wp-admin-bar-view-as button.vaa-icon .ab-icon {padding: 0;}
+#wpadminbar #wp-admin-bar-view-as button#reset-view {margin: 0 0 5px;}
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #apply-caps-view {float: left; margin-right: 5px;}
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #reset-caps-view,
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #open-caps-popup,
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #close-caps-popup {float: right; margin-left: 5px;}
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #close-caps-popup {display: none;}
+/*#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-filtercaps {clear: both;}*/
+
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive .ab-sub-wrapper,
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive .ab-sub-wrapper .ab-item {display: none;}
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive > .ab-sub-wrapper {display: block;}
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive > .ab-sub-wrapper > .ab-submenu {padding: 0;}
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive .ab-sub-wrapper.fullPopup {position: fixed; display: block; visibility: visible; overflow: hidden; z-index: 999; max-height: 90%; width: 90%; margin: 5%; top: 0; left: 0; box-shadow: 0 0 50px rgba(0,0,0,0.3);}
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive .ab-sub-wrapper.fullPopup .ab-item {display: block;}
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive #wp-admin-bar-caps .ab-sub-wrapper.fullPopup #close-caps-popup {display: block;}
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive #wp-admin-bar-caps .ab-sub-wrapper.fullPopup #open-caps-popup {display: none;}
+#wpadminbar #wp-admin-bar-view-as.fullPopupActive #wp-admin-bar-caps .ab-sub-wrapper.fullPopup #wp-admin-bar-caps-quickselect-options .vaa-cap-item {width: 250px; float: left;}
+
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps-popup:hover {cursor: pointer;}

@@ -1,0 +1,74 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: View Admin As 1.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/view-admin-as\n"
+"POT-Creation-Date: 2015-11-19 21:58+0100\n"
+"PO-Revision-Date: 2015-11-19 21:59+0100\n"
+"Last-Translator: \n"
+"Language-Team: Keraweb <info@keraweb.nl>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.10\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: view-admin-as.php:308 view-admin-as.php:335
+msgid "This view is already selected!"
+msgstr "This view is already selected!"
+
+#: view-admin-as.php:346
+msgid "These are your default capabilities!"
+msgstr "These are your default capabilities!"
+
+#: view-admin-as.php:358
+msgid "Something went wrong, please try again."
+msgstr "Something went wrong, please try again."
+
+#: view-admin-as.php:375
+msgid "Default view (Off)"
+msgstr "Default view (Off)"
+
+#: view-admin-as.php:379
+msgid "Modified view"
+msgstr "Modified view"
+
+#: view-admin-as.php:383
+msgid "Viewing as role"
+msgstr "Viewing as role"
+
+#: view-admin-as.php:391
+msgid "Viewing as user"
+msgstr "Viewing as user"
+
+#: view-admin-as.php:401 view-admin-as.php:587 view-admin-as.php:654
+#: view-admin-as.php:672
+msgid "View as"
+msgstr "View as"
+
+#: view-admin-as.php:409
+msgid "Default"
+msgstr "Default"
+
+#: view-admin-as.php:412
+msgid "Reset to default"
+msgstr "Reset to default"
+
+#: view-admin-as.php:430 view-admin-as.php:434 view-admin-as.php:441
+msgid "Capabilities"
+msgstr "Capabilities"
+
+#: view-admin-as.php:538 view-admin-as.php:542 view-admin-as.php:550
+msgid "Roles"
+msgstr "Roles"
+
+#: view-admin-as.php:602 view-admin-as.php:606 view-admin-as.php:613
+msgid "Users"
+msgstr "Users"
+
+#: view-admin-as.php:702
+msgid "Did something wrong? Reset the view by clicking me!"
+msgstr "Did something wrong? Reset the view by clicking me!"
