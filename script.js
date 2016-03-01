@@ -2,7 +2,7 @@
  * Plugin Name: View Admin As
  * Description: View the WordPress admin as a specific role, switch between users and non-destructively change your capabilities.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.3.4
+ * Version:     1.4
  * Author:      Jory Hogeveen
  * Author URI:  http://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -229,5 +229,54 @@
 		$(vaa_bar).after('<li class="vaa-update-error"><span class="remove ab-icon dashicons dashicons-dismiss"></span>'+notice+'</li>');
 		$('#wpadminbar .vaa-update-error').click(function(){$(this).remove();});
 	}
+	
+	
+	
+	/*****
+	 * MODULE: Role Defaults
+	 */
+	
+	// Enable module
+	$(document).on('change', vaa_bar+'#wp-admin-bar-role-defaults-enable input#vaa_role_defaults_enable', function(e) {
+		e.preventDefault();
+		if ( this.checked ) {
+			var viewAs = { role_defaults : { enable : true } };
+		} else {
+			var viewAs = { role_defaults : { disable : true } };
+		}
+		vaa_apply_view(viewAs);
+	});
+	
+	// Enable apply defaults on register
+	$(document).on('change', vaa_bar+'#wp-admin-bar-role-defaults-register-enable input#vaa_role_defaults_register_enable', function(e) {
+		e.preventDefault();
+		if ( this.checked ) {
+			var viewAs = { role_defaults : { apply_defaults_on_register : true } };
+		} else {
+			var viewAs = { role_defaults : { disable_apply_defaults_on_register : true } };
+		}
+		vaa_apply_view(viewAs);
+	});
+	
+	// Apply defaults to users by role
+	$(document).on('click', vaa_bar+'#wp-admin-bar-role-defaults-bulk-roles-apply button#role-defaults-bulk-roles-apply', function(e) {
+		e.preventDefault();
+		var val = $(vaa_bar+'#wp-admin-bar-role-defaults-bulk-roles-select select#role-defaults-bulk-roles-select').val();
+		if (val) {
+			var viewAs = { role_defaults : { apply_defaults_to_user_by_role : val } };
+			vaa_apply_view(viewAs);
+		}
+	});
+	
+	// Clear role defaults
+	$(document).on('click', vaa_bar+'#wp-admin-bar-role-defaults-clear-roles-apply button#role-defaults-clear-roles-apply', function(e) {
+		e.preventDefault();
+		var val = $(vaa_bar+'#wp-admin-bar-role-defaults-clear-roles-select select#role-defaults-clear-roles-select').val();
+		if (val) {
+			var viewAs = { role_defaults : { clear_role_defaults : val } };
+			vaa_apply_view(viewAs);
+		}
+	});
+
 
 })( jQuery );

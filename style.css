@@ -2,7 +2,7 @@
  * Plugin Name: View Admin As
  * Description: View the WordPress admin as a specific role, switch between users and non-destructively change your capabilities.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.3.4
+ * Version:     1.4
  * Author:      Jory Hogeveen
  * Author URI:  http://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -26,6 +26,14 @@
 #wpadminbar #wp-admin-bar-view-as .current-parent > .ab-item {font-weight: bold;}
 #wpadminbar #wp-admin-bar-view-as .current > .ab-item::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 1.3em; vertical-align: middle; font-weight: normal;}
 
+#wpadminbar #wp-admin-bar-view-as .ab-bold > .ab-item,
+#wpadminbar #wp-admin-bar-view-as .ab-bold > .ab-item * {font-weight: bold !important;}
+#wpadminbar #wp-admin-bar-view-as .ab-italic > .ab-item,
+#wpadminbar #wp-admin-bar-view-as .ab-italic > .ab-item * {font-style: italic !important;}
+
+#wpadminbar #wp-admin-bar-view-as .vaa-sub-transparent > * {opacity: 0.5; transition: opacity 0.2s;}
+#wpadminbar #wp-admin-bar-view-as .vaa-sub-transparent:hover > * {opacity: 1;}
+
 #wpadminbar #wp-admin-bar-view-as .ab-item .user-role,
 #wpadminbar #wp-admin-bar-view-as .ab-item .user-count {font-style: italic; line-height: 26px; font-weight: normal;}
 
@@ -47,10 +55,11 @@
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; padding: 0; border: 0 solid transparent; border-width: 0 10px 10px 0;}
-#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps .ab-item input.checkbox {height: 16px; margin: 0 5px;}
-#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps .ab-item input.checkbox:first-child {margin: 0 5px 0 0;}
+#wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox {height: 16px; margin: 0 5px; vertical-align: text-top;}
+#wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox + label {line-height: 18px; vertical-align: text-top;}
+#wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox:first-child {margin: 0 5px 0 0;}
 
-#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
+#wpadminbar #wp-admin-bar-view-as .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
 #wpadminbar #wp-admin-bar-view-as button {text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle;}
 #wpadminbar #wp-admin-bar-view-as .vaa-icon {padding: 0 2px 1px;}
 #wpadminbar #wp-admin-bar-view-as .vaa-icon .ab-icon {margin: 0;}
@@ -74,3 +83,10 @@
 #wpadminbar #wp-admin-bar-view-as.fullPopupActive #wp-admin-bar-caps .ab-sub-wrapper.fullPopup #wp-admin-bar-caps-quickselect-options .vaa-cap-item {width: 250px; float: left;}
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps-popup:hover {cursor: pointer;}
+
+
+/**
+ * Module: Role Defaults
+ */
+
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-role-defaults > .ab-item::before {content: '\f107'; font-family: 'dashicons'; margin: 0; font-size: 1.3em; vertical-align: middle; font-weight: normal;}
