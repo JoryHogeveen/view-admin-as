@@ -2,7 +2,8 @@
 /**
  * View Admin As - Role Defaults
  *
- * Role Defaults
+ * Set default screen settings for roles and apply them on users through various bulk actions.
+ * 
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @version 1.4
@@ -37,11 +38,19 @@ class VAA_Role_Defaults {
 	private $enable = false;
 	
 	/**
+	 * View Admin As object
+	 *
+	 * @since  1.4
+	 * @var    Object
+	 */	
+	private $vaa = false;
+	
+	/**
 	 * Selected view mode
 	 * 
 	 * Format: array( VIEW_TYPE => NAME )
 	 *
-	 * @since  0.1
+	 * @since  1.4
 	 * @var    Array
 	 */
 	private $viewAs = false;
@@ -49,7 +58,7 @@ class VAA_Role_Defaults {
 	/**
 	 * Current user object
 	 *
-	 * @since  0.1
+	 * @since  1.4
 	 * @var    Object
 	 */	
 	private $curUser = false;
@@ -57,11 +66,19 @@ class VAA_Role_Defaults {
 	/**
 	 * Array of available roles
 	 *
-	 * @since  0.1
+	 * @since  1.4
 	 * @var    Array
 	 */	
 	private $roles;
-		
+	
+	/**
+	 * Array of available user objects
+	 *
+	 * @since  0.1
+	 * @var    Array
+	 */	
+	private $users;
+	
 	/**
 	 * Array of default meta strings that influence the screen settings
 	 * %% stands for a wildcard and can be anything
@@ -86,7 +103,7 @@ class VAA_Role_Defaults {
 	 * @since  1.4
 	 * @var    String
 	 */
-	private $role = '';
+	private $curRole = '';
 	
 	/**
 	 * Construct function
@@ -120,22 +137,29 @@ class VAA_Role_Defaults {
 		
 		if ( isset( $optionData['apply_defaults_on_register'] ) && $optionData['apply_defaults_on_register'] == true ) {
 			if ( is_multisite() ) {
-				add_action( 'add_user_to_blog', array( $this, 'update_user_with_role_defaults_multisite' ), 100, 3 );
+				add_action( 'add_user_to_blog', array( $this, 'update_user_with_role_defaults_multisite_register' ), 100, 3 );
 			} else {
-				// Todo: Testing!
 				add_action( 'user_register', array( $this, 'update_user_with_role_defaults' ), 100, 1 );
 			}
+		}
+	}
+	
+	function vaa_init( $vaa ) {
+		$this->vaa = $vaa;
+		$this->roles = $vaa->get_roles();
+		$this->users = $vaa->get_users();
+		
+		$this->viewAs = $vaa->get_view_as();
+		if ( isset( $this->viewAs['role'] ) ) {
+			// Enable storage of role default settings
+			$this->init_store_role_defaults( $this->viewAs['role'] );
 		}
 	}
 	
 	function is_enabled() {
 		return $this->enable;
 	}
-	
-	function set_available_roles( $roles ) {
-		$this->roles = $roles;
-	}
-	
+		
 	private function set_enable($bool = false) {
 		$optionData = get_option( $this->optionKey );
 		if ( ! is_array( $optionData ) ) {
@@ -159,7 +183,7 @@ class VAA_Role_Defaults {
 	}
 	
 	function ajax_handler( $data ) {
-		$success = false;
+		$success = true;
 		
 		if ( isset( $data['enable'] ) && $data['enable'] == true ) {
 			$success = $this->set_enable(true);
@@ -173,8 +197,16 @@ class VAA_Role_Defaults {
 		if ( isset( $data['disable_apply_defaults_on_register'] ) && $data['disable_apply_defaults_on_register'] == true ) {
 			$success = $this->set_apply_defaults_on_register(false);
 		}
-		if ( isset( $data['apply_defaults_to_user_by_role'] ) && is_string( $data['apply_defaults_to_user_by_role'] ) ) {
-			$success = $this->apply_defaults_to_user_by_role( strip_tags( $data['apply_defaults_to_user_by_role'] ) );
+		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
+			foreach ( $data['apply_defaults_to_users'] as $userData ) {
+				$userData = explode( '|', $userData );
+				if ( is_numeric( $userData[0] ) && isset( $userData[1] ) && is_string( $userData[1] ) ) {
+					$success = $this->update_user_with_role_defaults( intval( $userData[0] ), $userData[1] );
+				}
+			}
+		}
+		if ( isset( $data['apply_defaults_to_users_by_role'] ) && is_string( $data['apply_defaults_to_users_by_role'] ) ) {
+			$success = $this->apply_defaults_to_users_by_role( strip_tags( $data['apply_defaults_to_users_by_role'] ) );
 		}
 		if ( isset( $data['clear_role_defaults'] ) && is_string( $data['clear_role_defaults'] ) ) {
 			$success = $this->clear_role_defaults( strip_tags( $data['clear_role_defaults'] ) );
@@ -191,36 +223,38 @@ class VAA_Role_Defaults {
 	 * @return	void
 	 */
 	function update_user_with_role_defaults( $user_id, $role = false, $blog_id = false ) {
-		$success = false;
+		$success = true;
 		$user = get_user_by( 'id', $user_id );
-		$userBlogs = false;
-		if ( $blog_id != false && is_numeric( $blog_id ) ) {
-			$optionData = get_blog_option( $blog_id, $this->optionKey );
-		} else {
-			$optionData = get_option( $this->optionKey );
-		}
-		if ( $role == false && isset( $user->roles[0] ) ) {
-			$role = $user->roles[0];
-		}
-		if ( $role != false && $optionData != false ) {
-			if ( isset( $optionData['roles'][ $role ] ) ) {
-				foreach ( $optionData['roles'][ $role ] as $meta_key => $meta_value ) {
-					$success = update_user_meta( $user_id, $meta_key, $meta_value );
+		if ( $user ) {
+			$userBlogs = false;
+			if ( $blog_id != false && is_numeric( $blog_id ) ) {
+				$optionData = get_blog_option( $blog_id, $this->optionKey );
+			} else {
+				$optionData = get_option( $this->optionKey );
+			}
+			if ( $role == false && isset( $user->roles[0] ) ) {
+				$role = $user->roles[0];
+			}
+			if ( $role != false && $optionData != false ) {
+				if ( isset( $optionData['roles'][ $role ] ) ) {
+					foreach ( $optionData['roles'][ $role ] as $meta_key => $meta_value ) {
+						update_user_meta( $user_id, $meta_key, $meta_value ); 
+						// Do not return update_user_meta results since it's highly possible to be false (values are often the same)
+					}
 				}
 			}
 		}
-		if ( $success != false ) { $success = true; }
 		return $success;
 	}
-	function update_user_with_role_defaults_multisite( $user_id, $role, $blog_id ) {
+	function update_user_with_role_defaults_multisite_register( $user_id, $role, $blog_id ) {
 		$userBlogs = get_blogs_of_user( $user_id );
 		if ( count($userBlogs) == 1 ) {
 			// If the user has access to one blog only it is safe to set defaults since it is most likely a new user.
 			$this->update_user_with_role_defaults( $user_id, $role, $blog_id );
 		}
 	}
-	function apply_defaults_to_user_by_role( $role ) {
-		$success = false;
+	function apply_defaults_to_users_by_role( $role ) {
+		$success = true;
 		$roles = array();
 		if ( is_array( $role ) ) {
 			foreach( $role as $r ) {
@@ -259,9 +293,9 @@ class VAA_Role_Defaults {
 	 * @since   1.4
 	 * @return	void
 	 */
-	function init_store_role_defaults( $role = false ) {
-		if ( $role && $this->enable ) {
-			$this->role = $role;
+	function init_store_role_defaults( $curRole = false ) {
+		if ( $curRole && $this->enable ) {
+			$this->curRole = $curRole;
 			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
 			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 5 );
 		}
@@ -288,10 +322,10 @@ class VAA_Role_Defaults {
 		if ( ! is_array( $optionData ) ) {
 			$optionData = array();
 		}
-		if ( ! isset( $optionData['roles'][ $this->role ] ) ) {
-			$optionData['roles'][ $this->role ] = array();
+		if ( ! isset( $optionData['roles'][ $this->curRole ] ) ) {
+			$optionData['roles'][ $this->curRole ] = array();
 		}
-		$optionData['roles'][ $this->role ][ $meta_key ] = $meta_value;
+		$optionData['roles'][ $this->curRole ][ $meta_key ] = $meta_value;
 		update_option( $this->optionKey, $optionData );
 	}
 	
@@ -338,8 +372,8 @@ class VAA_Role_Defaults {
 	}
 	function get_role_default_metadata( $meta_key ) {
 		$optionData = get_option( $this->optionKey );
-		if ( isset( $optionData['roles'][ $this->role ] ) ) {
-			$optionData = $optionData['roles'][ $this->role ];
+		if ( isset( $optionData['roles'][ $this->curRole ] ) ) {
+			$optionData = $optionData['roles'][ $this->curRole ];
 			if ( isset( $optionData[ $meta_key ] ) ) {
 				return $optionData[ $meta_key ];
 			}
@@ -438,9 +472,13 @@ class VAA_Role_Defaults {
 					),
 				) );
 				
-				/* Bulk actions */
+				/*
+				 * Bulk actions 
+				 */
+				
+				// Users select
 				$admin_bar->add_node( array(
-					'id'		=> 'role-defaults-bulk',
+					'id'		=> 'role-defaults-bulk-users',
 					'parent'	=> 'role-defaults',
 					'href'		=> false,
 					'group'		=> true,
@@ -449,9 +487,69 @@ class VAA_Role_Defaults {
 					),
 				) );
 				$admin_bar->add_node( array(
+					'id'		=> 'role-defaults-bulk-users-title',
+					'parent'	=> 'role-defaults-bulk-users',
+					'title'		=> '' . __('Apply defaults to users', 'view-admin-as') . ':',
+					'href'		=> false,
+					'group'		=> false,
+					'meta'		=> array(
+						'class'	=> 'ab-bold',
+					),
+				) );
+				$admin_bar->add_node( array(
+					'id'		=> 'role-defaults-bulk-users-filter',
+					'parent'	=> 'role-defaults-bulk-users',
+					'title'		=> '<input id="role-defaults-bulk-users-filter" name="vaa-filter" placeholder="' . __('Filter', 'view-admin-as') . ' (' . strtolower( __('Username') ) . ')" />',
+					'href'		=> false,
+					'group'		=> false,
+					'meta'		=> array(
+						'class' => 'ab-vaa-filter',
+					),
+				) );
+				$bulk_users_select_content = '';
+				foreach ( $this->users as $user ) {
+					foreach ( $user->roles as $role ) {
+						$roleName = translate_user_role( $this->roles[ $role ]['name'] );
+						$bulk_users_select_content .= '<div class="ab-item vaa-item"><input class="checkbox" value="'.$user->ID.'|'.$role.'" id="role-defaults-bulk-users-select-'.$user->ID.'" name="role-defaults-bulk-users-select[]" type="checkbox">
+											<label for="role-defaults-bulk-users-select-'.$user->ID.'"><span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $roleName . ')</span></label></div>';
+					}
+				}
+				$admin_bar->add_node( array(
+					'id'		=> 'role-defaults-bulk-users-select',
+					'parent'	=> 'role-defaults-bulk-users',
+					'title'		=> $bulk_users_select_content,
+					'href'		=> false,
+					'group'		=> false,
+					'meta'		=> array(
+						'class' => 'ab-vaa-multipleselect max-height',
+					),
+				) );
+				$admin_bar->add_node( array(
+					'id'		=> 'role-defaults-bulk-users-apply',
+					'parent'	=> 'role-defaults-bulk-users',
+					'title'		=> '<button id="role-defaults-bulk-users-apply" class="button button-primary" name="role-defaults-bulk-users-apply">' . __('Apply', 'view-admin-as') . '</button>',
+					'href'		=> false,
+					'group'		=> false,
+					'meta'		=> array(
+						'class' => 'vaa-button-container',
+						'html'	=> '',
+					),
+				) );
+				
+				// Roles select
+				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-bulk-roles',
-					'parent'	=> 'role-defaults-bulk',
-					'title'		=> '' . __('Apply defaults for users by role', 'view-admin-as') . '',
+					'parent'	=> 'role-defaults',
+					'href'		=> false,
+					'group'		=> true,
+					'meta'		=> array(
+						'class'	=> 'ab-sub-secondary',
+					),
+				) );
+				$admin_bar->add_node( array(
+					'id'		=> 'role-defaults-bulk-roles-title',
+					'parent'	=> 'role-defaults-bulk-roles',
+					'title'		=> '' . __('Apply defaults to users by role', 'view-admin-as') . ':',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -460,8 +558,8 @@ class VAA_Role_Defaults {
 				) );
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-bulk-roles-select',
-					'parent'	=> 'role-defaults-bulk',
-					'title'		=> '<select id="role-defaults-bulk-roles-select" name="role-defaults-bulk-roles-select"><option value="all">' . __('All roles') . '</option>' . $roleSelectOptions . '</select>',
+					'parent'	=> 'role-defaults-bulk-roles',
+					'title'		=> '<select id="role-defaults-bulk-roles-select" name="role-defaults-bulk-roles-select"><option value="all">' . __('All roles', 'view-admin-as') . '</option>' . $roleSelectOptions . '</select>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -471,8 +569,8 @@ class VAA_Role_Defaults {
 				) );
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-bulk-roles-apply',
-					'parent'	=> 'role-defaults-bulk',
-					'title'		=> '<button id="role-defaults-bulk-roles-apply" class="button button-primary" name="role-defaults-bulk-roles-apply">' . __('Apply') . '</button>',
+					'parent'	=> 'role-defaults-bulk-roles',
+					'title'		=> '<button id="role-defaults-bulk-roles-apply" class="button button-primary" name="role-defaults-bulk-roles-apply">' . __('Apply', 'view-admin-as') . '</button>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -494,7 +592,7 @@ class VAA_Role_Defaults {
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-clear-roles',
 					'parent'	=> 'role-defaults-clear',
-					'title'		=> '' . __('Clear defaults for role', 'view-admin-as') . '',
+					'title'		=> '' . __('Clear defaults for role', 'view-admin-as') . ':',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -504,7 +602,7 @@ class VAA_Role_Defaults {
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-clear-roles-select',
 					'parent'	=> 'role-defaults-clear',
-					'title'		=> '<select id="role-defaults-clear-roles-select" name="role-defaults-clear-roles-select"><option value="all">' . __('All roles') . '</option>' . $roleSelectOptions . '</select>',
+					'title'		=> '<select id="role-defaults-clear-roles-select" name="role-defaults-clear-roles-select"><option value="all">' . __('All roles', 'view-admin-as') . '</option>' . $roleSelectOptions . '</select>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -515,7 +613,7 @@ class VAA_Role_Defaults {
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-clear-roles-apply',
 					'parent'	=> 'role-defaults-clear',
-					'title'		=> '<button id="role-defaults-clear-roles-apply" class="button button-secondary" name="role-defaults-clear-roles-apply">' . __('Apply') . '</button>',
+					'title'		=> '<button id="role-defaults-clear-roles-apply" class="button button-secondary" name="role-defaults-clear-roles-apply">' . __('Apply', 'view-admin-as') . '</button>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(

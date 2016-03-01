@@ -6,7 +6,7 @@ Requires at least: 3.8
 Tested up to: 4.5
 Stable tag: 1.4
 
-View the WordPress admin as a specific role, switch between users and temporarily change your capabilities.
+View the WordPress admin as a specific role, switch between users and temporarily change your capabilities. Set default screen settings for roles and apply them on users through various bulk actions.
 
 == Description ==
 
@@ -16,6 +16,8 @@ If you've selected a user, you can also change this user's preferences; like scr
 
 You can also see the defaults for a role and/or temporarily change your own capabilities.
 
+Through the new "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
+
 = Overview / Features =
 
 *	Switch to the view of a user to see their capabilities and settings (admins are filtered!)
@@ -23,6 +25,14 @@ You can also see the defaults for a role and/or temporarily change your own capa
 *	Switch to a default view of a role
 *	Temporarily change your own capabilities (non-destructively)
 *	Do this all without loggin out and easily go back to your own (default) user view!
+
+= Modules =
+
+**Role defaults**: 
+*	Set default screens for roles.
+*	Apply defaults to a user
+*	Apply defaults to all users of a role
+*	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
 
 = Compatibility =
 
@@ -97,7 +107,28 @@ Just add "?reset-view" in the address bar and you're good to go! This will work 
 
 Example: http://www.your.domain/wp-admin/?reset-view
 
-= 5. I can't find a user! =
+= 5. What data is stored for role defaults and how can I change this? =
+By default it uses the following filters:
+*	admin_color >> The admin color
+*	rich_editing >> Enable/Disable rich editing
+*	metaboxhidden_%% >> Hidden metaboxes
+*	meta-box-order_%% >> Metabox order and locations
+*	closedpostboxes_%% >> Hidden post boxes
+*	edit_%%_per_page >> Amount of items per page in edit.php pages
+*	manage%%columnshidden >> Hidden columns in edit.php pages
+*	screen_layout_%% >> Screen layout (number of columns)
+
+Note that the "%%" stands for a wildcard which could be anything.
+
+If you whish to change this:
+`add_filter('view_admin_as_role_defaults_meta', 'my_vaa_meta_filter');
+function my_vaa_meta_filter( $metakeys ) {
+	$metakeys[] = 'new_meta_key'; // Adding a new meta key
+	unset( $metakeys['rich_editing'] ); // Removing a new meta key
+	return $metakeys;
+}`
+
+= 6. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins? 
 If so, these are filtered. Viewing Admins can only be done when you are a Super Admin within a network installation.
 
@@ -106,11 +137,11 @@ Why? To protect your fellow admin! You have no power over equal users..
 If this is not the case, please make sure you aren't overlooking something.
 If that is not the case, please contact me! See item 6.
 
-= 6. It's not working! / I found a bug! =
+= 7. It's not working! / I found a bug! =
 
 Please let me know through the support and add a plugins and themes list! :)
 
-= 7. Is this plugin safe? Even for production websites? =
+= 8. Is this plugin safe? Even for production websites? =
 
 You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is an administrator.
 Only if the above requirements are OK will this plugin do anything.
@@ -120,7 +151,7 @@ All settings, views, capabilities, etc. are checked before applied.
 So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
 
-= 8. Why this plugin? =
+= 9. Why this plugin? =
 
 I've created this at first for myself since I'm a developer and often need to see the outcome on roles which my clients use.
 
@@ -139,8 +170,15 @@ This plugin is also usefull to support your clients and/or users. For example; m
 6. Search users
 7. Quickly deselect capabilities
 8. Large popup for better overview of capabilities
+9. Module Role defaults window
 
 == Changelog ==
+
+= 1.4 =
+
+*	Feature: Module "Role defaults" to set default screen settings for roles and apply them on users through various bulk actions.
+*	Improvement: DB version storage and update functions
+*	Also tested with WordPress 4.5-Beta1
 
 = 1.3.4 =
 

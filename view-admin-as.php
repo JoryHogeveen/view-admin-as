@@ -194,13 +194,13 @@ class VAA_View_Admin_As {
 		if ( is_user_logged_in() && isset( $_GET['reset-view'] ) ) {
 			$this->reset_view();
 		}
-		// Clear user metadata
+		// Clear all user views
 		if ( is_user_logged_in() && isset( $_GET['reset-all-views'] ) ) {
-			$this->reset_metadata();
+			$this->reset_all_views();
 		}
 		
 		// When a user logs in or out, reset the view to default
-		add_action( 'wp_login', array( $this, 'cleanup_metadata' ), 10, 2 );
+		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
 		add_action( 'wp_login', array( $this, 'reset_view' ), 10, 2 );
 		add_action( 'wp_logout', array( $this, 'reset_view' ) );
 		
@@ -223,7 +223,6 @@ class VAA_View_Admin_As {
 			if ( is_multisite() && ! is_super_admin( $this->curUser->ID ) ) {
 				unset( $this->roles['administrator'] );
 			}
-			$this->modules['role_defaults']->set_available_roles( $this->roles );
 			
 			// Store available users
 			$userArgs = array(
@@ -262,10 +261,6 @@ class VAA_View_Admin_As {
 					// Multisite admins
 					add_filter( 'map_meta_cap', array( $this, 'change_caps' ), 0, 4 );
 				}
-				if ( isset( $this->viewAs['role'] ) ) {
-					// Enable storage of role default settings
-					$this->modules['role_defaults']->init_store_role_defaults( $this->viewAs['role'] );
-				}
 			}
 			
 			// Add selector to admin bar
@@ -283,6 +278,12 @@ class VAA_View_Admin_As {
 			
 			// Fix some compatibility issues, more to come!
 			$this->plugin_compatibility();
+			
+			foreach ( $this->modules as $module ) {
+				if ( method_exists( $module, 'vaa_init' ) ) {
+					$module->vaa_init( $this );
+				}
+			}
 			
 		} else if ( is_user_logged_in() && ! current_user_can( 'administrator' ) ) {
 			
@@ -447,7 +448,7 @@ class VAA_View_Admin_As {
 			$admin_bar->add_node( array(
 				'id'		=> 'caps-quickselect',
 				'parent'	=> 'caps',
-				'title'		=> __('Select'),
+				'title'		=> __('Select', 'view-admin-as'),
 				'href'		=> false,
 				'group'		=> false,
 				'meta'		=> array(
@@ -459,7 +460,7 @@ class VAA_View_Admin_As {
 				$admin_bar->add_node( array(
 					'id'		=> 'applycaps',
 					'parent'	=> 'caps-quickselect',
-					'title'		=> '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply') . '</button>
+					'title'		=> '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply', 'view-admin-as') . '</button>
 									<a id="close-caps-popup" class="button vaa-icon button-secondary" name="close-caps-popup"><span class="ab-icon dashicons dashicons-dismiss"></span></a>
 									<a id="open-caps-popup" class="button vaa-icon button-secondary" name="open-caps-popup"><span class="ab-icon dashicons dashicons-plus-alt"></span></a>',
 					'href'		=> false,
@@ -471,7 +472,7 @@ class VAA_View_Admin_As {
 				$admin_bar->add_node( array(
 					'id'		=> 'filtercaps',
 					'parent'	=> 'caps-quickselect',
-					'title'		=> '<input id="filter-caps" name="vaa-filter" placeholder="' . __('Filter') . '" />',
+					'title'		=> '<input id="filter-caps" name="vaa-filter" placeholder="' . __('Filter', 'view-admin-as') . '" />',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -486,7 +487,7 @@ class VAA_View_Admin_As {
 				$admin_bar->add_node( array(
 					'id'		=> 'selectrolecaps',
 					'parent'	=> 'caps-quickselect',
-					'title'		=> '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default') . '</option>' . $roleSelectOptions . '</select>',
+					'title'		=> '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default', 'view-admin-as') . '</option>' . $roleSelectOptions . '</select>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -497,25 +498,16 @@ class VAA_View_Admin_As {
 				$admin_bar->add_node( array(
 					'id'		=> 'bulkselectcaps',
 					'parent'	=> 'caps-quickselect',
-					'title'		=> '' . __('All') . ': &nbsp; 
-									<button id="select-all-caps" class="button button-secondary" name="select-all-caps">' . __('Select') . '</button>
-									<button id="deselect-all-caps" class="button button-secondary" name="deselect-all-caps">' . __('Deselect') . '</button>',
+					'title'		=> '' . __('All', 'view-admin-as') . ': &nbsp; 
+									<button id="select-all-caps" class="button button-secondary" name="select-all-caps">' . __('Select', 'view-admin-as') . '</button>
+									<button id="deselect-all-caps" class="button button-secondary" name="deselect-all-caps">' . __('Deselect', 'view-admin-as') . '</button>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
 						'class' => 'vaa-button-container vaa-clear-float',
 					),
 				) );
-				$admin_bar->add_node( array(
-					'id'		=> 'caps-quickselect-options',
-					'parent'	=> 'caps-quickselect',
-					'title'		=> '',
-					'href'		=> false,
-					'group'		=> true,
-					'meta'		=> array(
-						'class' => '',
-					),
-				) );
+				$capsQuickselectContent = '';
 				foreach ($this->caps as $capName => $capVal) {
 					$class = 'vaa-cap-item';
 					if ( isset( $this->viewAs['caps'] ) && $this->viewAs['caps'][$capName] != 1 ) {
@@ -523,18 +515,19 @@ class VAA_View_Admin_As {
 					} else {
 						$checked = ' checked="checked"';
 					}
-					$admin_bar->add_node( array(
-						'id'		=> 'cap-' . $capName,
-						'parent'	=> 'caps-quickselect-options',
-						'title'		=> '<input class="checkbox" value="' . $capName . '" id="vaa_' . $capName . '" name="vaa_' . $capName . '" type="checkbox"' . $checked . '>
-										<label for="vaa_' . $capName . '">' . str_replace( '_', ' ', $capName ) . '</label>',
-						'href'		=> false,
-						'group'		=> false,
-						'meta'		=> array(
-							'class'	=> $class,
-						),
-					) );
+					$capsQuickselectContent .= '<div class="ab-item '.$class.'"><input class="checkbox" value="' . $capName . '" id="vaa_' . $capName . '" name="vaa_' . $capName . '" type="checkbox"' . $checked . '>
+										<label for="vaa_' . $capName . '">' . str_replace( '_', ' ', $capName ) . '</label></div>';
 				}
+				$admin_bar->add_node( array(
+					'id'		=> 'caps-quickselect-options',
+					'parent'	=> 'caps-quickselect',
+					'title'		=> $capsQuickselectContent,
+					'href'		=> false,
+					'group'		=> false,
+					'meta'		=> array(
+						'class' => 'ab-vaa-multipleselect auto-height',
+					),
+				) );
 		}
 				
 		// Add roles group
@@ -863,7 +856,7 @@ class VAA_View_Admin_As {
 	}
 	
 	/**
-	 * Get current view for this session
+	 * Get current view for the current session
 	 *
 	 * @since   1.3.4
 	 * @return	Boolean
@@ -877,7 +870,7 @@ class VAA_View_Admin_As {
 	}
 	
 	/**
-	 * Update view for this session
+	 * Update view for the current session
 	 *
 	 * @param	array	$data
 	 *
@@ -937,7 +930,7 @@ class VAA_View_Admin_As {
 	 * @since	1.3.4
 	 * @return	Boolean
 	 */
-	function cleanup_metadata( $user_login = false, $user = false ) {
+	function cleanup_views( $user_login = false, $user = false ) {
 		
 		// function is not triggered by the wp_login action hook
 		if ( $user == false ) {
@@ -971,7 +964,7 @@ class VAA_View_Admin_As {
 	 * @since   1.3.4
 	 * @return	Boolean
 	 */
-	function reset_metadata( $user_login = false, $user = false ) {
+	function reset_all_views( $user_login = false, $user = false ) {
 		
 		// function is not triggered by the wp_login action hook
 		if ( $user == false ) {

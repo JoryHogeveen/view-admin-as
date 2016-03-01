@@ -16,9 +16,12 @@
 #vaa-loading.inner {position: absolute;}
 #vaa-loading.inner .vaa-loader-icon {position: absolute;}
 
-#wpadminbar .vaa-update-error {display:inline-block;color:#c00;background:#fff;padding:0 10px;}
-#wpadminbar .vaa-update-error .ab-icon:before {color:#c00;}
+#wpadminbar .vaa-update.vaa-error {display:inline-block;color:#c00;background:#fff;padding:0 10px;}
+#wpadminbar .vaa-update.vaa-error .ab-icon:before {color:#c00;}
+#wpadminbar .vaa-update.vaa-success {display:inline-block;color:#0c0;background:#fff;padding:0 10px;}
+#wpadminbar .vaa-update.vaa-success .ab-icon:before {color:#0c0;}
 
+#wpadminbar #wp-admin-bar-view-as.menupop ul.ab-sub-secondary {position: static;}
 #wpadminbar #wp-admin-bar-view-as.menupop .menupop > .ab-item:before {top: 1px;}
 
 #wpadminbar #wp-admin-bar-view-as.menupop .ab-sub-title .ab-item.ab-empty-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
@@ -37,6 +40,7 @@
 #wpadminbar #wp-admin-bar-view-as .ab-item .user-role,
 #wpadminbar #wp-admin-bar-view-as .ab-item .user-count {font-style: italic; line-height: 26px; font-weight: normal;}
 
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-multipleselect .ab-item,
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-search .ab-item,
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-filter .ab-item,
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-select .ab-item {height: auto;}
@@ -44,7 +48,13 @@
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-filter .ab-item input,
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-select .ab-item select {padding: 3px; border: 0; line-height: normal; height: auto; margin: 5px 0; width: 100%; box-sizing: border-box;}
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-select .ab-item select {padding: 2px 3px;}
+
 /*#wpadminbar #wp-admin-bar-view-as .ab-vaa-select .ab-item select {border: 0; margin-top: 6px;}*/
+
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-multipleselect .ab-empty-item {height: auto; overflow: hidden;}
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-multipleselect.max-height .ab-empty-item {max-height: 100px; overflow-y: scroll; background: #fff; margin: 0 10px 5px; padding: 5px 10px;}
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-multipleselect.max-height .ab-empty-item .ab-item {color: #333;}
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-multipleselect.auto-height .ab-empty-item {max-height: none; margin: 0;}
 
 #wpadminbar #wp-admin-bar-view-as ul li.vaa-column-one-half {width: 50%; display: block; float: left; clear: none;}
 #wpadminbar #wp-admin-bar-view-as ul li.vaa-column-one-half .ab-item {min-width: 0;}
@@ -54,9 +64,10 @@
 
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
 
-#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; padding: 0; border: 0 solid transparent; border-width: 0 10px 10px 0;}
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: 0 solid transparent; border-width: 0 10px 0 0;}
 #wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox {height: 16px; margin: 0 5px; vertical-align: text-top;}
-#wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox + label {line-height: 18px; vertical-align: text-top;}
+#wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox + label,
+#wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox + label * {line-height: 18px; vertical-align: text-top;}
 #wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox:first-child {margin: 0 5px 0 0;}
 
 #wpadminbar #wp-admin-bar-view-as .vaa-button-container > .ab-item {overflow: hidden; height: auto;}

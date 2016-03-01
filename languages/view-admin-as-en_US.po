@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: View Admin As 1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/view-admin-as\n"
-"POT-Creation-Date: 2015-11-19 21:58+0100\n"
-"PO-Revision-Date: 2015-11-19 21:59+0100\n"
+"POT-Creation-Date: 2016-03-01 16:34+0100\n"
+"PO-Revision-Date: 2016-03-01 16:41+0100\n"
 "Last-Translator: \n"
 "Language-Team: Keraweb <info@keraweb.nl>\n"
 "Language: en_US\n"
@@ -16,59 +16,120 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: view-admin-as.php:308 view-admin-as.php:335
-msgid "This view is already selected!"
-msgstr "This view is already selected!"
+#: modules/role-defaults.php:453 view-admin-as.php:583
+msgid "Enable role defaults"
+msgstr "Enable role defaults"
 
-#: view-admin-as.php:346
-msgid "These are your default capabilities!"
-msgstr "These are your default capabilities!"
+#: modules/role-defaults.php:468
+msgid "Apply defaults to new users"
+msgstr "Apply defaults to new users"
 
-#: view-admin-as.php:358
-msgid "Something went wrong, please try again."
-msgstr "Something went wrong, please try again."
+#: modules/role-defaults.php:492
+msgid "Apply defaults to users"
+msgstr "Apply defaults to users"
 
-#: view-admin-as.php:375
+#: modules/role-defaults.php:502 view-admin-as.php:475
+msgid "Filter"
+msgstr "Filter"
+
+#: modules/role-defaults.php:502 view-admin-as.php:657
+msgid "Username"
+msgstr "Username"
+
+#: modules/role-defaults.php:530 modules/role-defaults.php:573
+#: modules/role-defaults.php:616 view-admin-as.php:463
+msgid "Apply"
+msgstr "Apply"
+
+#: modules/role-defaults.php:552
+msgid "Apply defaults to users by role"
+msgstr "Apply defaults to users by role"
+
+#: modules/role-defaults.php:562 modules/role-defaults.php:605
+msgid "All roles"
+msgstr "All roles"
+
+#: modules/role-defaults.php:595
+msgid "Clear defaults for role"
+msgstr "Clear defaults for role"
+
+#: view-admin-as.php:365
 msgid "Default view (Off)"
 msgstr "Default view (Off)"
 
-#: view-admin-as.php:379
+#: view-admin-as.php:369
 msgid "Modified view"
 msgstr "Modified view"
 
-#: view-admin-as.php:383
+#: view-admin-as.php:373
 msgid "Viewing as role"
 msgstr "Viewing as role"
 
-#: view-admin-as.php:391
+#: view-admin-as.php:381
 msgid "Viewing as user"
 msgstr "Viewing as user"
 
-#: view-admin-as.php:401 view-admin-as.php:587 view-admin-as.php:654
-#: view-admin-as.php:672
+#: view-admin-as.php:391 view-admin-as.php:620 view-admin-as.php:687
+#: view-admin-as.php:705
 msgid "View as"
 msgstr "View as"
 
-#: view-admin-as.php:409
+#: view-admin-as.php:399 view-admin-as.php:490
 msgid "Default"
 msgstr "Default"
 
-#: view-admin-as.php:412
+#: view-admin-as.php:402
 msgid "Reset to default"
 msgstr "Reset to default"
 
-#: view-admin-as.php:430 view-admin-as.php:434 view-admin-as.php:441
+#: view-admin-as.php:426 view-admin-as.php:430 view-admin-as.php:437
 msgid "Capabilities"
 msgstr "Capabilities"
 
-#: view-admin-as.php:538 view-admin-as.php:542 view-admin-as.php:550
+#: view-admin-as.php:451 view-admin-as.php:502
+msgid "Select"
+msgstr "Select"
+
+#: view-admin-as.php:501
+msgid "All"
+msgstr "All"
+
+#: view-admin-as.php:503
+msgid "Deselect"
+msgstr "Deselect"
+
+#: view-admin-as.php:542 view-admin-as.php:546 view-admin-as.php:554
 msgid "Roles"
 msgstr "Roles"
 
-#: view-admin-as.php:602 view-admin-as.php:606 view-admin-as.php:613
+#: view-admin-as.php:571
+msgid "Role defaults"
+msgstr "Role defaults"
+
+#: view-admin-as.php:635 view-admin-as.php:639 view-admin-as.php:646
 msgid "Users"
 msgstr "Users"
 
-#: view-admin-as.php:702
+#: view-admin-as.php:657
+msgid "Search"
+msgstr "Search"
+
+#: view-admin-as.php:758 view-admin-as.php:784
+msgid "This view is already selected!"
+msgstr "This view is already selected!"
+
+#: view-admin-as.php:794
+msgid "These are your default capabilities!"
+msgstr "These are your default capabilities!"
+
+#: view-admin-as.php:818
+msgid "Something went wrong, please try again."
+msgstr "Something went wrong, please try again."
+
+#: view-admin-as.php:834
+msgid "No users found."
+msgstr "No users found."
+
+#: view-admin-as.php:853
 msgid "Did something wrong? Reset the view by clicking me!"
 msgstr "Did something wrong? Reset the view by clicking me!"
