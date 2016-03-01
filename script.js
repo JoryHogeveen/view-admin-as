@@ -2,7 +2,7 @@
  * Plugin Name: View Admin As
  * Description: View the WordPress admin as a specific role, switch between users and non-destructively change your capabilities.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.3.2
+ * Version:     1.3.4
  * Author:      Jory Hogeveen
  * Author URI:  http://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -211,7 +211,7 @@
 		};
 		
 		$.post(ajax_url, data, function(response) {
-			if (response == 'success') {
+			if (response.success == true) {
 				//location.reload();
 				window.location = window.location.href.replace('?reset-view', '').replace('&reset-view', '');
 			} else {
@@ -219,7 +219,7 @@
 				if (fullPopup == true) {
 					$(vaa_bar).addClass('fullPopupActive');
 				}
-				vaa_add_notice(response);
+				vaa_add_notice(response.data);
 			}
 		});
 	}

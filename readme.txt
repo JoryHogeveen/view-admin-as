@@ -3,10 +3,10 @@ Contributors: keraweb
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 Tags: admin, view, roles, users, switch, capabilities, caps, screen settings
 Requires at least: 3.8
-Tested up to: 4.4
-Stable tag: 1.3.3
+Tested up to: 4.5
+Stable tag: 1.3.4
 
-View the WordPress admin as a specific role, switch between users and non-destructively change your capabilities.
+View the WordPress admin as a specific role, switch between users and temporarily change your capabilities.
 
 == Description ==
 
@@ -14,14 +14,14 @@ This plugin will add a menu item to your admin bar where you can change your vie
 
 If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages.
 
-You can also see the defaults for a role and/or non-destructively change your own capabilities.
+You can also see the defaults for a role and/or temporarily change your own capabilities.
 
 = Overview / Features =
 
 *	Switch to the view of a user to see their capabilities and settings (admins are filtered!)
 *	Edit this user's screen preferences and settings
 *	Switch to a default view of a role
-*	Change your own capabilities (non-destructively)
+*	Temporarily change your own capabilities (non-destructively)
 *	Do this all without loggin out and easily go back to your own (default) user view!
 
 = Compatibility =
@@ -141,6 +141,15 @@ This plugin is also usefull to support your clients and/or users. For example; m
 8. Large popup for better overview of capabilities
 
 == Changelog ==
+
+= 1.3.4 =
+
+*	Improvement: View settings are saved separately for each browser login so you can set different views at the same time if you use different browsers. (incognito also works!)
+*	Improvement: View settings are saved for 24 hours. After that they are cleared automatically. (login triggers cleanup)
+*	Improvement: Better Ajax handlers
+*	Improvement: Better storage handlers
+*	Improvement: uninstall.php added for cleanup all data. (Sadly does not work for large networks of 10000+ sites or users).
+*	Tested with WordPress 4.5-Beta1
 
 = 1.3.3 =
 

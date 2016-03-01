@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: View Admin As
- * Description: View the WordPress admin as a specific role, switch between users and non-destructively change your capabilities.
+ * Description: View the WordPress admin as a specific role, switch between users and temporarily change your capabilities.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.3.3
+ * Version:     1.3.4
  * Author:      Jory Hogeveen
  * Author URI:  http://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -23,7 +23,31 @@ class VAA_View_Admin_As {
 	 * @since  1.3.1
 	 * @var    String
 	 */
-	protected $version = '1.3.2';
+	protected $version = '1.3.4';
+
+	/**
+	 * Database version - not used yet
+	 *
+	 * @since  1.3.4
+	 * @var    String
+	 */
+	protected $dbVersion = '1.3';
+
+	/**
+	 * Meta key for view data
+	 *
+	 * @since  1.3.4
+	 * @var    Boolean
+	 */
+	protected $userMetaKey = 'vaa-view-admin-as';
+	
+	/**
+	 * Expiration time for view data
+	 *
+	 * @since  1.3.4
+	 * @var    Integer
+	 */
+	protected $metaExpiration = 86400; // one day: ( 24 * 60 * 60 )
 
 	/**
 	 * Enable functionalities?
@@ -40,6 +64,14 @@ class VAA_View_Admin_As {
 	 * @var    Object
 	 */	
 	protected $curUser = false;
+	
+	/**
+	 * Current user session
+	 *
+	 * @since  1.3.4
+	 * @var    String
+	 */	
+	protected $curUserSession = '';
 	
 	/**
 	 * Selected view mode
@@ -122,18 +154,24 @@ class VAA_View_Admin_As {
 		
 		// Get the current user
 		$this->curUser = wp_get_current_user();
+		$this->curUserSession = wp_get_session_token();
 		
 		// Reset view to default if something goes wrong
 		if ( is_user_logged_in() && isset( $_GET['reset-view'] ) ) {
 			$this->reset_view();
 		}
+		// Clear user metadata
+		if ( is_user_logged_in() && isset( $_GET['reset-all-views'] ) ) {
+			$this->reset_metadata();
+		}
 		
 		// When a user logs in or out, reset the view to default
+		add_action( 'wp_login', array( $this, 'cleanup_metadata' ), 10, 2 );
 		add_action( 'wp_login', array( $this, 'reset_view' ), 10, 2 );
 		add_action( 'wp_logout', array( $this, 'reset_view' ) );
 		
 		// Check if current user is logged in and is an admin or (in a network) super admin + disable plugin functions for nedwork admin pages
-		if ( is_user_logged_in() && current_user_can( 'administrator' ) && ! is_network_admin() ) {
+		if ( is_user_logged_in() && current_user_can( 'administrator' ) && ! is_network_admin() && $this->curUserSession != '' ) {
 			$this->enable = true;
 			
 			// Load translations
@@ -171,10 +209,10 @@ class VAA_View_Admin_As {
 				}
 			}
 			
-			// Get view as setting
-			$meta = get_user_meta( $this->curUser->ID, 'vaa-view-admin-as', true );
-			if ( $meta ) { 
-				$this->viewAs = $meta; 
+			// Get the current view (returns false if not found)
+			$this->viewAs = $this->get_view();
+			// If view is set, 
+			if ( $this->viewAs ) {
 				// Force display of admin bar (older WP versions)
 				show_admin_bar( true );
 				// Force display of admin bar (WP 3.3+)
@@ -202,7 +240,7 @@ class VAA_View_Admin_As {
 			add_action( 'admin_enqueue_scripts', array( $this, 'add_styles_scripts' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'add_styles_scripts' ) );
 			
-			add_filter( 'wp_die_handler', array( $this, 'vaa_die_handler' ) );
+			add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 			
 			// Fix some compatibility issues, more to come!
 			$this->plugin_compatibility();
@@ -617,7 +655,6 @@ class VAA_View_Admin_As {
 	 * @return	String
 	 */
 	function ajax_update_view_as() {
-		
 		global $wpdb;
 		
 		$success = false;
@@ -638,15 +675,14 @@ class VAA_View_Admin_As {
 			( isset( $view_as['user'] ) && ( isset( $this->viewAs['user'] ) && $this->viewAs['user'] == $view_as['user'] ) ) || 
 			( isset( $view_as['reset'] ) && $this->viewAs == false ) 
 		) {
-			echo __('This view is already selected!', 'view-admin-as');
-			wp_die();
+			wp_send_json_error( __('This view is already selected!', 'view-admin-as') );
 		}
 		
 		// Update user metadata with selected view
 		if ( ( isset( $view_as['role'] ) && array_key_exists( $view_as['role'], $this->roles ) ) ||
 			 ( isset( $view_as['user'] ) && array_key_exists( $view_as['user'], $this->userids ) ) 
 		) {
-			$success = update_user_meta( $this->curUser->ID, 'vaa-view-admin-as', $view_as );
+			$success = $this->update_view( $view_as );
 			
 		} else if ( isset( $view_as['caps'] ) ) {
 			$newCaps = array();
@@ -661,12 +697,11 @@ class VAA_View_Admin_As {
 				foreach ( $this->caps as $key => $value ) {
 					$this->caps[ $key ] = $newCaps[ $key ];
 				}
-				$success = update_user_meta( $this->curUser->ID, 'vaa-view-admin-as', array( 'caps' => $this->caps ) );
-				if ($success != true) {
+				$success = $this->update_view( array( 'caps' => $this->caps ) );
+				if ( $success != true ) {
 					$dbValue = get_user_meta( $this->curUser->ID, 'vaa-view-admin-as', true );
 					if ($dbValue['caps'] == $this->caps) {
-						echo __('This view is already selected!', 'view-admin-as');
-						wp_die();
+						wp_send_json_error( __('This view is already selected!', 'view-admin-as') );
 					}
 				}
 			} else { 
@@ -676,8 +711,7 @@ class VAA_View_Admin_As {
 					$success = true; // and continue
 				} else {
 					// The user is in his default view
-					echo __('These are your default capabilities!', 'view-admin-as');
-					wp_die();
+					wp_send_json_error( __('These are your default capabilities!', 'view-admin-as') );
 				}
 			}
 			
@@ -686,12 +720,12 @@ class VAA_View_Admin_As {
 		}
 		
 		if ( $success == true ) {
-			echo 'success'; // ahw yeah
+			wp_send_json_success(); // ahw yeah
 		} else {
-			echo __('Something went wrong, please try again.', 'view-admin-as'); // fail
+			wp_send_json_error( __('Something went wrong, please try again.', 'view-admin-as') ); // fail
 		}
 		
-		wp_die();
+		wp_die(); // Just to make sure it's actually dead..
 	}
 	
 	/**
@@ -713,9 +747,9 @@ class VAA_View_Admin_As {
 	 *
 	 * @since   1.3
 	 * @return	void
-	 */	
-	function vaa_die_handler($default) {
-		if ($this->viewAs != false) {
+	 */
+	function die_handler( $default ) {
+		if ( $this->viewAs != false ) {
 			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			$urlcomp = parse_url( $url );
 			if ( isset ( $urlcomp['query'] ) ) {
@@ -729,7 +763,46 @@ class VAA_View_Admin_As {
 	}
 	
 	/**
+	 * Get current view for this session
+	 *
+	 * @since   1.3.4
+	 * @return	Boolean
+	 */
+	function get_view() {
+		$meta = get_user_meta( $this->curUser->ID, $this->userMetaKey, true );
+		if ( isset( $meta[ $this->curUserSession ]['view'] ) ) {
+			return $meta[ $this->curUserSession ]['view'];
+		}
+		return false;
+	}
+	
+	/**
+	 * Update view for this session
+	 *
+	 * @param	array	$data
+	 *
+	 * @since   1.3.4
+	 * @return	Boolean
+	 */
+	function update_view( $data = false ) {
+		if ( $data != false ) {
+			$user = $this->curUser;
+			$meta = get_user_meta( $user->ID, $this->userMetaKey, true );
+			if ( ! $meta ) {
+				$meta = array();
+			}
+			$meta[ $this->curUserSession ] = array(
+				'view' => $data,
+				'expire' => (time() + $this->metaExpiration),
+			);
+			return update_user_meta( $user->ID, $this->userMetaKey, $meta );
+		}
+		return false;
+	}
+	
+	/**
 	 * Reset view to default
+	 * This function is also attached to the wp_login and wp_logout hook
 	 *
 	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
 	 * @param	object	$user   		User object provided by the wp_login hook
@@ -739,21 +812,78 @@ class VAA_View_Admin_As {
 	 */
 	function reset_view( $user_login = false, $user = false ) {
 		
-		// wp_login action is not used
-		$tmpUser = $this->curUser;
+		// function is not triggered by the wp_login action hook
+		if ( $user == false ) {
+			$user = $this->curUser;
+		}
 		
-		// wp_login action is used
-		if ( $user != false ) {
-			$tmpUser = $user;
+		// Get metadata
+		$meta = get_user_meta( $user->ID, $this->userMetaKey, true );
+		// Check if this user session has metadata
+		if ( $meta && isset( $meta[ $this->curUserSession ] ) ) {
+			// Remove metadata from this session
+			unset( $meta[ $this->curUserSession ] );
+			// Update metadata
+			return update_user_meta( $user->ID, $this->userMetaKey, $meta );
+		}
+		// No meta found, no reset needed
+		return true;
+	}
+	
+	/**
+	 * Deleta all expired View Admin As metadata for this user
+	 * This function is also attached to the wp_login hook
+	 *
+	 * @since	1.3.4
+	 * @return	Boolean
+	 */
+	function cleanup_metadata( $user_login = false, $user = false ) {
+		
+		// function is not triggered by the wp_login action hook
+		if ( $user == false ) {
+			$user = $this->curUser;
+		}
+		
+		$meta = get_user_meta( $user->ID, $this->userMetaKey, true );
+		// If meta exists, loop it
+		if ( $meta && count( $meta ) >= 1 ) {
+			foreach ( $meta as $key => $value ) {
+				// Check expiration date: if it doesn't exist or is in the past, remove it
+				if ( ! isset( $meta[ $key ]['expire'] ) || $meta[ $key ]['expire'] <= time() ) {
+					unset( $meta[ $key ] );
+				}
+			}
+			if ( empty( $meta ) ) {
+				$meta = false;
+			}
+			return update_user_meta( $user->ID, $this->userMetaKey, $meta );
+		}
+		// No meta found, no cleanup needed
+		return true;
+	}
+	
+	/**
+	 * Delete all View Admin As metadata for this user
+	 *
+	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
+	 * @param	object	$user   		User object provided by the wp_login hook
+	 *
+	 * @since   1.3.4
+	 * @return	Boolean
+	 */
+	function reset_metadata( $user_login = false, $user = false ) {
+		
+		// function is not triggered by the wp_login action hook
+		if ( $user == false ) {
+			$user = $this->curUser;
 		}
 		
 		// If meta exists, reset it
-		if ( get_user_meta($tmpUser->ID, 'vaa-view-admin-as', true) ) {
-			return update_user_meta( $tmpUser->ID, 'vaa-view-admin-as', false );
-		} else {
-			// No meta found, no reset needed
-			return true;
+		if ( get_user_meta( $user->ID, $this->userMetaKey, true ) ) {
+			return update_user_meta( $user->ID, $this->userMetaKey, false );
 		}
+		// No meta found, no reset needed
+		return true;
 	}
 	
 	/**
@@ -785,7 +915,7 @@ class VAA_View_Admin_As {
 	 * @since   1.0.1
 	 * @return	boolean
 	 */
-	function pods_caps_check($bool, $cap, $capability) {
+	function pods_caps_check( $bool, $cap, $capability ) {
 		
 		// Pods gives arrays most of the time with the to-be-checked capability as last item
 		if ( is_array( $cap ) ) {
@@ -795,7 +925,7 @@ class VAA_View_Admin_As {
 			$cap = $tmp_cap;
 		}
 		
-		$role_caps = $this->roles[$this->viewAs['role']]['capabilities'];
+		$role_caps = $this->roles[ $this->viewAs['role'] ]['capabilities'];
 		if ( !array_key_exists( $cap, $role_caps ) || ( $role_caps[$cap] != 1 ) ) {
 			return false;
 		}
