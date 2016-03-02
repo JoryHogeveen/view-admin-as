@@ -1,7 +1,7 @@
 === View Admin As ===
 Contributors: keraweb
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
-Tags: admin, view, roles, users, switch, capabilities, caps, screen settings
+Tags: admin, view, roles, users, switch, capabilities, caps, screen settings, defaults
 Requires at least: 3.8
 Tested up to: 4.5
 Stable tag: 1.4
@@ -29,7 +29,7 @@ Through the new "Role defaults" module you can set default screen settings for r
 = Modules =
 
 **Role defaults**: 
-*	Set default screens for roles.
+*	Set default screens for roles
 *	Apply defaults to a user
 *	Apply defaults to all users of a role
 *	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
@@ -178,6 +178,8 @@ This plugin is also usefull to support your clients and/or users. For example; m
 
 *	Feature: Module "Role defaults" to set default screen settings for roles and apply them on users through various bulk actions.
 *	Improvement: DB version storage and update functions
+*	A lot of code improvements and some deprecated fixes
+*	Stopped using WordPress default translations since some where not correct for this plugin. All translations are now managed with the plugin.
 *	Also tested with WordPress 4.5-Beta1
 
 = 1.3.4 =

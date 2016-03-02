@@ -296,9 +296,8 @@ class VAA_View_Admin_As {
 	/**
 	 * Sort users by role
 	 *
-	 * @param	array	$users
-	 * 
 	 * @since   1.1
+	 * @param	array	$users
 	 * @return	array	$users
 	 */
 	function filter_sort_users_by_role($users) {
@@ -354,9 +353,8 @@ class VAA_View_Admin_As {
 	/**
 	 * Add admin bar menu's
 	 *
-	 * @param	object	$admin_bar
-	 * 
 	 * @since   0.1
+	 * @param	object	$admin_bar
 	 * @return	void
 	 */
 	function add_admin_bar_items( $admin_bar ) {
@@ -402,12 +400,6 @@ class VAA_View_Admin_As {
 				'title'	=> __('Reset to default', 'view-admin-as'),
 			),
 		) );
-
-		foreach ( $this->modules as $module ) {
-			if ( method_exists( $module, 'add_admin_bar_items' ) ) {
-				$module->add_admin_bar_items( $admin_bar, 'pre' );
-			}
-		}
 		
 		// If there are more than 10 users, group them under their roles
 		$groupUserRoles = false;
@@ -515,8 +507,11 @@ class VAA_View_Admin_As {
 					} else {
 						$checked = ' checked="checked"';
 					}
-					$capsQuickselectContent .= '<div class="ab-item '.$class.'"><input class="checkbox" value="' . $capName . '" id="vaa_' . $capName . '" name="vaa_' . $capName . '" type="checkbox"' . $checked . '>
-										<label for="vaa_' . $capName . '">' . str_replace( '_', ' ', $capName ) . '</label></div>';
+					$capsQuickselectContent .= 
+						'<div class="ab-item '.$class.'">
+							<input class="checkbox" value="' . $capName . '" id="vaa_' . $capName . '" name="vaa_' . $capName . '" type="checkbox"' . $checked . '>
+							<label for="vaa_' . $capName . '">' . str_replace( '_', ' ', $capName ) . '</label>
+						</div>';
 				}
 				$admin_bar->add_node( array(
 					'id'		=> 'caps-quickselect-options',
@@ -713,7 +708,7 @@ class VAA_View_Admin_As {
 		
 		foreach ( $this->modules as $module ) {
 			if ( method_exists( $module, 'add_admin_bar_items' ) ) {
-				$module->add_admin_bar_items( $admin_bar, 'post' );
+				$module->add_admin_bar_items( $admin_bar );
 			}
 		}
 	}
@@ -725,7 +720,7 @@ class VAA_View_Admin_As {
 	 * Store format: array( VIEW_TYPE => NAME );
 	 *
 	 * @since   0.1
-	 * @return	String
+	 * @return	void
 	 */
 	function ajax_update_view_as() {
 		global $wpdb;
@@ -803,7 +798,7 @@ class VAA_View_Admin_As {
 				if ( array_key_exists( $key, $this->modules ) ) {
 					if ( method_exists( $this->modules[ $key ], 'ajax_handler' ) ) {
 						$success = $this->modules[ $key ]->ajax_handler( $data );
-						if ( $success != true ) {
+						if ( is_string( $success ) && ! empty( $success ) ) {
 							wp_send_json_error( $success );
 						}
 					}
@@ -819,20 +814,6 @@ class VAA_View_Admin_As {
 		}
 		
 		wp_die(); // Just to make sure it's actually dead..
-	}
-	
-	/**
-	 * Add nessesary scripts and styles
-	 *
-	 * @since   0.1
-	 * @return	void
-	 */
-	function add_styles_scripts() {
-		if ( is_admin_bar_showing() ) {
-			wp_enqueue_style( 'vaa_view_admin_as_style', plugin_dir_url( __FILE__ ) . 'style.css', array(), $this->version );
-			wp_enqueue_script( 'vaa_view_admin_as_script', plugin_dir_url( __FILE__ ) . 'script.js', array( 'jquery' ), $this->version );
-			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'siteurl' => get_site_url(), '__no_users_found' => __('No users found.') ) );
-		}
 	}
 
 	/**
@@ -872,9 +853,8 @@ class VAA_View_Admin_As {
 	/**
 	 * Update view for the current session
 	 *
-	 * @param	array	$data
-	 *
 	 * @since   1.3.4
+	 * @param	array	$data
 	 * @return	Boolean
 	 */
 	function update_view( $data = false ) {
@@ -897,10 +877,9 @@ class VAA_View_Admin_As {
 	 * Reset view to default
 	 * This function is also attached to the wp_login and wp_logout hook
 	 *
+	 * @since   0.1
 	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
 	 * @param	object	$user   		User object provided by the wp_login hook
-	 *
-	 * @since   0.1
 	 * @return	Boolean
 	 */
 	function reset_view( $user_login = false, $user = false ) {
@@ -928,6 +907,8 @@ class VAA_View_Admin_As {
 	 * This function is also attached to the wp_login hook
 	 *
 	 * @since	1.3.4
+	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
+	 * @param	object	$user   		User object provided by the wp_login hook
 	 * @return	Boolean
 	 */
 	function cleanup_views( $user_login = false, $user = false ) {
@@ -958,10 +939,9 @@ class VAA_View_Admin_As {
 	/**
 	 * Delete all View Admin As metadata for this user
 	 *
+	 * @since   1.3.4
 	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
 	 * @param	object	$user   		User object provided by the wp_login hook
-	 *
-	 * @since   1.3.4
 	 * @return	Boolean
 	 */
 	function reset_all_views( $user_login = false, $user = false ) {
@@ -1001,11 +981,10 @@ class VAA_View_Admin_As {
 	/**
 	 * Fix compatibility issues Pods Framework 2.x
 	 *
+	 * @since   1.0.1
 	 * @param	boolean		$bool 			Boolean provided by the pods_is_admin hook (not used)
 	 * @param	array		$cap 			String or Array provided by the pods_is_admin hook
 	 * @param	string		$capability   	String provided by the pods_is_admin hook
-	 *
-	 * @since   1.0.1
 	 * @return	boolean
 	 */
 	function pods_caps_check( $bool, $cap, $capability ) {
@@ -1026,6 +1005,20 @@ class VAA_View_Admin_As {
 	}
 	
 	/**
+	 * Add nessesary scripts and styles
+	 *
+	 * @since   0.1
+	 * @return	void
+	 */
+	function add_styles_scripts() {
+		if ( is_admin_bar_showing() ) {
+			wp_enqueue_style( 'vaa_view_admin_as_style', plugin_dir_url( __FILE__ ) . 'style.css', array(), $this->version );
+			wp_enqueue_script( 'vaa_view_admin_as_script', plugin_dir_url( __FILE__ ) . 'script.js', array( 'jquery' ), $this->version );
+			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'siteurl' => get_site_url(), '__no_users_found' => __('No users found.') ) );
+		}
+	}
+	
+	/**
 	 * Load plugin textdomain.
 	 *
 	 * @since 1.2
@@ -1033,6 +1026,11 @@ class VAA_View_Admin_As {
 	 */
 	function load_textdomain() {
 		load_plugin_textdomain( 'view-admin-as', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
+		
+		// For frontend translation of roles > not working
+		/*if ( ! is_admin() ) {
+			load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
+		}*/
 	}
 	
 	/**

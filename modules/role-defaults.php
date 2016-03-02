@@ -129,8 +129,15 @@ class VAA_Role_Defaults {
 		}
 	}
 	
+	/**
+	 * Init function
+	 * Also handles functionality that could allways be enabled
+	 *
+	 * @since   1.4
+	 * @return	void
+	 */
 	function init() {
-		$optionData = get_option( $this->optionKey );
+		$optionData = $this->optionData;
 		
 		// Allow users to overwrite the meta keys
 		$this->meta = apply_filters( 'view_admin_as_role_defaults_meta', $this->meta );
@@ -144,6 +151,13 @@ class VAA_Role_Defaults {
 		}
 	}
 	
+	/**
+	 * init function to store data from the main class and enable functionality based on the current view
+	 *
+	 * @since   1.4
+	 * @param 	object
+	 * @return	void
+	 */
 	function vaa_init( $vaa ) {
 		$this->vaa = $vaa;
 		$this->roles = $vaa->get_roles();
@@ -156,10 +170,21 @@ class VAA_Role_Defaults {
 		}
 	}
 	
-	function is_enabled() {
-		return $this->enable;
-	}
+	/**
+	 * Is enabled? (for other classes)
+	 *
+	 * @since   1.4
+	 * @return	boolean
+	 */
+	function is_enabled() { return $this->enable; }
 		
+	/**
+	 * Set plugin enabled true/false
+	 *
+	 * @since   1.4
+	 * @param	boolean
+	 * @return	boolean
+	 */
 	private function set_enable($bool = false) {
 		$optionData = get_option( $this->optionKey );
 		if ( ! is_array( $optionData ) ) {
@@ -172,6 +197,14 @@ class VAA_Role_Defaults {
 		}
 		return $success;
 	}
+	
+	/**
+	 * Set option "apply defaults on register" true/false
+	 *
+	 * @since   1.4
+	 * @param	boolean
+	 * @return	boolean
+	 */
 	private function set_apply_defaults_on_register($bool = false) {
 		$optionData = get_option( $this->optionKey );
 		if ( ! is_array( $optionData ) ) {
@@ -182,6 +215,13 @@ class VAA_Role_Defaults {
 		return $success;
 	}
 	
+	/**
+	 * Ajax handler, called from main plugin
+	 *
+	 * @since   1.4
+	 * @param	array
+	 * @return	mixed
+	 */
 	function ajax_handler( $data ) {
 		$success = true;
 		
@@ -220,7 +260,10 @@ class VAA_Role_Defaults {
 	 * When no role is provided this function only checks the first existing user role. If the user has multiple roles, the other roles are ignored.
 	 *
 	 * @since   1.4
-	 * @return	void
+	 * @param 	int		$user_id
+	 * @param	string	$role
+	 * @param	int		$blog_id
+	 * @return	boolean
 	 */
 	function update_user_with_role_defaults( $user_id, $role = false, $blog_id = false ) {
 		$success = true;
@@ -246,13 +289,32 @@ class VAA_Role_Defaults {
 		}
 		return $success;
 	}
+	
+	/**
+	 * In case of a multisite register, check if the user has multiple blogs. If so, it is an existing user.
+	 * User for hook "add_user_to_blog"
+	 *
+	 * @since   1.4
+	 * @param 	int		$user_id
+	 * @param	string	$role
+	 * @param	int		$blog_id
+	 * @return	boolean
+	 */
 	function update_user_with_role_defaults_multisite_register( $user_id, $role, $blog_id ) {
 		$userBlogs = get_blogs_of_user( $user_id );
 		if ( count($userBlogs) == 1 ) {
 			// If the user has access to one blog only it is safe to set defaults since it is most likely a new user.
-			$this->update_user_with_role_defaults( $user_id, $role, $blog_id );
+			return $this->update_user_with_role_defaults( $user_id, $role, $blog_id );
 		}
 	}
+	
+	/**
+	 * Apply default settings to all users of a role
+	 *
+	 * @since   1.4
+	 * @param	string	$role
+	 * @return	boolean
+	 */
 	function apply_defaults_to_users_by_role( $role ) {
 		$success = true;
 		$roles = array();
@@ -287,48 +349,108 @@ class VAA_Role_Defaults {
 	/**
 	 * Initialize the sync funcionality (store defaults)
 	 * Init function/action to load nessesary data and register all used hooks
-	 *
 	 * IMPORTANT! This function should ONLY be used when a role view is selected!
 	 *
 	 * @since   1.4
+	 * @param	string	$curRole
 	 * @return	void
 	 */
 	function init_store_role_defaults( $curRole = false ) {
 		if ( $curRole && $this->enable ) {
 			$this->curRole = $curRole;
-			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
 			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 5 );
+			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
 		}
+	}
+	
+	/**
+	 * Check if the meta_key maches one of the predefined metakeys in the role defaults
+	 * If there is a match and the role default value is set, return this value instead of the current user value.
+	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
+	 *
+	 * @since   1.4
+	 * @param	null	$null
+	 * @param	int		$object_id
+	 * @param	string	$meta_key
+	 * @param	boolean	$single
+	 * @return	mixed
+	 */
+	function filter_get_user_metadata( $null, $object_id, $meta_key, $single ) {
+		if ( $this->compare_metakey( $meta_key ) && $object_id == $this->curUser->ID ) {
+			$new_meta = $this->get_role_defaults( $this->curRole, $meta_key );
+			if ( $single && is_array( $new_meta ) ) {
+				return array( $new_meta );
+			}
+			return $new_meta;
+		}
+		return null; // Go on as normal
 	}
 	
 	/**
 	 * Check if the meta_key maches one of the predefined metakeys to store as defaults.
 	 * If there is a match, store the update to the defaults and cancel the update for the current user.
-	 * 
 	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
 	 *
 	 * @since   1.4
+	 * @param	null	$null
+	 * @param	int		$object_id
+	 * @param	string	$meta_key
+	 * @param	string	$meta_value
+	 * @param	string	$prev_value
 	 * @return	mixed
 	 */
 	function filter_update_user_metadata( $null, $object_id, $meta_key, $meta_value, $prev_value ) {
 		if ( $this->compare_metakey( $meta_key ) && $object_id == $this->curUser->ID ) {
-			$this->update_role_defaults( $meta_key, $meta_value );
+			$this->update_role_defaults( $this->curRole, $meta_key, $meta_value );
 			return false; // Do not update current user meta
 		}
 		return null; // Go on as normal
 	}
-	function update_role_defaults( $meta_key, $meta_value ) {
+	
+	/**
+	 * Get defaults of a role
+	 *
+	 * @since   1.4
+	 * @param	string	$role
+	 * @param	string	$meta_key
+	 * @return	mixed
+	 */
+	function get_role_defaults( $role, $meta_key ) {
+		$optionData = get_option( $this->optionKey );
+		if ( isset( $optionData['roles'][ $role ][ $meta_key ] ) ) {
+			return $optionData['roles'][ $role ][ $meta_key ];
+		}
+		return false;
+	}
+	
+	/**
+	 * Update a role with new defaults
+	 *
+	 * @since   1.4
+	 * @param	string	$role
+	 * @param	string	$meta_key
+	 * @param	string	$meta_value
+	 * @return	void
+	 */
+	function update_role_defaults( $role, $meta_key, $meta_value ) {
 		$optionData = get_option( $this->optionKey );
 		if ( ! is_array( $optionData ) ) {
 			$optionData = array();
 		}
-		if ( ! isset( $optionData['roles'][ $this->curRole ] ) ) {
-			$optionData['roles'][ $this->curRole ] = array();
+		if ( ! isset( $optionData['roles'][ $role ] ) ) {
+			$optionData['roles'][ $role ] = array();
 		}
-		$optionData['roles'][ $this->curRole ][ $meta_key ] = $meta_value;
+		$optionData['roles'][ $role ][ $meta_key ] = $meta_value;
 		update_option( $this->optionKey, $optionData );
 	}
 	
+	/**
+	 * Remove defaults of a role
+	 *
+	 * @since   1.4
+	 * @param	string	$role
+	 * @return	void
+	 */
 	function clear_role_defaults( $role ) { // option to set $role to "all" or pass an array of multiple roles
 		$optionData = get_option( $this->optionKey );
 		if ( ! is_array( $role ) ) {
@@ -352,39 +474,10 @@ class VAA_Role_Defaults {
 	}
 	
 	/**
-	 * Check if the meta_key maches one of the predefined metakeys in the role defaults
-	 * If there is a match and the role default value is set, return this value instead of the current user value.
-	 * 
-	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
-	 *
-	 * @since   1.4
-	 * @return	mixed
-	 */
-	function filter_get_user_metadata( $null, $object_id, $meta_key, $single ) {
-		if ( $this->compare_metakey( $meta_key ) && $object_id == $this->curUser->ID ) {
-			$new_meta = $this->get_role_default_metadata( $meta_key );
-			if ( $single && is_array( $new_meta ) ) {
-				return array( $new_meta );
-			}
-			return $new_meta;
-		}
-		return null; // Go on as normal
-	}
-	function get_role_default_metadata( $meta_key ) {
-		$optionData = get_option( $this->optionKey );
-		if ( isset( $optionData['roles'][ $this->curRole ] ) ) {
-			$optionData = $optionData['roles'][ $this->curRole ];
-			if ( isset( $optionData[ $meta_key ] ) ) {
-				return $optionData[ $meta_key ];
-			}
-		}
-		return false;
-	}
-	
-	/**
 	 * Match the meta key with predefined metakeys
 	 *
 	 * @since   1.4
+	 * @param	string	$meta_key
 	 * @return	Boolean
 	 */
 	function compare_metakey( $meta_key ) {
@@ -428,54 +521,50 @@ class VAA_Role_Defaults {
 	/**
 	 * Add admin bar menu's
 	 *
+	 * @since   1.4
 	 * @param	object	$admin_bar
-	 * 
-	 * @since   0.1
 	 * @return	void
 	 */
-	function add_admin_bar_items( $admin_bar, $type ) {
+	function add_admin_bar_items( $admin_bar ) {
 		$optionData = get_option( $this->optionKey );
-		if ( $type == 'pre' ) {
-			// do pre default stuff
-		}
-		if ( $type == 'post' ) {
-			if ( $this->enable ) {
-				
-				$roleSelectOptions = '';
-				foreach ($this->roles as $rKey => $rValue) {
-					$roleSelectOptions .= '<option value="' . $rKey . '">' . translate_user_role( $rValue['name'] ) . '</option>';					
-				}				
-				
-				$admin_bar->add_node( array(
-					'id'		=> 'role-defaults-enable',
-					'parent'	=> 'role-defaults',
-					'title'		=> '<input class="checkbox" value="1" id="vaa_role_defaults_enable" name="vaa_role_defaults_enable" type="checkbox" checked="checked">
-									<label for="vaa_role_defaults_enable">' . __('Enable role defaults', 'view-admin-as') . '</label>',
-					'href'		=> false,
-					'meta'		=> array(
-						'class'	=> 'ab-italic',
-					),
-				) );
-				
-				$checked = '';
-				if ( isset( $optionData['apply_defaults_on_register'] ) && $optionData['apply_defaults_on_register'] == true ) {
-					$checked = ' checked="checked"';
-				}
-				$admin_bar->add_node( array(
-					'id'		=> 'role-defaults-register-enable',
-					'parent'	=> 'role-defaults',
-					'title'		=> '<input class="checkbox" value="1" id="vaa_role_defaults_register_enable" name="vaa_role_defaults_register_enable" type="checkbox"'.$checked.'>
-									<label for="vaa_role_defaults_register_enable">' . __('Apply defaults to new users', 'view-admin-as') . '</label>',
-					'href'		=> false,
-					'meta'		=> array(
-						'class'	=> 'ab-italic',
-					),
-				) );
-				
-				/*
-				 * Bulk actions 
-				 */
-				
+		if ( $this->enable ) {
+			
+			$roleSelectOptions = '';
+			foreach ($this->roles as $rKey => $rValue) {
+				$roleSelectOptions .= '<option value="' . $rKey . '">' . translate_user_role( $rValue['name'] ) . '</option>';					
+			}				
+			
+			$admin_bar->add_node( array(
+				'id'		=> 'role-defaults-enable',
+				'parent'	=> 'role-defaults',
+				'title'		=> '<input class="checkbox" value="1" id="vaa_role_defaults_enable" name="vaa_role_defaults_enable" type="checkbox" checked="checked">
+								<label for="vaa_role_defaults_enable">' . __('Enable role defaults', 'view-admin-as') . '</label>',
+				'href'		=> false,
+				'meta'		=> array(
+					'class'	=> 'ab-italic',
+				),
+			) );
+			
+			$checked = '';
+			if ( isset( $optionData['apply_defaults_on_register'] ) && $optionData['apply_defaults_on_register'] == true ) {
+				$checked = ' checked="checked"';
+			}
+			$admin_bar->add_node( array(
+				'id'		=> 'role-defaults-register-enable',
+				'parent'	=> 'role-defaults',
+				'title'		=> '<input class="checkbox" value="1" id="vaa_role_defaults_register_enable" name="vaa_role_defaults_register_enable" type="checkbox"'.$checked.'>
+								<label for="vaa_role_defaults_register_enable">' . __('Apply defaults to new users', 'view-admin-as') . '</label>',
+				'href'		=> false,
+				'meta'		=> array(
+					'class'	=> 'ab-italic',
+				),
+			) );
+			
+			/*
+			 * Bulk actions 
+			 */
+			
+			if ( $this->users ) {
 				// Users select
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-bulk-users',
@@ -510,8 +599,11 @@ class VAA_Role_Defaults {
 				foreach ( $this->users as $user ) {
 					foreach ( $user->roles as $role ) {
 						$roleName = translate_user_role( $this->roles[ $role ]['name'] );
-						$bulk_users_select_content .= '<div class="ab-item vaa-item"><input class="checkbox" value="'.$user->ID.'|'.$role.'" id="role-defaults-bulk-users-select-'.$user->ID.'" name="role-defaults-bulk-users-select[]" type="checkbox">
-											<label for="role-defaults-bulk-users-select-'.$user->ID.'"><span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $roleName . ')</span></label></div>';
+						$bulk_users_select_content .= 
+							'<div class="ab-item vaa-item">
+								<input class="checkbox" value="'.$user->ID.'|'.$role.'" id="role-defaults-bulk-users-select-'.$user->ID.'" name="role-defaults-bulk-users-select[]" type="checkbox">
+								<label for="role-defaults-bulk-users-select-'.$user->ID.'"><span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $roleName . ')</span></label>
+							</div>';
 					}
 				}
 				$admin_bar->add_node( array(
@@ -535,7 +627,9 @@ class VAA_Role_Defaults {
 						'html'	=> '',
 					),
 				) );
-				
+			}
+			
+			if ( $this->users && $this->roles ) {
 				// Roles select
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-bulk-roles',
@@ -559,7 +653,7 @@ class VAA_Role_Defaults {
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-bulk-roles-select',
 					'parent'	=> 'role-defaults-bulk-roles',
-					'title'		=> '<select id="role-defaults-bulk-roles-select" name="role-defaults-bulk-roles-select"><option value="all">' . __('All roles', 'view-admin-as') . '</option>' . $roleSelectOptions . '</select>',
+					'title'		=> '<select id="role-defaults-bulk-roles-select" name="role-defaults-bulk-roles-select"><option value=""> --- </option><option value="all">' . __('All roles', 'view-admin-as') . '</option>' . $roleSelectOptions . '</select>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -578,7 +672,9 @@ class VAA_Role_Defaults {
 						'html'	=> '',
 					),
 				) );
-				
+			}
+			
+			if ( $this->roles ) {
 				/* Clear actions */
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-clear',
@@ -602,7 +698,7 @@ class VAA_Role_Defaults {
 				$admin_bar->add_node( array(
 					'id'		=> 'role-defaults-clear-roles-select',
 					'parent'	=> 'role-defaults-clear',
-					'title'		=> '<select id="role-defaults-clear-roles-select" name="role-defaults-clear-roles-select"><option value="all">' . __('All roles', 'view-admin-as') . '</option>' . $roleSelectOptions . '</select>',
+					'title'		=> '<select id="role-defaults-clear-roles-select" name="role-defaults-clear-roles-select"><option value=""> --- </option><option value="all">' . __('All roles', 'view-admin-as') . '</option>' . $roleSelectOptions . '</select>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(

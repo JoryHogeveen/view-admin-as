@@ -15,11 +15,15 @@
 
 #vaa-loading.inner {position: absolute;}
 #vaa-loading.inner .vaa-loader-icon {position: absolute;}
+/*
+#vaa-loading.error {background-color: rgba(220, 50, 50, 0.85);}
+#vaa-loading.success {background-color: rgba(70, 180, 80, 0.85);}
+*/
 
-#wpadminbar .vaa-update.vaa-error {display:inline-block;color:#c00;background:#fff;padding:0 10px;}
-#wpadminbar .vaa-update.vaa-error .ab-icon:before {color:#c00;}
-#wpadminbar .vaa-update.vaa-success {display:inline-block;color:#0c0;background:#fff;padding:0 10px;}
-#wpadminbar .vaa-update.vaa-success .ab-icon:before {color:#0c0;}
+#wpadminbar .vaa-update.vaa-error {display:inline-block;color:#dc3232;background:#fff;padding:0 10px;}
+#wpadminbar .vaa-update.vaa-error .ab-icon:before {color:#dc3232;}
+#wpadminbar .vaa-update.vaa-success {display:inline-block;color:#46b450;background:#fff;padding:0 10px;}
+#wpadminbar .vaa-update.vaa-success .ab-icon:before {color:#46b450;}
 
 #wpadminbar #wp-admin-bar-view-as.menupop ul.ab-sub-secondary {position: static;}
 #wpadminbar #wp-admin-bar-view-as.menupop .menupop > .ab-item:before {top: 1px;}
@@ -65,7 +69,7 @@
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: 0 solid transparent; border-width: 0 10px 0 0;}
-#wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox {height: 16px; margin: 0 5px; vertical-align: text-top;}
+#wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox {height: 16px; width: 16px; margin: 0 5px; vertical-align: text-bottom;}
 #wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox + label,
 #wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox + label * {line-height: 18px; vertical-align: text-top;}
 #wpadminbar #wp-admin-bar-view-as .ab-item input.checkbox:first-child {margin: 0 5px 0 0;}
@@ -95,9 +99,7 @@
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps-popup:hover {cursor: pointer;}
 
-
 /**
  * Module: Role Defaults
  */
-
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-role-defaults > .ab-item::before {content: '\f107'; font-family: 'dashicons'; margin: 0; font-size: 1.3em; vertical-align: middle; font-weight: normal;}
