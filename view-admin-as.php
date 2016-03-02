@@ -3,7 +3,7 @@
  * Plugin Name: View Admin As
  * Description: View the WordPress admin as a specific role, switch between users and temporarily change your capabilities.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.3.4
+ * Version:     1.4
  * Author:      Jory Hogeveen
  * Author URI:  http://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -12,6 +12,8 @@
  */
  
 ! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+
+define('VIEW_ADMIN_AS_DIR', plugin_dir_path( __FILE__ ));
 
 $vaa_view_admin_as = new VAA_View_Admin_As();
 
@@ -23,15 +25,31 @@ class VAA_View_Admin_As {
 	 * @since  1.3.1
 	 * @var    String
 	 */
-	protected $version = '1.3.4';
+	private $version = '1.4';
 
 	/**
-	 * Database version - not used yet
+	 * Database version
 	 *
 	 * @since  1.3.4
 	 * @var    String
 	 */
-	protected $dbVersion = '1.3';
+	private $dbVersion = '1.4';
+
+	/**
+	 * Database option key
+	 *
+	 * @since  1.4
+	 * @var    String
+	 */
+	private $optionKey = 'vaa_view_admin_as';
+
+	/**
+	 * Database option data
+	 *
+	 * @since  1.4
+	 * @var    Array
+	 */
+	private $optionData = false;
 
 	/**
 	 * Meta key for view data
@@ -39,7 +57,7 @@ class VAA_View_Admin_As {
 	 * @since  1.3.4
 	 * @var    Boolean
 	 */
-	protected $userMetaKey = 'vaa-view-admin-as';
+	private $userMetaKey = 'vaa-view-admin-as';
 	
 	/**
 	 * Expiration time for view data
@@ -47,7 +65,7 @@ class VAA_View_Admin_As {
 	 * @since  1.3.4
 	 * @var    Integer
 	 */
-	protected $metaExpiration = 86400; // one day: ( 24 * 60 * 60 )
+	private $metaExpiration = 86400; // one day: ( 24 * 60 * 60 )
 
 	/**
 	 * Enable functionalities?
@@ -55,7 +73,15 @@ class VAA_View_Admin_As {
 	 * @since  0.1
 	 * @var    Boolean
 	 */
-	protected $enable = false;
+	private $enable = false;
+
+	/**
+	 * Other VAA modules that are loaded
+	 *
+	 * @since  1.4
+	 * @var    Array
+	 */
+	private $modules = array();
 	
 	/**
 	 * Current user object
@@ -63,7 +89,7 @@ class VAA_View_Admin_As {
 	 * @since  0.1
 	 * @var    Object
 	 */	
-	protected $curUser = false;
+	private $curUser = false;
 	
 	/**
 	 * Current user session
@@ -71,7 +97,7 @@ class VAA_View_Admin_As {
 	 * @since  1.3.4
 	 * @var    String
 	 */	
-	protected $curUserSession = '';
+	private $curUserSession = '';
 	
 	/**
 	 * Selected view mode
@@ -81,7 +107,7 @@ class VAA_View_Admin_As {
 	 * @since  0.1
 	 * @var    Array
 	 */
-	protected $viewAs = false;
+	private $viewAs = false;
 	
 	/**
 	 * Array of available capabilities
@@ -89,7 +115,7 @@ class VAA_View_Admin_As {
 	 * @since  1.3
 	 * @var    Array
 	 */	
-	protected $caps;
+	private $caps;
 	
 	/**
 	 * Array of available roles
@@ -97,7 +123,7 @@ class VAA_View_Admin_As {
 	 * @since  0.1
 	 * @var    Array
 	 */	
-	protected $roles;
+	private $roles;
 	
 	/**
 	 * Array of available user objects
@@ -105,7 +131,7 @@ class VAA_View_Admin_As {
 	 * @since  0.1
 	 * @var    Array
 	 */	
-	protected $users;
+	private $users;
 	
 	/**
 	 * Array of available usernames (key) and display names (value)
@@ -113,7 +139,7 @@ class VAA_View_Admin_As {
 	 * @since  0.1
 	 * @var    Array
 	 */	
-	protected $usernames;
+	private $usernames;
 	
 	/**
 	 * Array of available user ID's (key) and display names (value)
@@ -121,7 +147,7 @@ class VAA_View_Admin_As {
 	 * @since  0.1
 	 * @var    Array
 	 */	
-	protected $userids;
+	private $userids;
 	
 	/**
 	 * The selected user object (if the user view is selected)
@@ -129,7 +155,7 @@ class VAA_View_Admin_As {
 	 * @since  0.1
 	 * @var    Object
 	 */	
-	protected $selectedUser;
+	private $selectedUser;
 	
 	
 	/**
@@ -152,21 +178,29 @@ class VAA_View_Admin_As {
 	 */
 	function init() {
 		
+		// The screen settings module
+		include_once( VIEW_ADMIN_AS_DIR . 'modules/role-defaults.php' );
+		$this->modules['role_defaults'] = new VAA_Role_Defaults();
+			
 		// Get the current user
 		$this->curUser = wp_get_current_user();
 		$this->curUserSession = wp_get_session_token();
+		
+		// Get database settings
+		$this->optionData = get_option( $this->optionKey );
+		$this->maybe_update();
 		
 		// Reset view to default if something goes wrong
 		if ( is_user_logged_in() && isset( $_GET['reset-view'] ) ) {
 			$this->reset_view();
 		}
-		// Clear user metadata
+		// Clear all user views
 		if ( is_user_logged_in() && isset( $_GET['reset-all-views'] ) ) {
-			$this->reset_metadata();
+			$this->reset_all_views();
 		}
 		
 		// When a user logs in or out, reset the view to default
-		add_action( 'wp_login', array( $this, 'cleanup_metadata' ), 10, 2 );
+		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
 		add_action( 'wp_login', array( $this, 'reset_view' ), 10, 2 );
 		add_action( 'wp_logout', array( $this, 'reset_view' ) );
 		
@@ -245,20 +279,25 @@ class VAA_View_Admin_As {
 			// Fix some compatibility issues, more to come!
 			$this->plugin_compatibility();
 			
+			foreach ( $this->modules as $module ) {
+				if ( method_exists( $module, 'vaa_init' ) ) {
+					$module->vaa_init( $this );
+				}
+			}
+			
 		} else if ( is_user_logged_in() && ! current_user_can( 'administrator' ) ) {
 			
 			// Extra security check for non-admins who did something naughty
 			delete_user_meta( get_current_user_id(), 'vaa-view-admin-as' );
 		}
-			
+
 	}
 	
 	/**
 	 * Sort users by role
 	 *
-	 * @param	array	$users
-	 * 
 	 * @since   1.1
+	 * @param	array	$users
 	 * @return	array	$users
 	 */
 	function filter_sort_users_by_role($users) {
@@ -314,9 +353,8 @@ class VAA_View_Admin_As {
 	/**
 	 * Add admin bar menu's
 	 *
-	 * @param	object	$admin_bar
-	 * 
 	 * @since   0.1
+	 * @param	object	$admin_bar
 	 * @return	void
 	 */
 	function add_admin_bar_items( $admin_bar ) {
@@ -342,7 +380,7 @@ class VAA_View_Admin_As {
 		}
 		
 		// Add menu item
-		$admin_bar->add_menu( array(
+		$admin_bar->add_node( array(
 			'id'		=> 'view-as',
 			'parent'	=> 'top-secondary',
 			'title'		=> '<span class="ab-label">' . $topText . '</span><span style="float:right !important; margin-right: 0; margin-left: 6px;" class="ab-icon alignright dashicons ' . $viewAsIcon . '"></span>',
@@ -353,7 +391,7 @@ class VAA_View_Admin_As {
 		) );
 		
 		// Add reset button
-		$admin_bar->add_menu( array(
+		$admin_bar->add_node( array(
 			'id'		=> 'reset',
 			'parent'	=> 'view-as',
 			'title'		=> '<button id="reset-view" class="button button-secondary" name="reset-view">' . __('Default', 'view-admin-as') . '</button>',
@@ -374,7 +412,7 @@ class VAA_View_Admin_As {
 		// Add capabilities group
 		if ( $this->caps && count( $this->caps ) > 0 ) {
 			
-			$admin_bar->add_menu( array(
+			$admin_bar->add_node( array(
 				'id'		=> 'caps',
 				'parent'	=> 'view-as',
 				'title'		=> __('Capabilities', 'view-admin-as'),
@@ -385,7 +423,7 @@ class VAA_View_Admin_As {
 					'class'	=> 'ab-sub-secondary',
 				),
 			) );
-			$admin_bar->add_menu( array(
+			$admin_bar->add_node( array(
 				'id'		=> 'caps-title',
 				'parent'	=> 'caps',
 				'title'		=> '-- ' . __('Capabilities', 'view-admin-as') . ' --',
@@ -399,10 +437,10 @@ class VAA_View_Admin_As {
 			if ( isset( $this->viewAs['caps'] ) ) {
 				$capsQuickselectClass .= ' current';
 			}
-			$admin_bar->add_menu( array(
+			$admin_bar->add_node( array(
 				'id'		=> 'caps-quickselect',
 				'parent'	=> 'caps',
-				'title'		=> __('Select'),
+				'title'		=> __('Select', 'view-admin-as'),
 				'href'		=> false,
 				'group'		=> false,
 				'meta'		=> array(
@@ -411,10 +449,10 @@ class VAA_View_Admin_As {
 			) );
 			
 			// Capabilities submenu
-				$admin_bar->add_menu( array(
+				$admin_bar->add_node( array(
 					'id'		=> 'applycaps',
 					'parent'	=> 'caps-quickselect',
-					'title'		=> '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply') . '</button>
+					'title'		=> '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply', 'view-admin-as') . '</button>
 									<a id="close-caps-popup" class="button vaa-icon button-secondary" name="close-caps-popup"><span class="ab-icon dashicons dashicons-dismiss"></span></a>
 									<a id="open-caps-popup" class="button vaa-icon button-secondary" name="open-caps-popup"><span class="ab-icon dashicons dashicons-plus-alt"></span></a>',
 					'href'		=> false,
@@ -423,10 +461,10 @@ class VAA_View_Admin_As {
 						'class' => 'vaa-button-container',
 					),
 				) );
-				$admin_bar->add_menu( array(
+				$admin_bar->add_node( array(
 					'id'		=> 'filtercaps',
 					'parent'	=> 'caps-quickselect',
-					'title'		=> '<input id="filter-caps" name="vaa-filter" placeholder="' . __('Filter') . '" />',
+					'title'		=> '<input id="filter-caps" name="vaa-filter" placeholder="' . __('Filter', 'view-admin-as') . '" />',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -438,10 +476,10 @@ class VAA_View_Admin_As {
 					$roleSelectOptions .= '<option value="' . $rKey . '" data-caps=\'' . json_encode( $rValue['capabilities'] ) . '\'>= ' . translate_user_role( $rValue['name'] ) . '</option>';					
 					$roleSelectOptions .= '<option value="reversed-' . $rKey . '" data-reverse="1" data-caps=\'' . json_encode( $rValue['capabilities'] ) . '\'>≠ ' . translate_user_role( $rValue['name'] ) . '</option>';					
 				}				
-				$admin_bar->add_menu( array(
+				$admin_bar->add_node( array(
 					'id'		=> 'selectrolecaps',
 					'parent'	=> 'caps-quickselect',
-					'title'		=> '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default') . '</option>' . $roleSelectOptions . '</select>',
+					'title'		=> '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default', 'view-admin-as') . '</option>' . $roleSelectOptions . '</select>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
@@ -449,28 +487,19 @@ class VAA_View_Admin_As {
 						'html'	=> '',
 					),
 				) );
-				$admin_bar->add_menu( array(
+				$admin_bar->add_node( array(
 					'id'		=> 'bulkselectcaps',
 					'parent'	=> 'caps-quickselect',
-					'title'		=> '' . __('All') . ': &nbsp; 
-									<button id="select-all-caps" class="button button-secondary" name="select-all-caps">' . __('Select') . '</button>
-									<button id="deselect-all-caps" class="button button-secondary" name="deselect-all-caps">' . __('Deselect') . '</button>',
+					'title'		=> '' . __('All', 'view-admin-as') . ': &nbsp; 
+									<button id="select-all-caps" class="button button-secondary" name="select-all-caps">' . __('Select', 'view-admin-as') . '</button>
+									<button id="deselect-all-caps" class="button button-secondary" name="deselect-all-caps">' . __('Deselect', 'view-admin-as') . '</button>',
 					'href'		=> false,
 					'group'		=> false,
 					'meta'		=> array(
 						'class' => 'vaa-button-container vaa-clear-float',
 					),
 				) );
-				$admin_bar->add_menu( array(
-					'id'		=> 'caps-quickselect-options',
-					'parent'	=> 'caps-quickselect',
-					'title'		=> '',
-					'href'		=> false,
-					'group'		=> true,
-					'meta'		=> array(
-						'class' => '',
-					),
-				) );
+				$capsQuickselectContent = '';
 				foreach ($this->caps as $capName => $capVal) {
 					$class = 'vaa-cap-item';
 					if ( isset( $this->viewAs['caps'] ) && $this->viewAs['caps'][$capName] != 1 ) {
@@ -478,18 +507,22 @@ class VAA_View_Admin_As {
 					} else {
 						$checked = ' checked="checked"';
 					}
-					$admin_bar->add_menu( array(
-						'id'		=> 'cap-' . $capName,
-						'parent'	=> 'caps-quickselect-options',
-						'title'		=> '<input class="checkbox" value="' . $capName . '" id="vaa_' . $capName . '" name="vaa_' . $capName . '" type="checkbox"' . $checked . '>
-										<label for="vaa_' . $capName . '">' . str_replace( '_', ' ', $capName ) . '</label>',
-						'href'		=> false,
-						'group'		=> false,
-						'meta'		=> array(
-							'class'	=> $class,
-						),
-					) );
+					$capsQuickselectContent .= 
+						'<div class="ab-item '.$class.'">
+							<input class="checkbox" value="' . $capName . '" id="vaa_' . $capName . '" name="vaa_' . $capName . '" type="checkbox"' . $checked . '>
+							<label for="vaa_' . $capName . '">' . str_replace( '_', ' ', $capName ) . '</label>
+						</div>';
 				}
+				$admin_bar->add_node( array(
+					'id'		=> 'caps-quickselect-options',
+					'parent'	=> 'caps-quickselect',
+					'title'		=> $capsQuickselectContent,
+					'href'		=> false,
+					'group'		=> false,
+					'meta'		=> array(
+						'class' => 'ab-vaa-multipleselect auto-height',
+					),
+				) );
 		}
 				
 		// Add roles group
@@ -498,7 +531,7 @@ class VAA_View_Admin_As {
 			/*if ( count( $this->roles ) > 10 ) {
 				$rolesGroup = false;
 			}*/
-			$admin_bar->add_menu( array(
+			$admin_bar->add_node( array(
 				'id'		=> 'roles',
 				'parent'	=> 'view-as',
 				'title'		=> __('Roles', 'view-admin-as'),
@@ -510,7 +543,7 @@ class VAA_View_Admin_As {
 				),
 			) );
 			if ($groupRoles == true) {
-				$admin_bar->add_menu( array(
+				$admin_bar->add_node( array(
 					'id'		=> 'roles-title',
 					'parent'	=> 'roles',
 					'title'		=> '-- ' . __('Roles', 'view-admin-as') . ' --',
@@ -520,6 +553,35 @@ class VAA_View_Admin_As {
 						'class'	=> 'ab-sub-title',
 					),
 				) );
+			}
+			
+			// Custom location for module role_defaults
+			if ( isset( $this->modules['role_defaults'] ) && is_object( $this->modules['role_defaults'] ) ) {
+				$checked = '';
+				if ( $this->modules['role_defaults']->is_enabled() == true ) {
+					$admin_bar->add_node( array(
+						'id'		=> 'role-defaults',
+						'parent'	=> 'roles',
+						'title'		=> 'Role defaults',
+						'title'		=> '' . __('Role defaults', 'view-admin-as') . '',
+						'href'		=> false,
+						'meta'		=> array(
+							'class'	=> 'ab-italic ab-bold',
+						),
+					) );
+				} else {
+					$admin_bar->add_node( array(
+						'id'		=> 'role-defaults-enable',
+						'parent'	=> 'roles',
+						'title'		=> 'Enable role defaults',
+						'title'		=> '<input class="checkbox" value="1" id="vaa_role_defaults_enable" name="vaa_role_defaults_enable" type="checkbox">
+										<label for="vaa_role_defaults_enable">' . __('Enable role defaults', 'view-admin-as') . ' <span class=""></span></label>',
+						'href'		=> false,
+						'meta'		=> array(
+							'class'	=> 'ab-italic',
+						),
+					) );
+				}
 			}
 			
 			// Add the roles
@@ -544,7 +606,7 @@ class VAA_View_Admin_As {
 				if ( isset( $this->viewAs['role'] ) && $this->viewAs['role'] == strtolower( $rValue['name'] ) ) {
 					$class .= ' current';
 				}
-				$admin_bar->add_menu( array(
+				$admin_bar->add_node( array(
 					'id'		=> 'role-' . $rKey,
 					'parent'	=> 'roles',
 					'title'		=> $title,
@@ -562,7 +624,7 @@ class VAA_View_Admin_As {
 		if ( $this->users && count( $this->users ) > 0 ) {
 			$groupUsers = true;
 			//if ( count( $this->users ) > 10 ) {$groupUsers = false;}
-			$admin_bar->add_menu( array(
+			$admin_bar->add_node( array(
 				'id'		=> 'users',
 				'parent'	=> 'view-as',
 				'title'		=> __('Users', 'view-admin-as'),
@@ -573,7 +635,7 @@ class VAA_View_Admin_As {
 					'class'	=> 'ab-sub-secondary',
 				),
 			) );
-			$admin_bar->add_menu( array(
+			$admin_bar->add_node( array(
 				'id'		=> 'users-title',
 				'parent'	=> 'users',
 				'title'		=> '-- ' . __('Users', 'view-admin-as') . ' --',
@@ -584,7 +646,7 @@ class VAA_View_Admin_As {
 				),
 			) );
 			if ( $searchUsers == true ) {
-				$admin_bar->add_menu( array(
+				$admin_bar->add_node( array(
 					'id'		=> 'searchuser',
 					'parent'	=> 'users',
 					'title'		=> '<input id="search" name="vaa-search" placeholder="' . __('Search') . ' (' . strtolower( __('Username') ) . ')" />',
@@ -611,7 +673,7 @@ class VAA_View_Admin_As {
 					foreach ( $rValue->roles as $role ) {
 						$curRole = $role;
 						$parent = 'role-'.$curRole;
-						$admin_bar->add_menu( array(
+						$admin_bar->add_node( array(
 							'id'		=> 'user-' . $rValue->data->ID . '-' . $curRole,
 							'parent'	=> $parent,
 							'title'		=> $title,
@@ -629,7 +691,7 @@ class VAA_View_Admin_As {
 						$userRoles[] = translate_user_role( $this->roles[$role]['name'] );
 					}
 					$title = $title.' &nbsp; <span class="user-role">(' . implode( ', ', $userRoles ) . ')</span>';
-					$admin_bar->add_menu( array(
+					$admin_bar->add_node( array(
 						'id'		=> 'user-' . $rValue->data->ID,
 						'parent'	=> $parent,
 						'title'		=> $title,
@@ -643,6 +705,12 @@ class VAA_View_Admin_As {
 				}
 			}
 		}
+		
+		foreach ( $this->modules as $module ) {
+			if ( method_exists( $module, 'add_admin_bar_items' ) ) {
+				$module->add_admin_bar_items( $admin_bar );
+			}
+		}
 	}
 	
 	/**
@@ -652,13 +720,20 @@ class VAA_View_Admin_As {
 	 * Store format: array( VIEW_TYPE => NAME );
 	 *
 	 * @since   0.1
-	 * @return	String
+	 * @return	void
 	 */
 	function ajax_update_view_as() {
 		global $wpdb;
 		
+		if ( ! defined('DOING_AJAX') && ! DOING_AJAX ) {
+			return false;
+		}
+		
 		$success = false;
 		$allowedKeys = array('reset', 'caps', 'role', 'user');
+		foreach ( $this->modules as $key => $val ) {
+			$allowedKeys[] = $key;
+		}
 		
 		$view_as = $_POST['view_as'];
 
@@ -717,6 +792,19 @@ class VAA_View_Admin_As {
 			
 		} else if ( isset( $view_as['reset'] ) ) {
 			$success = $this->reset_view();
+		} else {
+			// Maybe a module?
+			foreach ( $view_as as $key => $data ) {
+				if ( array_key_exists( $key, $this->modules ) ) {
+					if ( method_exists( $this->modules[ $key ], 'ajax_handler' ) ) {
+						$success = $this->modules[ $key ]->ajax_handler( $data );
+						if ( is_string( $success ) && ! empty( $success ) ) {
+							wp_send_json_error( $success );
+						}
+					}
+				}
+				break; // Only the first key is actually used
+			}
 		}
 		
 		if ( $success == true ) {
@@ -726,20 +814,6 @@ class VAA_View_Admin_As {
 		}
 		
 		wp_die(); // Just to make sure it's actually dead..
-	}
-	
-	/**
-	 * Add nessesary scripts and styles
-	 *
-	 * @since   0.1
-	 * @return	void
-	 */
-	function add_styles_scripts() {
-		if ( is_admin_bar_showing() ) {
-			wp_enqueue_style( 'vaa_view_admin_as_style', plugin_dir_url( __FILE__ ) . 'style.css', array(), $this->version );
-			wp_enqueue_script( 'vaa_view_admin_as_script', plugin_dir_url( __FILE__ ) . 'script.js', array( 'jquery' ), $this->version );
-			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'siteurl' => get_site_url(), '__no_users_found' => __('No users found.') ) );
-		}
 	}
 
 	/**
@@ -763,7 +837,7 @@ class VAA_View_Admin_As {
 	}
 	
 	/**
-	 * Get current view for this session
+	 * Get current view for the current session
 	 *
 	 * @since   1.3.4
 	 * @return	Boolean
@@ -777,11 +851,10 @@ class VAA_View_Admin_As {
 	}
 	
 	/**
-	 * Update view for this session
-	 *
-	 * @param	array	$data
+	 * Update view for the current session
 	 *
 	 * @since   1.3.4
+	 * @param	array	$data
 	 * @return	Boolean
 	 */
 	function update_view( $data = false ) {
@@ -804,10 +877,9 @@ class VAA_View_Admin_As {
 	 * Reset view to default
 	 * This function is also attached to the wp_login and wp_logout hook
 	 *
+	 * @since   0.1
 	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
 	 * @param	object	$user   		User object provided by the wp_login hook
-	 *
-	 * @since   0.1
 	 * @return	Boolean
 	 */
 	function reset_view( $user_login = false, $user = false ) {
@@ -835,9 +907,11 @@ class VAA_View_Admin_As {
 	 * This function is also attached to the wp_login hook
 	 *
 	 * @since	1.3.4
+	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
+	 * @param	object	$user   		User object provided by the wp_login hook
 	 * @return	Boolean
 	 */
-	function cleanup_metadata( $user_login = false, $user = false ) {
+	function cleanup_views( $user_login = false, $user = false ) {
 		
 		// function is not triggered by the wp_login action hook
 		if ( $user == false ) {
@@ -865,13 +939,12 @@ class VAA_View_Admin_As {
 	/**
 	 * Delete all View Admin As metadata for this user
 	 *
+	 * @since   1.3.4
 	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
 	 * @param	object	$user   		User object provided by the wp_login hook
-	 *
-	 * @since   1.3.4
 	 * @return	Boolean
 	 */
-	function reset_metadata( $user_login = false, $user = false ) {
+	function reset_all_views( $user_login = false, $user = false ) {
 		
 		// function is not triggered by the wp_login action hook
 		if ( $user == false ) {
@@ -908,11 +981,10 @@ class VAA_View_Admin_As {
 	/**
 	 * Fix compatibility issues Pods Framework 2.x
 	 *
+	 * @since   1.0.1
 	 * @param	boolean		$bool 			Boolean provided by the pods_is_admin hook (not used)
 	 * @param	array		$cap 			String or Array provided by the pods_is_admin hook
 	 * @param	string		$capability   	String provided by the pods_is_admin hook
-	 *
-	 * @since   1.0.1
 	 * @return	boolean
 	 */
 	function pods_caps_check( $bool, $cap, $capability ) {
@@ -933,6 +1005,20 @@ class VAA_View_Admin_As {
 	}
 	
 	/**
+	 * Add nessesary scripts and styles
+	 *
+	 * @since   0.1
+	 * @return	void
+	 */
+	function add_styles_scripts() {
+		if ( is_admin_bar_showing() ) {
+			wp_enqueue_style( 'vaa_view_admin_as_style', plugin_dir_url( __FILE__ ) . 'style.css', array(), $this->version );
+			wp_enqueue_script( 'vaa_view_admin_as_script', plugin_dir_url( __FILE__ ) . 'script.js', array( 'jquery' ), $this->version );
+			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'siteurl' => get_site_url(), '__no_users_found' => __('No users found.') ) );
+		}
+	}
+	
+	/**
 	 * Load plugin textdomain.
 	 *
 	 * @since 1.2
@@ -940,6 +1026,58 @@ class VAA_View_Admin_As {
 	 */
 	function load_textdomain() {
 		load_plugin_textdomain( 'view-admin-as', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
+		
+		// For frontend translation of roles > not working
+		/*if ( ! is_admin() ) {
+			load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
+		}*/
 	}
+	
+	/**
+	 * Update settings
+	 *
+	 * @since 1.4
+	 * @return	void
+	 */
+	function update() {
+		$defaults = array(
+			'db_version' => $this->dbVersion,
+		);
+		
+		if ( $this->optionData != false ) {
+			$this->optionData = wp_parse_args( $this->optionData, $defaults );
+		} else {
+			$this->optionData = $defaults;
+		}
+		
+		update_option( $this->optionKey, $this->optionData );
+		
+		foreach ( $this->modules as $module ) {
+			if ( method_exists( $module, 'update' ) ) {
+				$module->update();
+			}
+		}
+	}
+	
+	/**
+	 * Check the correct DB version in the DB
+	 *
+	 * @since 1.4
+	 * @return	void
+	 */
+	function maybe_update() {
+		if ( $this->optionData == false 
+			|| ! isset( $this->optionData['db_version'] ) 
+			|| $this->optionData['db_version'] < $this->dbVersion 
+		) {
+			$this->update();
+		}
+	}
+	
+	function get_curUser() { return $this->curUser; }
+	function get_view_as() { return $this->viewAs; }
+	function get_roles() { return $this->roles; }
+	function get_users() { return $this->users; }
+	function get_selectedUser() { return $this->selectedUser; }
 	
 } // end class
