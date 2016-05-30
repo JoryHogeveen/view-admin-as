@@ -83,7 +83,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		// Load data
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
 
-		if ( true == $this->get_optionData('enable') ) {
+		if ( true == $this->get_optionData('enable') && current_user_can('view_admin_as_role_defaults') ) {
 			$this->enable = true;
 		}
 		
