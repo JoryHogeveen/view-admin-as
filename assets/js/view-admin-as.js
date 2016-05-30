@@ -60,7 +60,9 @@
 		// Process reset
 		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function(e) {
 			e.preventDefault();
-			if ( ! $(this).parent().hasClass('not-a-view') ) {
+			if ( $('button', this).attr('name') == 'reload' ) {
+				window.location.reload();
+			} else {
 				viewAs = { reset : true };
 				VAA_View_Admin_As.ajax( viewAs, true );
 				return false;

@@ -37,6 +37,8 @@ Through the new "Role defaults" module you can set default screen settings for r
 
 = Compatibility =
 
+WordPress 3.5+ and PHP 5.3+
+
 I think this plugin will work with most other plugins.
 
 Fixed compatibility issues:
@@ -172,6 +174,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Performance: Less queries for user validation
 *	Fix: (Module Role Defaults) Problem solved with unsetting meta keys
 *	Fix: Problem solved with anchor tags preventing javascript from reloading
+*	Fix: Problem solved with reset button on single switch mode
 *	UI: Move "Role Defaults" to the top
 *	UI: Remove the reset button when no view is selected
 *	UI: Added some of those pretty dashicons

@@ -966,11 +966,12 @@ final class VAA_View_Admin_As
 	public function get_view() {
 		if ( ( ! defined('DOING_AJAX') || ! DOING_AJAX )
 			&& isset( $_POST['view_admin_as'] )
-			&& $this->get_settings('view_mode') == 'single'
+			&& $this->get_userSettings('view_mode') == 'single'
 			&& isset( $this->get_curUser()->ID )
 			&& isset( $_POST['_vaa_nonce'] )
 			&& wp_verify_nonce( $_POST['_vaa_nonce'], $this->get_nonce() )
 		) {
+			print_r('test');
 			return $this->validate_view_as_data( json_decode( stripcslashes( $_POST['view_admin_as'] ), true ) );
 		}
 		if ( $this->get_userSettings('view_mode') == 'browse' ) {

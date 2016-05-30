@@ -152,15 +152,21 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		
 		// Add reset button
 		if ( $this->get_viewAs() ) {
+			$rel = 'reset';
+			$name = 'reset-view';
+			if ( $this->get_userSettings('view_mode') == 'single' ) {
+				$rel = 'reload';
+				$name = 'reload';
+			}
 			$admin_bar->add_node( array(
 				'id'		=> 'reset',
 				'parent'	=> 'view-as',
-				'title'		=> '<button id="reset-view" class="button button-secondary" name="reset-view">' . __('Reset to default', 'view-admin-as') . '</button>', // __('Default', 'view-admin-as')
+				'title'		=> '<button id="reset-view" class="button button-secondary" name="' . $name . '">' . __('Reset to default', 'view-admin-as') . '</button>', // __('Default', 'view-admin-as')
 				'href'		=> false,
 				'meta'		=> array(
 					'title'		=> esc_attr__('Reset to default', 'view-admin-as'),
 					'class' 	=> 'vaa-reset-item',
-					'rel'		=> 'reset',
+					'rel'		=> $rel,
 				),
 			) );
 		}
