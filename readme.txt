@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults
 Requires at least: 3.5
 Tested up to: 4.5
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 
 View the WordPress admin as a different role, switch between users, temporarily change your capabilities, set default screen settings for roles.
 
