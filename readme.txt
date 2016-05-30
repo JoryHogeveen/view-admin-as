@@ -37,7 +37,7 @@ Through the new "Role defaults" module you can set default screen settings for r
 
 = Compatibility =
 
-I think this plugin will work with most other plugins. Below are some compatibility fixes.
+I think this plugin will work with most other plugins.
 
 Fixed compatibility issues:
 
@@ -85,7 +85,8 @@ Or search for "View Admin As" via your plugins menu.
 
 = Recommended Requirements =
 
-* WordPress 4.0 or greater
+* WordPress 4.0 or greater (Though I always recommend to update to the latest version!)
+* PHP version 5.6 or greater
 
 = Minimum Requirements =
 
@@ -249,7 +250,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 = 1.2.2 =
 
 *	Added support for users with multiple roles
-*	Enabled switching to admin users for multisites (switching to super admins is allways disabled!)
+*	Enabled switching to admin users for multisites (switching to super admins is always disabled!)
 
 = 1.2.1 =
 
