@@ -116,19 +116,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		}
 		if ( $this->get_viewAs('role') ) {
 			$icon = 'dashicons-visibility';
-			// TODO: (PHP 5.4+) Use getter get_roles( $this->get_viewAs('role') )['name']
-			$role = $this->get_roles( $this->get_viewAs('role') );
-			$title = __('Viewing as role', 'view-admin-as') . ': ' . translate_user_role( $role->name );
+			$title = __('Viewing as role', 'view-admin-as') . ': ' . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
 		}
 		if ( $this->get_viewAs('user') ) {
 			$icon = 'dashicons-visibility';
 			$selected_user_roles = array();
 			foreach ( $this->get_selectedUser()->roles as $role ) {
-				// TODO: (PHP 5.4+) Use getter get_roles( $role )['name']
-				$role = $this->get_roles( $role );
-				$selected_user_roles[] = translate_user_role( $role->name );
+				$selected_user_roles[] = translate_user_role( $this->get_roles( $role )->name );
 			}
-			$title = __('Viewing as user', 'view-admin-as') . ': ' . $this->get_selectedUser()->data->display_name . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';//$this->usernames[$this->viewAs['user']];
+			$title = __('Viewing as user', 'view-admin-as') . ': ' . $this->get_selectedUser()->data->display_name . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 		}
 
 		$view_as_location = 'top-secondary';
@@ -228,6 +224,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 
+		/**
+		 * @since 	1.5.2
+		 */
 		if ( true !== $this->groupUserRoles || 15 >= ( count( $this->get_users() ) + count( $this->get_roles() ) ) ) { 
 			$admin_bar->add_node( array(
 				'id'		=> 'settings-force-group-users',
@@ -513,7 +512,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				}
 				$parent = 'users';
 				
-				if ( true === $this->groupUserRoles ) { // Users grouped under roles
+				if ( true === $this->groupUserRoles ) { 
+					// Users grouped under roles
 					foreach ( $user->roles as $role ) {
 						$cur_role = $role;
 						$parent = 'role-' . $cur_role;
@@ -529,7 +529,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 							),
 						) );
 					}
-				} else { // Users displayed as normal
+				} else { 
+					// Users displayed as normal
 					$all_roles = $this->get_roles();
 					$user_roles = array();
 					// Add the roles of this user in the name

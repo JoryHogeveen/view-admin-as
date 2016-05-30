@@ -338,11 +338,14 @@ final class VAA_View_Admin_As
 				}
 			}
 
-			// Check if current user is an admin or (in a network) super admin 
-			//   If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
-			//   Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
-			// Disable plugin functions for nedwork admin pages
-			// Make sure we have a session for the current user
+			/**
+			 * - Check if current user is an admin or (in a network) super admin 
+			 * - Disable plugin functions for nedwork admin pages
+			 * 
+			 * @since 	1.4 	Make sure we have a session for the current user
+			 * @since 	1.5.1 	If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
+			 *   				Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
+			 */
 			if (   ( is_super_admin( $this->get_curUser()->ID ) 
 				   || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
 				&& ! is_network_admin()
@@ -392,7 +395,7 @@ final class VAA_View_Admin_As
 					add_filter( 'show_admin_bar', '__return_true', 999999999 );
 					
 					// Change current user object so changes can be made on various screen settings
-					// wp_set_current_user returns the new user object
+					// wp_set_current_user() returns the new user object
 					if ( $this->get_viewAs('user') ) {
 						$this->set_selectedUser( wp_set_current_user( $this->get_viewAs('user') ) );
 					}
@@ -578,8 +581,8 @@ final class VAA_View_Admin_As
 			'orderby' => 'display_name',
 			'exclude' => $this->get_curUser()->ID, // Exclude the current user
 		);
+		// Do not get regular admins for normal installs (WP 4.4+)
 		if ( ! is_multisite() && ! $is_superior_admin ) {
-			// Do not get regular admins for normal installs (WP 4.4+)
 			$user_args['role__not_in'] = 'administrator';
 		}
 		// Sort users by role and filter them on available roles
@@ -589,17 +592,24 @@ final class VAA_View_Admin_As
 		$usernames = array();
 		// Loop though all users
 		foreach ( $users as $user_key => $user ) {
-			// && ! $this->get_optionData('enable-super-administrator')
+			// TODO: $this->get_optionData('enable-super-administrator')
 
+			// If the current user is not a superior admin, run the user filters
 			if ( true !== $is_superior_admin ) {
+
+				/**
+				 * Implement checks instead of is_super_admin() because it adds a lot unnecessary queries
+				 * 
+				 * @since 	1.5.2
+				 * @See 	is_super_admin() at WP docs
+				 */
 				//if ( is_super_admin( $user->ID ) ) {
-				// See function is_super_admin()
 				if ( is_multisite() && in_array( $user->user_login, (array) get_super_admins() ) ) {
 					// Remove super admins for multisites
 					unset( $users[ $user_key ] );
 					continue;
 				} elseif ( ! is_multisite() && $user->has_cap('administrator') ) {
-					// Remove super admins for multisites
+					// Remove regular admins for normal installs
 					unset( $users[ $user_key ] );
 					continue;	
 				} elseif ( ! $is_super_admin && $user->has_cap('view_admin_as') ) {

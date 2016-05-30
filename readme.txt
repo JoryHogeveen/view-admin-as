@@ -128,6 +128,7 @@ Could it be that this user is an equal user to your's? Example: you are both Adm
 If so, these are filtered. Viewing Admins can only be done when you are a Super Admin within a network installation.
 
 Why? To protect your fellow admin! You have no power over equal users..
+*Unless you are a superior admin... [Read more](https://viewadminas.wordpress.com/documentation/actions-filters/#view_admin_as_superior_admins "Read more")*
 
 If this is not the case, please make sure you aren't overlooking something.
 If that is not the case, please contact me! See item 7.
@@ -179,6 +180,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	UI: Remove the reset button when no view is selected
 *	UI: Added some of those pretty dashicons
 *	UI: Allow titles to toggle content
+*	Resource: Started with [viewadminas.wordpress.com](https://viewadminas.wordpress.com/ "viewadminas.wordpress.com")
 
 = 1.5.1 =
 

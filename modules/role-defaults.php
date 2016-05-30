@@ -108,7 +108,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 */
 	private function init() {
 
-		/*
+		/**
 		 * Replace %% with the current table prefix and add it to the array of forbidden meta keys
 		 * @since 1.5.2
 		 */
@@ -417,6 +417,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.4
 	 * @access 	public
+	 * @see 	init_store_role_defaults()
 	 * @param	null	$null
 	 * @param	int		$object_id
 	 * @param	string	$meta_key
@@ -443,6 +444,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.4
 	 * @access 	public
+	 * @see 	init_store_role_defaults()
 	 * @param	null	$null
 	 * @param	int		$object_id
 	 * @param	string	$meta_key
@@ -680,7 +682,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add admin bar menu's
 	 * 
-	 * Used by hook: vaa_admin_bar_roles_before
+	 * @since 	1.5.2
+	 * Used by hook: vaa_admin_bar_settings_after
+	 * Previous hook: vaa_admin_bar_roles_before
 	 *
 	 * @since   1.4
 	 * @access 	public
@@ -726,7 +730,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 		
-		/*
+		/**
 		 * Bulk actions 
 		 */
 		
