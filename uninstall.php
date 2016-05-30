@@ -1,15 +1,24 @@
 <?php
+/**
+ * View Admin As - Uninstaller
+ *
+ * Remove plugin data from the database
+ * 
+ * @author Jory Hogeveen <info@keraweb.nl>
+ * @package view-admin-as
+ * @version 1.4.2
+ */
 
 //if uninstall not called from WordPress exit
-if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) 
+if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit();
-
+}
 
 if ( ! is_multisite() ) {
 	vaa_uninstall();
 } else {
     $blogs = wp_get_sites(); // Sadly does not work for large networks -> return false
-	if ($blogs) {
+	if ( $blogs ) {
 		foreach ( $blogs as $blog ) {
 			switch_to_blog( intval( $blog['blog_id'] ) );
 			vaa_uninstall();
@@ -27,7 +36,9 @@ function vaa_uninstall() {
 	}
 	
 	// Delete all View Admin As user metadata
-	$user_meta_keys = array( 'view-admin-as', 'vaa-view-admin-as' );
+	$user_meta_keys = array( 'vaa-view-admin-as' );
+	// Older (not used anymore) keys
+	$user_meta_keys[] = 'view-admin-as';
 	$users = get_users();
 	foreach ( $users as $user ) {
 		foreach ( $user_meta_keys as $user_meta_key ) {
