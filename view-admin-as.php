@@ -592,7 +592,6 @@ final class VAA_View_Admin_As
 		$usernames = array();
 		// Loop though all users
 		foreach ( $users as $user_key => $user ) {
-			// TODO: $this->get_optionData('enable-super-administrator')
 
 			// If the current user is not a superior admin, run the user filters
 			if ( true !== $is_superior_admin ) {
