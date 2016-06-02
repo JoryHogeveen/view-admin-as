@@ -3,7 +3,7 @@
  * Plugin Name: View Admin As
  * Description: View the WordPress admin as a specific role, switch between users and temporarily change your capabilities.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.5.2
+ * Version:     1.5.3-dev
  * Author:      Jory Hogeveen
  * Author URI:  https://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -307,6 +307,8 @@ final class VAA_View_Admin_As
 	 */
 	public function init() {
 		
+		$this->load_textdomain();
+		
 		// When a user logs in or out, reset the view to default
 		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
 		add_action( 'wp_login', array( $this, 'reset_view' ), 10, 2 );
@@ -376,7 +378,6 @@ final class VAA_View_Admin_As
 			if ( $this->is_enabled() ) {
 				
 				$this->load_ui();
-				$this->load_textdomain();
 				
 				$this->store_caps();
 				$this->store_roles();
@@ -538,6 +539,7 @@ final class VAA_View_Admin_As
 		global $wp_roles;
 		// Store available roles
 		$roles = $wp_roles->role_objects; // role_objects for objects, roles for arrays
+		$role_names = $wp_roles->role_names;
 		$roles = apply_filters( 'editable_roles', $roles );
 		if ( ! is_super_admin( $this->get_curUser()->ID ) ) {
 			// The current user is not a super admin (or regular admin in single installations)
@@ -548,6 +550,12 @@ final class VAA_View_Admin_As
 				if ( is_array( $role->capabilities ) && array_key_exists( 'view_admin_as', $role->capabilities ) ) {
 					unset( $roles[ $role_key ] );
 				}
+			}
+		}
+		// @since 	1.5.3 	Merge role names with the role objects
+		foreach ( $roles as $role_key => $role ) {
+			if ( isset( $role_names[ $role_key ] ) ) {
+				$roles[ $role_key ]->name = $role_names[ $role_key ];
 			}
 		}
 
