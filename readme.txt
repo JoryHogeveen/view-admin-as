@@ -169,6 +169,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 = 1.5.3 =
 
 *	Fix: minor bug with displaying role names
+*	Fix: minor bug with displaying role defaults menu item
 
 = 1.5.2 =
 
