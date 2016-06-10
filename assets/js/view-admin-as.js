@@ -4,7 +4,7 @@
  * 
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.2
+ * @version 1.5.2.1
  */
 
 ;(function($) {
