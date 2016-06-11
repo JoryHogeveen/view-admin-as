@@ -3,7 +3,7 @@
  * Plugin Name: View Admin As
  * Description: View the WordPress admin as a specific role, switch between users and temporarily change your capabilities.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.5.2.1
+ * Version:     1.5.x
  * Author:      Jory Hogeveen
  * Author URI:  https://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -47,8 +47,8 @@ final class VAA_View_Admin_As
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since	1.4.1
-	 * @var		VAA_View_Admin_As
+	 * @since  1.4.1
+	 * @var    VAA_View_Admin_As
 	 */
 	private static $_instance = null;
 	
@@ -106,6 +106,7 @@ final class VAA_View_Admin_As
 	 * Array of default settings
 	 *
 	 * @since  1.5
+	 * @since  1.5.2  added force_group_users
 	 * @var    array
 	 */
 	private $defaultUserSettings = array(
@@ -118,6 +119,7 @@ final class VAA_View_Admin_As
 	 * Array of allowed settings
 	 *
 	 * @since  1.5
+	 * @since  1.5.2  added force_group_users
 	 * @var    array
 	 */
 	private $allowedUserSettings = array(
@@ -150,7 +152,6 @@ final class VAA_View_Admin_As
 	 *
 	 * @since  1.3.4
 	 * @var    int
- 
 	 */
 	private $metaExpiration = 86400; // one day: ( 24 * 60 * 60 )
 	
@@ -273,8 +274,12 @@ final class VAA_View_Admin_As
 	 * Private to make sure it isn't declared elsewhere
 	 *
 	 * @since   0.1
-	 * @access 	private
-	 * @return	void
+	 * @since   1.3.3   changes init hook to plugins_loaded for theme compatibility
+	 * @since   1.4.1   creates instance
+	 * @since   1.5     make private
+	 * @since   1.5.1   added notice on class name conflict + validate versions
+	 * @access  private
+	 * @return  void
 	 */
 	private function __construct() {
 		self::$_instance = $this;
@@ -283,18 +288,21 @@ final class VAA_View_Admin_As
 		$this->validate_versions();
 
 		if ( ! class_exists( 'VAA_View_Admin_As_Class_Base' ) ) {
+
 			// Include the class base file
 			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
-
 			// Lets start!
 			add_action( 'plugins_loaded', array( $this, 'init' ) );
+
 		} else {
+
 			$this->add_notice('class-error-base', array(
 				'type' => 'notice-error',
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> ' 
 					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as') 
 					. ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Class_Base' ) . ')</code>',
 			) );
+
 		}
 	}
 	
@@ -302,8 +310,8 @@ final class VAA_View_Admin_As
 	 * Init function/action to check current user, load nessesary data and register all used hooks
 	 *
 	 * @since   0.1
-	 * @access 	public
-	 * @return	void
+	 * @access  public
+	 * @return  void
 	 */
 	public function init() {
 		
@@ -339,12 +347,13 @@ final class VAA_View_Admin_As
 			}
 
 			/**
-			 * - Check if current user is an admin or (in a network) super admin 
-			 * - Disable plugin functions for nedwork admin pages
+			 * Validate if the current user has access to the functionality
 			 * 
-			 * @since 	1.4 	Make sure we have a session for the current user
-			 * @since 	1.5.1 	If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
-			 *   				Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
+			 * @since   0.1     Check if the current user had administrator rights (is_super_admin)
+			 *                  Disable plugin functions for nedwork admin pages
+			 * @since   1.4     Make sure we have a session for the current user
+			 * @since   1.5.1   If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
+			 *                  Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
 			 */
 			if (   ( is_super_admin( $this->get_curUser()->ID ) 
 				   || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
@@ -419,7 +428,11 @@ final class VAA_View_Admin_As
 				// Fix some compatibility issues, more to come!
 				$this->third_party_compatibility();
 
-				// Init is finished. Hook is used for other classes related to View Admin As
+				/**
+				 * Init is finished. Hook is used for other classes related to View Admin As
+				 * @since 	1.5
+				 * @param 	object 	$this 	VAA_View_Admin_As
+				 */
 				do_action( 'vaa_view_admin_as_init', $this );
 				
 			} else {
@@ -434,8 +447,9 @@ final class VAA_View_Admin_As
 	 * Load the user interface
 	 *
 	 * @since   1.5
-	 * @access 	private
-	 * @return	void
+	 * @since   1.5.1 	added notice on class name conflict
+	 * @access  private
+	 * @return  void
 	 */
 	private function load_ui() {
 		// The admin bar ui
@@ -456,8 +470,9 @@ final class VAA_View_Admin_As
 	 * Load the modules
 	 *
 	 * @since   1.5
-	 * @access 	private
-	 * @return	void
+	 * @since   1.5.1 	added notice on class name conflict
+	 * @access  private
+	 * @return  void
 	 */
 	private function load_modules() {
 		// The role defaults module (screen settings)
@@ -478,8 +493,8 @@ final class VAA_View_Admin_As
 	 * Store available capabilities
 	 *
 	 * @since   1.4.1
-	 * @access 	public
-	 * @return	void
+	 * @access  public
+	 * @return  void
 	 */
 	public function store_caps() {
 		
@@ -501,7 +516,11 @@ final class VAA_View_Admin_As
 				}
 			}
 			
-			// Add compatibility for other cap managers, see
+			/**
+			 * Add compatibility for other cap managers
+			 * @see 	third_party_compatibility()
+			 * @param 	array 	$role_caps 	All capabilities found in the existing roles
+			 */
 			$role_caps = apply_filters( 'view_admin_as_get_capabilities', $role_caps );
 			
 			$role_caps = array_unique( $role_caps );
@@ -530,8 +549,9 @@ final class VAA_View_Admin_As
 	 * Store available roles
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @return	void
+	 * @since   1.5.2 	Get role objects instead of arrays
+	 * @access  public
+	 * @return  void
 	 */
 	public function store_roles() {
 		
@@ -551,7 +571,7 @@ final class VAA_View_Admin_As
 				}
 			}
 		}
-		// @since 	1.5.3 	Merge role names with the role objects
+		// @since 	1.5.2.1 	Merge role names with the role objects
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $role_names[ $role_key ] ) ) {
 				$roles[ $role_key ]->name = $role_names[ $role_key ];
@@ -565,17 +585,20 @@ final class VAA_View_Admin_As
 	 * Store available users
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @return	void
+	 * @access  public
+	 * @return  void
 	 */
 	public function store_users() {
 		
-		/*
-		 * @since 1.5.2
+		/**
 		 * Grant admins the capability to view other admins. There is no UI for this!
+		 * 
+		 * @since 1.5.2
+		 * @param 	array
+		 * @return 	array 	requires a returned array of user ID's
 		 */
 		$superior_admins = array_filter( 
-			(array) apply_filters( 'view_admin_as_superior_admins', false ), 
+			(array) apply_filters( 'view_admin_as_superior_admins', array() ), 
 			'is_numeric'  // Only allow numeric values (user id's)
 		);
 
@@ -586,7 +609,8 @@ final class VAA_View_Admin_As
 
 		$user_args = array(
 			'orderby' => 'display_name',
-			'exclude' => $this->get_curUser()->ID, // Exclude the current user
+			// @since  1.5.2  Exclude the current user
+			'exclude' => $this->get_curUser()->ID,
 		);
 		// Do not get regular admins for normal installs (WP 4.4+)
 		if ( ! is_multisite() && ! $is_superior_admin ) {
@@ -607,7 +631,8 @@ final class VAA_View_Admin_As
 				 * Implement checks instead of is_super_admin() because it adds a lot unnecessary queries
 				 * 
 				 * @since 	1.5.2
-				 * @See 	is_super_admin() at WP docs
+				 * @See 	is_super_admin()
+				 * @link 	https://developer.wordpress.org/reference/functions/is_super_admin/
 				 */
 				//if ( is_super_admin( $user->ID ) ) {
 				if ( is_multisite() && in_array( $user->user_login, (array) get_super_admins() ) ) {
@@ -639,9 +664,12 @@ final class VAA_View_Admin_As
 	 * Sort users by role
 	 *
 	 * @since   1.1
-	 * @access 	public
-	 * @param	array	$users
-	 * @return	array	$users
+	 * @access  public
+	 * 
+	 * @see     store_users()
+	 * 
+	 * @param   array   $users
+	 * @return  array   $users
 	 */
 	public function filter_sort_users_by_role( $users ) {
 		if ( ! $this->get_roles() ) {
@@ -667,19 +695,23 @@ final class VAA_View_Admin_As
 	 * If the capability isn't in the chosen view, then make the value for this capability empty and add "do_not_allow"
 	 *
 	 * @since   0.1
-	 * @access 	public
-	 * @param 	array 	$caps 		The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
-	 * @param 	string 	$cap 		The capability that was requested
-	 * @param 	int 	$user_id 	The ID of the user (not used)
-	 * @param 	array 	$args 		Adds the context to the cap. Typically the object ID
-	 * @return	array	$caps
+	 * @since   1.5     Changed function name to map_meta_cap (was change_caps)
+	 * @access  public
+	 * 
+	 * @param   array   $caps       The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
+	 * @param   string  $cap        The capability that was requested
+	 * @param   int     $user_id    The ID of the user (not used)
+	 * @param   array   $args       Adds the context to the cap. Typically the object ID
+	 * @return  array   $caps
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
 		$filter_caps = false;
 		if ( $this->get_viewAs('role') && $this->get_roles() ) {
+			// Role view
 			$filter_caps = $this->get_roles( $this->get_viewAs('role') )->capabilities;
 		} elseif ( $this->get_viewAs('caps') ) {
+			// Caps view
 			$filter_caps = $this->get_viewAs('caps');
 		}
 		
@@ -699,13 +731,17 @@ final class VAA_View_Admin_As
 		
 	/**
 	 * AJAX handler
-	 * Gets the AJAX input. If it is valid, then store it in the current user metadata
+	 * Gets the AJAX input. If it is valid: store it in the current user metadata
 	 *
 	 * Store format: array( VIEW_NAME => VIEW_DATA );
 	 *
 	 * @since   0.1
-	 * @access 	public
-	 * @return	void
+	 * @since   1.3     Added caps key
+	 * @since   1.4     Added module keys
+	 * @since   1.5     Validate a nonce
+	 *                  Added global and user setting keys
+	 * @access  public
+	 * @return  void
 	 */
 	public function ajax_view_admin_as() {
 		
@@ -801,9 +837,10 @@ final class VAA_View_Admin_As
 	 * Validate data before changing the view
 	 *
 	 * @since   1.5
-	 * @access 	private
-	 * @param 	array		$view_as
-	 * @return	array|bool	$view_as
+	 * @access  private
+	 * 
+	 * @param   array       $view_as 
+	 * @return  array|bool  $view_as
 	 */
 	private function validate_view_as_data( $view_as ) {
 
@@ -877,13 +914,15 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Validate setting data
+	 * Validate setting data based on allowed settings
+	 * Also merges with the default settings
 	 *
 	 * @since   1.5
-	 * @access 	private
-	 * @param 	array	$settings
-	 * @param	string 	$type 		global / user
-	 * @return	array	$settings
+	 * @access  private
+	 * 
+	 * @param   array   $settings
+	 * @param   string  $type      global / user
+	 * @return  array   $settings
 	 */
 	private function validate_settings( $settings, $type ) {
 		if ( $type == 'global' ) {
@@ -909,13 +948,15 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Store settings
+	 * Store settings based on allowed settings
+	 * Also merges with the default settings
 	 *
 	 * @since   1.5
-	 * @access 	private
-	 * @param 	array 	$settings
-	 * @param	string 	$type 		global / user
-	 * @return	bool
+	 * @access  private
+	 * 
+	 * @param   array   $settings
+	 * @param   string  $type      global / user
+	 * @return  bool
 	 */
 	private function store_settings( $settings, $type ) {
 		if ( $type == 'global' ) {
@@ -952,13 +993,16 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Add reset link to the access denied page
+	 * Add reset link to the access denied page when the user has selected a view and dit something this view is not allowed
 	 *
 	 * @since   1.3
-	 * @access 	public
-	 * @return	void
+	 * @since   1.5.1   Check for SSL
+	 * @access  public
+	 * 
+	 * @param   string  $function_name  function callback
+	 * @return  string  $function_name  function callback
 	 */
-	public function die_handler( $default ) {
+	public function die_handler( $function_name ) {
 		if ( false != $this->get_viewAs() ) {
 			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			// Check for existing query vars
@@ -969,17 +1013,20 @@ final class VAA_View_Admin_As
 			// Return message with link
 			echo '<p>' . __('View Admin As', 'view-admin-as') . ': <a href="' . $url . '">' . __('Did something wrong? Reset the view by clicking me!', 'view-admin-as') . '</a></p>';
 		}
-		return $default;
+		return $function_name;
 	}
 	
 	/**
 	 * Get current view for the current session
 	 *
 	 * @since   1.3.4
-	 * @access 	public
-	 * @return	array|string|bool
+	 * @since   1.5     Single mode
+	 * @access  public
+	 * @return  array|string|bool
 	 */
 	public function get_view() {
+
+		// Single mode
 		if ( ( ! defined('DOING_AJAX') || ! DOING_AJAX )
 			&& isset( $_POST['view_admin_as'] )
 			&& $this->get_userSettings('view_mode') == 'single'
@@ -987,9 +1034,10 @@ final class VAA_View_Admin_As
 			&& isset( $_POST['_vaa_nonce'] )
 			&& wp_verify_nonce( $_POST['_vaa_nonce'], $this->get_nonce() )
 		) {
-			print_r('test');
 			return $this->validate_view_as_data( json_decode( stripcslashes( $_POST['view_admin_as'] ), true ) );
 		}
+
+		// Browse mode
 		if ( $this->get_userSettings('view_mode') == 'browse' ) {
 			$meta = $this->get_userMeta('views');
 			if (   is_array( $meta ) 
@@ -999,6 +1047,7 @@ final class VAA_View_Admin_As
 				return $this->validate_view_as_data( $meta[ $this->get_curUserSession() ]['view'] );
 			}
 		}
+
 		return false;
 	}
 	
@@ -1006,9 +1055,10 @@ final class VAA_View_Admin_As
 	 * Update view for the current session
 	 *
 	 * @since   1.3.4
-	 * @access 	private
-	 * @param	array	$data
-	 * @return	bool
+	 * @access  private
+	 * 
+	 * @param   array   $data
+	 * @return  bool
 	 */
 	private function update_view( $data = false ) {
 		if ( false != $data ) {
@@ -1033,10 +1083,12 @@ final class VAA_View_Admin_As
 	 * This function is also attached to the wp_login and wp_logout hook
 	 *
 	 * @since   1.3.4
-	 * @access 	public
-	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
-	 * @param	object	$user   		User object provided by the wp_login hook
-	 * @return	bool
+	 * @access  public
+	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
+	 * 
+	 * @param   string  $user_login  (not used) String provided by the wp_login hook
+	 * @param   object  $user        User object provided by the wp_login hook
+	 * @return  bool
 	 */
 	public function reset_view( $user_login = false, $user = false ) {
 		
@@ -1066,11 +1118,13 @@ final class VAA_View_Admin_As
 	 * Deleta all expired View Admin As metadata for this user
 	 * This function is also attached to the wp_login hook
 	 *
-	 * @since	1.3.4
-	 * @access 	public
-	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
-	 * @param	object	$user   		User object provided by the wp_login hook
-	 * @return	bool
+	 * @since   1.3.4
+	 * @access  public
+	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
+	 * 
+	 * @param   string  $user_login  (not used) String provided by the wp_login hook
+	 * @param   object  $user        User object provided by the wp_login hook
+	 * @return  bool
 	 */
 	public function cleanup_views( $user_login = false, $user = false ) {
 		
@@ -1107,10 +1161,12 @@ final class VAA_View_Admin_As
 	 * Reset all View Admin As metadata for this user
 	 *
 	 * @since   1.3.4
-	 * @access 	public
-	 * @param	string	$user_login 	String provided by the wp_login hook (not used)
-	 * @param	object	$user   		User object provided by the wp_login hook
-	 * @return	bool
+	 * @access  public
+	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
+	 * 
+	 * @param   string  $user_login  (not used) String provided by the wp_login hook
+	 * @param   object  $user        User object provided by the wp_login hook
+	 * @return  bool
 	 */
 	public function reset_all_views( $user_login = false, $user = false ) {
 		
@@ -1139,11 +1195,12 @@ final class VAA_View_Admin_As
 	 * Delete all View Admin As metadata for this user
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @param	int		$user_id   		ID of the user being deleted/removed
-	 * @param	object	$user   		User object provided by the wp_login hook
-	 * @param	bool	$reset_only   	Only reset (not delet) the user meta
-	 * @return	bool
+	 * @access  public
+	 * 
+	 * @param   int	    $user_id     ID of the user being deleted/removed
+	 * @param   object  $user        User object provided by the wp_login hook
+	 * @param   bool    $reset_only  Only reset (not delet) the user meta
+	 * @return  bool
 	 */
 	public function delete_user_meta( $user_id = false, $user = false, $reset_only = true ) {
 		$id = false;
@@ -1177,8 +1234,8 @@ final class VAA_View_Admin_As
 	 * Fix compatibility issues
 	 *
 	 * @since   0.1
-	 * @access 	public
-	 * @return	void
+	 * @access  public
+	 * @return  void
 	 */
 	public function third_party_compatibility() {
 		
@@ -1210,11 +1267,13 @@ final class VAA_View_Admin_As
 	 * Fix compatibility issues Pods Framework 2.x
 	 *
 	 * @since   1.0.1
-	 * @access 	public
-	 * @param	bool		$bool 			Boolean provided by the pods_is_admin hook (not used)
-	 * @param	array		$cap 			String or Array provided by the pods_is_admin hook
-	 * @param	string		$capability   	String provided by the pods_is_admin hook
-	 * @return	bool
+	 * @access  public
+	 * @see     third_party_compatibility()
+	 * 
+	 * @param   bool     $bool        Boolean provided by the pods_is_admin hook (not used)
+	 * @param   array    $cap         String or Array provided by the pods_is_admin hook
+	 * @param   string   $capability  String provided by the pods_is_admin hook
+	 * @return  bool
 	 */
 	public function pods_caps_check( $bool, $cap, $capability ) {
 		
@@ -1234,16 +1293,17 @@ final class VAA_View_Admin_As
 	 * Add nessesary scripts and styles
 	 *
 	 * @since   0.1
-	 * @access 	public
-	 * @return	void
+	 * @access  public
+	 * @return  void
 	 */
 	public function enqueue_scripts() {
 		// Only enqueue scripts if the admin bar is enabled otherwise they have no use
 		if ( is_admin_bar_showing() && $this->is_enabled() ) {
 			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min'; // Use non-minified versions
 			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->get_version(); // Prevent browser cache
-			wp_enqueue_style( 'vaa_view_admin_as_style', VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css', array(), $version );
-			wp_enqueue_script( 'vaa_view_admin_as_script', VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js', array( 'jquery' ), $version, true );
+
+			wp_enqueue_style(   'vaa_view_admin_as_style', VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css', array(), $version );
+			wp_enqueue_script(  'vaa_view_admin_as_script', VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js', array( 'jquery' ), $version, true );
 			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'siteurl' => get_site_url(),
@@ -1258,14 +1318,14 @@ final class VAA_View_Admin_As
 	/**
 	 * Load plugin textdomain.
 	 *
-	 * @since 	1.2
-	 * @access 	public
-	 * @return	void
+	 * @since   1.2
+	 * @access  public
+	 * @return  void
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain( 'view-admin-as', false, VIEW_ADMIN_AS_DIR . '/languages/' );
 		
-		//TODO: For frontend translation of roles > not working
+		//@todo  Frontend translation of roles > not working (Darn you WordPress!)
 		/*if ( ! is_admin() ) {
 			load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
 		}*/
@@ -1274,9 +1334,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Update settings
 	 *
-	 * @since 	1.4
-	 * @access 	private
-	 * @return	void
+	 * @since   1.4
+	 * @access  private
+	 * @return  void
 	 */
 	private function db_update() {
 		$defaults = array(
@@ -1302,7 +1362,7 @@ final class VAA_View_Admin_As
 		// Update option data
 		$this->update_optionData( wp_parse_args( $this->get_optionData(), $defaults ) );
 
-		// TODO: Maybe a hook??
+		//@todo  Maybe a hook??
 		// Main update finished, hook used to update modules
 		//do_action( 'vaa_view_admin_as_db_update', $this, $this->get_dbVersion() );
 
@@ -1316,9 +1376,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Check the correct DB version in the DB
 	 *
-	 * @since 	1.4
-	 * @access 	public
-	 * @return	void
+	 * @since   1.4
+	 * @access  public
+	 * @return  void
 	 */
 	public function maybe_db_update() {
 		$db_version = strtolower( $this->get_optionData('db_version') );
@@ -1331,8 +1391,8 @@ final class VAA_View_Admin_As
 	 * Is enabled?
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @return	bool
+	 * @access  public
+	 * @return  bool
 	 */
 	public function is_enabled() { return (bool) $this->enable; }
 
@@ -1340,10 +1400,11 @@ final class VAA_View_Admin_As
 	 * Get full array or array key
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @param 	array 	$array 		The requested array
-	 * @param 	string	$key 		Return only a key of the requested array (optional)
-	 * @return	array|string
+	 * @access  public
+	 * 
+	 * @param   array   $array  The requested array
+	 * @param   string  $key    Return only a key of the requested array (optional)
+	 * @return  array|string
 	 */
 	public function get_array_data( $array, $key = false ) {
 		if ( $key ) {
@@ -1361,12 +1422,13 @@ final class VAA_View_Admin_As
 	 * Set full array or array key
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @param 	array 	$array 		Original array
-	 * @param 	mixed	$var 		The new value
-	 * @param 	string	$key 		The array key for the value (optional)
-	 * @param 	bool	$append 	If the key doesn't exist in the original array, append it (optional)
-	 * @return	array|string
+	 * @access  public
+	 * 
+	 * @param   array   $array   Original array
+	 * @param   mixed   $var     The new value
+	 * @param   string  $key     The array key for the value (optional)
+	 * @param   bool    $append  If the key doesn't exist in the original array, append it (optional)
+	 * @return  array|string
 	 */
 	public function set_array_data( $array, $var, $key = false, $append = false ) {
 		if ( $key ) {
@@ -1458,11 +1520,12 @@ final class VAA_View_Admin_As
 	/**
 	 * Add notices to generate
 	 *
-	 * @since	1.5.1
-	 * @access 	public
-	 * @param 	string 	$id
-	 * @param 	array 	$notice 	Keys: 'type' and 'message'
-	 * @return	void
+	 * @since   1.5.1
+	 * @access  public
+	 * 
+	 * @param   string  $id
+	 * @param   array   $notice  Keys: 'type' and 'message'
+	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
 		if ( isset( $notice['type'] ) && isset( $notice['message'] ) ) {
@@ -1475,11 +1538,12 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Echo admin notices
-	 * Used by hook: admin_notices
 	 *
-	 * @since	1.5.1
-	 * @access 	public
-	 * @return	void
+	 * @since   1.5.1
+	 * @access  public
+	 * @see     'admin_notices'
+	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/admin_notices
+	 * @return  void
 	 */
 	public function do_admin_notices() {
 		foreach ( $this->notices as $notice ) {
@@ -1491,10 +1555,11 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Validate plugin activate
+	 * Checks for valid resources
 	 *
-	 * @since	1.5.1
-	 * @access 	private
-	 * @return	void
+	 * @since   1.5.1
+	 * @access  private
+	 * @return  void
 	 */
 	private function validate_versions() {
 		global $wp_version;
@@ -1520,11 +1585,11 @@ final class VAA_View_Admin_As
 	 *
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *
-	 * @since	1.4.1
-	 * @access 	public
+	 * @since   1.4.1
+	 * @access  public
 	 * @static
-	 * @see		View_Admin_As()
-	 * @return	View Admin As - Main instance.
+	 * @see	    View_Admin_As()
+	 * @return  VAA_View_Admin_As
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
@@ -1536,9 +1601,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Magic method to output a string if trying to use the object as a string.
 	 *
-	 * @since  1.5
-	 * @access public
-	 * @return void
+	 * @since   1.5
+	 * @access  public
+	 * @return  void
 	 */
 	public function __toString() {
 		return get_class( $this );
@@ -1547,9 +1612,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Magic method to keep the object from being cloned.
 	 *
-	 * @since  1.5
-	 * @access public
-	 * @return void
+	 * @since   1.5
+	 * @access  public
+	 * @return  void
 	 */
 	public function __clone() {
 		_doing_it_wrong( __FUNCTION__, esc_html__( 'Whoah, partner!', 'view-admin-as' ), null );
@@ -1558,9 +1623,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Magic method to keep the object from being unserialized.
 	 *
-	 * @since  1.5
-	 * @access public
-	 * @return void
+	 * @since   1.5
+	 * @access  public
+	 * @return  void
 	 */
 	public function __wakeup() {
 		_doing_it_wrong( __FUNCTION__, esc_html__( 'Whoah, partner!', 'view-admin-as' ), null );
@@ -1569,9 +1634,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Magic method to prevent a fatal error when calling a method that doesn't exist.
 	 *
-	 * @since  1.5
-	 * @access public
-	 * @return null
+	 * @since   1.5
+	 * @access  public
+	 * @return  null
 	 */
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong( get_class( $this ) . "::{$method}", esc_html__( 'Method does not exist.', 'view-admin-as' ), null );
@@ -1586,16 +1651,30 @@ final class VAA_View_Admin_As
  *
  * Returns the main instance of VAA_View_Admin_As to prevent the need to use globals.
  *
- * @since  1.4.1
- * @return VAA_View_Admin_As
+ * @since   1.4.1
+ * @return  VAA_View_Admin_As
  */
 function View_Admin_As() {
 	return VAA_View_Admin_As::get_instance();
 }
 View_Admin_As();
 
+if ( ! function_exists( 'vaa_print_pre' ) ) {
+	/**
+	 * Use print_r with pre wrappers, only in debug mode
+	 */
+	function vaa_print_pre( $var ) {
+		if ( defined('WP_DEBUG') && WP_DEBUG ) {
+			echo '<pre>';
+			print_r( $var );
+			echo '</pre>';
+		}
+	}
+}
+
 // end if class_exists
 } else {
+	// @since  1.5.1  added notice on class name conflict
 	add_action( 'admin_notices', 'view_admin_as_conflict_admin_notice' );
 	function view_admin_as_conflict_admin_notice() {
 		echo '<div class="notice-error notice is-dismissible"><p><strong>' . __('View Admin As', 'view-admin-as') . ':</strong> ' 
