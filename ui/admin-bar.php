@@ -16,8 +16,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.5
-	 * @var     Class_Name
+	 * @since	1.5
+	 * @var		Class_Name
 	 */
 	private static $_instance = null;
 	
@@ -34,7 +34,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5
 	 * @var    bool
-	 */ 
+	 */	
 	private $groupUserRoles = false;
 	
 	/**
@@ -42,7 +42,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5
 	 * @var    bool
-	 */ 
+	 */	
 	private $searchUsers = false;
 
 	/**
@@ -50,8 +50,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Private to make sure it isn't declared elsewhere
 	 *
 	 * @since   1.5
-	 * @access  private
-	 * @return  void
+	 * @access 	private
+	 * @return	void
 	 */
 	private function __construct() {
 
@@ -69,9 +69,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * init function to store data from the main class and enable functionality based on the current view
 	 *
 	 * @since   1.5
-	 * @access  public
-	 * @see     'vaa_view_admin_as_init' action
-	 * @return  void
+	 * @access 	public
+	 * @param 	object
+	 * @return	void
 	 */
 	public function vaa_init() {
 
@@ -101,11 +101,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Add admin bar menu items
 	 *
 	 * @since   1.5
-	 * @access  public
-	 * @see     'admin_bar_menu' action
-	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-	 * @param   object  $admin_bar
-	 * @return  void
+	 * @access 	public
+	 * @param	object	$admin_bar
+	 * @return	void
 	 */
 	public function admin_bar_menu( $admin_bar ) {
 		
@@ -136,20 +134,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		
 		// Add menu item
 		$admin_bar->add_node( array(
-			'id'        => 'view-as',
-			'parent'    => $view_as_location,
-			'title'     => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
-			'href'      => false,
-			'meta'      => array(
-				'title'     => __('View Admin As', 'view-admin-as'),
+			'id'		=> 'view-as',
+			'parent'	=> $view_as_location,
+			'title'		=> '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
+			'href'		=> false,
+			'meta'		=> array(
+				'title'		=> __('View Admin As', 'view-admin-as'),
 			),
 		) );
 			
-		/**
-		 * Add items at the beginning
-		 * @see     'admin_bar_menu' action
-		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 */
+		// Add items at the beginning
 		do_action( 'vaa_admin_bar_menu_before', $admin_bar );
 		
 		// Add reset button
@@ -161,23 +155,19 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$name = 'reload';
 			}
 			$admin_bar->add_node( array(
-				'id'        => 'reset',
-				'parent'    => 'view-as',
-				'title'     => '<button id="reset-view" class="button button-secondary" name="' . $name . '">' . __('Reset to default', 'view-admin-as') . '</button>', // __('Default', 'view-admin-as')
-				'href'      => false,
-				'meta'      => array(
-					'title'     => esc_attr__('Reset to default', 'view-admin-as'),
-					'class'     => 'vaa-reset-item',
-					'rel'       => $rel,
+				'id'		=> 'reset',
+				'parent'	=> 'view-as',
+				'title'		=> '<button id="reset-view" class="button button-secondary" name="' . $name . '">' . __('Reset to default', 'view-admin-as') . '</button>', // __('Default', 'view-admin-as')
+				'href'		=> false,
+				'meta'		=> array(
+					'title'		=> esc_attr__('Reset to default', 'view-admin-as'),
+					'class' 	=> 'vaa-reset-item',
+					'rel'		=> $rel,
 				),
 			) );
 		}
 		
-		/**
-		 * Add items
-		 * @see     'admin_bar_menu' action
-		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 */
+		// Add items
 		do_action( 'vaa_admin_bar_menu', $admin_bar );
 		
 	}
@@ -186,82 +176,72 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Add admin bar menu settings items
 	 *
 	 * @since   1.5
-	 * @access  public
-	 * @see     'vaa_admin_bar_menu' action
-	 * @param   object  $admin_bar
-	 * @return  void
+	 * @access 	public
+	 * @param	object	$admin_bar
+	 * @return	void
 	 */
 	public function admin_bar_menu_settings( $admin_bar ) {
 
 		$admin_bar->add_node( array(
-			'id'        => 'settings',
-			'parent'    => 'view-as',
-			'title'     => __('Settings', 'view-admin-as'),
-			'href'      => false,
-			'meta'      => array(
-				'class'     => '',
+			'id'		=> 'settings',
+			'parent'	=> 'view-as',
+			'title'		=> __('Settings', 'view-admin-as'),
+			'href'		=> false,
+			'meta'		=> array(
+				'class'		=> '',
 			),
 		) );
 
-		/**
-		 * Add items at the beginning of the caps group
-		 * @see     'admin_bar_menu' action
-		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 */
+		// Add items at the beginning of the caps group
 		do_action( 'vaa_admin_bar_settings_before', $admin_bar );
 
 		$admin_bar->add_node( array(
-			'id'        => 'settings-admin-menu-location',
-			'parent'    => 'settings',
-			'title'     => '<label for="vaa_settings_admin_menu_location">' . __('Location', 'view-admin-as') . ': </label> 
+			'id'		=> 'settings-admin-menu-location',
+			'parent'	=> 'settings',
+			'title'		=> '<label for="vaa_settings_admin_menu_location">' . __('Location', 'view-admin-as') . ': </label> 
 							<select class="select" id="vaa_settings_admin_menu_location" name="vaa_settings_admin_menu_location">
 									<option value="top-secondary" ' . selected( $this->get_userSettings('admin_menu_location'), 'top-secondary', false ) . ' >' . __( 'Default', 'view-admin-as' ) . '</option>
 									<option value="my-account" ' . selected( $this->get_userSettings('admin_menu_location'), 'my-account', false ) . ' >' . __( 'My account', 'view-admin-as' ) . '</option>
 							</select>
 							<p class="description ab-item">' . __('Change the location of this menu node', 'view-admin-as') . '</p>',
-			'href'      => false,
-			'meta'      => array(
-				'class'     => 'auto-height',
+			'href'		=> false,
+			'meta'		=> array(
+				'class'		=> 'auto-height',
 			),
 		) );
 
 		$admin_bar->add_node( array(
-			'id'        => 'settings-view-mode',
-			'parent'    => 'settings',
-			'title'     => //'<p for="vaa_settings_view_mode">' . __('View mode', 'view-admin-as') . '</p>
+			'id'		=> 'settings-view-mode',
+			'parent'	=> 'settings',
+			'title'		=> //'<p for="vaa_settings_view_mode">' . __('View mode', 'view-admin-as') . '</p>
 							'<input type="radio" class="radio vaa_settings_view_mode" value="browse" id="vaa_settings_view_mode_browse" name="vaa_settings_view_mode" ' . checked( $this->get_userSettings('view_mode'), 'browse', false ) . '> <label for="vaa_settings_view_mode_browse">' . __('Browse mode', 'view-admin-as') . '</label>
 							<p class="description ab-item">' . __('Store view and use WordPress with this view', 'view-admin-as') . ' (' . __('default', 'view-admin-as') . ')</p>
 							<input type="radio" class="radio vaa_settings_view_mode" value="single" id="vaa_settings_view_mode_single" name="vaa_settings_view_mode" ' . checked( $this->get_userSettings('view_mode'), 'single', false ) . '> <label for="vaa_settings_view_mode_single">' . __('Single switch mode', 'view-admin-as') . '</label>
 							<p class="description ab-item">' . __('Choose view on every pageload. This setting doesn\'t store views', 'view-admin-as') . '</p>',
-			'href'      => false,
-			'meta'      => array(
-				'class'     => 'auto-height',
+			'href'		=> false,
+			'meta'		=> array(
+				'class'		=> 'auto-height',
 			),
 		) );
 
 		/**
-		 * force_group_users setting
-		 * @since   1.5.2
+		 * @since 	1.5.2
 		 */
 		if ( true !== $this->groupUserRoles || 15 >= ( count( $this->get_users() ) + count( $this->get_roles() ) ) ) { 
 			$admin_bar->add_node( array(
-				'id'        => 'settings-force-group-users',
-				'parent'    => 'settings',
-				'title'     => '<input class="checkbox" value="1" id="vaa_settings_force_group_users" name="vaa_settings_force_group_users" type="checkbox" ' . checked( $this->get_userSettings('force_group_users'), "yes", false ) . '>
+				'id'		=> 'settings-force-group-users',
+				'parent'	=> 'settings',
+				'title'		=> '<input class="checkbox" value="1" id="vaa_settings_force_group_users" name="vaa_settings_force_group_users" type="checkbox" ' . checked( $this->get_userSettings('force_group_users'), "yes", false ) . '>
 								<label for="vaa_settings_force_group_users">' . __('Group users', 'view-admin-as') . '</label>
 								<p class="description ab-item">' . __('Group users under their assigned roles', 'view-admin-as') . '</p>',
-				'href'      => false,
-				'meta'      => array(
-					'class'     => 'auto-height',
+				'href'		=> false,
+				'meta'		=> array(
+					'class'		=> 'auto-height',
 				),
 			) );
 		}
 
-		/**
-		 * Add items at the end of the caps group
-		 * @see     'admin_bar_menu' action
-		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 */
+		// Add items at the end of the caps group
 		do_action( 'vaa_admin_bar_settings_after', $admin_bar );
 	}
 
@@ -269,10 +249,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Add admin bar menu caps items
 	 *
 	 * @since   1.5
-	 * @access  public
-	 * @see     'vaa_admin_bar_menu' action
-	 * @param   object  $admin_bar
-	 * @return  void
+	 * @access 	public
+	 * @param	object	$admin_bar
+	 * @return	void
 	 */
 	public function admin_bar_menu_caps( $admin_bar ) {
 		
@@ -282,27 +261,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		if ( $this->get_caps() && 0 < count( $this->get_caps() ) ) {
 
 			$admin_bar->add_group( array(
-				'id'        => 'caps',
-				'parent'    => 'view-as',
-				'meta'      => array(
-					'class'     => 'ab-sub-secondary',
+				'id'		=> 'caps',
+				'parent'	=> 'view-as',
+				'meta'		=> array(
+					'class'		=> 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'caps-title',
-				'parent'    => 'caps',
-				'title'     => __('Capabilities', 'view-admin-as'),
-				'href'      => false,
-				'meta'      => array(
-					'class'     => 'ab-vaa-title ab-vaa-toggle active',
+				'id'		=> 'caps-title',
+				'parent'	=> 'caps',
+				'title'		=> __('Capabilities', 'view-admin-as'),
+				'href'		=> false,
+				'meta'		=> array(
+					'class'		=> 'ab-vaa-title ab-vaa-toggle active',
 				),
 			) );
 			
-			/**
-			 * Add items at the beginning of the caps group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
+			// Add items at the beginning of the caps group
 			do_action( 'vaa_admin_bar_caps_before', $admin_bar );
 			
 			$caps_quickselect_class = '';
@@ -310,60 +285,60 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$caps_quickselect_class .= ' current';
 			}
 			$admin_bar->add_node( array(
-				'id'        => 'caps-quickselect',
-				'parent'    => 'caps',
-				'title'     => __('Select', 'view-admin-as'),
-				'href'      => false,
-				'meta'      => array(
-					'class'     => $caps_quickselect_class,
+				'id'		=> 'caps-quickselect',
+				'parent'	=> 'caps',
+				'title'		=> __('Select', 'view-admin-as'),
+				'href'		=> false,
+				'meta'		=> array(
+					'class'		=> $caps_quickselect_class,
 				),
 			) );
 			
 			// Capabilities submenu
 				$admin_bar->add_node( array(
-					'id'        => 'applycaps',
-					'parent'    => 'caps-quickselect',
-					'title'     => '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply', 'view-admin-as') . '</button>
+					'id'		=> 'applycaps',
+					'parent'	=> 'caps-quickselect',
+					'title'		=> '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply', 'view-admin-as') . '</button>
 									<a id="close-caps-popup" class="button vaa-icon button-secondary" name="close-caps-popup"><span class="ab-icon dashicons dashicons-dismiss"></span></a>
 									<a id="open-caps-popup" class="button vaa-icon button-secondary" name="open-caps-popup"><span class="ab-icon dashicons dashicons-plus-alt"></span></a>',
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'vaa-button-container',
+					'href'		=> false,
+					'meta'		=> array(
+						'class' 	=> 'vaa-button-container',
 					),
 				) );
 				$admin_bar->add_node( array(
-					'id'        => 'filtercaps',
-					'parent'    => 'caps-quickselect',
-					'title'     => '<input id="filter-caps" name="vaa-filter" placeholder="' . esc_attr__('Filter', 'view-admin-as') . '" />',
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
+					'id'		=> 'filtercaps',
+					'parent'	=> 'caps-quickselect',
+					'title'		=> '<input id="filter-caps" name="vaa-filter" placeholder="' . esc_attr__('Filter', 'view-admin-as') . '" />',
+					'href'		=> false,
+					'meta'		=> array(
+						'class' 	=> 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
 					),
 				) );
 				$role_select_options = '';
 				foreach ( $this->get_roles() as $role_key => $role ) {
-					$role_select_options .= '<option value="' . esc_attr( $role_key ) . '" data-caps=\'' . json_encode( $role->capabilities ) . '\'>= ' . translate_user_role( $role->name ) . '</option>';                 
-					$role_select_options .= '<option value="reversed-' . esc_attr( $role_key ) . '" data-reverse="1" data-caps=\'' . json_encode( $role->capabilities ) . '\'>≠ ' . translate_user_role( $role->name ) . '</option>';                   
-				}               
+					$role_select_options .= '<option value="' . esc_attr( $role_key ) . '" data-caps=\'' . json_encode( $role->capabilities ) . '\'>= ' . translate_user_role( $role->name ) . '</option>';					
+					$role_select_options .= '<option value="reversed-' . esc_attr( $role_key ) . '" data-reverse="1" data-caps=\'' . json_encode( $role->capabilities ) . '\'>≠ ' . translate_user_role( $role->name ) . '</option>';					
+				}				
 				$admin_bar->add_node( array(
-					'id'        => 'selectrolecaps',
-					'parent'    => 'caps-quickselect',
-					'title'     => '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default', 'view-admin-as') . '</option>' . $role_select_options . '</select>',
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
-						'html'      => '',
+					'id'		=> 'selectrolecaps',
+					'parent'	=> 'caps-quickselect',
+					'title'		=> '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default', 'view-admin-as') . '</option>' . $role_select_options . '</select>',
+					'href'		=> false,
+					'meta'		=> array(
+						'class' 	=> 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
+						'html'		=> '',
 					),
 				) );
 				$admin_bar->add_node( array(
-					'id'        => 'bulkselectcaps',
-					'parent'    => 'caps-quickselect',
-					'title'     => '' . __('All', 'view-admin-as') . ': &nbsp; 
+					'id'		=> 'bulkselectcaps',
+					'parent'	=> 'caps-quickselect',
+					'title'		=> '' . __('All', 'view-admin-as') . ': &nbsp; 
 									<button id="select-all-caps" class="button button-secondary" name="select-all-caps">' . __('Select', 'view-admin-as') . '</button>
 									<button id="deselect-all-caps" class="button button-secondary" name="deselect-all-caps">' . __('Deselect', 'view-admin-as') . '</button>',
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'vaa-button-container vaa-clear-float',
+					'href'		=> false,
+					'meta'		=> array(
+						'class' 	=> 'vaa-button-container vaa-clear-float',
 					),
 				) );
 				$caps_quickselect_content = '';
@@ -388,20 +363,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 						</div>';
 				}
 				$admin_bar->add_node( array(
-					'id'        => 'caps-quickselect-options',
-					'parent'    => 'caps-quickselect',
-					'title'     => $caps_quickselect_content,
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'ab-vaa-multipleselect auto-height',
+					'id'		=> 'caps-quickselect-options',
+					'parent'	=> 'caps-quickselect',
+					'title'		=> $caps_quickselect_content,
+					'href'		=> false,
+					'meta'		=> array(
+						'class' 	=> 'ab-vaa-multipleselect auto-height',
 					),
 				) );
-
-			/**
-			 * Add items at the end of the caps group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
+			
+			// Add items at the end of the caps group
 			do_action( 'vaa_admin_bar_caps_after', $admin_bar );
 		}
 	}
@@ -410,37 +381,32 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Add admin bar menu roles items
 	 *
 	 * @since   1.5
-	 * @access  public
-	 * @see     'vaa_admin_bar_menu' action
-	 * @param   object  $admin_bar
-	 * @return  void
+	 * @access 	public
+	 * @param	object	$admin_bar
+	 * @return	void
 	 */
 	public function admin_bar_menu_roles( $admin_bar ) {
 		
 		if ( $this->get_roles() && 0 < count( $this->get_roles() ) ) {
 			
 			$admin_bar->add_group( array(
-				'id'        => 'roles',
-				'parent'    => 'view-as',
-				'meta'      => array(
-					'class'     => 'ab-sub-secondary',
+				'id'		=> 'roles',
+				'parent'	=> 'view-as',
+				'meta'		=> array(
+					'class'		=> 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'roles-title',
-				'parent'    => 'roles',
-				'title'     => __('Roles', 'view-admin-as'),
-				'href'      => false,
-				'meta'      => array(
-					'class'     => 'ab-vaa-title ab-vaa-toggle active',
+				'id'		=> 'roles-title',
+				'parent'	=> 'roles',
+				'title'		=> __('Roles', 'view-admin-as'),
+				'href'		=> false,
+				'meta'		=> array(
+					'class'		=> 'ab-vaa-title ab-vaa-toggle active',
 				),
 			) );
-
-			/**
-			 * Add items at the beginning of the roles group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
+			
+			// Add items at the beginning of the roles group
 			do_action( 'vaa_admin_bar_roles_before', $admin_bar );
 			
 			// Add the roles
@@ -472,23 +438,19 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					$href = false;
 				}
 				$admin_bar->add_node( array(
-					'id'        => 'role-' . $role_key,
-					'parent'    => 'roles',
-					'title'     => $title,
-					'href'      => $href,
-					'meta'      => array(
-						'title'     => esc_attr__('View as', 'view-admin-as') . ' ' . translate_user_role( $role->name ),
-						'class'     => $class,
-						'rel'       => $role_key,
+					'id'		=> 'role-' . $role_key,
+					'parent'	=> 'roles',
+					'title'		=> $title,
+					'href'		=> $href,
+					'meta'		=> array(
+						'title'		=> esc_attr__('View as', 'view-admin-as') . ' ' . translate_user_role( $role->name ),
+						'class' 	=> $class,
+						'rel'		=> $role_key,
 					),
 				) );
 			}
 			
-			/**
-			 * Add items at the end of the roles group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
+			// Add items at the end of the roles group
 			do_action( 'vaa_admin_bar_roles_after', $admin_bar );
 		}
 	}
@@ -497,48 +459,43 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Add admin bar menu users items
 	 *
 	 * @since   1.5
-	 * @access  public
-	 * @see     'vaa_admin_bar_menu' action
-	 * @param   object  $admin_bar
-	 * @return  void
+	 * @access 	public
+	 * @param	object	$admin_bar
+	 * @return	void
 	 */
 	public function admin_bar_menu_users( $admin_bar ) {
 		
 		if ( $this->get_users() && 0 < count( $this->get_users() ) ) {
 			
 			$admin_bar->add_group( array(
-				'id'        => 'users',
-				'parent'    => 'view-as',
-				'meta'      => array(
-					'class'     => 'ab-sub-secondary',
+				'id'		=> 'users',
+				'parent'	=> 'view-as',
+				'meta'		=> array(
+					'class'		=> 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'users-title',
-				'parent'    => 'users',
-				'title'     => __('Users', 'view-admin-as'),
-				'href'      => false,
-				'meta'      => array(
-					'class'     => 'ab-vaa-title ab-vaa-toggle active',
+				'id'		=> 'users-title',
+				'parent'	=> 'users',
+				'title'		=> __('Users', 'view-admin-as'),
+				'href'		=> false,
+				'meta'		=> array(
+					'class'		=> 'ab-vaa-title ab-vaa-toggle active',
 				),
 			) );
 			
-			/**
-			 * Add items at the beginning of the users group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
+			// Add items at the beginning of the users group
 			do_action( 'vaa_admin_bar_users_before', $admin_bar );
 			
 			if ( true === $this->searchUsers ) {
 				$admin_bar->add_node( array(
-					'id'        => 'searchuser',
-					'parent'    => 'users',
-					'title'     => '<input id="search" name="vaa-search" placeholder="' . esc_attr__('Search', 'view-admin-as') . ' (' . strtolower( __('Username', 'view-admin-as') ) . ')" />',
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'ab-vaa-search search-users',
-						'html'      => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu"></ul>',
+					'id'		=> 'searchuser',
+					'parent'	=> 'users',
+					'title'		=> '<input id="search" name="vaa-search" placeholder="' . esc_attr__('Search', 'view-admin-as') . ' (' . strtolower( __('Username', 'view-admin-as') ) . ')" />',
+					'href'		=> false,
+					'meta'		=> array(
+						'class' 	=> 'ab-vaa-search search-users',
+						'html'		=> '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu"></ul>',
 					),
 				) );
 			}
@@ -561,14 +518,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 						$cur_role = $role;
 						$parent = 'role-' . $cur_role;
 						$admin_bar->add_node( array(
-							'id'        => 'user-' . $user->data->ID . '-' . $cur_role,
-							'parent'    => $parent,
-							'title'     => $title,
-							'href'      => $href,
-							'meta'      => array(
-								'title'     => esc_attr__('View as', 'view-admin-as') . ' ' . $user->data->display_name,
-								'class'     => $class,
-								'rel'       => $user->data->ID,
+							'id'		=> 'user-' . $user->data->ID . '-' . $cur_role,
+							'parent'	=> $parent,
+							'title'		=> $title,
+							'href'		=> $href,
+							'meta'		=> array(
+								'title'		=> esc_attr__('View as', 'view-admin-as') . ' ' . $user->data->display_name,
+								'class' 	=> $class,
+								'rel' 		=> $user->data->ID,
 							),
 						) );
 					}
@@ -582,24 +539,20 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					}
 					$title = $title.' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
 					$admin_bar->add_node( array(
-						'id'        => 'user-' . $user->data->ID,
-						'parent'    => $parent,
-						'title'     => $title,
-						'href'      => $href,
-						'meta'      => array(
-							'title'     => esc_attr__('View as', 'view-admin-as') . ' ' . $user->data->display_name,
-							'class'     => $class,
-							'rel'       => $user->data->ID,
+						'id'		=> 'user-' . $user->data->ID,
+						'parent'	=> $parent,
+						'title'		=> $title,
+						'href'		=> $href,
+						'meta'		=> array(
+							'title'		=> esc_attr__('View as', 'view-admin-as') . ' ' . $user->data->display_name,
+							'class' 	=> $class,
+							'rel' 		=> $user->data->ID,
 						),
 					) );
 				}
 			}
 			
-			/**
-			 * Add items at the end of the users group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
+			// Add items at the end of the users group
 			do_action( 'vaa_admin_bar_users_after', $admin_bar );
 		}
 	}
@@ -609,10 +562,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.5
-	 * @access  public
+	 * @since	1.5
+	 * @access 	public
 	 * @static
-	 * @return  Main instance.
+	 * @return	Main instance.
 	 */
 	public static function get_instance( $caller = false ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {

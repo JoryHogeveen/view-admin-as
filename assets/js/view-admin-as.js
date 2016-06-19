@@ -75,8 +75,8 @@
 	 * Apply the selected view
 	 * viewAs format: { VIEWTYPE : VIEWDATA }
 	 *
-	 * @params  object  viewAs
-	 * @params  boolean reload
+	 * @params	object	viewAs
+	 * @params	boolean	reload
 	 */
 	VAA_View_Admin_As.ajax = function( viewAs, reload ) {
 		//VAA_View_Admin_As.ajaxurl;
@@ -119,7 +119,7 @@
 							}
 							if ( typeof response.data.content != 'object' ) { 
 								response.data.content = String( response.data.content ); 
-							}                           
+							}							
 							VAA_View_Admin_As.overlay( response.data.content, String( response.data.type ) );
 						} else {
 							$('body #vaa-overlay').addClass('success').fadeOut( 'fast', function() { $(this).remove(); } );
@@ -153,12 +153,7 @@
 	};
 
 
-	/**
-	 * Show notice in the admin bar
-	 * @see    VAA_View_Admin_As.ajax
-	 * @param  object  notice
-	 * @param  string  type
-	 */
+	// Show notice in the admin bar
 	VAA_View_Admin_As.notice = function( notice, type ) {
 		$('#wp-admin-bar-top-secondary').append('<li class="vaa-update vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
 		$('#wpadminbar .vaa-update .remove').click( function() { $(this).parent().remove(); } );
@@ -167,12 +162,7 @@
 	};
 
 
-	/**
-	 * Show popup with return content
-	 * @see    VAA_View_Admin_As.ajax
-	 * @param  object  data
-	 * @param  string  type
-	 */
+	// Show popup with return content
 	VAA_View_Admin_As.overlay = function( data, type ) {
 		$('body #vaa-overlay').html('<div class="vaa-overlay-container"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>');
 		if ( type == 'textarea' ) {
@@ -268,7 +258,7 @@
 				VAA_View_Admin_As.ajax( viewAs, true );
 				return false;
 			}
-		}); 
+		});	
 	};
 
 
@@ -285,7 +275,7 @@
 				VAA_View_Admin_As.ajax( viewAs, true );
 				return false;
 			}
-		}); 
+		});	
 
 		// Search users
 		$(document).on('keyup', VAA_View_Admin_As.prefix+'#wp-admin-bar-users .ab-vaa-search.search-users input', function(e) {
