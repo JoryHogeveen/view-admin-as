@@ -6,7 +6,7 @@
  * 
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.2
+ * @version 1.5.2.1
  */
  
 ! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
@@ -38,14 +38,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @var    array
 	 */
 	private $meta = array( 
-		'admin_color' 				=> 'admin_color', 				// The admin color
-		'rich_editing' 				=> 'rich_editing', 				// Enable/Disable rich editing
-		'metaboxhidden_%%' 			=> 'metaboxhidden_%%', 			// Hidden metaboxes
-		'meta-box-order_%%' 		=> 'meta-box-order_%%', 		// Metabox order and locations
-		'closedpostboxes_%%' 		=> 'closedpostboxes_%%', 		// Hidden post boxes
-		'edit_%%_per_page' 			=> 'edit_%%_per_page', 			// Amount of items per page in edit pages (overview)
-		'manage%%columnshidden' 	=> 'manage%%columnshidden', 	// Hidden columns in overview pages
-		'screen_layout_%%' 			=> 'screen_layout_%%', 			// Screen layout (num of columns)
+		'admin_color'            => 'admin_color',            // The admin color
+		'rich_editing'           => 'rich_editing',           // Enable/Disable rich editing
+		'metaboxhidden_%%'       => 'metaboxhidden_%%',       // Hidden metaboxes
+		'meta-box-order_%%'      => 'meta-box-order_%%',      // Metabox order and locations
+		'closedpostboxes_%%'     => 'closedpostboxes_%%',     // Hidden post boxes
+		'edit_%%_per_page'       => 'edit_%%_per_page',       // Amount of items per page in edit pages (overview)
+		'manage%%columnshidden'  => 'manage%%columnshidden',  // Hidden columns in overview pages
+		'screen_layout_%%'       => 'screen_layout_%%',       // Screen layout (num of columns)
 	);
 	
 	/**
@@ -56,14 +56,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @var    array
 	 */
 	private $meta_forbidden = array( 
-		'vaa-view-admin-as', 	// Meta value for this plugin
-		'%%capabilities', 		// The user's capabilities
-		'%%user_level', 		// The user's user level
-		'session_tokens', 		// The user's session tokens
-		'nickname', 			// The user's nickname
-		'first_name', 			// The user's first name
-		'last_name', 			// The user's last name
-		'description', 			// The user's description
+		'vaa-view-admin-as',  // Meta value for this plugin
+		'%%capabilities',     // The user's capabilities
+		'%%user_level',       // The user's user level
+		'session_tokens',     // The user's session tokens
+		'nickname',           // The user's nickname
+		'first_name',         // The user's first name
+		'last_name',          // The user's last name
+		'description',        // The user's description
 	);
 
 	/**
@@ -83,7 +83,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		// Load data
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
 
-		if ( true == $this->get_optionData('enable') && current_user_can('view_admin_as_role_defaults') ) {
+		if ( true == $this->get_optionData('enable') && ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) ) {
 			$this->enable = true;
 		}
 		

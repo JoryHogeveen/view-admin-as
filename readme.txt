@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults
 Requires at least: 3.5
 Tested up to: 4.5
-Stable tag: 1.5.2
+Stable tag: 1.5.2.1
 
 View the WordPress admin as a different role, switch between users, temporarily change your capabilities, set default screen settings for roles.
 
@@ -121,7 +121,7 @@ And if even that doesn't work just add "?reset-view" in the address bar and you'
 Example: http://www.your.domain/wp-admin/?reset-view
 
 = 5. What data is stored for role defaults and how can I change this? =
-Please see the `view_admin_as_role_defaults_meta` filter at (https://viewadminas.wordpress.com/documentation/actions-filters/)!
+Please see the `view_admin_as_role_defaults_meta` filter at https://viewadminas.wordpress.com/documentation/actions-filters/!
 
 = 6. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins? 
@@ -165,6 +165,11 @@ This plugin is also usefull to support your clients and/or users. For example; m
 8. Admin bar when a view is selected + the reset button location
 
 == Changelog ==
+
+= 1.5.2.1 =
+
+*	Fix: minor bug with displaying role names
+*	Fix: minor bug with displaying role defaults menu item
 
 = 1.5.2 =
 
@@ -292,7 +297,7 @@ You can find me here:
 
 = Translations =
 
-Please help translating this plugin on (https://translate.wordpress.org/projects/wp-plugins/view-admin-as)!
+Please help translating this plugin on https://translate.wordpress.org/projects/wp-plugins/view-admin-as!
 
 = Actions and Filters =
 
