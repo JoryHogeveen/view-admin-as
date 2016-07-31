@@ -126,10 +126,11 @@
 							VAA_View_Admin_As.notice( VAA_View_Admin_As.__success, 'success' );
 						}
 					} else {
-						// Reload the page
-						window.location = window.location.href.replace('?reset-view', '').replace('&reset-view', '');
-						// Force reload
-						window.location.reload();
+						/**
+						 * Reload the page
+						 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
+						 */
+						window.location.replace( window.location.href.replace('?reset-view', '').replace('&reset-view', '') );
 					}
 				} else {
 					$('body #vaa-overlay').addClass('error').fadeOut( 'fast', function() { $(this).remove(); } );
