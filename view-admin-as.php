@@ -950,6 +950,7 @@ final class VAA_View_Admin_As
 			$new = $this->validate_settings( wp_parse_args( $current, $defaults ), 'user' );
 			return $this->update_userMeta( $new, 'settings', true );
 		}
+		return false;
 	}
 
 	/**
