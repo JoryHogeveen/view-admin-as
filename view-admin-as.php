@@ -287,7 +287,8 @@ final class VAA_View_Admin_As
 			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
 
 			// Lets start!
-			add_action( 'plugins_loaded', array( $this, 'init' ) );
+			add_action( 'plugins_loaded', array( $this, 'init' ), 0 );
+
 		} else {
 			$this->add_notice('class-error-base', array(
 				'type' => 'notice-error',
