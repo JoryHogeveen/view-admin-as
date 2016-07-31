@@ -576,7 +576,7 @@ final class VAA_View_Admin_As
 		 * Grant admins the capability to view other admins. There is no UI for this!
 		 */
 		$superior_admins = array_filter( 
-			(array) apply_filters( 'view_admin_as_superior_admins', false ), 
+			(array) apply_filters( 'view_admin_as_superior_admins', array() ), 
 			'is_numeric'  // Only allow numeric values (user id's)
 		);
 
