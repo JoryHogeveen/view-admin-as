@@ -427,10 +427,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	public function filter_get_user_metadata( $null, $object_id, $meta_key, $single ) {
 		if ( true === $this->compare_metakey( $meta_key ) && $object_id == $this->get_curUser()->ID ) {
 			$new_meta = $this->get_role_defaults( $this->get_viewAs('role'), $meta_key );
-			if ( $single && is_array( $new_meta ) ) {
-				return array( $new_meta );
-			}
-			return $new_meta;
+			// Do not check $single, this logic is in wp-includes/meta.php line 487
+			return array( $new_meta );
 		}
 		return null; // Go on as normal
 	}
