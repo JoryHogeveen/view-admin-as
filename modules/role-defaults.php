@@ -309,7 +309,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		$success = true;
 		$user = get_user_by( 'id', $user_id );
 		if ( $user ) {
-			$userBlogs = false;
 			if ( false != $blog_id && is_numeric( $blog_id ) ) {
 				$optionData = get_blog_option( $blog_id, $this->get_optionKey() );
 			} else {
