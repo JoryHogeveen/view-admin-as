@@ -350,6 +350,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			// If the user has access to one blog only it is safe to set defaults since it is most likely a new user.
 			return $this->update_user_with_role_defaults( $user_id, $role, $blog_id );
 		}
+		return false;
 	}
 	
 	/**
