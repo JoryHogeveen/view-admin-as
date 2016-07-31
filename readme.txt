@@ -3,7 +3,7 @@ Contributors: keraweb
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults
 Requires at least: 3.5
-Tested up to: 4.5
+Tested up to: 4.6
 Stable tag: 1.5.2.1
 
 View the WordPress admin as a different role, switch between users, temporarily change your capabilities, set default screen settings for roles.
@@ -176,7 +176,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Feature: Added the `view_admin_as_superior_admins` filter. Grant admins the capability to view other admins. There is no UI for this!
 *	Improvement: (Module Role Defaults) Added forbidden meta keys to make sure user entered keys (filter) are ok to use.
 *	Improvement: (Settings tab) Add the option to group users under their roles. This option is only available when there are less than 15 users and roles, otherwise this is default
-*	Improvement: Add 'view_admin_as_role_defaults' for access to the "Role Defaults" module when a user isn't a super admin
+*	Improvement: `view_admin_as_role_defaults` capability for access to the "Role Defaults" module when a user isn't a super admin
 *	Performance: Less queries for user validation
 *	Fix: (Module Role Defaults) Problem solved with unsetting meta keys
 *	Fix: Problem solved with anchor tags preventing javascript from reloading
@@ -189,7 +189,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 
 = 1.5.1 =
 
-*	Feature: 'view_admin_as' capability for non-admin users to enable limited access to this plugin (they won't be able to view or edit equal or admin users and roles). This capability requires the 'edit_users' capability (+ 'manage_network_users' for multisite installations)
+*	Feature: `view_admin_as` capability for non-admin users to enable limited access to this plugin (they won't be able to view or edit equal or admin users and roles). This capability requires the `edit_users` capability (+ `manage_network_users` for multisite installations)
 *	Feature: Ability to disable the "screen settings" option for all users that don't have access to this plugin
 *	Fix: die_handler for https
 *	Fix: Reset currently loaded metadata aswell when resetting a view (refresh is no longer needed, minor bug in 1.5)
