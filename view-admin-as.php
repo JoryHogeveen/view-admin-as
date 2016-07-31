@@ -1596,6 +1596,21 @@ function View_Admin_As() {
 }
 View_Admin_As();
 
+if ( ! function_exists( 'vaa_print_pre' ) ) {
+	/**
+	 * Use print_r with pre wrappers, only in debug mode
+	 *
+	 * @param string $var
+	 */
+	function vaa_print_pre( $var ) {
+		if ( defined('WP_DEBUG') && WP_DEBUG ) {
+			echo '<pre>';
+			print_r( $var );
+			echo '</pre>';
+		}
+	}
+}
+
 // end if class_exists
 } else {
 	add_action( 'admin_notices', 'view_admin_as_conflict_admin_notice' );
