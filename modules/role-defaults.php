@@ -518,11 +518,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( isset( $roles ) ) {
 			foreach ( $roles as $role ) {
 				if ( isset( $role_defaults[ $role ] ) ) {
-					$role_defaults[ $role ] = array();
+					//$role_defaults[ $role ] = array();
+					unset( $role_defaults[ $role ] );
 				}
 			}
 		}
-		return $this->update_optionData( $role_defaults, 'roles' );
+		if ( $this->get_optionData( 'roles' ) !== $role_defaults ) {
+			return $this->update_optionData( $role_defaults, 'roles' );
+		}
+		return true; // No changes needed
 	}
 
 	/**
