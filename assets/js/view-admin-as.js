@@ -522,7 +522,9 @@
 			var val = $(VAA_View_Admin_As.prefix+'#wp-admin-bar-role-defaults-clear-roles-select select#role-defaults-clear-roles-select').val();
 			if ( val && '' !== val ) {
 				var viewAs = { role_defaults : { clear_role_defaults : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				if ( confirm( VAA_View_Admin_As.__confirm ) ) {
+					VAA_View_Admin_As.ajax( viewAs, false );
+				}
 			}
 			return false;
 		});

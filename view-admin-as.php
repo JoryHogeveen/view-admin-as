@@ -1252,6 +1252,7 @@ final class VAA_View_Admin_As
 				'_vaa_nonce' => wp_create_nonce( $this->get_nonce() ),
 				'__no_users_found' => esc_html__( 'No users found.', 'view-admin-as' ),
 				'__success' => esc_html__( 'Success', 'view-admin-as' ),
+				'__confirm' => esc_html__( 'Are you sure?', 'view-admin-as' ),
 			) );
 		}
 	}
