@@ -376,7 +376,6 @@ final class VAA_View_Admin_As
 		
 			if ( $this->is_enabled() ) {
 				
-				$this->load_textdomain();
 				$this->load_ui();
 				
 				$this->store_caps();
@@ -1258,22 +1257,6 @@ final class VAA_View_Admin_As
 	}
 	
 	/**
-	 * Load plugin textdomain.
-	 *
-	 * @since 	1.2
-	 * @access 	public
-	 * @return	void
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain( 'view-admin-as', false, VIEW_ADMIN_AS_DIR . '/languages/' );
-		
-		//TODO: For frontend translation of roles > not working
-		/*if ( ! is_admin() ) {
-			load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
-		}*/
-	}
-	
-	/**
 	 * Update settings
 	 *
 	 * @since 	1.4
@@ -1514,6 +1497,14 @@ final class VAA_View_Admin_As
 				'message' => __('View Admin As', 'view-admin-as') . ': ' . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'WordPress', '3.5' ),
 			) );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
+		}
+
+		/**
+		 * Load textdomain for WP versions lower than 4.6
+		 * @see https://make.wordpress.org/core/2016/07/06/i18n-improvements-in-4-6/
+		 */
+		if ( version_compare( $wp_version, '4.6', '<' ) ) {
+			load_plugin_textdomain( 'view-admin-as', false, VIEW_ADMIN_AS_DIR . '/languages/' );
 		}
 	}
 
