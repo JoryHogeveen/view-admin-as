@@ -1,4 +1,4 @@
-/**
+;/**
  * View Admin As
  * https://wordpress.org/plugins/view-admin-as/
  * 
@@ -7,7 +7,7 @@
  * @version 1.5.2.1
  */
 
-;(function($) {
+(function($) {
 	
 	if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As = {};
