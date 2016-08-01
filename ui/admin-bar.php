@@ -81,6 +81,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$this->groupUserRoles = true;
 			$this->searchUsers = true;
 		}
+
+		// There are no roles to group users on network pages
+		if ( is_network_admin() ) {
+			$this->groupUserRoles = false;
+		}
 		
 		// Add the default nodes to the admin bar
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ) );
