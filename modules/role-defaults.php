@@ -148,7 +148,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 
 		// Setting: Hide the screen options for all users who can't access this plugin
-		if ( true == $this->get_optionData('disable_user_screen_options') && ! $this->is_vaa_enabled() ) {
+		if ( true == $this->get_optionData('disable_user_screen_options') && ! $this->is_enabled() ) {
 			add_filter( 'screen_options_show_screen', '__return_false', 99 );
 		}
 
