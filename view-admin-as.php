@@ -613,24 +613,30 @@ final class VAA_View_Admin_As
 		// Is it also one of the manually configured superior admins?
 		$is_superior_admin = $this->is_superior_admin( $this->get_curUser()->ID );
 
-		$user_args = array(
-			'orderby' => 'display_name',
-			// @since  1.5.2  Exclude the current user
-			'exclude' => $this->get_curUser()->ID,
-		);
-		// Do not get regular admins for normal installs (WP 4.4+)
-		if ( ! is_multisite() && ! $is_superior_admin ) {
-			$user_args['role__not_in'] = 'administrator';
-		}
-
 		if ( is_network_admin() ) {
+			
 			// Get super admins (returns logins)
 			$users = get_super_admins();
+			// Remove current user
+			if ( in_array( $this->get_curUser()->user_login, $users ) ) {
+				unset( $users[ array_search( $this->get_curUser()->user_login, $users ) ] );
+			}
 			// Convert logins to WP_User objects
 			foreach ( $users as $key => $user_login ) {
 				$users[ $key ] = get_user_by( 'login', $user_login );
 			}
+
 		} else {
+
+			$user_args = array(
+				'orderby' => 'display_name',
+				// @since  1.5.2  Exclude the current user
+				'exclude' => $this->get_curUser()->ID,
+			);
+			// Do not get regular admins for normal installs (WP 4.4+)
+			if ( ! is_multisite() && ! $is_superior_admin ) {
+				$user_args['role__not_in'] = 'administrator';
+			}
 			// Sort users by role and filter them on available roles
 			$users = $this->filter_sort_users_by_role( get_users( $user_args ) );
 		}
