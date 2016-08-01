@@ -356,8 +356,8 @@ final class VAA_View_Admin_As
 			 *                  Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
 			 */
 			if (   ( is_super_admin( $this->get_curUser()->ID ) 
-				   || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
-				&& ! is_network_admin()
+				     || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
+				&& ( ! is_network_admin() || $this->is_superior_admin( $this->get_curUser()->ID ) )
 				&& $this->get_curUserSession() != ''
 			) {
 				$this->enable = true;
@@ -534,6 +534,19 @@ final class VAA_View_Admin_As
 					$caps[ $capKey ] = 0;
 				}
 			}
+
+			if ( is_multisite() ) {
+				// @see https://codex.wordpress.org/Roles_and_Capabilities
+				$network_caps = array(
+					'manage_network' => 1,
+					'manage_sites' => 1,
+					'manage_network_users' => 1,
+					'manage_network_plugins' => 1,
+					'manage_network_themes' => 1,
+					'manage_network_options' => 1,
+				);
+				$caps = array_merge( $network_caps, $caps );
+			}
 		}
 
 		// Remove role names
@@ -604,8 +617,16 @@ final class VAA_View_Admin_As
 		if ( ! is_multisite() && ! $is_superior_admin ) {
 			$user_args['role__not_in'] = 'administrator';
 		}
-		// Sort users by role and filter them on available roles
-		$users = $this->filter_sort_users_by_role( get_users( $user_args ) );
+
+		if ( is_network_admin() ) {
+			$users = get_super_admins();
+			foreach ( $users as $key => $user_login ) {
+				$users[ $key ] = get_user_by( 'login', $user_login );
+			}
+		} else {
+			// Sort users by role and filter them on available roles
+			$users = $this->filter_sort_users_by_role( get_users( $user_args ) );
+		}
 
 		$userids = array();
 		$usernames = array();

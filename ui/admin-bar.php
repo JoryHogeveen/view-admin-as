@@ -87,14 +87,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		// Add the caps nodes to the admin bar
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_settings' ) );
 		
+		// Add the caps nodes to the admin bar
+		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_caps' ) );
+		
+		// Roles are not used on network pages
 		if ( ! is_network_admin() ) {
-			// Add the caps nodes to the admin bar
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_caps' ) );
 			// Add the roles nodes to the admin bar
 			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_roles' ) );
-			// Add the users nodes to the admin bar
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_users' ) );
 		}
+
+		// Add the users nodes to the admin bar
+		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_users' ) );
 	}
 	
 	/**

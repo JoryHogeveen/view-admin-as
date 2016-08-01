@@ -90,7 +90,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 * @since   1.5.2   Validate custom capability view_admin_as_role_defaults
 		 * @since   1.5.2.1 Validate is_super_admin (bug in 1.5.2)
 		 */
-		if ( true == $this->get_optionData('enable') && ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) ) {
+		if ( true == $this->get_optionData('enable') 
+			&& ! is_network_admin() 
+			&& ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) 
+		) {
 			$this->enable = true;
 		}
 		
