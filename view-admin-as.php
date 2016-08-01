@@ -1333,10 +1333,16 @@ final class VAA_View_Admin_As
 		 */
 		load_plugin_textdomain( 'view-admin-as', false, VIEW_ADMIN_AS_DIR . '/languages/' );
 		
-		// @todo  Frontend translation of roles is not working (Darn you WordPress!)
-		/*if ( ! is_admin() ) {
-			load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
-		}*/
+		/**
+		 * Frontend translation of roles is not working by default (Darn you WordPress!)
+		 * Needs to be in init action to work
+		 * @see  https://core.trac.wordpress.org/ticket/37539
+		 */
+		if ( ! is_admin() ) {
+			add_action( 'init', function() {
+				load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
+			} );
+		}
 	}
 	
 	/**
