@@ -589,23 +589,11 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function store_users() {
-		
-		/**
-		 * Grant admins the capability to view other admins. There is no UI for this!
-		 * 
-		 * @since 1.5.2
-		 * @param 	array
-		 * @return 	array 	requires a returned array of user ID's
-		 */
-		$superior_admins = array_filter( 
-			(array) apply_filters( 'view_admin_as_superior_admins', array() ), 
-			'is_numeric'  // Only allow numeric values (user id's)
-		);
 
 		// Is the current user a super admin?
 		$is_super_admin = is_super_admin( $this->get_curUser()->ID );
 		// Is it also one of the manually configured superior admins?
-		$is_superior_admin = ( true === $is_super_admin && in_array( $this->get_curUser()->ID, $superior_admins ) ) ? true : false;
+		$is_superior_admin = $this->is_superior_admin( $this->get_curUser()->ID );
 
 		$user_args = array(
 			'orderby' => 'display_name',
@@ -1463,6 +1451,33 @@ final class VAA_View_Admin_As
 			}
 		}
 		return $var;
+	}
+
+	/**
+	 * Check if the user is a superior admin (filter since 1.5.2)
+	 * 
+	 * @since  1.5.3
+	 * @access public
+	 * 
+	 * @param  int  $user_id
+	 * @return bool
+	 */
+	public function is_superior_admin( $user_id ) {
+		
+		/**
+		 * Grant admins the capability to view other admins. There is no UI for this!
+		 * 
+		 * @since  1.5.2
+		 * @param  array
+		 * @return array requires a returned array of user ID's
+		 */
+		$superior_admins = array_filter( 
+			(array) apply_filters( 'view_admin_as_superior_admins', array() ), 
+			'is_numeric'  // Only allow numeric values (user id's)
+		);
+
+		// Is it a super admin and is it one of the manually configured superior admins?
+		return ( true === is_super_admin( $user_id ) && in_array( $user_id, $superior_admins ) ) ? true : false;
 	}
 	
 	/*
