@@ -4,7 +4,7 @@
  * 
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.2.1
+ * @version 1.5.3
  */
 
 (function($) {
@@ -79,7 +79,6 @@
 	 * @params  boolean reload
 	 */
 	VAA_View_Admin_As.ajax = function( viewAs, reload ) {
-		//VAA_View_Admin_As.ajaxurl;
 		
 		$('#wpadminbar .vaa-update').remove();
 		$('body').append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url(\'' + VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif\') center center no-repeat; background-size: contain;"></span></div>');
