@@ -34,7 +34,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5
 	 * @var    bool
-	 */ 
+	 */
 	private $groupUserRoles = false;
 	
 	/**
@@ -42,7 +42,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5
 	 * @var    bool
-	 */ 
+	 */
 	private $searchUsers = false;
 
 	/**
@@ -350,9 +350,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				) );
 				$role_select_options = '';
 				foreach ( $this->get_roles() as $role_key => $role ) {
-					$role_select_options .= '<option value="' . esc_attr( $role_key ) . '" data-caps=\'' . json_encode( $role->capabilities ) . '\'>= ' . translate_user_role( $role->name ) . '</option>';                 
-					$role_select_options .= '<option value="reversed-' . esc_attr( $role_key ) . '" data-reverse="1" data-caps=\'' . json_encode( $role->capabilities ) . '\'>≠ ' . translate_user_role( $role->name ) . '</option>';                   
-				}               
+					$role_select_options .= '<option value="' . esc_attr( $role_key ) . '" data-caps=\'' . json_encode( $role->capabilities ) . '\'>= ' . translate_user_role( $role->name ) . '</option>';
+					$role_select_options .= '<option value="reversed-' . esc_attr( $role_key ) . '" data-reverse="1" data-caps=\'' . json_encode( $role->capabilities ) . '\'>≠ ' . translate_user_role( $role->name ) . '</option>';
+				}
 				$admin_bar->add_node( array(
 					'id'        => 'selectrolecaps',
 					'parent'    => 'caps-quickselect',

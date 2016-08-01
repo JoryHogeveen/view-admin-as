@@ -442,7 +442,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
 	 *
 	 * @since   1.4
-	 * @since 	1.5.3 	Stop checking $single parameter
+	 * @since   1.5.3   Stop checking $single parameter
 	 * @access  public
 	 * @see     init_store_role_defaults()
 	 * 
@@ -744,7 +744,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		$role_select_options = '';
 		foreach ( $this->get_roles() as $role_key => $role ) {
-			$role_select_options .= '<option value="' . esc_attr( $role_key ) . '">' . translate_user_role( $role->name ) . '</option>';                    
+			$role_select_options .= '<option value="' . esc_attr( $role_key ) . '">' . translate_user_role( $role->name ) . '</option>';
 		}
 		
 		$admin_bar->add_node( array(

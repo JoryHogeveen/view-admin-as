@@ -42,7 +42,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5
 	 * @var    object
-	 */ 
+	 */
 	protected $vaa = false;
 
 	/**

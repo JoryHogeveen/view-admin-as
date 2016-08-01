@@ -347,7 +347,7 @@ final class VAA_View_Admin_As
 			}
 
 			/**
-			 * Validate if the current user has access to the functionality
+			 * Validate if the current user has access to the functionalities
 			 * 
 			 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
 			 *                Disable plugin functions for nedwork admin pages
@@ -1010,7 +1010,7 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Add reset link to the access denied page when the user has selected a view and dit something this view is not allowed
+	 * Add reset link to the access denied page when the user has selected a view and did something this view is not allowed
 	 *
 	 * @since   1.3
 	 * @since   1.5.1   Check for SSL

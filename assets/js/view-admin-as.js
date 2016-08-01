@@ -114,12 +114,12 @@
 					if ( false === reload ) {
 						// Check if we have more detailed data to show
 						if ( typeof response.data != 'undefined' && typeof response.data.content != 'undefined' ) {
-							if ( typeof response.data.type == 'undefined' ) { 
-								response.data.type = 'default'; 
+							if ( typeof response.data.type == 'undefined' ) {
+								response.data.type = 'default';
 							}
-							if ( typeof response.data.content != 'object' ) { 
-								response.data.content = String( response.data.content ); 
-							}                           
+							if ( typeof response.data.content != 'object' ) {
+								response.data.content = String( response.data.content );
+							}
 							VAA_View_Admin_As.overlay( response.data.content, String( response.data.type ) );
 						} else {
 							$('body #vaa-overlay').addClass('success').fadeOut( 'fast', function() { $(this).remove(); } );
