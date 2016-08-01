@@ -621,6 +621,7 @@ final class VAA_View_Admin_As
 			if ( in_array( $this->get_curUser()->user_login, $users ) ) {
 				unset( $users[ array_search( $this->get_curUser()->user_login, $users ) ] );
 			}
+			// Convert logins to WP_User objects and filter them for superior admins
 			foreach ( $users as $key => $user_login ) {
 				$user = get_user_by( 'login', $user_login );
 				if ( $user && ! in_array( $user->user_login, $this->get_superior_admins() ) ) {
