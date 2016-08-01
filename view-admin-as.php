@@ -384,6 +384,9 @@ final class VAA_View_Admin_As
 		
 			if ( $this->is_enabled() ) {
 				
+				// Fix some compatibility issues, more to come!
+				$this->third_party_compatibility();
+				
 				$this->load_textdomain();
 				$this->load_ui();
 				
@@ -424,9 +427,6 @@ final class VAA_View_Admin_As
 				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 				
 				add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
-				
-				// Fix some compatibility issues, more to come!
-				$this->third_party_compatibility();
 
 				/**
 				 * Init is finished. Hook is used for other classes related to View Admin As
