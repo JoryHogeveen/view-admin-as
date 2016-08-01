@@ -614,16 +614,20 @@ final class VAA_View_Admin_As
 		$is_superior_admin = $this->is_superior_admin( $this->get_curUser()->ID );
 
 		if ( is_network_admin() ) {
-			
+
 			// Get super admins (returns logins)
 			$users = get_super_admins();
 			// Remove current user
 			if ( in_array( $this->get_curUser()->user_login, $users ) ) {
 				unset( $users[ array_search( $this->get_curUser()->user_login, $users ) ] );
 			}
-			// Convert logins to WP_User objects
 			foreach ( $users as $key => $user_login ) {
-				$users[ $key ] = get_user_by( 'login', $user_login );
+				$user = get_user_by( 'login', $user_login );
+				if ( $user && ! in_array( $user->user_login, $this->get_superior_admins() ) ) {
+					$users[ $key ] = get_user_by( 'login', $user_login );
+				} else {
+					unset( $users[ $key ] );
+				}
 			}
 
 		} else {
@@ -631,7 +635,7 @@ final class VAA_View_Admin_As
 			$user_args = array(
 				'orderby' => 'display_name',
 				// @since  1.5.2  Exclude the current user
-				'exclude' => $this->get_curUser()->ID,
+				'exclude' => array_merge( $this->get_superior_admins(), array( $this->get_curUser()->ID ) ),
 			);
 			// Do not get regular admins for normal installs (WP 4.4+)
 			if ( ! is_multisite() && ! $is_superior_admin ) {
@@ -1488,7 +1492,7 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Check if the user is a superior admin (filter since 1.5.2)
+	 * Check if the user is a superior admin
 	 * 
 	 * @since  1.5.3
 	 * @access public
@@ -1497,7 +1501,20 @@ final class VAA_View_Admin_As
 	 * @return bool
 	 */
 	public function is_superior_admin( $user_id ) {
-		
+		// Is it a super admin and is it one of the manually configured superior admins?
+		return ( true === is_super_admin( $user_id ) && in_array( $user_id, $this->get_superior_admins() ) ) ? true : false;
+	}
+
+	/**
+	 * Get the superior admin ID's (filter since 1.5.2)
+	 * 
+	 * @since  1.5.3
+	 * @access public
+	 * 
+	 * @return array
+	 */
+	public function get_superior_admins() {
+
 		/**
 		 * Grant admins the capability to view other admins. There is no UI for this!
 		 * 
@@ -1505,13 +1522,10 @@ final class VAA_View_Admin_As
 		 * @param  array
 		 * @return array requires a returned array of user ID's
 		 */
-		$superior_admins = array_filter( 
+		return array_filter( 
 			(array) apply_filters( 'view_admin_as_superior_admins', array() ), 
 			'is_numeric'  // Only allow numeric values (user id's)
 		);
-
-		// Is it a super admin and is it one of the manually configured superior admins?
-		return ( true === is_super_admin( $user_id ) && in_array( $user_id, $superior_admins ) ) ? true : false;
 	}
 	
 	/*
