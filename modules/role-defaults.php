@@ -78,7 +78,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		// Init VAA
 		$this->load_vaa();
-		add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 
 		// Load data
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
@@ -87,33 +86,32 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 * Checks if the management part of module should be enabled
 		 * 
 		 * @since  1.4      Validate option data
-		 * @since  1.5.2    Validate custom capability view_admin_as_role_defaults
-		 * @since  1.5.2.1  Validate is_super_admin (bug in 1.5.2)
 		 */
-		if ( true == $this->get_optionData('enable') 
-			&& ! is_network_admin() 
-			&& ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) 
-		) {
+		if ( true == $this->get_optionData('enable') ) {
 			$this->enable = true;
-		}
-		
-		/**
-		 * Only allow settings for admin users
-		 * Enabling this module can only be done by a super admin
-		 */
-		if ( is_super_admin( $this->get_curUser()->ID ) ) { // $this->is_vaa_enabled() 
-			// Add adminbar menu items in settings section
-			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ) );
 		}
 
 		if ( $this->is_enabled() ) {
 			$this->init();
 		}
+
+		/**
+		 * Only allow settings for admin users
+		 * Enabling this module can only be done by a super admin
+		 * 
+		 * @since  1.5.2    Validate custom capability view_admin_as_role_defaults
+		 * @since  1.5.2.1  Validate is_super_admin (bug in 1.5.2)
+		 */
+		if (   $this->is_vaa_enabled()
+			&& ! is_network_admin()
+			&& ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') )
+		) {
+			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+		}
 	}
 	
 	/**
-	 * Init function
-	 * Also handles functionality that could allways be enabled
+	 * Init function for global functions (not user dependent)
 	 *
 	 * @since   1.4
 	 * @access  private
@@ -127,7 +125,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 */
 		global $wpdb;
 		foreach ( $this->meta_forbidden as $key => $meta_key ) {
-			if ( strpos($meta_key, '%%') !== false ) {
+			if ( strpos( $meta_key, '%%' ) !== false ) {
 				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->prefix, $meta_key );
 			}
 		}
@@ -148,13 +146,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 
 		// Setting: Hide the screen options for all users who can't access this plugin
-		if ( true == $this->get_optionData('disable_user_screen_options') && ! $this->is_enabled() ) {
+		if ( true == $this->get_optionData('disable_user_screen_options') && ! $this->is_vaa_enabled() ) {
 			add_filter( 'screen_options_show_screen', '__return_false', 99 );
-		}
-
-		if ( $this->is_vaa_enabled() ) {
-			// Add adminbar menu items in role section
-			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu' ) );
 		}
 	}
 	
@@ -167,9 +160,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	public function vaa_init() {
-		if ( $this->get_viewAs('role') ) {
+		
+		// Add adminbar menu items in settings section
+		add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ) );
+
+		// Add adminbar menu items in role section
+		if ( $this->is_enabled() ) {
+
 			// Enable storage of role default settings
 			$this->init_store_role_defaults();
+
+			// Show the admin bar node
+			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu' ) );
 		}
 	}
 
