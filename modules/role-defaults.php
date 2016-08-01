@@ -145,8 +145,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			}
 		}
 
-		// Setting: Hide the screen options for all users who can't access this plugin
-		if ( true == $this->get_optionData('disable_user_screen_options') && ! $this->is_vaa_enabled() ) {
+		// Setting: Hide the screen options for all users who can't access role defaults
+		if ( true == $this->get_optionData('disable_user_screen_options') 
+			&& ! ( $this->is_vaa_enabled() && ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) )
+		) {
 			add_filter( 'screen_options_show_screen', '__return_false', 99 );
 		}
 	}
@@ -764,7 +766,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			'parent'    => 'role-defaults',
 			'title'     => '<input class="checkbox" value="1" id="vaa_role_defaults_disable_user_screen_options" name="vaa_role_defaults_disable_user_screen_options" type="checkbox" ' . checked( $this->get_optionData( 'disable_user_screen_options' ), true, false ) . '>
 							<label for="vaa_role_defaults_disable_user_screen_options">' . __('Disable screen options', 'view-admin-as') . '</label>
-							<p class="description ab-item">' . __("Hide the screen options for all users who can't access this plugin", 'view-admin-as') . '</p>',
+							<p class="description ab-item">' . __("Hide the screen options for all users who can't access role defaults", 'view-admin-as') . '</p>',
 			'href'      => false,
 			'meta'      => array(
 				'class'     => 'auto-height',
