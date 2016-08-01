@@ -349,11 +349,12 @@ final class VAA_View_Admin_As
 			/**
 			 * Validate if the current user has access to the functionality
 			 * 
-			 * @since   0.1     Check if the current user had administrator rights (is_super_admin)
-			 *                  Disable plugin functions for nedwork admin pages
-			 * @since   1.4     Make sure we have a session for the current user
-			 * @since   1.5.1   If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
-			 *                  Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
+			 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
+			 *                Disable plugin functions for nedwork admin pages
+			 * @since  1.4    Make sure we have a session for the current user
+			 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
+			 *                Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
+			 * @since  1.5.3  Enable on network pages for superior admins
 			 */
 			if (   ( is_super_admin( $this->get_curUser()->ID ) 
 				     || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
@@ -518,8 +519,8 @@ final class VAA_View_Admin_As
 			
 			/**
 			 * Add compatibility for other cap managers
-			 * @see 	third_party_compatibility()
-			 * @param 	array 	$role_caps 	All capabilities found in the existing roles
+			 * @see    third_party_compatibility()
+			 * @param  array  $role_caps  All capabilities found in the existing roles
 			 */
 			$role_caps = apply_filters( 'view_admin_as_get_capabilities', $role_caps );
 			
@@ -535,8 +536,12 @@ final class VAA_View_Admin_As
 				}
 			}
 
+			/**
+			 * Add network capabilities
+			 * @since  1.5.3
+			 * @see    https://codex.wordpress.org/Roles_and_Capabilities
+			 */
 			if ( is_multisite() ) {
-				// @see https://codex.wordpress.org/Roles_and_Capabilities
 				$network_caps = array(
 					'manage_network' => 1,
 					'manage_sites' => 1,
@@ -619,7 +624,9 @@ final class VAA_View_Admin_As
 		}
 
 		if ( is_network_admin() ) {
+			// Get super admins (returns logins)
 			$users = get_super_admins();
+			// Convert logins to WP_User objects
 			foreach ( $users as $key => $user_login ) {
 				$users[ $key ] = get_user_by( 'login', $user_login );
 			}
