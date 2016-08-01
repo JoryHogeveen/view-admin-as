@@ -284,7 +284,7 @@ final class VAA_View_Admin_As
 	private function __construct() {
 		self::$_instance = $this;
 		
-		add_action( 'admin_notices', array( $this, 'do_admin_notices') );
+		add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
 		$this->validate_versions();
 
 		if ( ! class_exists( 'VAA_View_Admin_As_Class_Base' ) ) {
@@ -1536,7 +1536,7 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
-		if ( isset( $notice['type'] ) && isset( $notice['message'] ) ) {
+		if ( isset( $notice['type'] ) && ! empty( $notice['message'] ) ) {
 			$this->notices[ $id ] = array(
 				'type' => $notice['type'],
 				'message' => $notice['message'],
@@ -1555,7 +1555,7 @@ final class VAA_View_Admin_As
 	 */
 	public function do_admin_notices() {
 		foreach ( $this->notices as $notice ) {
-			if ( isset( $notice['type'] ) && isset( $notice['message'] ) ) {
+			if ( isset( $notice['type'] ) && ! empty( $notice['message'] ) ) {
 				echo '<div class="' . $notice['type'] . ' notice is-dismissible"><p>' . $notice['message'] . '</p></div>';
 			}
 		}
@@ -1572,6 +1572,7 @@ final class VAA_View_Admin_As
 	private function validate_versions() {
 		global $wp_version;
 
+		// Validate PHP
 		if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
 			$this->add_notice('php-version', array(
 				'type' => 'notice-error',
@@ -1579,6 +1580,7 @@ final class VAA_View_Admin_As
 			) );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
 		}
+		// Validate WP
 		if ( version_compare( $wp_version, '3.5', '<' ) ) {
 			$this->add_notice('wp-version', array(
 				'type' => 'notice-error',
