@@ -5,9 +5,9 @@ if ( ! $_tests_dir ) {
 	$_tests_dir = '/tmp/wordpress-tests-lib';
 }
 
-define('PLUGIN_NAME','view-admin-as.php');
-define('PLUGIN_FOLDER',basename(dirname( __DIR__ )));
-define('PLUGIN_PATH',PLUGIN_FOLDER.'/'.PLUGIN_NAME);
+define( 'PLUGIN_NAME'   , 'view-admin-as.php' );
+define( 'PLUGIN_FOLDER' , basename( dirname( __DIR__ ) ) );
+define( 'PLUGIN_PATH'   , PLUGIN_FOLDER.'/'.PLUGIN_NAME );
 
 // Activates this plugin in WordPress so it can be tested.
 $GLOBALS['wp_tests_options'] = array(

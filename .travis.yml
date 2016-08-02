@@ -8,26 +8,43 @@ notifications:
   on_failure: change
 
 php:
-  - nightly # PHP 7.0
-  - 5.6
-  - 5.5
-  - 5.4
-  - 5.3
+  - nightly # PHP 7.x
+  - 7.0
 
 env:
-  - WP_PROJECT_TYPE=plugin WP_VERSION=latest WP_MULTISITE=1 WP_TEST_URL=http://localhost:12000 WP_TEST_USER=test WP_TEST_USER_PASS=test
+#    - WP_VERSION=bleeding WP_MULTISITE=0
+#    - WP_VERSION=bleeding-maintenance WP_MULTISITE=0
+    - WP_VERSION=latest WP_MULTISITE=0
+    - WP_VERSION=latest WP_MULTISITE=1
+    
+#    - WP_VERSION=latest WP_MULTISITE=0
+#    - WP_VERSION=latest WP_MULTISITE=1
+#    - WP_VERSION=3.7 WP_MULTISITE=0
+#    - WP_VERSION=3.7 WP_MULTISITE=1
+#  - WP_PROJECT_TYPE=plugin WP_VERSION=latest WP_MULTISITE=1 WP_TEST_URL=http://localhost:12000 WP_TEST_USER=test WP_TEST_USER_PASS=test
 
 matrix:
-  allow_failures:
-    - php: nightly
+#    allow_failures:
+#     - env: WP_VERSION=bleeding WP_MULTISITE=0
+#     - env: WP_VERSION=bleeding-maintenance WP_MULTISITE=0
 
+    include:
+    - php: hhvm
+      env: WP_VERSION=latest WP_MULTISITE=0
+    - php: 5.6
+      env: WP_VERSION=latest WP_MULTISITE=0
+    - php: 5.4
+      env: WP_VERSION=latest WP_MULTISITE=0
+    - php: 5.3
+      env: WP_VERSION=3.7 WP_MULTISITE=0
+    
 before_script:
   # Install composer packages before trying to activate themes or plugins
   # - composer install
 
-  - git clone https://github.com/Seravo/wordpress-test-template wp-tests
-  - bash wp-tests/bin/install-wp-tests.sh test root '' localhost $WP_VERSION
+#  - git clone https://github.com/Seravo/wordpress-test-template wp-tests
+  - bash bin/install-wp-tests.sh test root '' localhost $WP_VERSION
 
 script:
   - phpunit
-  - cd tests/spec && bundle exec rspec test.rb
+#  - cd tests/spec && bundle exec rspec test.rb
