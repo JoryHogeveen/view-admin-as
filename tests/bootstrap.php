@@ -17,7 +17,8 @@ $GLOBALS['wp_tests_options'] = array(
 require_once $_tests_dir . '/includes/functions.php';
 
 function _manually_load_plugin() {
-	require dirname( __DIR__ ) . '/../'.PLUGIN_NAME;
+	//require dirname( __DIR__ ) . '/'.PLUGIN_NAME;
+	require PLUGIN_PATH;
 }
 
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
