@@ -41,7 +41,7 @@
 #wpadminbar #wp-admin-bar-view-as.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 #wpadminbar #wp-admin-bar-view-as .current > .ab-item,
 #wpadminbar #wp-admin-bar-view-as .current-parent > .ab-item {font-weight: bold;}
-#wpadminbar #wp-admin-bar-view-as .current > .ab-item::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 1.3em; vertical-align: middle; font-weight: normal;}
+#wpadminbar #wp-admin-bar-view-as .current > .ab-item::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 17px; vertical-align: middle; font-weight: normal;}
 
 #wpadminbar .ab-top-secondary .menupop .vaa-menupop > .ab-item {padding-left: 2em; padding-right: 1em;}
 
@@ -110,7 +110,7 @@
 /*#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-filtercaps {clear: both;}*/
 
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-toggle .ab-item:hover {cursor: pointer;}
-#wpadminbar #wp-admin-bar-view-as .ab-vaa-toggle .ab-item::after {content: "\f140"; font-family: 'dashicons'; float: right; margin: 0; font-size: 1.5em; vertical-align: middle; font-weight: normal;}
+#wpadminbar #wp-admin-bar-view-as .ab-vaa-toggle .ab-item::after {content: "\f140"; font-family: 'dashicons'; position: absolute; right: 10px; margin: 0; font-size: 20px; font-weight: normal;}
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-toggle.active .ab-item::after {content: "\f142";}
 
 #wpadminbar #wp-admin-bar-view-as.fullPopupActive .ab-sub-wrapper,
@@ -138,7 +138,7 @@
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps-title > .ab-item::before,
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-roles-title > .ab-item::before,
-#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-users-title > .ab-item::before {font-family: 'dashicons'; margin: 0 5px 0 -1px; font-size: 1.3em; vertical-align: middle; font-weight: normal;} /*margin: 0 2px 0 -5px;*/
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-users-title > .ab-item::before {font-family: 'dashicons'; margin: 0 5px 0 -1px; font-size: 18px; vertical-align: middle; font-weight: normal;} /*margin: 0 2px 0 -5px;*/
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps-title > .ab-item::before {content: '\f111';}/*'\f107'*/
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-roles-title > .ab-item::before {content: '\f307';}
@@ -148,7 +148,7 @@
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-role-defaults > .ab-item {padding: 0 10px;}
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-settings > .ab-item::before,
-#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-role-defaults > .ab-item::before {font-family: 'dashicons'; position: static; margin: 2px 6px 0 0; font-size: 1.3em; vertical-align: middle; font-weight: normal;}
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-role-defaults > .ab-item::before {font-family: 'dashicons'; position: static; margin: 2px 6px 0 0; font-size: 16px; vertical-align: middle; font-weight: normal;}
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-settings > .ab-item::before {content: '\f108';}
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-role-defaults > .ab-item::before {content: '\f337';}
