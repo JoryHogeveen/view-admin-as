@@ -306,7 +306,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			// $content format: array( 'text' => **text**, 'errors' => **error array** )
 			$content = $this->import_role_defaults( json_decode( stripslashes( $data['import_role_defaults'] ), true ) );
 			if ( true === $content ) {
-				wp_send_json_success( array( 'type' => 'success', 'content' => $content ) );
+				wp_send_json_success();
 			} else {
 				wp_send_json_success( array( 'type' => 'errorlist', 'content' => $content ) );
 			}
