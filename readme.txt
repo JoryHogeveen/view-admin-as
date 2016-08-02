@@ -171,8 +171,9 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Feature: Switch between super admins on network pages (currently only available for superior admins, see `view_admin_as_superior_admins` filter)
 *	Improvement: Better handling of role defaults for new users
 *	Improvement: Also hide the screen options for all users who can access this plugin default functionalities but can't access the role defaults module
-*	UI: Translate user roles in front end (WP issue workaround)
 *	UX: Confirm before deleting role defaults
+*	UI: Translate user roles in front end (WP issue workaround)
+*	UI: Fix icon sizes across browsers
 *	Tested for WordPress 4.6
 
 = 1.5.2.1 =
