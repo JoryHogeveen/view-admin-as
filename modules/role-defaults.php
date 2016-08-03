@@ -96,11 +96,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 
 		/**
-		 * Only allow settings for admin users
-		 * Enabling this module can only be done by a super admin
+		 * Only allow settings for admin users or users with the correct apabilities
 		 * 
 		 * @since  1.5.2    Validate custom capability view_admin_as_role_defaults
 		 * @since  1.5.2.1  Validate is_super_admin (bug in 1.5.2)
+		 * @since  1.5.3    Disable for network pages
 		 */
 		if (   $this->is_vaa_enabled()
 			&& ! is_network_admin()
@@ -163,8 +163,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 */
 	public function vaa_init() {
 		
-		// Add adminbar menu items in settings section
-		add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ) );
+		// Enabling this module can only be done by a super admin
+		if ( is_super_admin( $this->get_curUser()->ID ) ) {
+
+			// Add adminbar menu items in settings section
+			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ) );
+		}
 
 		// Add adminbar menu items in role section
 		if ( $this->is_enabled() ) {
