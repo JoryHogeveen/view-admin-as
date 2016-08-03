@@ -775,7 +775,6 @@ final class VAA_View_Admin_As
 		if (   ! defined('DOING_AJAX') 
 			|| ! DOING_AJAX 
 			|| ! $this->is_enabled() 
-			|| ! isset( $this->get_curUser()->ID ) 
 			|| ! isset( $_POST['view_admin_as'] ) 
 			|| ! isset( $_POST['_vaa_nonce'] ) 
 			|| ! wp_verify_nonce( $_POST['_vaa_nonce'], $this->get_nonce() ) 
