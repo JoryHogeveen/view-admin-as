@@ -1,13 +1,13 @@
-/**
+;/**
  * View Admin As
  * https://wordpress.org/plugins/view-admin-as/
  * 
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.2.1
+ * @version 1.5.3
  */
 
-;(function($) {
+(function($) {
 	
 	if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As = {};
@@ -75,11 +75,10 @@
 	 * Apply the selected view
 	 * viewAs format: { VIEWTYPE : VIEWDATA }
 	 *
-	 * @params	object	viewAs
-	 * @params	boolean	reload
+	 * @params  object  viewAs
+	 * @params  boolean reload
 	 */
 	VAA_View_Admin_As.ajax = function( viewAs, reload ) {
-		//VAA_View_Admin_As.ajaxurl;
 		
 		$('#wpadminbar .vaa-update').remove();
 		$('body').append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url(\'' + VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif\') center center no-repeat; background-size: contain;"></span></div>');
@@ -114,22 +113,23 @@
 					if ( false === reload ) {
 						// Check if we have more detailed data to show
 						if ( typeof response.data != 'undefined' && typeof response.data.content != 'undefined' ) {
-							if ( typeof response.data.type == 'undefined' ) { 
-								response.data.type = 'default'; 
+							if ( typeof response.data.type == 'undefined' ) {
+								response.data.type = 'default';
 							}
-							if ( typeof response.data.content != 'object' ) { 
-								response.data.content = String( response.data.content ); 
-							}							
+							if ( typeof response.data.content != 'object' ) {
+								response.data.content = String( response.data.content );
+							}
 							VAA_View_Admin_As.overlay( response.data.content, String( response.data.type ) );
 						} else {
 							$('body #vaa-overlay').addClass('success').fadeOut( 'fast', function() { $(this).remove(); } );
 							VAA_View_Admin_As.notice( VAA_View_Admin_As.__success, 'success' );
 						}
 					} else {
-						// Reload the page
-						window.location = window.location.href.replace('?reset-view', '').replace('&reset-view', '');
-						// Force reload
-						window.location.reload();
+						/**
+						 * Reload the page
+						 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
+						 */
+						window.location.replace( window.location.href.replace('?reset-view', '').replace('&reset-view', '') );
 					}
 				} else {
 					$('body #vaa-overlay').addClass('error').fadeOut( 'fast', function() { $(this).remove(); } );
@@ -153,7 +153,12 @@
 	};
 
 
-	// Show notice in the admin bar
+	/**
+	 * Show notice in the admin bar
+	 * @see    VAA_View_Admin_As.ajax
+	 * @param  {object}  notice
+	 * @param  {string}  type
+	 */
 	VAA_View_Admin_As.notice = function( notice, type ) {
 		$('#wp-admin-bar-top-secondary').append('<li class="vaa-update vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
 		$('#wpadminbar .vaa-update .remove').click( function() { $(this).parent().remove(); } );
@@ -162,7 +167,12 @@
 	};
 
 
-	// Show popup with return content
+	/**
+	 * Show popup with return content
+	 * @see    VAA_View_Admin_As.ajax
+	 * @param  {object}  data
+	 * @param  {string}  type
+	 */
 	VAA_View_Admin_As.overlay = function( data, type ) {
 		$('body #vaa-overlay').html('<div class="vaa-overlay-container"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>');
 		if ( type == 'textarea' ) {
@@ -197,7 +207,7 @@
 			$('body #vaa-overlay').fadeOut( 'fast', function() { $(this).remove(); } );
 		});
 
-		// Remove overlay on click outsite of container
+		// Remove overlay on click outside of container
 		$(document).mouseup( function(e){
 			$('body #vaa-overlay .vaa-overlay-container').each( function(){
 				if ( ! $(this).is(e.target) && 0 === $(this).has(e.target).length ) {
@@ -258,7 +268,7 @@
 				VAA_View_Admin_As.ajax( viewAs, true );
 				return false;
 			}
-		});	
+		}); 
 	};
 
 
@@ -275,7 +285,7 @@
 				VAA_View_Admin_As.ajax( viewAs, true );
 				return false;
 			}
-		});	
+		}); 
 
 		// Search users
 		$(document).on('keyup', VAA_View_Admin_As.prefix+'#wp-admin-bar-users .ab-vaa-search.search-users input', function(e) {
@@ -522,7 +532,9 @@
 			var val = $(VAA_View_Admin_As.prefix+'#wp-admin-bar-role-defaults-clear-roles-select select#role-defaults-clear-roles-select').val();
 			if ( val && '' !== val ) {
 				var viewAs = { role_defaults : { clear_role_defaults : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				if ( confirm( VAA_View_Admin_As.__confirm ) ) {
+					VAA_View_Admin_As.ajax( viewAs, false );
+				}
 			}
 			return false;
 		});

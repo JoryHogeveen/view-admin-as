@@ -6,7 +6,7 @@
  * 
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.2.1
+ * @version 1.5.3
  */
  
 ! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
@@ -42,15 +42,15 @@ abstract class VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5
 	 * @var    object
-	 */	
+	 */
 	protected $vaa = false;
 
 	/**
 	 * init function to store data from the main class and enable functionality based on the current view
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @return	void
+	 * @access  public
+	 * @return  void
 	 */
 	final public function load_vaa() {
 		$this->vaa = View_Admin_As();
@@ -60,8 +60,8 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Is the main class enabled? (for other classes)
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @return	bool
+	 * @access  public
+	 * @return  bool
 	 */
 	final public function is_vaa_enabled() { return (bool) $this->vaa->is_enabled(); }
 
@@ -69,8 +69,8 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Is enabled? (for other classes)
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @return	bool
+	 * @access  public
+	 * @return  bool
 	 */
 	final public function is_enabled() { return (bool) $this->enable; }
 		
@@ -78,9 +78,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Set plugin enabled true/false
 	 *
 	 * @since   1.5.1
-	 * @access 	protected
-	 * @param	bool
-	 * @return	bool
+	 * @access  protected
+	 * @param   bool
+	 * @return  bool
 	 */
 	protected function set_enable( $bool = false ) {
 		$success = $this->update_optionData( $bool, 'enable', true );
@@ -94,10 +94,10 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Get full array or array key
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @param 	array 	$array 		The requested array
-	 * @param 	string	$key 		Return only a key of the requested array (optional)
-	 * @return	array|string
+	 * @access  public
+	 * @param   array        $array  The requested array
+	 * @param   string|bool  $key    Return only a key of the requested array (optional)
+	 * @return  array|string
 	 */
 	final public function get_array_data( $array, $key = false ) {
 		if ( $key ) {
@@ -115,12 +115,12 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Set full array or array key
 	 *
 	 * @since   1.5
-	 * @access 	public
-	 * @param 	array 	$array 		Original array
-	 * @param 	mixed	$var 		The new value
-	 * @param 	string	$key 		The array key for the value (optional)
-	 * @param 	bool	$append 	If the key doesn't exist in the original array, append it (optional)
-	 * @return	array|string
+	 * @access  public
+	 * @param   array        $array   Original array
+	 * @param   mixed        $var     The new value
+	 * @param   string|bool  $key     The array key for the value (optional)
+	 * @param   bool         $append  If the key doesn't exist in the original array, append it (optional)
+	 * @return  array|string
 	 */
 	final public function set_array_data( $array, $var, $key = false, $append = false ) {
 		if ( $key ) {
@@ -191,7 +191,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5.1
 	 * @access public
-	 * @return void
+	 * @return string
 	 */
 	public function __toString() {
 		return get_class( $this );
@@ -224,6 +224,8 @@ abstract class VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5.1
 	 * @access public
+	 * @param  string
+	 * @param  array
 	 * @return null
 	 */
 	public function __call( $method = '', $args = array() ) {
