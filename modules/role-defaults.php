@@ -238,10 +238,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if (   ! defined('VAA_DOING_AJAX') 
 			|| ! VAA_DOING_AJAX 
 			|| ! $this->is_vaa_enabled() 
+			|| ! $this->is_enabled() 
 		) {
 			return false;
 		}
-		
+
 		$success = true;
 
 
