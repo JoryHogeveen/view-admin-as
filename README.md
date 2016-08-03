@@ -1,5 +1,13 @@
-# View Admin As
+# [View Admin As](https://viewadminas.wordpress.com/) #
 View the WordPress admin as a different role, switch between users, temporarily change your capabilities, set default screen settings for roles.
+
+[![WordPress Plugin version](https://img.shields.io/wordpress/plugin/v/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
+[![WordPress Plugin WP tested version](https://img.shields.io/wordpress/v/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
+[![WordPress Plugin downloads](https://img.shields.io/wordpress/plugin/dt/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
+[![WordPress Plugin rating](https://img.shields.io/wordpress/plugin/r/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
+[![Travis](https://secure.travis-ci.org/JoryHogeveen/view-admin-as.png?branch=master)](http://travis-ci.org/JoryHogeveen/view-admin-as)
+[![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)](https://github.com/JoryHogeveen/view-admin-as/blob/master/license.txt)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)
 
 ## Description
 This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin without the need to login with a user that has this role!
