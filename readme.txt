@@ -220,82 +220,9 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	i18n: All translations are now managed with translate.wordpress.org
 *	Screenshots updated
 
-= 1.4.1 =
+= Older versions =
 
-*	Improvement: Improve how capabilities are fetched
-*	Improvement: Usage of a single instance of the class
-*	Tested with WordPress 4.5-Beta4
-
-= 1.4 =
-
-*	Feature: Module "Role defaults" to set default screen settings for roles and apply them on users through various bulk actions
-*	Improvement: DB version storage and update functions
-*	A lot of code improvements and some deprecated fixes
-*	Stopped using WordPress default translations since some where not correct for this plugin. All translations are now managed with the plugin
-*	Also tested with WordPress 4.5-Beta1
-
-= 1.3.4 =
-
-*	Improvement: View settings are saved separately for each browser login so you can set different views at the same time if you use different browsers. (incognito also works!)
-*	Improvement: View settings are saved for 24 hours. After that they are cleared automatically. (login triggers cleanup)
-*	Improvement: Better Ajax handlers
-*	Improvement: Better storage handlers
-*	Improvement: uninstall.php added for cleanup all data. (Sadly does not work for large networks of 10000+ sites or users)
-*	Tested with WordPress 4.5-Beta1
-
-= 1.3.3 =
-
-*	Improvement: Changed "init" hook to "plugins_loaded" for theme support (found some issues with the Genesis Framework, this solved it)
-
-= 1.3.2 =
-
-*	Feature: Added the ability to filter capabilities by the role defaults (normal and reversed)
-
-= 1.3.1 =
-
-*	Capability filter improved
-*	Fix: constructor for PHP7
-*	Fix: Stop loading css and scripts on frontend when no view is selected and the adminbar is disabled
-*	Added version tag to css and scripts
-
-= 1.3 =
-
-*	Feature: Added the ability to (non-destructively) change your own capabilities
-*	Feature: Added reset link on the "access denied" page when a view is selected
-*	Remove 'reset-view' from address bar when selecting a new view
-*	Added capability screenshots
-*	Added a FAQ
-*	Tested with WordPress 4.4-Beta4
-
-= 1.2.2 =
-
-*	Added support for users with multiple roles
-*	Enabled switching to admin users for multisites (switching to super admins is always disabled!)
-
-= 1.2.1 =
-
-*	Warning fixed
-
-= 1.2 =
-
-*	Support i18n functionality (currently only English and Dutch, translators are welcome!!) - Note: I use default WordPress strings aswell
-*	When grouped (10+ users): show number of users per role
-*	When grouped (10+ users): ability to search for users by their username
-*	Disable forcing the admin bar when in default view (Off)
-*	Some extra code and style improvements
-
-= 1.1 =
-
-*	Sort users by their role
-*	Group users under their roles when there are more than 10 users
-*	Make current user or role bold in dropdown + add eye icon
-*	Improve compatibility with Pods Framework
-*	Added css for style improvements
-*	Some extra code improvements
-
-= 1.0 =
-
-Created from nothingness just to be one of the cool kids. Yay!
+Complete changelog: [viewadminas.wordpress.com/changelog/](https://viewadminas.wordpress.com/changelog/ "viewadminas.wordpress.com/changelog/")
 
 == Other Notes ==
 
