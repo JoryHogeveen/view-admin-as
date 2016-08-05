@@ -218,7 +218,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			foreach( $metas as $key => $meta_key ) {
 				// Remove forbidden or invalid meta keys
 				if (   in_array( $meta_key, $this->meta_forbidden ) 
-					|| strpos($meta_key, ' ') !== false 
+					|| strpos( $meta_key, ' ' ) !== false 
 					|| ! is_string( $meta_key )
 				) {
 					unset( $metas[ $key ] );
@@ -305,7 +305,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			} else {
 				wp_send_json_error( array( 'type' => 'error', 'content' => $content ) );
 			}
-			wp_die();
+			die();
 		}
 		if ( isset( $data['import_role_defaults'] ) && is_string( $data['import_role_defaults'] ) ) {
 			// $content format: array( 'text' => **text**, 'errors' => **error array** )
@@ -315,7 +315,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			} else {
 				wp_send_json_success( array( 'type' => 'errorlist', 'content' => $content ) );
 			}
-			wp_die();
+			die();
 		}
 
 		return $success;
