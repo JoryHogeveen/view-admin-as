@@ -249,7 +249,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		$success = true;
 
-
 		// Validate super admin
 		if ( is_super_admin( $this->get_curUser()->ID ) ) {
 
@@ -587,7 +586,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( 'all' != $role && isset( $role_defaults[ $role ] ) ) {
 			$data = $role_defaults[ $role ];
 			$data = array( $role => $data );
-		} elseif ( 'all' == $role && isset( $role_defaults ) && ! empty( $role_defaults ) ) {
+		} elseif ( 'all' == $role && ! empty( $role_defaults ) ) {
 			$data = $role_defaults;
 		}  else {
 			$data = esc_attr__('No valid data found', 'view-admin-as');
@@ -606,7 +605,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	private function import_role_defaults( $data ) {
 		$new_defaults = array();
 		$error_list = array();
-		if ( ! isset( $data ) || ! is_array( $data ) || empty( $data ) ) {
+		if ( empty( $data ) || ! is_array( $data ) ) {
 			return array( 'text' => esc_attr__('No valid data found', 'view-admin-as') );
 		}
 		foreach ( $data as $role => $role_data ) {
@@ -657,7 +656,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		$meta_keys = $this->get_meta();
 		if ( is_array( $meta_keys ) ) {
 			foreach( $meta_keys as $key => $meta_key ) {
-				if ( is_numeric( $meta_key ) || empty( $meta_key ) || ! is_string( $meta_key ) ) {
+				if ( empty( $meta_key ) || is_numeric( $meta_key ) || ! is_string( $meta_key ) ) {
 					unset( $this->meta_key[ $key ] );
 					continue;
 				} else {
