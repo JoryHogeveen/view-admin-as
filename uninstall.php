@@ -17,9 +17,16 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 if ( ! is_multisite() ) {
 	vaa_uninstall();
 } else {
-    $blogs = wp_get_sites(); // Sadly does not work for large networks -> return false
+	global $wp_version;
+	if ( version_compare( $wp_version, '4.5.999', '<' ) ) {
+		// Sadly does not work for large networks -> return false
+		$blogs = wp_get_sites();
+	} else {
+		$blogs = get_sites();
+	}
 	if ( $blogs ) {
 		foreach ( $blogs as $blog ) {
+			$blog = (array) $blog;
 			switch_to_blog( intval( $blog['blog_id'] ) );
 			vaa_uninstall();
 		}
