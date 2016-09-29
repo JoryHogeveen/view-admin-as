@@ -151,6 +151,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		) {
 			add_filter( 'screen_options_show_screen', '__return_false', 99 );
 		}
+
+		add_action( 'admin_print_scripts', array( $this, 'admin_print_scripts' ), 100 );
 	}
 	
 	/**
@@ -178,6 +180,36 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 			// Show the admin bar node
 			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu' ) );
+		}
+	}
+
+	/**
+	 * Print scripts in the admin section
+	 *
+	 * @since 1.5.3-dev
+	 * @access  public
+	 */
+	public function admin_print_scripts() {
+
+		// Setting: Lock meta box order and locations for all users who can't access role defaults
+		if ( true == $this->get_optionData('lock_meta_boxes')
+		     && ! ( $this->is_vaa_enabled() && ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) )
+		) {
+			?>
+			<script type="text/javascript">
+				jQuery(document).ready( function($) {
+
+					// Lock meta boxes in position by
+					// disabling sorting.
+					//
+					// Credits go to Chris Van Patten:
+					// http://wordpress.stackexchange.com/a/44539
+
+					$('.meta-box-sortables').sortable( { disabled: true } );
+					$('.postbox .hndle').css('cursor', 'pointer');
+				});
+			</script>
+			<?php
 		}
 	}
 
@@ -274,6 +306,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				$success = $this->update_optionData( true, 'disable_user_screen_options', true );
 			} else {
 				$success = $this->update_optionData( false, 'disable_user_screen_options', true );
+			}
+		}
+		if ( isset( $data['lock_meta_boxes'] ) ) {
+			if ( true == $data['lock_meta_boxes'] ) {
+				$success = $this->update_optionData( true, 'lock_meta_boxes', true );
+			} else {
+				$success = $this->update_optionData( false, 'lock_meta_boxes', true );
 			}
 		}
 		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
@@ -776,7 +815,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'class'     => 'auto-height',
 			),
 		) );
-		
+		$admin_bar->add_node( array(
+			'id'        => 'role-defaults-setting-lock-meta-boxes',
+			'parent'    => 'role-defaults',
+			'title'     => '<input class="checkbox" value="1" id="vaa_role_defaults_lock_meta_boxes" name="vaa_role_defaults_lock_meta_boxes" type="checkbox" ' . checked( $this->get_optionData( 'lock_meta_boxes' ), true, false ) . '>
+							<label for="vaa_role_defaults_lock_meta_boxes">' . __('Lock meta boxes', 'view-admin-as') . '</label>
+							<p class="description ab-item">' . __("Lock meta box order and locations for all users who can't access role defaults", 'view-admin-as') . '</p>',
+			'href'      => false,
+			'meta'      => array(
+				'class'     => 'auto-height',
+			),
+		) );
+
 		/**
 		 * Bulk actions 
 		 */

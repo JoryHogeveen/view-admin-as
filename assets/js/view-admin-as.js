@@ -479,6 +479,16 @@
 			VAA_View_Admin_As.ajax( viewAs, false );
 		});
 
+		// Lock meta box order and locations for users who can't access this plugin
+		$(document).on('change', VAA_View_Admin_As.prefix+'#wp-admin-bar-role-defaults-setting-lock-meta-boxes input#vaa_role_defaults_lock_meta_boxes', function( e ) {
+			e.preventDefault();
+			var viewAs = { role_defaults : { lock_meta_boxes : 0 } };
+			if ( this.checked ) {
+				viewAs = { role_defaults : { lock_meta_boxes : true } };
+			}
+			VAA_View_Admin_As.ajax( viewAs, false );
+		});
+
 		// Filter users
 		$(document).on('keyup', VAA_View_Admin_As.prefix+'#wp-admin-bar-role-defaults-bulk-users-filter input#role-defaults-bulk-users-filter', function(e) {
 			e.preventDefault();
