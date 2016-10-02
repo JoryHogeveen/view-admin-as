@@ -124,7 +124,7 @@ Example: http://www.your.domain/wp-admin/?reset-view
 Please see the `view_admin_as_role_defaults_meta` filter at https://viewadminas.wordpress.com/documentation/actions-filters/!
 
 = 6. I can't find a user! =
-Could it be that this user is an equal user to your's? Example: you are both Admins? 
+Could it be that this user is an equal user to your's? Example: you are both Admins?
 If so, these are filtered. Viewing Admins can only be done when you are a Super Admin within a network installation.
 
 Why? To protect your fellow admin! You have no power over equal users..
@@ -229,8 +229,9 @@ Complete changelog: [viewadminas.wordpress.com/changelog/](https://viewadminas.w
 You can find me here:
 
 *	[Keraweb](http://www.keraweb.nl/ "Keraweb")
-*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")
+*	[GitHub](https://github.com/JoryHogeveen/view-admin-as/ "GitHub")
 *	[Plugin page](https://viewadminas.wordpress.com/ "Plugin page")
+*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")
 
 = Translations =
 
