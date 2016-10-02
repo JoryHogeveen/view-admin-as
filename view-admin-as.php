@@ -766,19 +766,27 @@ final class VAA_View_Admin_As
 		// Only enqueue scripts if the admin bar is enabled otherwise they have no use
 		if ( is_admin_bar_showing() && $this->is_enabled() ) {
 			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min'; // Use non-minified versions
-			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->get_version(); // Prevent browser cache
+			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->store->get_version(); // Prevent browser cache
 
 			wp_enqueue_style(   'vaa_view_admin_as_style', VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css', array(), $version );
 			wp_enqueue_script(  'vaa_view_admin_as_script', VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js', array( 'jquery' ), $version, true );
-			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', array(
+
+			$script_localization = array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'siteurl' => get_site_url(),
 				'_debug' => ( defined('WP_DEBUG') && WP_DEBUG ) ? (bool) WP_DEBUG : false,
-				'_vaa_nonce' => wp_create_nonce( $this->get_nonce() ),
+				'_vaa_nonce' => wp_create_nonce( $this->store->get_nonce() ),
 				'__no_users_found' => esc_html__( 'No users found.', 'view-admin-as' ),
 				'__success' => esc_html__( 'Success', 'view-admin-as' ),
 				'__confirm' => esc_html__( 'Are you sure?', 'view-admin-as' ),
-			) );
+				'settings' => $this->store->get_settings(),
+				'settings_user' => $this->store->get_userSettings()
+			);
+			foreach ( $this->get_modules() as $name => $module ) {
+				$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
+			}
+
+			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', $script_localization );
 		}
 	}
 
