@@ -117,6 +117,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	private function init() {
 
 		/**
+		 * Add capabilities for this module
+		 * @since 1.5.x
+		 */
+		$this->capabilities = array( 'view_admin_as_role_defaults' );
+		add_filter( '_vaa_add_capabilities', array( $this, 'add_capabilities' ) );
+
+		/**
 		 * Replace %% with the current table prefix and add it to the array of forbidden meta keys
 		 * @since 1.5.2
 		 */
