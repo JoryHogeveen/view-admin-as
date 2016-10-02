@@ -8,6 +8,7 @@
  * Author URI:  https://www.keraweb.nl
  * Text Domain: view-admin-as
  * Domain Path: /languages/
+ * License:     GPLv2
  */
 
 /*
