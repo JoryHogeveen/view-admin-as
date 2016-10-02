@@ -950,7 +950,11 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Whoah, partner!', 'view-admin-as' ), null );
+		_doing_it_wrong(
+			__FUNCTION__,
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', 'view-admin-as' ),
+			null
+		);
 	}
 
 	/**
@@ -961,7 +965,11 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, esc_html__( 'Whoah, partner!', 'view-admin-as' ), null );
+		_doing_it_wrong(
+			__FUNCTION__,
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', 'view-admin-as' ),
+			null
+		);
 	}
 
 	/**
@@ -974,7 +982,11 @@ final class VAA_View_Admin_As
 	 * @return  null
 	 */
 	public function __call( $method = '', $args = array() ) {
-		_doing_it_wrong( get_class( $this ) . "::{$method}", esc_html__( 'Method does not exist.', 'view-admin-as' ), null );
+		_doing_it_wrong(
+			get_class( $this ) . "::{$method}",
+			esc_html__( 'Method does not exist.', 'view-admin-as' ),
+			null
+		);
 		unset( $method, $args );
 		return null;
 	}
