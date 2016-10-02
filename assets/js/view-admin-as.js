@@ -7,11 +7,19 @@
  * @version 1.5.3
  */
 
+if ( 'undefined' == typeof VAA_View_Admin_As ) {
+	var VAA_View_Admin_As = {
+		'ajaxurl': null,
+		'siteurl': '',
+		'_debug': false,
+		'_vaa_nonce': '',
+		'__no_users_found': 'No users found.',
+		'__success': 'Success',
+		'__confirm':'Are you sure?'
+	};
+}
+
 (function($) {
-	
-	if ( 'undefined' == typeof VAA_View_Admin_As ) {
-		VAA_View_Admin_As = {};
-	}
 
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-view-as ';
 
