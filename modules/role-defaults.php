@@ -68,16 +68,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Construct function
-	 * Private to make sure it isn't declared elsewhere
+	 * Protected to make sure it isn't declared elsewhere
 	 *
 	 * @since   1.4
-	 * @access  private
-	 * @return  void
+	 * @access  protected
 	 */
-	private function __construct() {
-
-		// Init VAA
-		$this->load_vaa();
+	protected function __construct() {
+		parent::__construct();
 
 		// Load data
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
