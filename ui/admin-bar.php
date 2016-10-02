@@ -47,16 +47,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Construct function
-	 * Private to make sure it isn't declared elsewhere
+	 * Protected to make sure it isn't declared elsewhere
 	 *
 	 * @since   1.5
-	 * @access  private
-	 * @return  void
+	 * @access  protected
 	 */
-	private function __construct() {
+	protected function __construct() {
+		parent::__construct();
 
-		// Init VAA
-		$this->load_vaa();
 		if ( $this->is_vaa_enabled() ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
@@ -285,7 +283,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public function admin_bar_menu_caps( $admin_bar ) {
 		
 		// Make sure we have the latest added capabilities
-		$this->vaa->store_caps();
+		$this->store->store_caps();
 		// Add capabilities group
 		if ( $this->get_caps() && 0 < count( $this->get_caps() ) ) {
 
