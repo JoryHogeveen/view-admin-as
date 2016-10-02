@@ -24,7 +24,8 @@ env:
 #  - WP_PROJECT_TYPE=plugin WP_VERSION=latest WP_MULTISITE=1 WP_TEST_URL=http://localhost:12000 WP_TEST_USER=test WP_TEST_USER_PASS=test
 
 matrix:
-#    allow_failures:
+    allow_failures:
+      - php: 5.2
 #     - env: WP_VERSION=bleeding WP_MULTISITE=0
 #     - env: WP_VERSION=bleeding-maintenance WP_MULTISITE=0
 
@@ -36,6 +37,8 @@ matrix:
     - php: 5.4
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.3
+      env: WP_VERSION=3.7 WP_MULTISITE=0
+    - php: 5.2
       env: WP_VERSION=3.7 WP_MULTISITE=0
     
 before_script:
