@@ -1,7 +1,7 @@
 /**
  * View Admin As
  * https://wordpress.org/plugins/view-admin-as/
- * 
+ *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @version 1.5.3
@@ -94,7 +94,7 @@
 
 #wpadminbar #wp-admin-bar-view-as .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
 
-#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: 0 solid transparent; border-width: 0 10px 0 0;}
+#wpadminbar #wp-admin-bar-view-as #wp-admin-bar-caps #wp-admin-bar-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: solid transparent; border-width: 0 10px 0 0;}
 
 #wpadminbar #wp-admin-bar-view-as .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
 #wpadminbar #wp-admin-bar-view-as button {float: none; text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle;}
