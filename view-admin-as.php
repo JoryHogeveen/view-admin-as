@@ -889,14 +889,15 @@ final class VAA_View_Admin_As
 		global $wp_version;
 
 		// Validate PHP
-		if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
+		/*if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
 			$this->add_notice('php-version', array(
 				'type' => 'notice-error',
 				'message' => __('View Admin As', 'view-admin-as') . ': ' . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'PHP', '5.3' ),
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
-		}
+		}*/
+
 		// Validate WP
 		if ( version_compare( $wp_version, '3.5', '<' ) ) {
 			$this->add_notice('wp-version', array(

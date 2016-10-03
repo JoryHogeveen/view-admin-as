@@ -37,8 +37,6 @@ Through the new "Role defaults" module you can set default screen settings for r
 
 = Compatibility =
 
-WordPress 3.5+ and PHP 5.3+
-
 I think this plugin will work with most other plugins.
 
 Fixed compatibility issues:
@@ -88,12 +86,10 @@ Or search for "View Admin As" via your plugins menu.
 = Recommended Requirements =
 
 * WordPress 4.0 or greater (Though I always recommend to update to the latest version!)
-* PHP version 5.6 or greater
 
 = Minimum Requirements =
 
 * WordPress 3.5 or greater (3.8+ recommended because of design, this plugin doesn't incorporate all styles of versions prior to WP 3.8)
-* PHP version 5.3 or greater
 
 == Frequently Asked Questions ==
 
