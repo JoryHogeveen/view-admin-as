@@ -116,6 +116,8 @@ final class VAA_View_Admin_As
 	private function __construct() {
 		self::$_instance = $this;
 
+		add_action( 'init', array( $this, 'load_textdomain' ) );
+
 		add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
 		$this->validate_versions();
 
@@ -231,7 +233,6 @@ final class VAA_View_Admin_As
 				// Fix some compatibility issues, more to come!
 				VAA_View_Admin_As_Compat::get_instance( $this )->init();
 
-				$this->load_textdomain();
 				$this->load_ui();
 
 				$this->store->store_caps();
@@ -794,9 +795,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Load plugin textdomain.
 	 *
-	 * @since 	1.2
-	 * @access 	public
-	 * @return	void
+	 * @since   1.2
+	 * @access  public
+	 * @return  void
 	 */
 	public function load_textdomain() {
 		/**
@@ -813,9 +814,7 @@ final class VAA_View_Admin_As
 		 * @see  https://core.trac.wordpress.org/ticket/37539
 		 */
 		if ( ! is_admin() ) {
-			add_action( 'init', function() {
-				load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
-			} );
+			load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
 		}
 	}
 
