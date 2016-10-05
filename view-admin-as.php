@@ -822,25 +822,30 @@ final class VAA_View_Admin_As
 	 * Load plugin textdomain.
 	 *
 	 * @since   1.2
+	 * @since   1.5.x  Hooked into init hook, check for is_enabled() required
 	 * @access  public
 	 * @return  void
 	 */
 	public function load_textdomain() {
-		/**
-		 * Keep the third parameter pointing to the languages folder within this plugin to enable support for custom .mo files
-		 *
-		 * @todo look into 4.6 changes Maybe the same can be done in an other way
-		 * @see https://make.wordpress.org/core/2016/07/06/i18n-improvements-in-4-6/
-		 */
-		load_plugin_textdomain( 'view-admin-as', false, VIEW_ADMIN_AS_DIR . '/languages/' );
 
-		/**
-		 * Frontend translation of roles is not working by default (Darn you WordPress!)
-		 * Needs to be in init action to work
-		 * @see  https://core.trac.wordpress.org/ticket/37539
-		 */
-		if ( ! is_admin() ) {
-			load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
+		if ( $this->is_enabled() ) {
+
+			/**
+			 * Keep the third parameter pointing to the languages folder within this plugin to enable support for custom .mo files
+			 *
+			 * @todo look into 4.6 changes Maybe the same can be done in an other way
+			 * @see https://make.wordpress.org/core/2016/07/06/i18n-improvements-in-4-6/
+			 */
+			load_plugin_textdomain( 'view-admin-as', false, VIEW_ADMIN_AS_DIR . 'languages/' );
+
+			/**
+			 * Frontend translation of roles is not working by default (Darn you WordPress!)
+			 * Needs to be in init action to work
+			 * @see  https://core.trac.wordpress.org/ticket/37539
+			 */
+			if ( ! is_admin() ) {
+				load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
+			}
 		}
 	}
 
