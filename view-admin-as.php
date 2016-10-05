@@ -320,7 +320,8 @@ final class VAA_View_Admin_As
 	 * Load the user interface
 	 *
 	 * @since   1.5
-	 * @since   1.5.1 	added notice on class name conflict
+	 * @since   1.5.1   added notice on class name conflict
+	 * @since   1.5.x   added our toolbar class
 	 * @access  private
 	 * @return  void
 	 */
@@ -328,7 +329,7 @@ final class VAA_View_Admin_As
 
 		// The default admin bar ui
 		if ( ! class_exists('VAA_View_Admin_As_Admin_Bar') ) {
-			include_once( VIEW_ADMIN_AS_DIR . 'ui/admin-bar.php' );
+			include_once( VIEW_ADMIN_AS_DIR . 'ui/class-admin-bar.php' );
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin_Bar';
 			$this->ui['admin_bar'] = VAA_View_Admin_As_Admin_Bar::get_instance( $this );
 		} else {
@@ -342,7 +343,7 @@ final class VAA_View_Admin_As
 
 		// Our custom toolbar
 		if ( ! class_exists('VAA_View_Admin_As_Toolbar') ) {
-			include_once( VIEW_ADMIN_AS_DIR . 'ui/toolbar.php' );
+			include_once( VIEW_ADMIN_AS_DIR . 'ui/class-toolbar.php' );
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Toolbar';
 			$this->ui['toolbar'] = VAA_View_Admin_As_Toolbar::get_instance( $this );
 		} else {
@@ -359,14 +360,14 @@ final class VAA_View_Admin_As
 	 * Load the modules
 	 *
 	 * @since   1.5
-	 * @since   1.5.1 	added notice on class name conflict
+	 * @since   1.5.1   added notice on class name conflict
 	 * @access  private
 	 * @return  void
 	 */
 	private function load_modules() {
 		// The role defaults module (screen settings)
 		if ( ! class_exists('VAA_View_Admin_As_Role_Defaults') ) {
-			include_once( VIEW_ADMIN_AS_DIR . 'modules/role-defaults.php' );
+			include_once( VIEW_ADMIN_AS_DIR . 'modules/class-role-defaults.php' );
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Role_Defaults';
 			$this->modules['role_defaults'] = VAA_View_Admin_As_Role_Defaults::get_instance( $this );
 		} else {
