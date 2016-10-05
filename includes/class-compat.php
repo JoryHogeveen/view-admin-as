@@ -41,7 +41,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 10, 3 );
 		}
 
-		// Add our caps to the members plugin
+		/**
+		 * Add our caps to the members plugin
+		 * @since 1.5.x
+		 */
 		add_filter( 'members_get_capabilities', array( $this, 'add_capabilities' ) );
 
 		// Get caps from other plugins

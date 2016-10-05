@@ -17,7 +17,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Option key
 	 *
 	 * @since  1.5
-	 * @var    string
+	 * @var    string|bool
 	 */
 	protected $optionKey = false;
 
@@ -25,7 +25,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Option data
 	 *
 	 * @since  1.5
-	 * @var    array
+	 * @var    array|bool
 	 */
 	protected $optionData = false;
 
@@ -49,15 +49,15 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * View Admin As object
 	 *
 	 * @since  1.5
-	 * @var    object
+	 * @var    object|bool
 	 */
 	protected $vaa = false;
 
 	/**
-	 * View Admin As object
+	 * View Admin As store object
 	 *
-	 * @since  1.5.3-dev
-	 * @var    object
+	 * @since  1.5.x
+	 * @var    object|bool
 	 */
 	protected $store = false;
 

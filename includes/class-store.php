@@ -192,7 +192,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since  0.1
 	 * @since  1.5.x  Moved to this class from main class
-	 * @var    array
+	 * @var    array|bool
 	 */
 	private $viewAs = false;
 
@@ -411,7 +411,7 @@ final class VAA_View_Admin_As_Store
 
 			/**
 			 * Add compatibility for other cap managers
-			 * @see    third_party_compatibility()
+			 * @see    VAA_View_Admin_As_Compat->init()
 			 * @param  array  $role_caps  All capabilities found in the existing roles
 			 */
 			$role_caps = apply_filters( 'view_admin_as_get_capabilities', $role_caps );
@@ -432,6 +432,7 @@ final class VAA_View_Admin_As_Store
 			 * Add network capabilities
 			 * @since  1.5.3
 			 * @see    https://codex.wordpress.org/Roles_and_Capabilities
+			 * @todo   Move this to VAA_View_Admin_As_Compat?
 			 */
 			if ( is_multisite() ) {
 				$network_caps = array(
