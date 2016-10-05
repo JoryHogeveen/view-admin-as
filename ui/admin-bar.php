@@ -85,8 +85,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$this->groupUserRoles = false;
 		}
 
-		// Add the default nodes to the admin bar
+		// Add the default nodes to the WP admin bar
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ) );
+		add_action( 'vaa_toolbar_menu', array( $this, 'admin_bar_menu' ), 10, 2 );
+
 		// Add the caps nodes to the admin bar
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_settings' ) );
 
@@ -111,9 +113,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @see     'admin_bar_menu' action
 	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 	 * @param   object  $admin_bar
+	 * @param   string  $root
 	 * @return  void
 	 */
-	public function admin_bar_menu( $admin_bar ) {
+	public function admin_bar_menu( $admin_bar, $root = '' ) {
 
 		$icon = 'dashicons-hidden';
 		$title = __('Default view (Off)', 'view-admin-as');
@@ -135,15 +138,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$title = __('Viewing as user', 'view-admin-as') . ': ' . $this->get_selectedUser()->data->display_name . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 		}
 
-		$view_as_location = 'top-secondary';
-		if ( $this->get_userSettings('admin_menu_location') && in_array( $this->get_userSettings('admin_menu_location'), $this->get_allowedUserSettings('admin_menu_location') ) ) {
-			$view_as_location = $this->get_userSettings('admin_menu_location');
+		if ( empty( $root ) ) {
+			$root = 'top-secondary';
+			if ( $this->get_userSettings('admin_menu_location') && in_array( $this->get_userSettings('admin_menu_location'), $this->get_allowedUserSettings('admin_menu_location') ) ) {
+				$root = $this->get_userSettings('admin_menu_location');
+			}
 		}
 
 		// Add menu item
 		$admin_bar->add_node( array(
 			'id'        => 'view-as',
-			'parent'    => $view_as_location,
+			'parent'    => $root,
 			'title'     => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
 			'href'      => false,
 			'meta'      => array(
@@ -239,6 +244,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 							<p class="description ab-item">' . __('Store view and use WordPress with this view', 'view-admin-as') . ' (' . __('default', 'view-admin-as') . ')</p>
 							<input type="radio" class="radio vaa_settings_view_mode" value="single" id="vaa_settings_view_mode_single" name="vaa_settings_view_mode" ' . checked( $this->get_userSettings('view_mode'), 'single', false ) . '> <label for="vaa_settings_view_mode_single">' . __('Single switch mode', 'view-admin-as') . '</label>
 							<p class="description ab-item">' . __('Choose view on every pageload. This setting doesn\'t store views', 'view-admin-as') . '</p>',
+			'href'      => false,
+			'meta'      => array(
+				'class'     => 'auto-height',
+			),
+		) );
+
+		$admin_bar->add_node( array(
+			'id'        => 'settings-hide-front',
+			'parent'    => 'settings',
+			'title'     => '<input type="checkbox" class="checkbox vaa_settings_hide_front" value="1" id="vaa_settings_hide_front" name="vaa_settings_hide_front" ' . checked( $this->get_userSettings('hide_front'), 'yes', false ) . '>
+							<label for="vaa_settings_hide_front">' . __('Hide on frontend', 'view-admin-as') . '</label>
+							<p class="description ab-item">' . __('Hide on frontend when no view is selected and the admin bar is not shown', 'view-admin-as') . '</p>',
 			'href'      => false,
 			'meta'      => array(
 				'class'     => 'auto-height',

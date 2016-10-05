@@ -152,3 +152,13 @@
 
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-settings > .ab-item::before {content: '\f108';}
 #wpadminbar #wp-admin-bar-view-as #wp-admin-bar-role-defaults > .ab-item::before {content: '\f337';}
+
+/**
+ * Our custom frontend toolbar
+ */
+
+#vaa_toolbar #wpadminbar {width: auto; min-width: 0; right: 0; left: auto; border-radius: 0 0 0 5px;}
+#vaa_toolbar #wpadminbar #wp-admin-bar-view-as > .ab-item .ab-icon {margin-left: 0;}
+#vaa_toolbar #wpadminbar #wp-admin-bar-view-as > .ab-item .ab-label {display: none;}
+#vaa_toolbar #wpadminbar #wp-admin-bar-view-as:hover > .ab-item .ab-icon {margin-left: 6px;}
+#vaa_toolbar #wpadminbar #wp-admin-bar-view-as:hover > .ab-item .ab-label {display: inline-block;}

@@ -264,6 +264,16 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 			VAA_View_Admin_As.ajax( viewAs, true );
 		});
+
+		// Enable hide front
+		$(document).on('change', VAA_View_Admin_As.prefix+'#wp-admin-bar-settings-hide-front input#vaa_settings_hide_front', function( e ) {
+			e.preventDefault();
+			var viewAs = { user_setting : { hide_front : "no" } };
+			if ( this.checked ) {
+				viewAs = { user_setting : { hide_front : "yes" } };
+			}
+			VAA_View_Admin_As.ajax( viewAs, false );
+		});
 	};
 
 

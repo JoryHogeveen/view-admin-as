@@ -32,6 +32,7 @@ final class VAA_View_Admin_As_Store
 		'VAA_View_Admin_As_Compat',
 		'VAA_View_Admin_As_Update',
 		'VAA_View_Admin_As_Admin_Bar',
+		'VAA_View_Admin_As_Toolbar',
 		'VAA_View_Admin_As_Role_Defaults',
 	);
 
@@ -93,7 +94,8 @@ final class VAA_View_Admin_As_Store
 	private $defaultUserSettings = array(
 		'view_mode' => 'browse',
 		'admin_menu_location' => 'top-secondary',
-		'force_group_users' => "no",
+		'force_group_users' => 'no',
+		'hide_front' => 'no',
 	);
 
 	/**
@@ -105,9 +107,10 @@ final class VAA_View_Admin_As_Store
 	 * @var    array
 	 */
 	private $allowedUserSettings = array(
-		'view_mode' => array('browse', 'single'),
-		'admin_menu_location' => array('top-secondary', 'my-account'),
-		'force_group_users' => array("yes", "no"),
+		'view_mode' => array( 'browse', 'single' ),
+		'admin_menu_location' => array( 'top-secondary', 'my-account' ),
+		'force_group_users' => array( 'yes', 'no' ),
+		'hide_front' => array( 'yes', 'no' ),
 	);
 
 	/**

@@ -269,6 +269,7 @@ final class VAA_View_Admin_As
 				$this->store->set_viewAs( $this->get_view() );
 				// If view is set,
 				if ( $this->store->get_viewAs() ) {
+					/*
 					// Force display of admin bar (older WP versions)
 					if ( function_exists('show_admin_bar') ) {
 						show_admin_bar( true );
@@ -276,6 +277,7 @@ final class VAA_View_Admin_As
 					// Force display of admin bar (WP 3.3+)
 					remove_all_filters( 'show_admin_bar' );
 					add_filter( 'show_admin_bar', '__return_true', 999999999 );
+					*/
 
 					// Change current user object so changes can be made on various screen settings
 					// wp_set_current_user() returns the new user object
@@ -323,7 +325,8 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	private function load_ui() {
-		// The admin bar ui
+
+		// The default admin bar ui
 		if ( ! class_exists('VAA_View_Admin_As_Admin_Bar') ) {
 			include_once( VIEW_ADMIN_AS_DIR . 'ui/admin-bar.php' );
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin_Bar';
@@ -334,6 +337,20 @@ final class VAA_View_Admin_As
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
 					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
 					. ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin_Bar' ) . ')</code>',
+			) );
+		}
+
+		// Our custom toolbar
+		if ( ! class_exists('VAA_View_Admin_As_Toolbar') ) {
+			include_once( VIEW_ADMIN_AS_DIR . 'ui/toolbar.php' );
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Toolbar';
+			$this->ui['toolbar'] = VAA_View_Admin_As_Toolbar::get_instance( $this );
+		} else {
+			$this->add_notice('class-error-toolbar', array(
+				'type' => 'notice-error',
+				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
+				             . __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
+				             . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Toolbar' ) . ')</code>',
 			) );
 		}
 	}
@@ -792,7 +809,7 @@ final class VAA_View_Admin_As
 	 */
 	public function enqueue_scripts() {
 		// Only enqueue scripts if the admin bar is enabled otherwise they have no use
-		if ( is_admin_bar_showing() && $this->is_enabled() ) {
+		if ( ( is_admin_bar_showing() || VAA_API::is_vaa_toolbar_showing() ) && $this->is_enabled() ) {
 			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min'; // Use non-minified versions
 			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->store->get_version(); // Prevent browser cache
 

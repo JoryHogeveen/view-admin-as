@@ -113,4 +113,21 @@ final class VAA_API
 		return $var;
 	}
 
+	/**
+	 * Is our custom toolbar showing?
+	 *
+	 * @since  1.5.x
+	 * @access public
+	 * @static
+	 *
+	 * @return bool
+	 */
+	public static function is_vaa_toolbar_showing() {
+
+		if ( class_exists( 'VAA_View_Admin_As_Toolbar' ) && VAA_View_Admin_As_Toolbar::$showing ) {
+			return true;
+		}
+		return false;
+	}
+
 } // end class
