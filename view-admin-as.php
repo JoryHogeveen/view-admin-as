@@ -119,22 +119,13 @@ final class VAA_View_Admin_As
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
 		add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
-		$this->validate_versions();
 
-		if ( ! class_exists( 'VAA_View_Admin_As_Class_Base' ) && ! class_exists( 'VAA_View_Admin_As_Class_Store' ) && ! class_exists( 'VAA_API' ) ) {
+		// Returns true on conflict
+		if ( (boolean) $this->validate_versions() ) {
+			return;
+		}
 
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-api.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-compat.php' );
-			self::$vaa_class_names[] = 'VAA_API';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Store';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Class_Base';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Update';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Compat';
-
-			$this->store = VAA_View_Admin_As_Store::get_instance( $this );
+		if ( (boolean) $this->load() ) {
 
 			// Lets start!
 			add_action( 'plugins_loaded', array( $this, 'init' ), 0 );
@@ -149,6 +140,41 @@ final class VAA_View_Admin_As
 			) );
 
 		}
+	}
+
+	/**
+	 * Load required classes and files
+	 * Returns false on conflict
+	 *
+	 * @since  1.5.x
+	 * @return bool
+	 */
+	private function load() {
+
+		if (    ! class_exists( 'VAA_API' )
+		     && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
+		     && ! class_exists( 'VAA_View_Admin_As_Store' )
+		     && ! class_exists( 'VAA_View_Admin_As_Update' )
+		     && ! class_exists( 'VAA_View_Admin_As_Compat' )
+		) {
+
+			self::$vaa_class_names[] = 'VAA_API';
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Class_Base';
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Store';
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Update';
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Compat';
+			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-api.php' );
+			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
+			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
+			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
+			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-compat.php' );
+
+			$this->store = VAA_View_Admin_As_Store::get_instance( $this );
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -882,11 +908,13 @@ final class VAA_View_Admin_As
 	 * Checks for valid resources
 	 *
 	 * @since   1.5.1
+	 * @since   1.5.x  Returns conflict status
 	 * @access  private
-	 * @return  void
+	 * @return  bool
 	 */
 	private function validate_versions() {
 		global $wp_version;
+		$conflict = false;
 
 		// Validate PHP
 		/*if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
@@ -906,7 +934,9 @@ final class VAA_View_Admin_As
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
+			$conflict = true;
 		}
+		return $conflict;
 	}
 
 	/**
