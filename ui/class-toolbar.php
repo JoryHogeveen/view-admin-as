@@ -7,6 +7,7 @@
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @version 1.5.x
+ * @see wp-includes/class-wp-admin-bar.php
  */
 
 ! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
@@ -38,8 +39,8 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * View Admin As store
 	 *
-	 * @since  1.5.x
-	 * @var    object|bool
+	 * @since   1.5.x
+	 * @var     object|bool
 	 */
 	private $vaa_store = false;
 
@@ -92,6 +93,10 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 
 	/**
 	 * Render our toolbar using the render function from WP_Admin_bar
+	 *
+	 * @since   1.5.x
+	 * @access  public
+	 * @return  void
 	 */
 	public function vaa_toolbar_render() {
 
@@ -111,14 +116,6 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		$this->render();
 
 		echo '</div>';
-	}
-
-	/**
-	 * Overwrite WP_Admin_Bar initialize()
-	 * @since  1.5.x
-	 */
-	public function initialize() {
-		// Nope
 	}
 
 	/**
