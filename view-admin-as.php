@@ -603,25 +603,63 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Add reset link to the access denied page when the user has selected a view and did something this view is not allowed
+	 * Add options to the access denied page when the user has selected a view and did something this view is not allowed
 	 *
 	 * @since   1.3
 	 * @since   1.5.1   Check for SSL
+	 * @since   1.6     More options and better description
 	 * @access  public
 	 *
 	 * @param   string  $function_name  function callback
 	 * @return  string  $function_name  function callback
 	 */
 	public function die_handler( $function_name ) {
+
 		if ( false != $this->store->get_viewAs() ) {
+
 			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			// Check for existing query vars
 			$url_comp = parse_url( $url );
-			$url .= ( isset ( $url_comp['query'] ) ) ? '&reset-view' : '?reset-view';
 			// Check protocol
 			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
-			// Return message with link
-			echo '<p>' . __('View Admin As', 'view-admin-as') . ': <a href="' . $url . '">' . __('Did something wrong? Reset the view by clicking me!', 'view-admin-as') . '</a></p>';
+
+			$options = array();
+
+			if ( is_network_admin() ) {
+				$dashboard_url = network_admin_url();
+				$options[] = array(
+					'text' => __( 'Go to network dashboard', 'view-admin-as' ),
+					'url' => $dashboard_url
+				);
+			} else {
+				$dashboard_url = admin_url();
+				$options[] = array(
+					'text' => __( 'Go to dashboard', 'view-admin-as' ),
+					'url' => $dashboard_url
+				);
+				$options[] = array(
+					'text' => __( 'Go to homepage', 'view-admin-as' ),
+					'url' => get_bloginfo( 'url' )
+				);
+			}
+
+			// Reset url
+			$options[] = array(
+				'text' => __( 'Reset the view', 'view-admin-as' ),
+				'url' => $url . ( ( isset ( $url_comp['query'] ) ) ? '&reset-view' : '?reset-view' )
+			);
+?>
+<div>
+	<h3><?php _e( 'View Admin As', 'view-admin-as' ) ?>:</h3>
+	<?php _e( 'It appears the view you have selected is not permitted to view this page, please choose one of the options below.', 'view-admin-as' ) ?>
+	<ul>
+		<?php foreach ( $options as $option ) { ?>
+		<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
+		<?php } ?>
+	</ul>
+</div>
+<hr>
+<?php
 		}
 		return $function_name;
 	}
