@@ -4,19 +4,20 @@
  *
  * Compatibility class
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.x
+ * @since   1.6
+ * @version 1.6
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @var     VAA_View_Admin_As_Compat
 	 */
 	private static $_instance = null;
@@ -25,7 +26,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * Fix compatibility issues
 	 *
 	 * @since   0.1
-	 * @since   1.5.x  Moved third_party_compatibility() to this class from main class
+	 * @since   1.6    Moved third_party_compatibility() to this class from main class
 	 * @access  public
 	 * @return  void
 	 */
@@ -43,7 +44,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Add our caps to the members plugin
-		 * @since 1.5.x
+		 * @since 1.6
 		 */
 		add_filter( 'members_get_capabilities', array( $this, 'add_capabilities' ) );
 
@@ -55,7 +56,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Get's current capabilities and merges with capabilities from other plugins
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @see     init()
 	 *
@@ -75,7 +76,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add our capabilities to an existing list of capabilities
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @see     init()
 	 *
@@ -97,7 +98,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * Fix compatibility issues Pods Framework 2.x
 	 *
 	 * @since   1.0.1
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 * @see     init()
 	 *
@@ -125,7 +126,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @static
 	 * @param   object|bool  $caller  The referrer class

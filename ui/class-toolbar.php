@@ -6,11 +6,12 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.x
+ * @since   1.6
+ * @version 1.6
  * @see wp-includes/class-wp-admin-bar.php
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 if ( ! class_exists( 'WP_Admin_Bar' ) && file_exists( ABSPATH . WPINC . '/class-wp-admin-bar.php' ) ) {
 	require_once( ABSPATH . WPINC . '/class-wp-admin-bar.php' );
@@ -23,7 +24,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @var     VAA_View_Admin_As_Admin_Bar
 	 */
 	private static $_instance = null;
@@ -31,7 +32,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * Is this toolbar being rendered?
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @var     bool
 	 */
 	public static $showing = false;
@@ -39,7 +40,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * View Admin As store
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @var     object|bool
 	 */
 	private $vaa_store = false;
@@ -48,7 +49,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * Construct function
 	 * Protected to make sure it isn't declared elsewhere
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  protected
 	 */
 	protected function __construct() {
@@ -62,7 +63,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * Init function that initializes this plugin after the main VAA class is loaded
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @see     'vaa_view_admin_as_init' action
 	 * @return  void
@@ -74,7 +75,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * Init function for the toolbar
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @return  void
 	 */
@@ -94,7 +95,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * Render our toolbar using the render function from WP_Admin_bar
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @return  void
 	 */
@@ -123,7 +124,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @static
 	 * @param   object|bool  $caller  The referrer class

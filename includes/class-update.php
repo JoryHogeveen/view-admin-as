@@ -4,19 +4,20 @@
  *
  * Update class used for version control and updates
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.x
+ * @since   1.6
+ * @version 1.6
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @var     VAA_View_Admin_As_Update
 	 */
 	private static $_instance = null;
@@ -25,7 +26,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	 * Update settings
 	 *
 	 * @since   1.4
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  private
 	 * @return  void
 	 */
@@ -61,7 +62,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	 * Check the correct DB version in the DB
 	 *
 	 * @since   1.4
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 * @return  void
 	 */
@@ -77,7 +78,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @static
 	 * @param   object|bool  $caller  The referrer class

@@ -4,12 +4,13 @@
  *
  * API class that stores the VAA data for use
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.x
+ * @since   1.6
+ * @version 1.6
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 final class VAA_API
 {
@@ -17,9 +18,10 @@ final class VAA_API
 	 * Check if the user is a superior admin
 	 *
 	 * @since  1.5.3
-	 * @since  1.5.x    Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @access public
 	 * @static
+	 * @api
 	 *
 	 * @param  int  $user_id
 	 * @return bool
@@ -33,9 +35,10 @@ final class VAA_API
 	 * Get the superior admin ID's (filter since 1.5.2)
 	 *
 	 * @since  1.5.3
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @access public
 	 * @static
+	 * @api
 	 *
 	 * @return array
 	 */
@@ -58,9 +61,10 @@ final class VAA_API
 	 * Get full array or array key
 	 *
 	 * @since   1.5
-	 * @since   1.5.x    Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 * @static
+	 * @api
 	 *
 	 * @param   array        $array  The requested array
 	 * @param   string|bool  $key    Return only a key of the requested array (optional)
@@ -80,9 +84,10 @@ final class VAA_API
 	 * Set full array or array key
 	 *
 	 * @since   1.5
-	 * @since   1.5.x    Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 * @static
+	 * @api
 	 *
 	 * @param   array        $array   Original array
 	 * @param   mixed        $var     The new value
@@ -116,9 +121,10 @@ final class VAA_API
 	/**
 	 * Is our custom toolbar showing?
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @access public
 	 * @static
+	 * @api
 	 *
 	 * @return bool
 	 */

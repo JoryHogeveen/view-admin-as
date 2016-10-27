@@ -4,12 +4,13 @@
  *
  * Base class that gets the VAA data from the main class
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.3
+ * @since   1.5
+ * @version 1.6
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 abstract class VAA_View_Admin_As_Class_Base
 {
@@ -40,7 +41,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	/**
 	 * Custom capabilities
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @var    array
 	 */
 	protected $capabilities = array();
@@ -56,7 +57,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	/**
 	 * View Admin As store object
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @var    object|bool
 	 */
 	protected $store = false;
@@ -64,7 +65,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	/**
 	 * Script localization data
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @var    array
 	 */
 	protected $scriptLocalization = array();
@@ -131,7 +132,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Add capabilities
 	 * Used for the _vaa_add_capabilities hook
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @param   array  $caps
 	 * @return  array
@@ -164,13 +165,13 @@ abstract class VAA_View_Admin_As_Class_Base
 	protected function get_allowedSettings( $key = false )     { return $this->store->get_allowedSettings( $key ); }
 	protected function get_defaultUserSettings( $key = false ) { return $this->store->get_defaultUserSettings( $key ); }
 	protected function get_allowedUserSettings( $key = false ) { return $this->store->get_allowedUserSettings( $key ); }
+	protected function get_version()                           { return $this->store->get_version(); }
+	protected function get_dbVersion()                         { return $this->store->get_dbVersion(); }
 
 	/*
 	 * VAA Getters
 	 * Make sure that you've called vaa_init(); BEFORE using these functions!
 	 */
-	protected function get_version()               { return $this->store->get_version(); }
-	protected function get_dbVersion()             { return $this->store->get_dbVersion(); }
 	protected function get_modules( $key = false ) { return $this->vaa->get_modules( $key ); }
 
 	/*
@@ -241,7 +242,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Magic method to prevent a fatal error when calling a method that doesn't exist.
+	 * Magic method to prevent a fatal error when calling a method that does not exist.
 	 *
 	 * @since  1.5.1
 	 * @access public

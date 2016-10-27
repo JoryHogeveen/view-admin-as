@@ -4,19 +4,20 @@
  *
  * Store class that stores the VAA data for use
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.x
+ * @since   1.6
+ * @version 1.6
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 final class VAA_View_Admin_As_Store
 {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @var     VAA_View_Admin_As_Store
 	 */
 	private static $_instance = null;
@@ -24,7 +25,7 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Classes that are allowed to use this class
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @var    array
 	 */
 	private static $vaa_class_names = array(
@@ -40,7 +41,7 @@ final class VAA_View_Admin_As_Store
 	 * Current user session
 	 *
 	 * @since  1.3.4
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    string
 	 */
 	private $nonce = '';
@@ -49,7 +50,7 @@ final class VAA_View_Admin_As_Store
 	 * Database option key
 	 *
 	 * @since  1.4
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    string
 	 */
 	private $optionKey = 'vaa_view_admin_as';
@@ -58,7 +59,7 @@ final class VAA_View_Admin_As_Store
 	 * Database option data
 	 *
 	 * @since  1.4
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $optionData = array(
@@ -69,7 +70,7 @@ final class VAA_View_Admin_As_Store
 	 * Array of default settings
 	 *
 	 * @since  1.5
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $defaultSettings = array();
@@ -78,7 +79,7 @@ final class VAA_View_Admin_As_Store
 	 * Array of allowed settings
 	 *
 	 * @since  1.5
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $allowedSettings = array();
@@ -88,7 +89,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since  1.5
 	 * @since  1.5.2  added force_group_users
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $defaultUserSettings = array(
@@ -103,7 +104,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since  1.5
 	 * @since  1.5.2  added force_group_users
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $allowedUserSettings = array(
@@ -117,7 +118,7 @@ final class VAA_View_Admin_As_Store
 	 * Meta key for view data
 	 *
 	 * @since  1.3.4
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    bool
 	 */
 	private $userMetaKey = 'vaa-view-admin-as';
@@ -126,7 +127,7 @@ final class VAA_View_Admin_As_Store
 	 * Complete meta value
 	 *
 	 * @since  1.5
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $userMeta = array(
@@ -138,7 +139,7 @@ final class VAA_View_Admin_As_Store
 	 * Array of available capabilities
 	 *
 	 * @since  1.3
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $caps;
@@ -147,7 +148,7 @@ final class VAA_View_Admin_As_Store
 	 * Array of available roles
 	 *
 	 * @since  0.1
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $roles;
@@ -156,7 +157,7 @@ final class VAA_View_Admin_As_Store
 	 * Array of available user objects
 	 *
 	 * @since  0.1
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $users;
@@ -165,7 +166,7 @@ final class VAA_View_Admin_As_Store
 	 * Expiration time for view data
 	 *
 	 * @since  1.3.4
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    int
 	 */
 	private $metaExpiration = 86400; // one day: ( 24 * 60 * 60 )
@@ -174,7 +175,7 @@ final class VAA_View_Admin_As_Store
 	 * Current user object
 	 *
 	 * @since  0.1
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    object
 	 */
 	private $curUser = false;
@@ -183,7 +184,7 @@ final class VAA_View_Admin_As_Store
 	 * Current user session
 	 *
 	 * @since  1.3.4
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    string
 	 */
 	private $curUserSession = '';
@@ -194,7 +195,7 @@ final class VAA_View_Admin_As_Store
 	 * Format: array( VIEW_TYPE => NAME )
 	 *
 	 * @since  0.1
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array|bool
 	 */
 	private $viewAs = false;
@@ -203,7 +204,7 @@ final class VAA_View_Admin_As_Store
 	 * Array of available usernames (key) and display names (value)
 	 *
 	 * @since  0.1
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $usernames;
@@ -212,7 +213,7 @@ final class VAA_View_Admin_As_Store
 	 * Array of available user ID's (key) and display names (value)
 	 *
 	 * @since  0.1
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $userids;
@@ -221,7 +222,7 @@ final class VAA_View_Admin_As_Store
 	 * The selected user object (if the user view is selected)
 	 *
 	 * @since  0.1
-	 * @since  1.5.x  Moved to this class from main class
+	 * @since  1.6    Moved to this class from main class
 	 * @var    object
 	 */
 	private $selectedUser;
@@ -232,7 +233,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since   1.5
 	 * @since   1.5.2  Get role objects instead of arrays
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 * @return  void
 	 */
@@ -268,7 +269,7 @@ final class VAA_View_Admin_As_Store
 	 * Store available users
 	 *
 	 * @since   1.5
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 * @return  void
 	 */
@@ -357,7 +358,7 @@ final class VAA_View_Admin_As_Store
 	 * Sort users by role
 	 *
 	 * @since   1.1
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 *
 	 * @see     store_users()
@@ -388,7 +389,7 @@ final class VAA_View_Admin_As_Store
 	 * Store available capabilities
 	 *
 	 * @since   1.4.1
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 * @return  void
 	 */
@@ -464,7 +465,7 @@ final class VAA_View_Admin_As_Store
 	 * Also merges with the default settings
 	 *
 	 * @since   1.5
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 *
 	 * @param   array       $settings
@@ -499,7 +500,7 @@ final class VAA_View_Admin_As_Store
 	 * Also merges with the default settings
 	 *
 	 * @since   1.5
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 *
 	 * @param   array   $settings
@@ -545,7 +546,7 @@ final class VAA_View_Admin_As_Store
 	 * Delete all View Admin As metadata for this user
 	 *
 	 * @since   1.5
-	 * @since   1.5.x  Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class
 	 * @access  public
 	 *
 	 * @param   int|bool     $user_id     ID of the user being deleted/removed
@@ -655,7 +656,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 * @static
 	 * @param   object|bool  $caller  The referrer class
@@ -674,7 +675,7 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Magic method to output a string if trying to use the object as a string.
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @access public
 	 * @return string
 	 */
@@ -685,7 +686,7 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Magic method to keep the object from being cloned.
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @access public
 	 * @return void
 	 */
@@ -700,7 +701,7 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Magic method to keep the object from being unserialized.
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @access public
 	 * @return void
 	 */
@@ -715,7 +716,7 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Magic method to prevent a fatal error when calling a method that doesn't exist.
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @access public
 	 * @param  string
 	 * @param  array

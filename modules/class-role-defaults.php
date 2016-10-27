@@ -6,10 +6,11 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.3
+ * @since   1.4
+ * @version 1.6
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 {
@@ -83,7 +84,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 * Checks if the management part of module should be enabled
 		 *
 		 * @since  1.4    Validate option data
-		 * @since  1.5.x  Also calls init()
+		 * @since  1.6    Also calls init()
 		 */
 		if ( true == $this->get_optionData('enable') ) {
 			$this->enable = true;
@@ -116,7 +117,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Add capabilities for this module
-		 * @since 1.5.x
+		 * @since 1.6
 		 */
 		$this->capabilities = array( 'view_admin_as_role_defaults' );
 		add_filter( '_vaa_add_capabilities', array( $this, 'add_capabilities' ) );
@@ -159,7 +160,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Print script in the admin header
 		 * Also handles the lock_meta_boxes setting
-		 * @since 1.5.x
+		 * @since 1.6
 		 */
 		add_action( 'admin_print_scripts', array( $this, 'admin_print_scripts' ), 100 );
 	}
@@ -195,7 +196,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Print scripts in the admin section
 	 *
-	 * @since   1.5.x
+	 * @since   1.6
 	 * @access  public
 	 */
 	public function admin_print_scripts() {
@@ -203,7 +204,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Setting: Lock meta box order and locations for all users who can't access role defaults
 		 *
-		 * @since  1.5.x
+		 * @since  1.6
 		 */
 		if ( true == $this->get_optionData('lock_meta_boxes')
 		     && ! ( $this->is_vaa_enabled() && ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) )
@@ -712,18 +713,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				} else {
 					$meta_key_parts = explode( '%%', $meta_key );
 
-					$compare_start = false;
+					$compare_start = true;
 					if ( ! empty( $meta_key_parts[0] ) ) {
 						$compare_start = $this->startsWith( $meta_key_compare, $meta_key_parts[0] );
-					} else {
-						$compare_start = true;
 					}
 
-					$compare_end = false;
+					$compare_end = true;
 					if ( ! empty( $meta_key_parts[1] ) ) {
 						$compare_end = $this->endsWith( $meta_key_compare, $meta_key_parts[1] );
-					} else {
-						$compare_end = true;
 					}
 
 					if ( true == $compare_start && true == $compare_end ) {
@@ -872,7 +869,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$bulk_users_select_content = '';
 			foreach ( $this->get_users() as $user ) {
 				foreach ( $user->roles as $role ) {
-					// TODO: (PHP 5.4+) Use getter get_roles( $role )['name']
 					if ( $role_data = $this->get_roles( $role ) ) {
 						$role_name = translate_user_role( $role_data->name );
 						$bulk_users_select_content .=

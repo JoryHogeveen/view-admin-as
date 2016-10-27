@@ -9,6 +9,11 @@
  * Text Domain: view-admin-as
  * Domain Path: /languages/
  * License:     GPLv2
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package view-admin-as
+ * @since   0.1
+ * @version 1.6
  */
 
 /*
@@ -55,20 +60,20 @@ final class VAA_View_Admin_As
 	private static $_instance = null;
 
 	/**
+	 * Classes that are allowed to use this class
+	 *
+	 * @since  1.6
+	 * @var    array
+	 */
+	private static $vaa_class_names = array();
+
+	/**
 	 * Enable functionalities for this user?
 	 *
 	 * @since  0.1
 	 * @var    bool
 	 */
 	private $enable = false;
-
-	/**
-	 * Classes that are allowed to use this class
-	 *
-	 * @since  1.5.x
-	 * @var    array
-	 */
-	private static $vaa_class_names = array();
 
 	/**
 	 * Var that holds all the notices
@@ -81,7 +86,7 @@ final class VAA_View_Admin_As
 	/**
 	 * VAA Store
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @var    array
 	 */
 	private $store = null;
@@ -127,6 +132,8 @@ final class VAA_View_Admin_As
 
 		if ( (boolean) $this->load() ) {
 
+			$this->store = VAA_View_Admin_As_Store::get_instance( $this );
+
 			// Lets start!
 			add_action( 'plugins_loaded', array( $this, 'init' ), 0 );
 
@@ -146,7 +153,7 @@ final class VAA_View_Admin_As
 	 * Load required classes and files
 	 * Returns false on conflict
 	 *
-	 * @since  1.5.x
+	 * @since  1.6
 	 * @return bool
 	 */
 	private function load() {
@@ -163,13 +170,12 @@ final class VAA_View_Admin_As
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Store';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Update';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Compat';
+
 			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-api.php' );
 			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
 			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
 			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
 			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-compat.php' );
-
-			$this->store = VAA_View_Admin_As_Store::get_instance( $this );
 
 			return true;
 		}
@@ -321,7 +327,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.5
 	 * @since   1.5.1   added notice on class name conflict
-	 * @since   1.5.x   added our toolbar class
+	 * @since   1.6     added our toolbar class
 	 * @access  private
 	 * @return  void
 	 */
@@ -878,7 +884,7 @@ final class VAA_View_Admin_As
 	 * Load plugin textdomain.
 	 *
 	 * @since   1.2
-	 * @since   1.5.x  Hooked into init hook, check for is_enabled() required
+	 * @since   1.6    Hooked into init hook, check for is_enabled() required
 	 * @access  public
 	 * @return  void
 	 */
@@ -969,7 +975,7 @@ final class VAA_View_Admin_As
 	 * Checks for valid resources
 	 *
 	 * @since   1.5.1
-	 * @since   1.5.x  Returns conflict status
+	 * @since   1.6    Returns conflict status
 	 * @access  private
 	 * @return  bool
 	 */
@@ -1006,7 +1012,7 @@ final class VAA_View_Admin_As
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *
 	 * @since   1.4.1
-	 * @since   1.5.x  Restrict access to known classes
+	 * @since   1.6    Restrict access to known classes
 	 * @access  public
 	 * @static
 	 * @see     View_Admin_As()
@@ -1090,7 +1096,7 @@ final class VAA_View_Admin_As
  * Returns the main instance of VAA_View_Admin_As to prevent the need to use globals.
  *
  * @since   1.4.1
- * @since   1.5.x  $caller parameter
+ * @since   1.6    $caller parameter
  * @param   object  $caller
  * @return  VAA_View_Admin_As
  */
