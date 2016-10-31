@@ -30,6 +30,7 @@ final class VAA_View_Admin_As_Store
 	 */
 	private static $vaa_class_names = array(
 		'VAA_View_Admin_As',
+		'VAA_View_Admin_As_View',
 		'VAA_View_Admin_As_Compat',
 		'VAA_View_Admin_As_Update',
 		'VAA_View_Admin_As_Admin_Bar',
@@ -529,7 +530,7 @@ final class VAA_View_Admin_As_Store
 				$current[ $setting ] = $value;
 				// Some settings need a reset
 				if ( in_array( $setting, array( 'view_mode' ) ) ) {
-					View_Admin_As()->reset_view();
+					View_Admin_As( $this )->view( 'reset' );
 				}
 			}
 		}
