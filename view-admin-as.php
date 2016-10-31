@@ -309,8 +309,8 @@ final class VAA_View_Admin_As
 
 				/**
 				 * Init is finished. Hook is used for other classes related to View Admin As
-				 * @since 	1.5
-				 * @param 	object 	$this 	VAA_View_Admin_As
+				 * @since  1.5
+				 * @param  object  $this  VAA_View_Admin_As
 				 */
 				do_action( 'vaa_view_admin_as_init', $this );
 
@@ -657,7 +657,7 @@ final class VAA_View_Admin_As
 ?>
 <div>
 	<h3><?php _e( 'View Admin As', 'view-admin-as' ) ?>:</h3>
-	<?php _e( 'It appears the view you have selected is not permitted to view this page, please choose one of the options below.', 'view-admin-as' ) ?>
+	<?php _e( 'The view you have selected is not permitted to view this page, please choose one of the options below.', 'view-admin-as' ) ?>
 	<ul>
 		<?php foreach ( $options as $option ) { ?>
 		<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
