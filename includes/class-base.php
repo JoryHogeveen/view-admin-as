@@ -138,11 +138,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function add_capabilities( $caps ) {
-
 		foreach ( $this->capabilities as $cap ) {
 			$caps[ $cap ] = $cap;
 		}
-
 		return $caps;
 	}
 
