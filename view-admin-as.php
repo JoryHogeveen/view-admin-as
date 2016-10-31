@@ -1020,12 +1020,25 @@ final class VAA_View_Admin_As
 	 * @return  VAA_View_Admin_As
 	 */
 	public static function get_instance( $caller ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self();
-		} elseif ( in_array( $caller, self::$vaa_class_names ) ) {
+		if ( in_array( $caller, self::$vaa_class_names ) ) {
 			return self::$_instance;
 		}
 		return null;
+	}
+
+	/**
+	 * Populate the instance with this class
+	 *
+	 * @since   1.6
+	 * @access  public
+	 * @static
+	 * @return  void
+	 */
+	public static function instantiate() {
+		if ( is_null( self::$_instance ) ) {
+			// First init, returns nothing
+			self::$_instance = new self();
+		}
 	}
 
 	/**
@@ -1096,14 +1109,14 @@ final class VAA_View_Admin_As
  * Returns the main instance of VAA_View_Admin_As to prevent the need to use globals.
  *
  * @since   1.4.1
- * @since   1.6    $caller parameter
+ * @since   1.6     $caller parameter
  * @param   object  $caller
  * @return  VAA_View_Admin_As
  */
-function View_Admin_As( $caller = null ) {
+function View_Admin_As( $caller ) {
 	return VAA_View_Admin_As::get_instance( $caller );
 }
-View_Admin_As( null );
+VAA_View_Admin_As::instantiate();
 
 // end if class_exists
 } else {
