@@ -434,7 +434,7 @@ final class VAA_View_Admin_As
 			case 'reset':
 				return $this->view->reset_view( false, $user );
 				break;
-			case 'clean';
+			case 'clean':
 			case 'cleanup':
 				return $this->view->cleanup_views( false, $user );
 				break;
