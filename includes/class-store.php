@@ -23,22 +23,6 @@ final class VAA_View_Admin_As_Store
 	private static $_instance = null;
 
 	/**
-	 * Classes that are allowed to use this class
-	 *
-	 * @since  1.6
-	 * @var    array
-	 */
-	private static $vaa_class_names = array(
-		'VAA_View_Admin_As',
-		'VAA_View_Admin_As_View',
-		'VAA_View_Admin_As_Compat',
-		'VAA_View_Admin_As_Update',
-		'VAA_View_Admin_As_Admin_Bar',
-		'VAA_View_Admin_As_Toolbar',
-		'VAA_View_Admin_As_Role_Defaults',
-	);
-
-	/**
 	 * Current user session
 	 *
 	 * @since  1.3.4
@@ -102,6 +86,7 @@ final class VAA_View_Admin_As_Store
 
 	/**
 	 * Array of allowed settings
+	 * Key => array()
 	 *
 	 * @since  1.5
 	 * @since  1.5.2  added force_group_users
@@ -470,41 +455,6 @@ final class VAA_View_Admin_As_Store
 	}
 
 	/**
-	 * Validate setting data based on allowed settings
-	 * Also merges with the default settings
-	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class
-	 * @access  public
-	 *
-	 * @param   array       $settings
-	 * @param   string      $type      global / user
-	 * @return  array|bool  $settings
-	 */
-	public function validate_settings( $settings, $type ) {
-		if ( $type == 'global' ) {
-			$defaults = $this->get_defaultSettings();
-			$allowed  = $this->get_allowedSettings();
-		} elseif ( $type == 'user' ) {
-			$defaults = $this->get_defaultUserSettings();
-			$allowed  = $this->get_allowedUserSettings();
-		} else {
-			return false;
-		}
-		$settings = wp_parse_args( $settings, $defaults );
-		foreach ( $settings as $setting => $value ) {
-			if ( ! array_key_exists( $setting, $defaults ) ) {
-				// We don't have such a setting
-				unset( $settings[ $setting ] );
-			} elseif ( ! in_array( $value, $allowed[ $setting ] ) ) {
-				// Set it to default
-				$settings[ $setting ] = $defaults[ $setting ];
-			}
-		}
-		return $settings;
-	}
-
-	/**
 	 * Store settings based on allowed settings
 	 * Also merges with the default settings
 	 *
@@ -537,7 +487,7 @@ final class VAA_View_Admin_As_Store
 				$current[ $setting ] = $value;
 				// Some settings need a reset
 				if ( in_array( $setting, array( 'view_mode' ) ) ) {
-					View_Admin_As( $this )->view( 'reset' );
+					View_Admin_As( $this )->view()->reset_view();
 				}
 			}
 		}
@@ -549,6 +499,41 @@ final class VAA_View_Admin_As_Store
 			return $this->update_userMeta( $new, 'settings', true );
 		}
 		return false;
+	}
+
+	/**
+	 * Validate setting data based on allowed settings
+	 * Also merges with the default settings
+	 *
+	 * @since   1.5
+	 * @since   1.6    Moved to this class from main class
+	 * @access  public
+	 *
+	 * @param   array       $settings
+	 * @param   string      $type      global / user
+	 * @return  array|bool  $settings
+	 */
+	public function validate_settings( $settings, $type ) {
+		if ( $type == 'global' ) {
+			$defaults = $this->get_defaultSettings();
+			$allowed  = $this->get_allowedSettings();
+		} elseif ( $type == 'user' ) {
+			$defaults = $this->get_defaultUserSettings();
+			$allowed  = $this->get_allowedUserSettings();
+		} else {
+			return false;
+		}
+		$settings = wp_parse_args( $settings, $defaults );
+		foreach ( $settings as $setting => $value ) {
+			if ( ! array_key_exists( $setting, $defaults ) ) {
+				// We don't have such a setting
+				unset( $settings[ $setting ] );
+			} elseif ( ! in_array( $value, $allowed[ $setting ] ) ) {
+				// Set it to default
+				$settings[ $setting ] = $defaults[ $setting ];
+			}
+		}
+		return $settings;
 	}
 
 	/**
@@ -676,7 +661,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  VAA_View_Admin_As_Store|bool
 	 */
 	public static function get_instance( $caller = false ) {
-		if ( is_object( $caller ) && in_array( get_class( $caller ), self::$vaa_class_names ) ) {
+		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self();
 			}

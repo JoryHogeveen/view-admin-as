@@ -53,8 +53,8 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @access  protected
 	 */
 	protected function __construct() {
-		$this->vaa_store = VAA_View_Admin_As_Store::get_instance( $this );
 		self::$_instance = $this;
+		$this->vaa_store = View_Admin_As( $this )->store();
 
 		if ( ! is_admin() ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );

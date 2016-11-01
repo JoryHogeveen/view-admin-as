@@ -78,7 +78,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @access  protected
 	 */
 	protected function __construct() {
-		// Init VAA
+		// Load resources
 		$this->load_vaa();
 	}
 
@@ -91,7 +91,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 */
 	final public function load_vaa() {
 		$this->vaa = View_Admin_As( $this );
-		$this->store = VAA_View_Admin_As_Store::get_instance( $this );
+		$this->store = $this->vaa->store();
 	}
 
 	/**

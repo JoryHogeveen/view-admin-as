@@ -298,7 +298,7 @@ final class VAA_View_Admin_As
 			) );
 		}
 
-		// Our custom toolbar
+		// Custom toolbar (front-end)
 		if ( ! class_exists('VAA_View_Admin_As_Toolbar') ) {
 			require( VIEW_ADMIN_AS_DIR . 'ui/class-toolbar.php' );
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Toolbar';
@@ -325,7 +325,7 @@ final class VAA_View_Admin_As
 
 		// The role defaults module (screen settings)
 		if ( ! class_exists('VAA_View_Admin_As_Role_Defaults') ) {
-			include_once( VIEW_ADMIN_AS_DIR . 'modules/class-role-defaults.php' );
+			require( VIEW_ADMIN_AS_DIR . 'modules/class-role-defaults.php' );
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Role_Defaults';
 			$this->modules['role_defaults'] = VAA_View_Admin_As_Role_Defaults::get_instance( $this );
 		} else {
@@ -395,35 +395,6 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Call a view method
-	 *
-	 * @since  1.6
-	 * @param  string           $method
-	 * @param  object|int|bool  $user   (Optional: WP_User object or User ID)
-	 * @return bool
-	 */
-	public function view( $method, $user = false ) {
-		if ( is_int( $user ) ) {
-			$user = get_user_by( 'ID', $user );
-		}
-		switch( $method ) {
-			case 'reset':
-				return $this->view->reset_view( false, $user );
-				break;
-			case 'clean':
-			case 'cleanup':
-				return $this->view->cleanup_views( false, $user );
-				break;
-			case 'reset_all':
-				return $this->view->reset_all_views( false, $user );
-				break;
-			default:
-				return false;
-				break;
-		}
-	}
-
-	/**
 	 * Add necessary scripts and styles
 	 *
 	 * @since   0.1
@@ -443,7 +414,7 @@ final class VAA_View_Admin_As
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
 				'siteurl' => get_site_url(),
 				'_debug' => ( defined('WP_DEBUG') && WP_DEBUG ) ? (bool) WP_DEBUG : false,
-				'_vaa_nonce' => wp_create_nonce( $this->store->get_nonce() ),
+				'_vaa_nonce' => $this->store->get_nonce( true ),
 				'__no_users_found' => esc_html__( 'No users found.', 'view-admin-as' ),
 				'__success' => esc_html__( 'Success', 'view-admin-as' ),
 				'__confirm' => esc_html__( 'Are you sure?', 'view-admin-as' ),
@@ -501,7 +472,30 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Get the store class
+	 *
+	 * @since   1.6
+	 * @access  public
+	 * @return  null|VAA_View_Admin_As_Store
+	 */
+	public function store() {
+		return $this->store;
+	}
+
+	/**
+	 * Get the view class
+	 *
+	 * @since   1.6
+	 * @access  public
+	 * @return  null|VAA_View_Admin_As_View
+	 */
+	public function view() {
+		return $this->view;
+	}
+
+	/**
 	 * Get current modules
+	 * If a key is provided it will only return that module
 	 *
 	 * @since   1.5
 	 * @access  public
