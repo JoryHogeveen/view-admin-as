@@ -233,13 +233,30 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function get_view() {
 
+		// Static actions
+		if ( ( ! defined('DOING_AJAX') || ! DOING_AJAX )
+		     && isset( $_GET['view_admin_as'] )
+		     && $this->store->get_userSettings('view_mode') == 'browse'
+		     && isset( $this->store->get_curUser()->ID )
+		     && isset( $_GET['_vaa_nonce'] )
+		     && wp_verify_nonce( (string) $_GET['_vaa_nonce'], $this->store->get_nonce() )
+		) {
+			$view = $this->validate_view_as_data( json_decode( stripcslashes( html_entity_decode( $_GET['view_admin_as'] ) ), true ) );
+			$this->update_view( $view );
+			if ( is_network_admin() ) {
+				wp_redirect( network_admin_url() );
+			} else {
+				wp_redirect( admin_url() );
+			}
+		}
+
 		// Single mode
 		if ( ( ! defined('DOING_AJAX') || ! DOING_AJAX )
 		     && isset( $_POST['view_admin_as'] )
 		     && $this->store->get_userSettings('view_mode') == 'single'
 		     && isset( $this->store->get_curUser()->ID )
 		     && isset( $_POST['_vaa_nonce'] )
-		     && wp_verify_nonce( $_POST['_vaa_nonce'], $this->store->get_nonce() )
+		     && wp_verify_nonce( (string) $_POST['_vaa_nonce'], $this->store->get_nonce() )
 		) {
 			return $this->validate_view_as_data( json_decode( stripcslashes( $_POST['view_admin_as'] ), true ) );
 		}

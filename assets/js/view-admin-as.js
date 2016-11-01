@@ -15,7 +15,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		'_vaa_nonce': '',
 		'__no_users_found': 'No users found.',
 		'__success': 'Success',
-		'__confirm':'Are you sure?'
+		'__confirm': 'Are you sure?'
 	};
 }
 

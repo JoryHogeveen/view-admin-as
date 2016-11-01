@@ -311,6 +311,20 @@ final class VAA_View_Admin_As
 				    . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Toolbar' ) . ')</code>',
 			) );
 		}
+
+		// WP admin modifications
+		if ( ! class_exists('VAA_View_Admin_As_Admin') ) {
+			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin.php' );
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin';
+			$this->ui['static_actions'] = VAA_View_Admin_As_Admin::get_instance( $this );
+		} else {
+			$this->add_notice('class-error-admin', array(
+				'type' => 'notice-error',
+				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
+				    . __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
+				    . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin' ) . ')</code>',
+			) );
+		}
 	}
 
 	/**
