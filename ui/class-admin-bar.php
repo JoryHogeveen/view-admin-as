@@ -123,22 +123,33 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$icon = 'dashicons-hidden';
 		$title = __('Default view (Off)', 'view-admin-as');
 
-		if ( $this->get_viewAs('caps') ) {
+		if ( $this->get_viewAs() ) {
 			$icon = 'dashicons-visibility';
+		}
+
+		if ( $this->get_viewAs('caps') ) {
 			$title = __('Modified view', 'view-admin-as');
 		}
 		if ( $this->get_viewAs('role') ) {
-			$icon = 'dashicons-visibility';
 			$title = __('Viewing as role', 'view-admin-as') . ': ' . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
 		}
 		if ( $this->get_viewAs('user') ) {
-			$icon = 'dashicons-visibility';
 			$selected_user_roles = array();
 			foreach ( $this->get_selectedUser()->roles as $role ) {
 				$selected_user_roles[] = translate_user_role( $this->get_roles( $role )->name );
 			}
 			$title = __('Viewing as user', 'view-admin-as') . ': ' . $this->get_selectedUser()->data->display_name . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 		}
+
+		/**
+		 * Filter the text to show when a view is applied
+		 *
+		 * @since  1.6
+		 * @param  string      $title
+		 * @param  bool|array  The view
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_viewing_as_title', $title, $this->get_viewAs() );
 
 		if ( empty( $root ) ) {
 			$root = 'top-secondary';
