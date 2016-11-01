@@ -35,15 +35,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
 		add_action( 'wp_login', array( $this, 'reset_view' ), 10, 2 );
 		add_action( 'wp_logout', array( $this, 'reset_view' ) );
-
-		// Reset view to default if something goes wrong, example: http://www.your.domain/wp-admin/?reset-view
-		if ( isset( $_GET['reset-view'] ) ) {
-			$this->reset_view();
-		}
-		// Clear all user views, example: http://www.your.domain/wp-admin/?reset-all-views
-		if ( isset( $_GET['reset-all-views'] ) ) {
-			$this->reset_all_views();
-		}
 	}
 
 	/**
@@ -54,6 +45,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	public function init() {
+
+		// Reset view to default if something goes wrong, example: http://www.your.domain/wp-admin/?reset-view
+		if ( isset( $_GET['reset-view'] ) ) {
+			$this->reset_view();
+		}
+		// Clear all user views, example: http://www.your.domain/wp-admin/?reset-all-views
+		if ( isset( $_GET['reset-all-views'] ) ) {
+			$this->reset_all_views();
+		}
 
 		// Admin selector ajax return
 		add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
