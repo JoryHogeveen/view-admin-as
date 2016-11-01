@@ -4,7 +4,7 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.5.3
+ * @version 1.6
  */
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {

@@ -171,8 +171,8 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Enhancement: Better handling for permission errors [#10](https://github.com/JoryHogeveen/view-admin-as/issues/10)
 *	Compatibility: Show our custom capabilities on role manage plugins like Members
 *	Compatibility: PHP 5.2 (WP minimum)
-*	Bug: Fix occasional issues with enabling Role Defaults
-*	Refactor whole backend into multiple classes
+*	Fix: occasional issues with enabling Role Defaults
+*	Refactor whole backend into multiple classes for more flexibility in future development
 
 = 1.5.3 =
 
