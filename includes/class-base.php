@@ -75,11 +75,12 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Protected to make sure it isn't declared elsewhere
 	 *
 	 * @since   1.5.3
+	 * @param   object  $vaa  (optional) Pass VAA object
 	 * @access  protected
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa = null ) {
 		// Load resources
-		$this->load_vaa();
+		$this->load_vaa( $vaa );
 	}
 
 	/**
@@ -89,8 +90,11 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @return  void
 	 */
-	final public function load_vaa() {
-		$this->vaa = View_Admin_As( $this );
+	final public function load_vaa( $vaa ) {
+		$this->vaa = $vaa;
+		if ( null == $vaa ) {
+			$this->vaa = View_Admin_As( $this );
+		}
 		$this->store = $this->vaa->store();
 	}
 
