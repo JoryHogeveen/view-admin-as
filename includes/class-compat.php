@@ -56,6 +56,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		 * @since 1.6
 		 */
 		add_filter( 'members_get_capabilities', array( $this, 'add_capabilities' ) );
+		add_action( 'members_register_cap_groups', array( $this, 'members_register_cap_group' ) );
 
 		// Get caps from other plugins
 		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ) );
@@ -92,7 +93,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @param   array  $caps
 	 * @return  array
 	 */
-	public function add_capabilities( $caps ) {
+	public function add_capabilities( $caps = array() ) {
 
 		// Allow VAA modules to add their capabilities
 		$vaa_caps = apply_filters( '_vaa_add_capabilities', array( 'view_admin_as' ) );
@@ -128,6 +129,28 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Add our capabilities to our own group in the members plugin
+	 *
+	 * @since   1.6
+	 * @access  public
+	 * @see     init()
+	 */
+	public function members_register_cap_group () {
+
+		if ( function_exists( 'members_register_cap_group' ) ) {
+			// Register the vaa group.
+			members_register_cap_group( 'view_admin_as',
+				array(
+					'label'      => esc_html__( 'View Admin As', 'view-admin-as' ),
+					'caps'       => $this->add_capabilities(),
+					'icon'       => 'dashicons-visibility',
+					'diff_added' => true
+				)
+			);
+		}
 	}
 
 	/**
