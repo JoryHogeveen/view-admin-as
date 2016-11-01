@@ -147,12 +147,12 @@ final class VAA_View_Admin_As
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Update';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Compat';
 
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-api.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-view.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
-			require_once( VIEW_ADMIN_AS_DIR . 'includes/class-compat.php' );
+			require( VIEW_ADMIN_AS_DIR . 'includes/class-api.php' );
+			require( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
+			require( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
+			require( VIEW_ADMIN_AS_DIR . 'includes/class-view.php' );
+			require( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
+			require( VIEW_ADMIN_AS_DIR . 'includes/class-compat.php' );
 
 			return true;
 		}
@@ -286,7 +286,7 @@ final class VAA_View_Admin_As
 
 		// The default admin bar ui
 		if ( ! class_exists('VAA_View_Admin_As_Admin_Bar') ) {
-			include_once( VIEW_ADMIN_AS_DIR . 'ui/class-admin-bar.php' );
+			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin-bar.php' );
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin_Bar';
 			$this->ui['admin_bar'] = VAA_View_Admin_As_Admin_Bar::get_instance( $this );
 		} else {
@@ -300,7 +300,7 @@ final class VAA_View_Admin_As
 
 		// Our custom toolbar
 		if ( ! class_exists('VAA_View_Admin_As_Toolbar') ) {
-			include_once( VIEW_ADMIN_AS_DIR . 'ui/class-toolbar.php' );
+			require( VIEW_ADMIN_AS_DIR . 'ui/class-toolbar.php' );
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Toolbar';
 			$this->ui['toolbar'] = VAA_View_Admin_As_Toolbar::get_instance( $this );
 		} else {
