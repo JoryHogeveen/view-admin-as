@@ -3,8 +3,8 @@ Contributors: keraweb
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults
 Requires at least: 3.5
-Tested up to: 4.6
-Stable tag: 1.5.3
+Tested up to: 4.7
+Stable tag: 1.6
 
 View the WordPress admin as a different role, switch between users, temporarily change your capabilities, set default screen settings for roles.
 
@@ -24,7 +24,7 @@ Through the new "Role defaults" module you can set default screen settings for r
 *	Edit this user's screen preferences and settings
 *	Switch to a default view of a role
 *	Temporarily change your own capabilities (non-destructively)
-*	Do this all without loggin out and easily go back to your own (default) user view!
+*	Do this all without logging out and easily go back to your own (default) user view!
 
 = Module: Role defaults (screen settings) =
 
@@ -70,7 +70,7 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 
 = Developer notes =
 
-This plugin will only be usefull for admins (network super admins or regular admins). It will not add functionalities for other roles.
+This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles.
 
 Also keep in mind that switching to users that have equal roles is disabled. (regular admins to regular admins + super admins to super admins)
 
@@ -161,6 +161,17 @@ This plugin is also usefull to support your clients and/or users. For example; m
 8. Admin bar when a view is selected + the reset button location
 
 == Changelog ==
+
+= 1.6 =
+
+*	Feature: Lock meta boxes [#9](https://github.com/JoryHogeveen/view-admin-as/issues/9)
+*	Feature: View as links in user management page [#12](https://github.com/JoryHogeveen/view-admin-as/issues/12)
+*	Enhancement: Better admin bar handling when set to hidden by user [#4](https://github.com/JoryHogeveen/view-admin-as/issues/4)
+	*	Also adds an option to hide/show our toolbar when now view is selected and the admin bar is not shown.
+*	Enhancement: Better handling for permission errors [#10](https://github.com/JoryHogeveen/view-admin-as/issues/10)
+*	Compatibility: Show our custom capabilities on role manage plugins like Members
+*	Compatibility: PHP 5.2 (WP minimum)
+*	Refactor whole backend into multiple classes
 
 = 1.5.3 =
 
