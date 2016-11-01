@@ -162,7 +162,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		// Update user metadata with selected view
 		if ( isset( $view_as['role'] ) || isset( $view_as['user'] ) ) {
 			$success = $this->update_view( $view_as );
-		} elseif ( isset( $view_as['caps'] ) ) {
+		}
+		elseif ( isset( $view_as['caps'] ) ) {
 			// Check if the selected caps are equal to the default caps
 			if ( $this->store->get_caps() != $view_as['caps'] ) {
 				foreach ( $this->store->get_caps() as $key => $value ) {
@@ -191,13 +192,17 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('These are your default capabilities!', 'view-admin-as') ) );
 				}
 			}
-		} elseif ( isset( $view_as['reset'] ) ) {
+		}
+		elseif ( isset( $view_as['reset'] ) ) {
 			$success = $this->reset_view();
-		} elseif ( isset( $view_as['user_setting'] ) ) {
+		}
+		elseif ( isset( $view_as['user_setting'] ) ) {
 			$success = $this->store->store_settings( $view_as['user_setting'], 'user' );
-		} elseif ( isset( $view_as['setting'] ) ) {
+		}
+		elseif ( isset( $view_as['setting'] ) ) {
 			$success = $this->store->store_settings( $view_as['setting'], 'global' );
-		} else {
+		}
+		else {
 			// Maybe a module?
 			foreach ( $view_as as $key => $data ) {
 				if ( array_key_exists( $key, $this->get_modules() ) ) {
