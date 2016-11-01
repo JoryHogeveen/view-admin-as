@@ -136,4 +136,75 @@ final class VAA_API
 		return false;
 	}
 
+	/**
+	 * Appends the "reset-view" parameter to the current URL
+	 *
+	 * @since  1.6
+	 * @access public
+	 * @static
+	 * @api
+	 *
+	 * @param  string  $url  (optional) Use a defined url create the reset link
+	 * @param  bool    $all  (optional) Reset all views link?
+	 * @return string
+	 */
+	public static function get_reset_link( $url = false, $all = false ) {
+
+		if ( ! $url ) {
+			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			// Check for existing query vars
+			$url_comp = parse_url( $url );
+			// Check protocol
+			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
+		}
+
+		$reset = 'reset-view';
+		if ( $all ) {
+			$reset = 'reset-all-views';
+		}
+
+		return $url . ( ( isset ( $url_comp['query'] ) ) ? '&' : '?' ) . $reset;
+	}
+
+	/**
+	 * Removes the "reset-view" or "reset-all-views" parameter to the current URL
+	 *
+	 * @since  1.6
+	 * @access public
+	 * @static
+	 * @api
+	 *
+	 * @param  string  $url  (optional) Use a defined url to remove the reset link
+	 * @return string
+	 */
+	public static function remove_reset_link( $url = '' ) {
+
+		if ( empty( $url ) ) {
+			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			// Check for existing query vars
+			$url_comp = parse_url( $url );
+			// Check protocol
+			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
+		}
+
+		if ( strpos( $url, '?' ) !== false ) {
+			$url = explode( '?', $url );
+
+			if ( ! empty( $url[1] ) ) {
+
+				$url[1] = explode( '&', $url[1] );
+				foreach ( $url[1] as $key => $val ) {
+					if ( in_array( $val, array( 'reset-view', 'reset-all-views' ) ) ) {
+						unset( $url[1][ $key ] );
+					}
+				}
+				$url[1] = implode( '&', $url[1] );
+
+			}
+			$url = implode( '?', $url );
+		}
+
+		return $url;
+	}
+
 } // end class

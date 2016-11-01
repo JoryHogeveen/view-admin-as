@@ -353,12 +353,6 @@ final class VAA_View_Admin_As
 
 		if ( false != $this->store->get_viewAs() ) {
 
-			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			// Check for existing query vars
-			$url_comp = parse_url( $url );
-			// Check protocol
-			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
-
 			$options = array();
 
 			if ( is_network_admin() ) {
@@ -382,7 +376,7 @@ final class VAA_View_Admin_As
 			// Reset url
 			$options[] = array(
 				'text' => __( 'Reset the view', 'view-admin-as' ),
-				'url' => $url . ( ( isset ( $url_comp['query'] ) ) ? '&reset-view' : '?reset-view' )
+				'url' => VAA_API::get_reset_link(),
 			);
 ?>
 <div>
