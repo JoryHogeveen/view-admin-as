@@ -598,7 +598,7 @@ final class VAA_View_Admin_As
 	 * @return  VAA_View_Admin_As
 	 */
 	public static function get_instance( $caller ) {
-		if ( in_array( $caller, self::$vaa_class_names ) ) {
+		if ( in_array( get_class( $caller ), self::$vaa_class_names ) ) {
 			return self::$_instance;
 		}
 		return null;
