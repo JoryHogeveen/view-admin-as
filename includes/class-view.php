@@ -61,17 +61,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		// Get the current view (returns false if not found)
 		$this->store->set_viewAs( $this->get_view() );
-		// If view is set,
+
 		if ( $this->store->get_viewAs() ) {
-			/*
-			// Force display of admin bar (older WP versions)
-			if ( function_exists('show_admin_bar') ) {
-				show_admin_bar( true );
-			}
-			// Force display of admin bar (WP 3.3+)
-			remove_all_filters( 'show_admin_bar' );
-			add_filter( 'show_admin_bar', '__return_true', 999999999 );
-			*/
 
 			// Change current user object so changes can be made on various screen settings
 			// wp_set_current_user() returns the new user object
