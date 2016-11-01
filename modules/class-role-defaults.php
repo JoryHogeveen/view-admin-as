@@ -286,9 +286,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	public function ajax_handler( $data ) {
 
 		if (   ! defined('VAA_DOING_AJAX')
-			|| ! VAA_DOING_AJAX
-			|| ! $this->is_vaa_enabled()
-			|| ! $this->is_enabled()
+		    || ! VAA_DOING_AJAX
+		    || ! $this->is_vaa_enabled()
 		) {
 			return false;
 		}
@@ -304,8 +303,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				} else {
 					$success = $this->set_enable( false );
 				}
+				// Prevent further processing
+				return $success;
 			}
 
+		}
+
+		// From here all featured need this module enabled first
+		if ( ! $this->is_enabled() ) {
+			return $success;
 		}
 
 		if ( isset( $data['apply_defaults_on_register'] ) ) {
