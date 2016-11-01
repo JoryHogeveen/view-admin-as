@@ -244,13 +244,13 @@ final class VAA_View_Admin_As
 				// Fix some compatibility issues, more to come!
 				VAA_View_Admin_As_Compat::get_instance( $this )->init();
 
-				$this->load_ui();
-
 				$this->store->store_caps();
 				$this->store->store_roles();
 				$this->store->store_users();
 
 				$this->view->init();
+
+				$this->load_ui();
 
 				// Dúh..
 				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
