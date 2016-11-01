@@ -54,6 +54,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @access  protected
 	 */
 	protected function __construct() {
+		self::$_instance = $this;
 		parent::__construct();
 
 		if ( $this->is_vaa_enabled() ) {

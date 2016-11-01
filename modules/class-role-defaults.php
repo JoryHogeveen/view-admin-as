@@ -75,6 +75,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @access  protected
 	 */
 	protected function __construct() {
+		self::$_instance = $this;
 		parent::__construct();
 
 		// Load data

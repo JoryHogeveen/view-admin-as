@@ -23,6 +23,15 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
+	 * Populate the instance
+	 * @since  1.6
+	 */
+	protected function __construct() {
+		self::$_instance = $this;
+		parent::__construct();
+	}
+
+	/**
 	 * Update settings
 	 *
 	 * @since   1.4

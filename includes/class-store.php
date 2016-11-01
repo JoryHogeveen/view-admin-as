@@ -228,6 +228,13 @@ final class VAA_View_Admin_As_Store
 	 */
 	private $selectedUser;
 
+	/**
+	 * Populate the instance
+	 * @since  1.6
+	 */
+	private function __construct() {
+		self::$_instance = $this;
+	}
 
 	/**
 	 * Store available roles

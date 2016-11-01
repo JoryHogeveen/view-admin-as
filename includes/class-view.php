@@ -28,6 +28,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since  1.6
 	 */
 	protected function __construct() {
+		self::$_instance = $this;
 		parent::__construct();
 
 		// When a user logs in or out, reset the view to default
