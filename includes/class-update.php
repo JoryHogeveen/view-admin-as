@@ -50,7 +50,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 		if ( version_compare( $current_db_version, '1.5', '<' ) ) {
 			// Reset user meta for all users
 			global $wpdb;
-			$all_users = $wpdb->get_results("SELECT ID FROM $wpdb->users");
+			$all_users = $wpdb->get_results( "SELECT ID FROM $wpdb->users" );
 			foreach ( $all_users as $user ) {
 				$this->store->delete_user_meta( $user->ID, false, true ); // true for reset_only
 			}
@@ -64,7 +64,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 		$this->store->update_optionData( wp_parse_args( $this->store->get_optionData(), $defaults ) );
 
 		// Main update finished, hook used to update modules
-		do_action( 'vaa_view_admin_as_db_update', VIEW_ADMIN_AS_DB_VERSION );
+		do_action( 'vaa_view_admin_as_db_update' );
 	}
 
 	/**
