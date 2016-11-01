@@ -55,7 +55,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 				$this->store->delete_user_meta( $user->ID, false, true ); // true for reset_only
 			}
 			// Reset currently loaded data
-			$this->store->set_userMeta(false);
+			$this->store->set_userMeta( false );
 		}
 
 		// Update version, append if needed

@@ -148,9 +148,9 @@ final class VAA_API
 	 * @param  bool    $all  (optional) Reset all views link?
 	 * @return string
 	 */
-	public static function get_reset_link( $url = false, $all = false ) {
+	public static function get_reset_link( $url = '', $all = false ) {
 
-		if ( ! $url ) {
+		if ( empty( $url ) ) {
 			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			// Check for existing query vars
 			$url_comp = parse_url( $url );
@@ -181,8 +181,6 @@ final class VAA_API
 
 		if ( empty( $url ) ) {
 			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			// Check for existing query vars
-			$url_comp = parse_url( $url );
 			// Check protocol
 			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
 		}

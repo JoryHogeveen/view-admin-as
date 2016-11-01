@@ -15,7 +15,7 @@
 
 if ( ! class_exists( 'VAA_View_Admin_As_Static_Actions' ) ) {
 
-final class VAA_View_Admin_As_Admin extends VAA_View_Admin_as_Class_Base
+final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 {
 	/**
 	 * The single instance of the class.
@@ -53,7 +53,6 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_as_Class_Base
 	public function filter_user_row_actions( $actions, $user ) {
 		$data = array( 'user' => $user->ID );
 
-		$link = '';
 		if ( is_network_admin() ) {
 			$link = network_admin_url();
 		} else {
