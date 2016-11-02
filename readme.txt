@@ -33,11 +33,11 @@ Through the new "Role defaults" module you can set default screen settings for r
 *	Apply defaults to all users of a role
 *	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
 *	Import/Export role defaults
-*	Disable the "screen settings" option for all users that don't have access to this plugin
+*	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
 = Compatibility =
 
-I think this plugin will work with most other plugins.
+This plugin will work with most other plugins.
 
 Fixed compatibility issues:
 
@@ -60,7 +60,7 @@ Please let me know through the support and add a plugins and themes list! :)
 
 = Security =
 
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is an administrator.
+You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
 Only if the above requirements are OK will this plugin do anything.
 Your view is stored separately so your user will keep the normal roles and capabilities.
 All settings, views, capabilities, etc. are checked before applied.
@@ -70,7 +70,7 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 
 = Developer notes =
 
-This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles.
+This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.
 
 Also keep in mind that switching to users that have equal roles is disabled. (regular admins to regular admins + super admins to super admins)
 
@@ -101,8 +101,8 @@ If the amount of users is more than 10 you can find them under their roles or yo
 Just click the role :)
 
 = 3. How does the capability system work? =
-Only the capabilities enabled for your user are shown.
-You can deselect the capabilities by clicking on them. When you would like to see the results just click the shiny button on the upper left.
+Only the capabilities that are allowed for your user are shown.
+You can deselect the capabilities by clicking on them. When you would like to see the results just click the apply button on the upper left.
 
 You can also filter the roles by name or select/deselect all capabilities.
 Note: When you select/deselect capabilities while you've filtered them only the capabilities shown by your filter are affected!
@@ -133,7 +133,7 @@ If that is not the case, please contact me! See item 7.
 Please let me know through the support and add a plugins and themes list! :)
 
 = 8. Is this plugin safe? Even for production websites? =
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is an administrator.
+You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
 Only if the above requirements are OK will this plugin do anything.
 Your view is stored separately so your user will keep the normal roles and capabilities.
 All settings, views, capabilities, etc. are checked before applied.
@@ -147,7 +147,7 @@ I've created this at first for myself since I'm a developer and often need to se
 So, when you are developing a plugin or theme that does anything with roles or capabilities you can use this plugin to easally check if everything works.
 No more hassle of creating test users and constantly logging out and in anymore!
 
-This plugin is also usefull to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
+This plugin is also useful to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
 
 == Screenshots ==
 
@@ -171,7 +171,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Enhancement: Better handling for permission errors [#10](https://github.com/JoryHogeveen/view-admin-as/issues/10)
 *	Compatibility: Show our custom capabilities on role manage plugins like Members
 *	Compatibility: PHP 5.2 (WP minimum)
-*	Fix: occasional issues with enabling Role Defaults
+*	Fix: occasional issues with enabling the Role Defaults module
 *	Refactor whole backend into multiple classes for more flexibility in future development
 
 = 1.5.3 =
@@ -196,7 +196,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Improvement: (Settings tab) Add the option to group users under their roles. This option is only available when there are less than 15 users and roles, otherwise this is default
 *	Improvement: `view_admin_as_role_defaults` capability for access to the "Role Defaults" module when a user isn't a super admin
 *	Performance: Less queries for user validation
-*	Fix: (Module Role Defaults) Problem solved with unsetting meta keys
+*	Fix: (Module Role Defaults) Problem solved with un-setting meta keys
 *	Fix: Problem solved with anchor tags preventing javascript from reloading
 *	Fix: Problem solved with reset button on single switch mode
 *	UI: Move "Role Defaults" to the top
@@ -210,7 +210,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Feature: `view_admin_as` capability for non-admin users to enable limited access to this plugin (they won't be able to view or edit equal or admin users and roles). This capability requires the `edit_users` capability (+ `manage_network_users` for multisite installations)
 *	Feature: Ability to disable the "screen settings" option for all users that don't have access to this plugin
 *	Fix: die_handler for https
-*	Fix: Reset currently loaded metadata aswell when resetting a view (refresh is no longer needed, minor bug in 1.5)
+*	Fix: Reset currently loaded metadata as well when resetting a view (refresh is no longer needed, minor bug in 1.5)
 *	Added notices on compatibility errors
 
 = 1.5 =
@@ -224,7 +224,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Improvement: Better version compare
 *	Improvement: Better code standards and data validation
 *	Compatibility: Backwards compatibility until WP 3.5+ (3.8+ is highly recommended, 4.0+ is best!)
-*	Security: Better data validation and usage of a nonce (allthough in this case I don't think it made any difference for actual security, it's still good to implement proper security!)
+*	Security: Better data validation and usage of a nonce (although in this case I don't think it made any difference for actual security, it's still good to implement proper security!)
 *	i18n: All translations are now managed with translate.wordpress.org
 *	Screenshots updated
 
