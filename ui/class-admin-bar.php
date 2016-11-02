@@ -91,8 +91,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ) );
 		add_action( 'vaa_toolbar_menu', array( $this, 'admin_bar_menu' ), 10, 2 );
 
-		// Add the caps nodes to the admin bar
-		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_settings' ), 1 );
+		// Add the global nodes to the admin bar
+		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_info' ), 1 );
+		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_settings' ), 2 );
 
 		// Add the caps nodes to the admin bar
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_caps' ), 10 );
@@ -203,6 +204,89 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 */
 		do_action( 'vaa_admin_bar_menu', $admin_bar );
+
+	}
+
+	/**
+	 * Add admin bar menu info items
+	 *
+	 * @since   1.6
+	 * @access  public
+	 * @see     'vaa_admin_bar_menu' action
+	 * @param   object  $admin_bar
+	 * @return  void
+	 */
+	public function admin_bar_menu_info( $admin_bar ) {
+
+		$admin_bar->add_node( array(
+			'id'        => 'info',
+			'parent'    => 'view-as',
+			'title'     => self::do_icon( 'dashicons-info' ) . __('Info', 'view-admin-as'),
+			'href'      => false,
+			'meta'      => array(
+				'class'     => 'vaa-has-icon',
+			),
+		) );
+
+		/**
+		 * Add items at the beginning of the info group
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_info_before', $admin_bar );
+
+		$info_links = array(
+			array(
+				'id'    => 'info-support',
+				'title' => self::do_icon( 'dashicons-testimonial' ) . __( 'Need support?', 'view-admin-as' ),
+				'href'  => 'https://wordpress.org/support/plugin/view-admin-as/',
+			),
+			array(
+				'id'    => 'info-review',
+				'title' => self::do_icon( 'dashicons-star-filled' ) . __( 'Rate 5 on WordPress.org!', 'view-admin-as' ),
+				'href'  => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
+			),
+			array(
+				'id'    => 'info-issue',
+				'title' => self::do_icon( 'dashicons-lightbulb' ) . __( 'Have ideas or a bug report?', 'view-admin-as' ),
+				'href'  => 'https://github.com/JoryHogeveen/view-admin-as/issues',
+			),
+			array(
+				'id'    => 'info-translate',
+				'title' => self::do_icon( 'dashicons-translation' ) . __( 'Help translating this plugin!', 'view-admin-as' ),
+				'href'  => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
+			),
+			array(
+				'id'    => 'info-docs',
+				'title' => self::do_icon( 'dashicons-book-alt' ) . __( 'See the documentation', 'view-admin-as' ),
+				'href'  => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
+			),
+			array(
+				'id'    => 'info-github',
+				'title' => self::do_icon( 'dashicons-admin-tools' ) . __( 'Follow development on GitHub', 'view-admin-as' ),
+				'href'  => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
+			)
+		);
+
+		foreach ( $info_links as $link ) {
+			$admin_bar->add_node( array(
+				'parent'    => 'info',
+				'id'        => $link['id'],
+				'title'     => $link['title'],
+				'href'      => $link['href'],
+				'meta'      => array(
+					'class'     => 'auto-height vaa-has-icon',
+					'target'  => '_blank'
+				),
+			) );
+		}
+
+		/**
+		 * Add items at the end of the info group
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_info_after', $admin_bar );
 
 	}
 
