@@ -14,13 +14,13 @@ This plugin will add a menu item to your admin bar where you can change your vie
 
 If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages.
 
-You can also see the defaults for a role and/or temporarily change your own capabilities.
+You can also switch to a role or temporarily change your own capabilities.
 
-Through the new "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
+Through the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
 
 ### Overview / Features
 *	Switch to the view of a user to see their capabilities and settings (admins are filtered!)
-*	Edit this user's screen preferences and settings
+	*	Edit this user's screen preferences and settings
 *	Switch to a default view of a role
 *	Temporarily change your own capabilities (non-destructively)
 *	Do this all without loggin out and easily go back to your own (default) user view!
@@ -31,12 +31,11 @@ Through the new "Role defaults" module you can set default screen settings for r
 *	Apply defaults to all users of a role
 *	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
 *	Import/Export role defaults
-*	Disable the "screen settings" option for all users that don't have access to this plugin
+*	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
 ## Compatibility
-WordPress 3.5+ and PHP 5.3+
 
-I think this plugin will work with most other plugins.
+This plugin will work with most other plugins.
 
 Fixed compatibility issues:
 
@@ -70,12 +69,12 @@ Please let me know through the support and add a plugins and themes list! :)
 https://wordpress.org/support/plugin/view-admin-as
 
 ## Security
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is an administrator.
-Only if the above requirements are OK will this plugin do anything.
-Your view is stored separately so your user will keep the normal roles and capabilities.
+You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).  
+Only if the above requirements are OK will this plugin do anything.  
+Your view is stored separately so your user will keep the normal roles and capabilities.  
 All settings, views, capabilities, etc. are checked before applied.
 
-So basically if your admin users are safe, this plugin will be safe.
+So basically if your admin users are safe, this plugin will be safe.  
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
 
 ## Installation
@@ -90,15 +89,13 @@ Or search for "View Admin As" via your plugins menu.
 ### Recommended Requirements
 
 * WordPress 4.0 or greater (Though I always recommend to update to the latest version!)
-* PHP version 5.6 or greater
 
 ### Minimum Requirements
 
 * WordPress 3.5 or greater (3.8+ recommended because of design, this plugin doesn't incorporate all styles of versions prior to WP 3.8)
-* PHP version 5.3 or greater
 
 ## Developer notes
-This plugin will only be usefull for admins (network super admins or regular admins). It will not add functionalities for other roles.
+This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.
 
 Also keep in mind that switching to users that have equal roles is disabled. (regular admins to regular admins + super admins to super admins)
 
