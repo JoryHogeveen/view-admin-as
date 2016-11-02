@@ -797,10 +797,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'        => 'role-defaults',
 			'parent'    => 'view-as',
-			'title'     => __('Role defaults', 'view-admin-as'),
+			'title'     => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-id-alt' ) . __('Role defaults', 'view-admin-as'),
 			'href'      => false,
 			'meta'      => array(
-				'class'     => '',
+				'class'     => 'vaa-has-icon',
 			),
 		) );
 

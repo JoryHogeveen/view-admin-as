@@ -220,10 +220,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'        => 'settings',
 			'parent'    => 'view-as',
-			'title'     => __('Settings', 'view-admin-as'),
+			'title'     => self::do_icon( 'dashicons-admin-settings' ) . __('Settings', 'view-admin-as'),
 			'href'      => false,
 			'meta'      => array(
-				'class'     => '',
+				'class'     => 'vaa-has-icon',
 			),
 		) );
 
@@ -327,10 +327,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'        => 'caps-title',
 				'parent'    => 'caps',
-				'title'     => __('Capabilities', 'view-admin-as'),
+				'title'     => self::do_icon( 'dashicons-admin-generic' ) . __('Capabilities', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
-					'class'     => 'ab-vaa-title ab-vaa-toggle active',
+					'class'     => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				),
 			) );
 
@@ -465,10 +465,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'        => 'roles-title',
 				'parent'    => 'roles',
-				'title'     => __('Roles', 'view-admin-as'),
+				'title'     => self::do_icon( 'dashicons-groups' ) . __('Roles', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
-					'class'     => 'ab-vaa-title ab-vaa-toggle active',
+					'class'     => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				),
 			) );
 
@@ -552,10 +552,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'        => 'users-title',
 				'parent'    => 'users',
-				'title'     => __('Users', 'view-admin-as'),
+				'title'     => self::do_icon( 'dashicons-admin-users' ) . __('Users', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
-					'class'     => 'ab-vaa-title ab-vaa-toggle active',
+					'class'     => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				),
 			) );
 
@@ -636,6 +636,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			 */
 			do_action( 'vaa_admin_bar_users_after', $admin_bar );
 		}
+	}
+
+	/**
+	 * Returns icon html for WP admin bar
+	 * @since   1.6
+	 * @param   string  $icon
+	 * @return  string
+	 */
+	public static function do_icon( $icon ) {
+		return '<span class="ab-icon dashicons ' . $icon . '"></span>';
 	}
 
 	/**
