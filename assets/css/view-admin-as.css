@@ -23,6 +23,7 @@
 #wpadminbar #wp-admin-bar-view-as ul li,
 #wpadminbar #wp-admin-bar-view-as .ab-item {clear: both;}
 
+#wpadminbar #wp-admin-bar-view-as > .ab-item > .ab-label {float: left;} /* IE fix */
 #wpadminbar #wp-admin-bar-view-as > .ab-item > .ab-icon {float: right !important; margin-right: 0; margin-left: 6px; top: 2px;}
 #wpadminbar #wp-admin-bar-view-as .vaa-has-icon > .ab-item > .ab-icon {float: none; font-size: 16px; vertical-align: text-bottom; font-weight: normal; padding: 0;}
 #wpadminbar #wp-admin-bar-view-as .vaa-has-icon > .ab-item::before {display: none;}
