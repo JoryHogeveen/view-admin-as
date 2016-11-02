@@ -243,7 +243,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			),
 			array(
 				'id'    => 'info-review',
-				'title' => self::do_icon( 'dashicons-star-filled' ) . __( 'Rate 5 on WordPress.org!', 'view-admin-as' ),
+				'title' => self::do_icon( 'dashicons-star-filled' ) . __( 'Give 5 stars on WordPress.org!', 'view-admin-as' ),
 				'href'  => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
 			),
 			array(
@@ -258,25 +258,25 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			),
 			array(
 				'id'    => 'info-docs',
-				'title' => self::do_icon( 'dashicons-book-alt' ) . __( 'See the documentation', 'view-admin-as' ),
+				'title' => self::do_icon( 'dashicons-book-alt' ) . __( 'Documentation', 'view-admin-as' ),
 				'href'  => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
 			),
 			array(
 				'id'    => 'info-github',
-				'title' => self::do_icon( 'dashicons-admin-tools' ) . __( 'Follow development on GitHub', 'view-admin-as' ),
+				'title' => self::do_icon( 'dashicons-editor-code' ) . __( 'Follow development on GitHub', 'view-admin-as' ),
 				'href'  => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
 			)
 		);
 
 		foreach ( $info_links as $link ) {
 			$admin_bar->add_node( array(
-				'parent'    => 'info',
-				'id'        => $link['id'],
-				'title'     => $link['title'],
-				'href'      => $link['href'],
-				'meta'      => array(
-					'class'     => 'auto-height vaa-has-icon',
-					'target'  => '_blank'
+				'parent' => 'info',
+				'id'     => $link['id'],
+				'title'  => $link['title'],
+				'href'   => $link['href'],
+				'meta'   => array(
+					'class'  => 'auto-height vaa-has-icon',
+					'target' => '_blank'
 				),
 			) );
 		}
@@ -491,7 +491,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					$class = 'vaa-cap-item';
 					$checked = '';
 					// check if we've selected a capability view and we've changed some capabilities
-					// TODO: (PHP 5.4+) Use getter get_viewAs('caps')[ $cap_name ]
 					$selected_caps = $this->get_viewAs('caps');
 					if ( isset( $selected_caps[ $cap_name ] ) ) {
 						if ( 1 == $selected_caps[ $cap_name ] ) {
