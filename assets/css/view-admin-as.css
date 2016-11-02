@@ -134,7 +134,7 @@
  * Location: My Account;
  */
 
-#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-view-as > .ab-item > .ab-label {line-height: 1;}
+#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-view-as > .ab-item > .ab-label {line-height: 26px;}
 #wpadminbar #wp-admin-bar-my-account #wp-admin-bar-view-as > .ab-item > .ab-icon {top: 0;}
 
 /**
