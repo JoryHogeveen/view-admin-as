@@ -475,7 +475,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( ! empty( $roles ) ) {
 			foreach ( $roles as $role ) {
 				$users = get_users( array( 'role' => $role ) );
-				if ( ! empty ( $users ) ) {
+				if ( ! empty( $users ) ) {
 					foreach ( $users as $user ) {
 						$success = $this->update_user_with_role_defaults( $user->ID, $role );
 					}
