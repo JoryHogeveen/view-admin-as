@@ -3,8 +3,8 @@ Contributors: keraweb
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults
 Requires at least: 3.5
-Tested up to: 4.6
-Stable tag: 1.5.3
+Tested up to: 4.7
+Stable tag: 1.6
 
 View the WordPress admin as a different role, switch between users, temporarily change your capabilities, set default screen settings for roles.
 
@@ -14,17 +14,17 @@ This plugin will add a menu item to your admin bar where you can change your vie
 
 If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages.
 
-You can also see the defaults for a role and/or temporarily change your own capabilities.
+You can also switch to a role or temporarily change your own capabilities.
 
-Through the new "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
+Through the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
 
 = Overview / Features =
 
 *	Switch to the view of a user to see their capabilities and settings (admins are filtered!)
-*	Edit this user's screen preferences and settings
+	*	Edit this user's screen preferences and settings
 *	Switch to a default view of a role
 *	Temporarily change your own capabilities (non-destructively)
-*	Do this all without loggin out and easily go back to your own (default) user view!
+*	Do this all without logging out and easily go back to your own (default) user view!
 
 = Module: Role defaults (screen settings) =
 
@@ -33,13 +33,11 @@ Through the new "Role defaults" module you can set default screen settings for r
 *	Apply defaults to all users of a role
 *	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
 *	Import/Export role defaults
-*	Disable the "screen settings" option for all users that don't have access to this plugin
+*	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
 = Compatibility =
 
-WordPress 3.5+ and PHP 5.3+
-
-I think this plugin will work with most other plugins.
+This plugin will work with most other plugins.
 
 Fixed compatibility issues:
 
@@ -62,7 +60,7 @@ Please let me know through the support and add a plugins and themes list! :)
 
 = Security =
 
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is an administrator.
+You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
 Only if the above requirements are OK will this plugin do anything.
 Your view is stored separately so your user will keep the normal roles and capabilities.
 All settings, views, capabilities, etc. are checked before applied.
@@ -72,7 +70,7 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 
 = Developer notes =
 
-This plugin will only be usefull for admins (network super admins or regular admins). It will not add functionalities for other roles.
+This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.
 
 Also keep in mind that switching to users that have equal roles is disabled. (regular admins to regular admins + super admins to super admins)
 
@@ -88,12 +86,10 @@ Or search for "View Admin As" via your plugins menu.
 = Recommended Requirements =
 
 * WordPress 4.0 or greater (Though I always recommend to update to the latest version!)
-* PHP version 5.6 or greater
 
 = Minimum Requirements =
 
 * WordPress 3.5 or greater (3.8+ recommended because of design, this plugin doesn't incorporate all styles of versions prior to WP 3.8)
-* PHP version 5.3 or greater
 
 == Frequently Asked Questions ==
 
@@ -105,8 +101,8 @@ If the amount of users is more than 10 you can find them under their roles or yo
 Just click the role :)
 
 = 3. How does the capability system work? =
-Only the capabilities enabled for your user are shown.
-You can deselect the capabilities by clicking on them. When you would like to see the results just click the shiny button on the upper left.
+Only the capabilities that are allowed for your user are shown.
+You can deselect the capabilities by clicking on them. When you would like to see the results just click the apply button on the upper left.
 
 You can also filter the roles by name or select/deselect all capabilities.
 Note: When you select/deselect capabilities while you've filtered them only the capabilities shown by your filter are affected!
@@ -124,7 +120,7 @@ Example: http://www.your.domain/wp-admin/?reset-view
 Please see the `view_admin_as_role_defaults_meta` filter at https://viewadminas.wordpress.com/documentation/actions-filters/!
 
 = 6. I can't find a user! =
-Could it be that this user is an equal user to your's? Example: you are both Admins? 
+Could it be that this user is an equal user to your's? Example: you are both Admins?
 If so, these are filtered. Viewing Admins can only be done when you are a Super Admin within a network installation.
 
 Why? To protect your fellow admin! You have no power over equal users..
@@ -137,7 +133,7 @@ If that is not the case, please contact me! See item 7.
 Please let me know through the support and add a plugins and themes list! :)
 
 = 8. Is this plugin safe? Even for production websites? =
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is an administrator.
+You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
 Only if the above requirements are OK will this plugin do anything.
 Your view is stored separately so your user will keep the normal roles and capabilities.
 All settings, views, capabilities, etc. are checked before applied.
@@ -151,7 +147,7 @@ I've created this at first for myself since I'm a developer and often need to se
 So, when you are developing a plugin or theme that does anything with roles or capabilities you can use this plugin to easally check if everything works.
 No more hassle of creating test users and constantly logging out and in anymore!
 
-This plugin is also usefull to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
+This plugin is also useful to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
 
 == Screenshots ==
 
@@ -165,6 +161,18 @@ This plugin is also usefull to support your clients and/or users. For example; m
 8. Admin bar when a view is selected + the reset button location
 
 == Changelog ==
+
+= 1.6 =
+
+*	Feature: Lock meta boxes [#9](https://github.com/JoryHogeveen/view-admin-as/issues/9)
+*	Feature: View as links in user management page [#12](https://github.com/JoryHogeveen/view-admin-as/issues/12)
+*	Enhancement: Better admin bar handling when set to hidden by user [#4](https://github.com/JoryHogeveen/view-admin-as/issues/4)
+	*	Also adds an option to hide/show our toolbar when now view is selected and the admin bar is not shown.
+*	Enhancement: Better handling for permission errors [#10](https://github.com/JoryHogeveen/view-admin-as/issues/10)
+*	Compatibility: Show our custom capabilities on role manage plugins like Members
+*	Compatibility: PHP 5.2 (WP minimum)
+*	Fix: occasional issues with enabling the Role Defaults module
+*	Refactor whole backend into multiple classes for more flexibility in future development
 
 = 1.5.3 =
 
@@ -188,7 +196,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Improvement: (Settings tab) Add the option to group users under their roles. This option is only available when there are less than 15 users and roles, otherwise this is default
 *	Improvement: `view_admin_as_role_defaults` capability for access to the "Role Defaults" module when a user isn't a super admin
 *	Performance: Less queries for user validation
-*	Fix: (Module Role Defaults) Problem solved with unsetting meta keys
+*	Fix: (Module Role Defaults) Problem solved with un-setting meta keys
 *	Fix: Problem solved with anchor tags preventing javascript from reloading
 *	Fix: Problem solved with reset button on single switch mode
 *	UI: Move "Role Defaults" to the top
@@ -202,7 +210,7 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Feature: `view_admin_as` capability for non-admin users to enable limited access to this plugin (they won't be able to view or edit equal or admin users and roles). This capability requires the `edit_users` capability (+ `manage_network_users` for multisite installations)
 *	Feature: Ability to disable the "screen settings" option for all users that don't have access to this plugin
 *	Fix: die_handler for https
-*	Fix: Reset currently loaded metadata aswell when resetting a view (refresh is no longer needed, minor bug in 1.5)
+*	Fix: Reset currently loaded metadata as well when resetting a view (refresh is no longer needed, minor bug in 1.5)
 *	Added notices on compatibility errors
 
 = 1.5 =
@@ -216,94 +224,22 @@ This plugin is also usefull to support your clients and/or users. For example; m
 *	Improvement: Better version compare
 *	Improvement: Better code standards and data validation
 *	Compatibility: Backwards compatibility until WP 3.5+ (3.8+ is highly recommended, 4.0+ is best!)
-*	Security: Better data validation and usage of a nonce (allthough in this case I don't think it made any difference for actual security, it's still good to implement proper security!)
+*	Security: Better data validation and usage of a nonce (although in this case I don't think it made any difference for actual security, it's still good to implement proper security!)
 *	i18n: All translations are now managed with translate.wordpress.org
 *	Screenshots updated
 
-= 1.4.1 =
+= Older versions =
 
-*	Improvement: Improve how capabilities are fetched
-*	Improvement: Usage of a single instance of the class
-*	Tested with WordPress 4.5-Beta4
-
-= 1.4 =
-
-*	Feature: Module "Role defaults" to set default screen settings for roles and apply them on users through various bulk actions
-*	Improvement: DB version storage and update functions
-*	A lot of code improvements and some deprecated fixes
-*	Stopped using WordPress default translations since some where not correct for this plugin. All translations are now managed with the plugin
-*	Also tested with WordPress 4.5-Beta1
-
-= 1.3.4 =
-
-*	Improvement: View settings are saved separately for each browser login so you can set different views at the same time if you use different browsers. (incognito also works!)
-*	Improvement: View settings are saved for 24 hours. After that they are cleared automatically. (login triggers cleanup)
-*	Improvement: Better Ajax handlers
-*	Improvement: Better storage handlers
-*	Improvement: uninstall.php added for cleanup all data. (Sadly does not work for large networks of 10000+ sites or users)
-*	Tested with WordPress 4.5-Beta1
-
-= 1.3.3 =
-
-*	Improvement: Changed "init" hook to "plugins_loaded" for theme support (found some issues with the Genesis Framework, this solved it)
-
-= 1.3.2 =
-
-*	Feature: Added the ability to filter capabilities by the role defaults (normal and reversed)
-
-= 1.3.1 =
-
-*	Capability filter improved
-*	Fix: constructor for PHP7
-*	Fix: Stop loading css and scripts on frontend when no view is selected and the adminbar is disabled
-*	Added version tag to css and scripts
-
-= 1.3 =
-
-*	Feature: Added the ability to (non-destructively) change your own capabilities
-*	Feature: Added reset link on the "access denied" page when a view is selected
-*	Remove 'reset-view' from address bar when selecting a new view
-*	Added capability screenshots
-*	Added a FAQ
-*	Tested with WordPress 4.4-Beta4
-
-= 1.2.2 =
-
-*	Added support for users with multiple roles
-*	Enabled switching to admin users for multisites (switching to super admins is always disabled!)
-
-= 1.2.1 =
-
-*	Warning fixed
-
-= 1.2 =
-
-*	Support i18n functionality (currently only English and Dutch, translators are welcome!!) - Note: I use default WordPress strings aswell
-*	When grouped (10+ users): show number of users per role
-*	When grouped (10+ users): ability to search for users by their username
-*	Disable forcing the admin bar when in default view (Off)
-*	Some extra code and style improvements
-
-= 1.1 =
-
-*	Sort users by their role
-*	Group users under their roles when there are more than 10 users
-*	Make current user or role bold in dropdown + add eye icon
-*	Improve compatibility with Pods Framework
-*	Added css for style improvements
-*	Some extra code improvements
-
-= 1.0 =
-
-Created from nothingness just to be one of the cool kids. Yay!
+Complete changelog: [viewadminas.wordpress.com/changelog/](https://viewadminas.wordpress.com/changelog/ "viewadminas.wordpress.com/changelog/")
 
 == Other Notes ==
 
 You can find me here:
 
 *	[Keraweb](http://www.keraweb.nl/ "Keraweb")
-*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")
+*	[GitHub](https://github.com/JoryHogeveen/view-admin-as/ "GitHub")
 *	[Plugin page](https://viewadminas.wordpress.com/ "Plugin page")
+*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")
 
 = Translations =
 
