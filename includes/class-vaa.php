@@ -395,7 +395,7 @@ final class VAA_View_Admin_As
 ?>
 <div>
 	<h3><?php _e( 'View Admin As', 'view-admin-as' ) ?>:</h3>
-	<?php _e( 'The view you have selected is not permitted to view this page, please choose one of the options below.', 'view-admin-as' ) ?>
+	<?php _e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', 'view-admin-as' ) ?>
 	<ul>
 		<?php foreach ( $options as $option ) { ?>
 		<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
