@@ -207,7 +207,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			foreach ( $view_as as $key => $data ) {
 				if ( array_key_exists( $key, $this->get_modules() ) ) {
 					$module = $this->get_modules( $key );
-					if ( method_exists( $module, 'ajax_handler' ) ) {
+					if ( is_callable( array( $module, 'ajax_handler' ) ) ) {
 						$success = $module->ajax_handler( $data );
 						if ( is_string( $success ) && ! empty( $success ) ) {
 							wp_send_json_error( $success );

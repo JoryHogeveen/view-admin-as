@@ -436,7 +436,9 @@ final class VAA_View_Admin_As
 				'settings_user' => $this->store->get_userSettings()
 			);
 			foreach ( $this->get_modules() as $name => $module ) {
-				$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
+				if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
+					$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
+				}
 			}
 
 			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', $script_localization );
