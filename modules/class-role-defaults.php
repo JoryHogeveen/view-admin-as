@@ -180,7 +180,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( is_super_admin( $this->get_curUser()->ID ) ) {
 
 			// Add adminbar menu items in settings section
-			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ) );
+			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ), 10, 2 );
 		}
 
 		// Add adminbar menu items in role section
@@ -190,7 +190,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$this->init_store_role_defaults();
 
 			// Show the admin bar node
-			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu' ) );
+			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 10, 5 );
 		}
 	}
 
@@ -753,24 +753,28 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5
 	 * @access  public
 	 * @see     'vaa_admin_bar_settings_after' action
+	 *
 	 * @param   object  $admin_bar
+	 * @param   string  $root  The root item (vaa-settings)
 	 * @return  void
 	 */
-	public function admin_bar_menu_settings( $admin_bar ) {
+	public function admin_bar_menu_settings( $admin_bar, $root ) {
 
 		$admin_bar->add_group( array(
-			'id' => 'settings-role-defaults',
-			'parent' => 'settings',
+			'id' => $root . '-role-defaults',
+			'parent' => $root,
 			'meta'      => array(
 				'class'     => 'ab-sub-secondary',
 			),
 		) );
 
+		$root = $root . '-role-defaults';
+
 		$admin_bar->add_node( array(
-			'id'        => 'settings-role-defaults-enable',
-			'parent'    => 'settings-role-defaults',
-			'title'     => '<input class="checkbox" value="1" id="vaa_role_defaults_enable" name="vaa_role_defaults_enable" type="checkbox" ' . checked( $this->get_optionData( 'enable' ), true, false ) . '>
-							<label for="vaa_role_defaults_enable">' . __('Enable role defaults', 'view-admin-as') . '</label>
+			'id'        => $root . '-enable',
+			'parent'    => $root,
+			'title'     => '<input class="checkbox" value="1" id="' . $root . '-enable" name="vaa_role_defaults_enable" type="checkbox" ' . checked( $this->get_optionData( 'enable' ), true, false ) . '>
+							<label for="' . $root . '-enable">' . __('Enable role defaults', 'view-admin-as') . '</label>
 							<p class="description ab-item">' . __('Set default screen settings for roles and apply them on users through various bulk and automatic actions', 'view-admin-as') . '</p>',
 			'href'      => false,
 			'meta'      => array(
@@ -787,16 +791,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @since   1.4
 	 * @since   1.5.2   Changed hook to vaa_admin_bar_settings_after (previous: 'vaa_admin_bar_roles_before')
 	 * @access  public
-	 * @see     'vaa_admin_bar_settings_after' action
+	 * @see     'vaa_admin_bar_menu' action
 	 *
 	 * @param   object  $admin_bar
+	 * @param   string  $root  The root item (vaa)
 	 * @return  void
 	 */
-	public function admin_bar_menu( $admin_bar ) {
+	public function admin_bar_menu( $admin_bar, $root ) {
 
 		$admin_bar->add_node( array(
-			'id'        => 'role-defaults',
-			'parent'    => 'view-as',
+			'id'        => $root . '-role-defaults',
+			'parent'    => $root,
 			'title'     => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-id-alt' ) . __('Role defaults', 'view-admin-as'),
 			'href'      => false,
 			'meta'      => array(
@@ -804,26 +809,28 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 
+		$root = $root . '-role-defaults';
+
 		$role_select_options = '';
 		foreach ( $this->get_roles() as $role_key => $role ) {
 			$role_select_options .= '<option value="' . esc_attr( $role_key ) . '">' . translate_user_role( $role->name ) . '</option>';
 		}
 
 		$admin_bar->add_node( array(
-			'id'        => 'role-defaults-setting-register-enable',
-			'parent'    => 'role-defaults',
-			'title'     => '<input class="checkbox" value="1" id="vaa_role_defaults_register_enable" name="vaa_role_defaults_register_enable" type="checkbox" ' . checked( $this->get_optionData( 'apply_defaults_on_register' ), true, false ) . '>
-							<label for="vaa_role_defaults_register_enable">' . __('Automatically apply defaults to new users', 'view-admin-as') . '</label>',
+			'id'        => $root . '-setting-register-enable',
+			'parent'    => $root,
+			'title'     => '<input class="checkbox" value="1" id="' . $root . '-register-enable" name="vaa_role_defaults_register_enable" type="checkbox" ' . checked( $this->get_optionData( 'apply_defaults_on_register' ), true, false ) . '>
+							<label for="' . $root . '-register-enable">' . __('Automatically apply defaults to new users', 'view-admin-as') . '</label>',
 			'href'      => false,
 			'meta'      => array(
 				'class'     => 'auto-height',
 			),
 		) );
 		$admin_bar->add_node( array(
-			'id'        => 'role-defaults-setting-disable-user-screen-options',
-			'parent'    => 'role-defaults',
-			'title'     => '<input class="checkbox" value="1" id="vaa_role_defaults_disable_user_screen_options" name="vaa_role_defaults_disable_user_screen_options" type="checkbox" ' . checked( $this->get_optionData( 'disable_user_screen_options' ), true, false ) . '>
-							<label for="vaa_role_defaults_disable_user_screen_options">' . __('Disable screen options', 'view-admin-as') . '</label>
+			'id'        => $root . '-setting-disable-user-screen-options',
+			'parent'    => $root,
+			'title'     => '<input class="checkbox" value="1" id="' . $root . '-disable-user-screen-options" name="vaa_role_defaults_disable_user_screen_options" type="checkbox" ' . checked( $this->get_optionData( 'disable_user_screen_options' ), true, false ) . '>
+							<label for="' . $root . '-_disable_user_screen_options">' . __('Disable screen options', 'view-admin-as') . '</label>
 							<p class="description ab-item">' . __("Hide the screen options for all users who can't access role defaults", 'view-admin-as') . '</p>',
 			'href'      => false,
 			'meta'      => array(
@@ -831,10 +838,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 		$admin_bar->add_node( array(
-			'id'        => 'role-defaults-setting-lock-meta-boxes',
-			'parent'    => 'role-defaults',
-			'title'     => '<input class="checkbox" value="1" id="vaa_role_defaults_lock_meta_boxes" name="vaa_role_defaults_lock_meta_boxes" type="checkbox" ' . checked( $this->get_optionData( 'lock_meta_boxes' ), true, false ) . '>
-							<label for="vaa_role_defaults_lock_meta_boxes">' . __('Lock meta boxes', 'view-admin-as') . '</label>
+			'id'        => $root . '-setting-lock-meta-boxes',
+			'parent'    => $root,
+			'title'     => '<input class="checkbox" value="1" id="' . $root . '-lock-meta-boxes" name="vaa_role_defaults_lock_meta_boxes" type="checkbox" ' . checked( $this->get_optionData( 'lock_meta_boxes' ), true, false ) . '>
+							<label for="' . $root . '-lock-meta-boxes">' . __('Lock meta boxes', 'view-admin-as') . '</label>
 							<p class="description ab-item">' . __("Lock meta box order and locations for all users who can't access role defaults", 'view-admin-as') . '</p>',
 			'href'      => false,
 			'meta'      => array(
@@ -849,15 +856,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( $this->get_users() ) {
 			// Users select
 			$admin_bar->add_group( array(
-				'id'        => 'role-defaults-bulk-users',
-				'parent'    => 'role-defaults',
+				'id'        => $root . '-bulk-users',
+				'parent'    => $root,
 				'meta'      => array(
 					'class'     => 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-bulk-users-title',
-				'parent'    => 'role-defaults-bulk-users',
+				'id'        => $root . '-bulk-users-title',
+				'parent'    => $root . '-bulk-users',
 				'title'     => __('Apply defaults to users', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
@@ -865,9 +872,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-bulk-users-filter',
-				'parent'    => 'role-defaults-bulk-users',
-				'title'     => '<input id="role-defaults-bulk-users-filter" name="vaa-filter" placeholder="' . esc_attr__('Filter', 'view-admin-as') . ' (' . strtolower( __('Username') ) . ')" />',
+				'id'        => $root . '-bulk-users-filter',
+				'parent'    => $root . '-bulk-users',
+				'title'     => '<input id="' . $root . '-bulk-users-filter" name="vaa-filter" placeholder="' . esc_attr__('Filter', 'view-admin-as') . ' (' . strtolower( __('Username') ) . ')" />',
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'ab-vaa-filter',
@@ -880,15 +887,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 						$role_name = translate_user_role( $role_data->name );
 						$bulk_users_select_content .=
 							'<div class="ab-item vaa-item">
-								<input class="checkbox" value="' . $user->ID.'|'.$role . '" id="role-defaults-bulk-users-select-' . $user->ID . '" name="role-defaults-bulk-users-select[]" type="checkbox">
-								<label for="role-defaults-bulk-users-select-' . $user->ID . '"><span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span></label>
+								<input class="checkbox" value="' . $user->ID.'|'.$role . '" id="' . $root . '-bulk-users-select-' . $user->ID . '" name="role-defaults-bulk-users-select[]" type="checkbox">
+								<label for="' . $root . '-bulk-users-select-' . $user->ID . '"><span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span></label>
 							</div>';
 					}
 				}
 			}
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-bulk-users-select',
-				'parent'    => 'role-defaults-bulk-users',
+				'id'        => $root . '-bulk-users-select',
+				'parent'    => $root . '-bulk-users',
 				'title'     => $bulk_users_select_content,
 				'href'      => false,
 				'meta'      => array(
@@ -896,9 +903,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-bulk-users-apply',
-				'parent'    => 'role-defaults-bulk-users',
-				'title'     => '<button id="role-defaults-bulk-users-apply" class="button button-primary" name="role-defaults-bulk-users-apply">' . __('Apply', 'view-admin-as') . '</button>',
+				'id'        => $root . '-bulk-users-apply',
+				'parent'    => $root . '-bulk-users',
+				'title'     => '<button id="' . $root . '-bulk-users-apply" class="button button-primary" name="role-defaults-bulk-users-apply">' . __('Apply', 'view-admin-as') . '</button>',
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'vaa-button-container',
@@ -910,15 +917,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( $this->get_users() && $this->get_roles() ) {
 			// Roles select
 			$admin_bar->add_group( array(
-				'id'        => 'role-defaults-bulk-roles',
-				'parent'    => 'role-defaults',
+				'id'        => $root . '-bulk-roles',
+				'parent'    => $root,
 				'meta'      => array(
 					'class'     => 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-bulk-roles-title',
-				'parent'    => 'role-defaults-bulk-roles',
+				'id'        => $root . '-bulk-roles-title',
+				'parent'    => $root . '-bulk-roles',
 				'title'     => __('Apply defaults to users by role', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
@@ -926,9 +933,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-bulk-roles-select',
-				'parent'    => 'role-defaults-bulk-roles',
-				'title'     => '<select id="role-defaults-bulk-roles-select" name="role-defaults-bulk-roles-select"><option value=""> --- </option><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
+				'id'        => $root . '-bulk-roles-select',
+				'parent'    => $root . '-bulk-roles',
+				'title'     => '<select id="' . $root . '-bulk-roles-select" name="role-defaults-bulk-roles-select"><option value=""> --- </option><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
 								. $role_select_options . '</select>',
 				'href'      => false,
 				'meta'      => array(
@@ -937,9 +944,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-bulk-roles-apply',
-				'parent'    => 'role-defaults-bulk-roles',
-				'title'     => '<button id="role-defaults-bulk-roles-apply" class="button button-primary" name="role-defaults-bulk-roles-apply">' . __('Apply', 'view-admin-as') . '</button>',
+				'id'        => $root . '-bulk-roles-apply',
+				'parent'    => $root . '-bulk-roles',
+				'title'     => '<button id="' . $root . '-bulk-roles-apply" class="button button-primary" name="role-defaults-bulk-roles-apply">' . __('Apply', 'view-admin-as') . '</button>',
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'vaa-button-container',
@@ -952,15 +959,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 			/* Export actions */
 			$admin_bar->add_group( array(
-				'id'        => 'role-defaults-export',
-				'parent'    => 'role-defaults',
+				'id'        => $root . '-export',
+				'parent'    => $root,
 				'meta'      => array(
 					'class'     => 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-export-roles',
-				'parent'    => 'role-defaults-export',
+				'id'        => $root . '-export-roles',
+				'parent'    => $root . '-export',
 				'title'     => __('Export defaults for role', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
@@ -968,9 +975,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-export-roles-select',
-				'parent'    => 'role-defaults-export',
-				'title'     => '<select id="role-defaults-export-roles-select" name="role-defaults-export-roles-select"><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
+				'id'        => $root . '-export-roles-select',
+				'parent'    => $root . '-export',
+				'title'     => '<select id="' . $root . '-export-roles-select" name="role-defaults-export-roles-select"><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
 								. $role_select_options . '</select>',
 				'href'      => false,
 				'meta'      => array(
@@ -979,9 +986,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-export-roles-export',
-				'parent'    => 'role-defaults-export',
-				'title'     => '<button id="role-defaults-export-roles-export" class="button button-secondary" name="role-defaults-export-roles-export">' . __('Export', 'view-admin-as') . '</button>',
+				'id'        => $root . '-export-roles-export',
+				'parent'    => $root . '-export',
+				'title'     => '<button id="' . $root . '-export-roles-export" class="button button-secondary" name="role-defaults-export-roles-export">' . __('Export', 'view-admin-as') . '</button>',
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'vaa-button-container',
@@ -991,15 +998,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 			/* Import actions */
 			$admin_bar->add_group( array(
-				'id'        => 'role-defaults-import',
-				'parent'    => 'role-defaults',
+				'id'        => $root . '-import',
+				'parent'    => $root,
 				'meta'      => array(
 					'class'     => 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-import-roles',
-				'parent'    => 'role-defaults-import',
+				'id'        => $root . '-import-roles',
+				'parent'    => $root . '-import',
 				'title'     => __('Import defaults for role', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
@@ -1007,9 +1014,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-import-roles-input',
-				'parent'    => 'role-defaults-import',
-				'title'     => '<textarea id="role-defaults-import-roles-input" name="role-defaults-import-roles-input" placeholder="' . esc_attr__('Paste code here', 'view-admin-as') . '"></textarea>',
+				'id'        => $root . '-import-roles-input',
+				'parent'    => $root . '-import',
+				'title'     => '<textarea id="' . $root . '-import-roles-input" name="role-defaults-import-roles-input" placeholder="' . esc_attr__('Paste code here', 'view-admin-as') . '"></textarea>',
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'ab-vaa-textarea input-role', // vaa-column-one-half vaa-column-last
@@ -1017,9 +1024,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-import-roles-import',
-				'parent'    => 'role-defaults-import',
-				'title'     => '<button id="role-defaults-import-roles-import" class="button button-secondary" name="role-defaults-import-roles-import">' . __('Import', 'view-admin-as') . '</button>',
+				'id'        => $root . '-import-roles-import',
+				'parent'    => $root . '-import',
+				'title'     => '<button id="' . $root . '-import-roles-import" class="button button-secondary" name="role-defaults-import-roles-import">' . __('Import', 'view-admin-as') . '</button>',
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'vaa-button-container',
@@ -1029,15 +1036,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 			/* Clear actions */
 			$admin_bar->add_group( array(
-				'id'        => 'role-defaults-clear',
-				'parent'    => 'role-defaults',
+				'id'        => $root . '-clear',
+				'parent'    => $root,
 				'meta'      => array(
 					'class'     => 'ab-sub-secondary vaa-sub-transparent',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-clear-roles',
-				'parent'    => 'role-defaults-clear',
+				'id'        => $root . '-clear-roles',
+				'parent'    => $root . '-clear',
 				'title'     => __('Remove defaults for role', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
@@ -1045,9 +1052,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-clear-roles-select',
-				'parent'    => 'role-defaults-clear',
-				'title'     => '<select id="role-defaults-clear-roles-select" name="role-defaults-clear-roles-select"><option value=""> --- </option><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
+				'id'        => $root . '-clear-roles-select',
+				'parent'    => $root . '-clear',
+				'title'     => '<select id="' . $root . '-clear-roles-select" name="role-defaults-clear-roles-select"><option value=""> --- </option><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
 								. $role_select_options . '</select>',
 				'href'      => false,
 				'meta'      => array(
@@ -1056,9 +1063,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => 'role-defaults-clear-roles-apply',
-				'parent'    => 'role-defaults-clear',
-				'title'     => '<button id="role-defaults-clear-roles-apply" class="button button-secondary" name="role-defaults-clear-roles-apply">' . __('Apply', 'view-admin-as') . '</button>',
+				'id'        => $root . '-clear-roles-apply',
+				'parent'    => $root . '-clear',
+				'title'     => '<button id="' . $root . '-clear-roles-apply" class="button button-secondary" name="role-defaults-clear-roles-apply">' . __('Apply', 'view-admin-as') . '</button>',
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'vaa-button-container',
