@@ -4,7 +4,7 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6
+ * @version 1.6.1-dev
  */
 
 #vaa-overlay {position: fixed; top: 0; left: 0; height: 100%; width: 100%; background: rgba(255,255,255,0.85); display: none; z-index: 999999999;}
@@ -19,6 +19,10 @@
 #vaa-overlay.error {background-color: rgba(220, 50, 50, 0.85);}
 #vaa-overlay.success {background-color: rgba(70, 180, 80, 0.85);}
 */
+#wpadminbar .vaa-update.vaa-error {display: inline-block; color: #dc3232; background: #fff; padding: 0 10px;}
+#wpadminbar .vaa-update.vaa-error .ab-icon:before {color: #dc3232;}
+#wpadminbar .vaa-update.vaa-success {display: inline-block; color: #46b450; background: #fff; padding: 0 10px;}
+#wpadminbar .vaa-update.vaa-success .ab-icon:before {color: #46b450;}
 
 #wpadminbar #wp-admin-bar-vaa ul li,
 #wpadminbar #wp-admin-bar-vaa .ab-item {clear: both;}
@@ -29,11 +33,6 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before {display: none;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 10px; padding-right: 10px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon {font-size: 18px; margin: 0 5px 0 -1px;}
-
-#wpadminbar .vaa-update.vaa-error {display: inline-block; color: #dc3232; background: #fff; padding: 0 10px;}
-#wpadminbar .vaa-update.vaa-error .ab-icon:before {color: #dc3232;}
-#wpadminbar .vaa-update.vaa-success {display: inline-block; color: #46b450; background: #fff; padding: 0 10px;}
-#wpadminbar .vaa-update.vaa-success .ab-icon:before {color: #46b450;}
 
 #wpadminbar #wp-admin-bar-vaa.menupop ul.ab-sub-secondary {position: static;}
 #wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {top: 1px;}
@@ -49,6 +48,7 @@
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 17px; vertical-align: middle; font-weight: normal;}
 
 #wpadminbar .ab-top-secondary .menupop .vaa-menupop > .ab-item {padding-left: 2em; padding-right: 1em;}
+#wpadminbar .ab-top-secondary .menupop .vaa-menupop > .ab-item .ab-icon {margin-left: -20px; margin-right: 4px;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-bold > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-bold > .ab-item * {font-weight: bold !important;}

@@ -632,6 +632,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$parent = $root;
 				$href = '#';
 				$class = 'vaa-role-item';
+				$has_icon = false;
 				$title = translate_user_role( $role->name );
 				// Check if the users need to be grouped under their roles
 				if ( true === $this->groupUserRoles ) {
@@ -650,6 +651,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					if ( 0 < $user_count ) {
 						$title = $title . ' <span class="user-count">(' . $user_count . ')</span>';
 					}
+				}
+				if ( $has_icon ) {
+					$class .= ' vaa-has-icon';
 				}
 				// Check if this role is the current view
 				if ( $this->get_viewAs('role') && $this->get_viewAs('role') == strtolower( $role->name ) ) {
