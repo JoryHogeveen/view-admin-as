@@ -287,12 +287,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6     Moved to this class from main class
-	 * @access  private
+	 * @access  public
 	 *
 	 * @param   array|bool   $data
 	 * @return  bool
 	 */
-	private function update_view( $data = false ) {
+	public function update_view( $data = false ) {
 		if ( false != $data ) {
 			$meta = $this->store->get_userMeta('views');
 			// Make sure it is an array (no array means no valid data so we can safely clear it)
