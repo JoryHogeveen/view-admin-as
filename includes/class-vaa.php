@@ -523,6 +523,25 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Add extra modules
+	 *
+	 * @since   1.6.x
+	 * @param   array  $data {
+	 *     Required. An array of module info
+	 *     @type  string  $id        The module name, choose wisely since this is used for validation
+	 *     @type  object  $instance  The module class reference/instance
+	 * }
+	 * @return  bool
+	 */
+	public function add_module( $data ) {
+		if ( ! empty( $data['id'] ) && ! empty( $data['instance'] ) && is_object( $data['instance'] ) ) {
+			$this->modules[ $data['id'] ] = $data['instance'];
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Add notices to generate
 	 *
 	 * @since   1.5.1
