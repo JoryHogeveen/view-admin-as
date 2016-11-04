@@ -3,6 +3,7 @@
  * View Admin As - Groups plugin
  *
  * Compatibility class for the Groups plugin
+ * Loaded from VAA_View_Admin_As_Compat->init() (includes/class-compat.php)
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
@@ -40,9 +41,16 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * Populate the instance
 	 * @since   1.7
 	 * @access  protected
+	 * @param   object  $vaa  The main class
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa ) {
 		self::$_instance = $this;
+		parent::__construct( $vaa );
+
+		$this->vaa->add_module( array(
+			'id'       => 'groups',
+			'instance' => $this
+		) );
 
 		add_action( 'vaa_view_admin_as_init', array( $this, 'init' ) );
 	}
@@ -54,10 +62,6 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @param   VAA_View_Admin_As  $vaa
 	 */
 	public function init( $vaa ) {
-		parent::__construct( $vaa );
-
-			// @todo dev
-		$this->store->set_viewAs( array( 'group' => 2 ) );
 
 		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
 
@@ -258,7 +262,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	public static function get_instance( $caller = false ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}
