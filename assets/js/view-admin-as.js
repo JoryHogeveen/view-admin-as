@@ -159,8 +159,12 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 						/**
 						 * Reload the page
 						 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
+						 * @since  1.6.x  Fix issue with anchors
 						 */
-						window.location.replace( window.location.href.replace('?reset-view', '').replace('&reset-view', '') );
+						window.location.hash = '';
+						window.location.replace(
+							window.location.href.replace('#', '').replace('?reset-view', '').replace('&reset-view', '').replace('?reset-all-views', '').replace('&reset-all-views', '')
+						);
 					}
 				} else {
 					$('body #vaa-overlay').addClass('error').fadeOut( 'fast', function() { $(this).remove(); } );
