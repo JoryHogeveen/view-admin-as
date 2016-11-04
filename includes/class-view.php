@@ -57,7 +57,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		// Admin selector ajax return
 		add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
-		//add_action( 'wp_ajax_nopriv_update_view_as', array( $this, 'ajax_update_view_as' ) );
+		//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 
 		// Get the current view (returns false if not found)
 		$this->store->set_viewAs( $this->get_view() );
@@ -104,7 +104,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$filter_caps = $this->store->get_viewAs('caps');
 		}
 
-		if ( false != $filter_caps ) {
+		if ( false !== $filter_caps ) {
+			// Force it to be an array
+			$filter_caps = (array) $filter_caps;
 			foreach ( $caps as $actual_cap ) {
 				if ( ! array_key_exists( $actual_cap, $filter_caps ) || ( 1 != (int) $filter_caps[ $actual_cap ] ) ) {
 					// Regular
@@ -136,11 +138,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	public function ajax_view_admin_as() {
 
 		if (   ! defined('DOING_AJAX')
-		       || ! DOING_AJAX
-		       || ! $this->is_vaa_enabled()
-		       || ! isset( $_POST['view_admin_as'] )
-		       || ! isset( $_POST['_vaa_nonce'] )
-		       || ! wp_verify_nonce( $_POST['_vaa_nonce'], $this->store->get_nonce() )
+		    || ! DOING_AJAX
+		    || ! $this->is_vaa_enabled()
+		    || ! isset( $_POST['view_admin_as'] )
+		    || ! isset( $_POST['_vaa_nonce'] )
+		    || ! wp_verify_nonce( $_POST['_vaa_nonce'], $this->store->get_nonce() )
 		) {
 			wp_send_json_error( __('Cheatin uh?', 'view-admin-as') );
 			die();
