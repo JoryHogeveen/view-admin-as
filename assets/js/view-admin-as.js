@@ -45,6 +45,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_users();
 		VAA_View_Admin_As.init_settings();
 		VAA_View_Admin_As.init_module_role_defaults();
+		VAA_View_Admin_As.init_module_groups();
 
 		// Toggle content with title
 		$(window).load(function() {
@@ -636,6 +637,22 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 	};
 
+	/**
+	 * MODULE: Groups
+	 */
+	VAA_View_Admin_As.init_module_groups = function() {
+
+		// Process groups views
+		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-group-item > a.ab-item', function( e ) {
+			e.preventDefault();
+			if ( ! $(this).parent().hasClass('not-a-view') ) {
+				var viewAs = { groups : String( $(this).attr('rel') ) };
+				VAA_View_Admin_As.ajax( viewAs, true );
+				return false;
+			}
+		});
+
+	};
 
 	// We require a nonce to use this plugin
 	if ( 'undefined' != typeof VAA_View_Admin_As._vaa_nonce ) {

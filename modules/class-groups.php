@@ -69,9 +69,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
 
-			if ( $this->get_viewAs('group') && $this->get_groups( $this->get_viewAs('group') ) ) {
+			if ( $this->get_viewAs('groups') && $this->get_groups( $this->get_viewAs('groups') ) ) {
 
-				$this->selectedGroup = new Groups_Group( $this->get_viewAs('group') );
+				$this->selectedGroup = new Groups_Group( $this->get_viewAs('groups') );
 				add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 				//add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
 				add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
@@ -85,6 +85,22 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				 */
 			}
 		}
+	}
+
+	public function ajax_handler( $data ) {
+
+		if ( ! defined('VAA_DOING_AJAX')
+		  || ! VAA_DOING_AJAX
+		  || ! $this->is_vaa_enabled()
+		) {
+			return false;
+		}
+
+		if ( is_numeric( $data ) && $this->get_groups( (int) $data ) ) {
+			$this->vaa->view()->update_view( array( 'groups' => (int) $data ) );
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -109,7 +125,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			$result = $result[0];
 		}
 
-		if ( is_callable( array( $this->selectedGroup, 'can' ) ) && ! $this->selectedGroup->can( $cap ) ) {
+		if ( $this->selectedGroup && is_callable( array( $this->selectedGroup, 'can' ) ) && ! $this->selectedGroup->can( $cap ) ) {
 			$result = false;
 		}
 
@@ -117,7 +133,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	}
 
 	public function groups_user_is_member( $result, $user_id, $group_id ) {
-		if ( $group_id == $this->selectedGroup->group->group_id ) {
+		if ( $this->selectedGroup && $group_id == $this->selectedGroup->group->group_id ) {
 			$result = $this->selectedGroup->group;
 		}
 		return $result;
@@ -131,8 +147,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @return  string
 	 */
 	public function vaa_viewing_as_title( $title ) {
-		if ( $this->get_viewAs('group') && $this->get_groups( $this->get_viewAs('group') ) ) {
-			$title = __( 'Viewing as group', 'view-admin-as' ) . ': ' . $this->get_groups( $this->get_viewAs('group') )->name;
+		if ( $this->get_viewAs('groups') && $this->get_groups( $this->get_viewAs('groups') ) ) {
+			$title = __( 'Viewing as group', 'view-admin-as' ) . ': ' . $this->get_groups( $this->get_viewAs('groups') )->name;
 		}
 		return $title;
 	}
@@ -163,7 +179,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				'title'     => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-image-filter' ) . __('Groups', 'groups'),
 				'href'      => false,
 				'meta'      => array(
-					'class'     => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active'
+					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+					'tabindex' => '0'
 				),
 			) );
 
@@ -180,12 +197,12 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				$class = 'vaa-group-item';
 				$title = $group->name;
 				// Check if this group is the current view
-				if ( $this->get_viewAs('group') ) {
-					if ( $this->get_viewAs('group') == $group->group_id ) {
+				if ( $this->get_viewAs('groups') ) {
+					if ( $this->get_viewAs('groups') == $group->group_id ) {
 						$class .= ' current';
 						$href = false;
 					}
-					elseif ( $current_parent = $this->get_groups( $this->get_viewAs('group') ) ) {
+					elseif ( $current_parent = $this->get_groups( $this->get_viewAs('groups') ) ) {
 						if ( $current_parent->parent_id == $group->group_id ) {
 							$class .= ' current-parent';
 						}
