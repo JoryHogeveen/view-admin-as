@@ -248,7 +248,8 @@ final class VAA_View_Admin_As_Store
 				}
 			}
 		}
-		// @since 	1.5.2.1 	Merge role names with the role objects
+
+		// @since  1.5.2.1  Merge role names with the role objects
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $role_names[ $role_key ] ) ) {
 				$roles[ $role_key ]->name = $role_names[ $role_key ];

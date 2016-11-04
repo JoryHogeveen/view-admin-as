@@ -7,7 +7,7 @@
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.5
- * @version 1.6
+ * @version 1.6.x
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -174,7 +174,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'title'     => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
 			'href'      => false,
 			'meta'      => array(
-				'title'     => __('View Admin As', 'view-admin-as'),
+				'title'    => __('View Admin As', 'view-admin-as'),
+				'tabindex' => '0'
 			),
 		) );
 
@@ -200,9 +201,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'title'     => '<button id="reset-view" class="button button-secondary" name="' . $name . '">' . __('Reset to default', 'view-admin-as') . '</button>', // __('Default', 'view-admin-as')
 				'href'      => false,
 				'meta'      => array(
-					'title'     => esc_attr__('Reset to default', 'view-admin-as'),
-					'class'     => 'vaa-reset-item',
-					'rel'       => $rel,
+					'title'    => esc_attr__('Reset to default', 'view-admin-as'),
+					'class'    => 'vaa-reset-item',
+					'rel'      => $rel
 				),
 			) );
 		}
@@ -236,7 +237,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'title'     => self::do_icon( 'dashicons-info' ) . __('Info', 'view-admin-as'),
 			'href'      => false,
 			'meta'      => array(
-				'class'     => 'vaa-has-icon',
+				'class'    => 'vaa-has-icon',
+				'tabindex' => '0'
 			),
 		) );
 
@@ -356,7 +358,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'title'     => self::do_icon( 'dashicons-admin-settings' ) . __('Settings', 'view-admin-as'),
 			'href'      => false,
 			'meta'      => array(
-				'class' => 'vaa-has-icon',
+				'class'    => 'vaa-has-icon',
+				'tabindex' => '0'
 			),
 		) );
 
@@ -379,7 +382,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 							<p class="description ab-item">' . __('Change the location of this menu node', 'view-admin-as') . '</p>',
 			'href'      => false,
 			'meta'      => array(
-				'class' => 'auto-height',
+				'class'    => 'auto-height',
 			),
 		) );
 
@@ -393,7 +396,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 							<p class="description ab-item">' . __('Choose view on every pageload. This setting doesn\'t store views', 'view-admin-as') . '</p>',
 			'href'      => false,
 			'meta'      => array(
-				'class' => 'auto-height',
+				'class'    => 'auto-height',
 			),
 		) );
 
@@ -405,7 +408,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 							<p class="description ab-item">' . __('Hide on frontend when no view is selected and the admin bar is not shown', 'view-admin-as') . '</p>',
 			'href'      => false,
 			'meta'      => array(
-				'class' => 'auto-height',
+				'class'    => 'auto-height',
 			),
 		) );
 
@@ -422,7 +425,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 								<p class="description ab-item">' . __('Group users under their assigned roles', 'view-admin-as') . '</p>',
 				'href'      => false,
 				'meta'      => array(
-					'class' => 'auto-height',
+					'class'    => 'auto-height',
+					'tabindex' => '0'
 				),
 			) );
 		}
@@ -467,7 +471,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'title'     => self::do_icon( 'dashicons-admin-generic' ) . __('Capabilities', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
-					'class'     => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+					'tabindex' => '0'
 				),
 			) );
 
@@ -489,7 +494,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'title'     => __('Select', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
-					'class'     => $caps_quickselect_class,
+					'class'    => $caps_quickselect_class,
+					'tabindex' => '0'
 				),
 			) );
 
@@ -498,11 +504,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'id'        => $root . '-applycaps',
 					'parent'    => $root . '-quickselect',
 					'title'     => '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply', 'view-admin-as') . '</button>
-									<a id="close-caps-popup" class="button vaa-icon button-secondary" name="close-caps-popup"><span class="ab-icon dashicons dashicons-dismiss"></span></a>
-									<a id="open-caps-popup" class="button vaa-icon button-secondary" name="open-caps-popup"><span class="ab-icon dashicons dashicons-plus-alt"></span></a>',
+									<a tabindex="0" id="close-caps-popup" class="button vaa-icon button-secondary" name="close-caps-popup"><span class="ab-icon dashicons dashicons-dismiss"></span></a>
+									<a tabindex="0" id="open-caps-popup" class="button vaa-icon button-secondary" name="open-caps-popup"><span class="ab-icon dashicons dashicons-plus-alt"></span></a>',
 					'href'      => false,
 					'meta'      => array(
-						'class'     => 'vaa-button-container',
+						'class'    => 'vaa-button-container',
 					),
 				) );
 				$admin_bar->add_node( array(
@@ -511,7 +517,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'title'     => '<input id="filter-caps" name="vaa-filter" placeholder="' . esc_attr__('Filter', 'view-admin-as') . '" />',
 					'href'      => false,
 					'meta'      => array(
-						'class'     => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
+						'class'    => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
 					),
 				) );
 				$role_select_options = '';
@@ -608,7 +614,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'title'     => self::do_icon( 'dashicons-groups' ) . __('Roles', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
-					'class'     => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+					'tabindex' => '0'
 				),
 			) );
 
@@ -700,7 +707,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'title'     => self::do_icon( 'dashicons-admin-users' ) . __('Users', 'view-admin-as'),
 				'href'      => false,
 				'meta'      => array(
-					'class'     => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+					'tabindex' => '0'
 				),
 			) );
 
@@ -787,12 +795,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Returns icon html for WP admin bar
-	 * @since   1.6
+	 * @since   1.6.x
 	 * @param   string  $icon
 	 * @return  string
 	 */
 	public static function do_icon( $icon ) {
-		return '<span class="ab-icon dashicons ' . $icon . '"></span>';
+		return '<span class="ab-icon dashicons ' . $icon . '" aria-hidden="true"></span>';
 	}
 
 	/**

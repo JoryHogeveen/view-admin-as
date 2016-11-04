@@ -4,7 +4,7 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6
+ * @version 1.6.x
  */
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {
@@ -53,12 +53,30 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				if ( ! $(this).hasClass('active') ) {
 					toggleContent.hide();
 				}
-				$(this).click( function( e ) {
+				$(this).on( 'click', function( e ) {
 					e.preventDefault();
 					if ( $(this).hasClass('active') ) {
 						toggleContent.slideUp('fast');
 						$(this).removeClass('active');
 					} else {
+						toggleContent.slideDown('fast');
+						$(this).addClass('active');
+					}
+				});
+				$(this).on( 'keyup', function( e ) {
+					e.preventDefault();
+					/**
+					 * @see  https://api.jquery.com/keyup/
+					 * 13 = enter
+					 * 32 = space
+					 * 38 = arrow up
+					 * 40 = arrow down
+					 */
+					var key = e.which;
+					if ( $(this).hasClass('active') && ( key == 13 || key == 32 || key == 38 ) ) {
+						toggleContent.slideUp('fast');
+						$(this).removeClass('active');
+					} else if ( key == 13 || key == 32 || key == 40 ) {
 						toggleContent.slideDown('fast');
 						$(this).addClass('active');
 					}
