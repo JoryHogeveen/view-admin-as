@@ -24,9 +24,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
-	 *
+	 * The existing groups
 	 * @since   1.7
-	 * @var     array
+	 * @var     array of objects: Groups_Group
+	 * @see     groups/lib/core/class-groups-group.php -> Groups_Groups
 	 */
 	private $groups;
 
@@ -34,6 +35,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.7
 	 * @var     Groups_Group
+	 * @see     groups/lib/core/class-groups-group.php -> Groups_Groups
 	 */
 	private $selectedGroup;
 
@@ -47,12 +49,22 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
-		$this->vaa->add_module( array(
-			'id'       => 'groups',
-			'instance' => $this
-		) );
+		if ( is_callable( array( 'Groups_Group', 'get_groups' ) )
+		  && defined( 'GROUPS_ADMINISTER_GROUPS' )
+		  && current_user_can( GROUPS_ADMINISTER_GROUPS )
+		  && ! is_network_admin()
+		) {
 
-		add_action( 'vaa_view_admin_as_init', array( $this, 'init' ) );
+			$this->vaa->add_module( array(
+				'id'       => 'groups',
+				'instance' => $this
+			) );
+
+			$this->store_groups();
+
+			add_action( 'vaa_view_admin_as_init', array( $this, 'init' ) );
+		}
+
 	}
 
 	/**
@@ -63,30 +75,33 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init( $vaa ) {
 
-		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
+		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
 
-			$this->store_groups();
+		if ( $this->get_viewAs('groups') && $this->get_groups( $this->get_viewAs('groups') ) ) {
 
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
+			$this->selectedGroup = new Groups_Group( $this->get_viewAs('groups') );
+			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
+			//add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
+			add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
+			add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
 
-			if ( $this->get_viewAs('groups') && $this->get_groups( $this->get_viewAs('groups') ) ) {
-
-				$this->selectedGroup = new Groups_Group( $this->get_viewAs('groups') );
-				add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
-				//add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
-				add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
-				add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
-
-				/**
-				 * Filters
-				 *
-				 * - groups_post_access_user_can_read_post
-				 *     class-groups-post-access -> line 419
-				 */
-			}
+			/**
+			 * Filters
+			 *
+			 * - groups_post_access_user_can_read_post
+			 *     class-groups-post-access -> line 419
+			 */
 		}
 	}
 
+	/**
+	 * Ajax handler, called from main plugin view class
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   $data
+	 * @return  bool
+	 */
 	public function ajax_handler( $data ) {
 
 		if ( ! defined('VAA_DOING_AJAX')
@@ -132,6 +147,18 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		return $result;
 	}
 
+	/**
+	 * Filter the user-group relation
+	 *
+	 * @see  groups/lib/core/class-groups-user-group.php -> Groups_User_Group->read()
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   bool  $result
+	 * @param   int   $user_id
+	 * @param   int   $group_id
+	 * @return  bool|object
+	 */
 	public function groups_user_is_member( $result, $user_id, $group_id ) {
 		if ( $this->selectedGroup && $group_id == $this->selectedGroup->group->group_id ) {
 			$result = $this->selectedGroup->group;
@@ -176,7 +203,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'        => $root . '-title',
 				'parent'    => $root,
-				'title'     => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-image-filter' ) . __('Groups', 'groups'),
+				'title'     => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' ) . __('Groups', 'groups'),
 				'href'      => false,
 				'meta'      => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -192,7 +219,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			do_action( 'vaa_admin_bar_groups_before', $admin_bar );
 
 			// Add the groups
-			foreach( $this->groups as $group_key => $group ) {
+			foreach( $this->get_groups() as $group_key => $group ) {
 				$href = '#';
 				$class = 'vaa-group-item';
 				$title = $group->name;
