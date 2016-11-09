@@ -34,6 +34,14 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.ajaxurl = ajaxurl;
 	}
 
+	// Prevent swipe events to be seen as a click (bug in some browsers)
+	VAA_View_Admin_As._touchmove = false;
+	$( document ).on( 'touchmove', function() {
+		VAA_View_Admin_As._touchmove = true;
+	} );
+	$( document ).on( 'touchstart', function() {
+		VAA_View_Admin_As._touchmove = false;
+	} );
 
 	/**
 	 * BASE INIT
@@ -85,8 +93,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Process reset
-		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
 			e.preventDefault();
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			if ( $('button', this).attr('name') == 'reload' ) {
 				window.location.reload();
 			} else {
@@ -325,7 +336,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.init_roles = function() {
 
 		// Process role views
-		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-role-item > a.ab-item', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-role-item > a.ab-item', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			if ( ! $(this).parent().hasClass('not-a-view') ) {
 				var viewAs = { role : String( $(this).attr('rel') ) };
@@ -344,7 +358,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		var root = VAA_View_Admin_As.root + '-users';
 
 		// Process user views
-		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-user-item > a.ab-item', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-user-item > a.ab-item', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			if ( ! $(this).parent().hasClass('not-a-view') ) {
 				var viewAs = { user : parseInt( $(this).attr('rel') ) };
@@ -478,7 +495,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 
 		// Select all capabilities
-		$(document).on('click', VAA_View_Admin_As.prefix+root+' button#select-all-caps', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+' button#select-all-caps', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item').each( function() {
 				if ( $(this).is(':visible') ){
@@ -488,7 +508,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			return false;
 		});
 		// Deselect all capabilities
-		$(document).on('click', VAA_View_Admin_As.prefix+root+' button#deselect-all-caps', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+' button#deselect-all-caps', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item').each( function() {
 				if ( $(this).is(':visible') ){
@@ -499,7 +522,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Process view: capabilities
-		$(document).on('click', VAA_View_Admin_As.prefix+root+' button#apply-caps-view', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+' button#apply-caps-view', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var newCaps = '';
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item input').each( function() {
@@ -587,7 +613,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Apply defaults to users
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-bulk-users-apply button#' + prefix + '-bulk-users-apply', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-bulk-users-apply button#' + prefix + '-bulk-users-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = [];
 			$(VAA_View_Admin_As.prefix+root+'-bulk-users-select .ab-item.vaa-item input').each( function() {
@@ -603,7 +632,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Apply defaults to users by role
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-bulk-roles-apply button#' + prefix + '-bulk-roles-apply', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-bulk-roles-apply button#' + prefix + '-bulk-roles-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-bulk-roles-select select#' + prefix + '-bulk-roles-select').val();
 			if ( val && '' !== val ) {
@@ -614,7 +646,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Clear role defaults
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-clear-roles-select select#' + prefix + '-clear-roles-select').val();
 			if ( val && '' !== val ) {
@@ -627,7 +662,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Export role defaults
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-export-roles-export button#' + prefix + '-export-roles-export', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-export-roles-export button#' + prefix + '-export-roles-export', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-export-roles-select select#' + prefix + '-export-roles-select').val();
 			if ( val && '' !== val ) {
@@ -638,7 +676,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Import role defaults
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-import-roles-import button#' + prefix + '-import-roles-import', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-import-roles-import button#' + prefix + '-import-roles-import', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-import-roles-input textarea#' + prefix + '-import-roles-input').val();
 			if ( val && '' !== val ) {
@@ -656,4 +697,4 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	}
 
 
-})( jQuery );
+} )( jQuery );
