@@ -59,11 +59,11 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 			$link = admin_url();
 		}
 		$params = array(
-			'action=view_admin_as',
-			'view_admin_as=' . htmlentities( json_encode( $data ) ),
-			'_vaa_nonce=' . $this->store->get_nonce( true )
+			'action'        => 'view_admin_as',
+			'view_admin_as' => htmlentities( json_encode( $data ) ),
+			'_vaa_nonce'    => $this->store->get_nonce( true )
 		);
-		$link .= '?' . implode( '&', $params );
+		$link .= '?' . http_build_query( $params );
 
 		$actions['vaa_view'] = '<a href="' . $link . '">' . __( 'View as', 'view-admin-as' ) . '</a>';
 		return $actions;
