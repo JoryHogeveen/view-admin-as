@@ -77,6 +77,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 			. __('Plugin not activated because of a conflict with an other plugin or theme', 'view-admin-as')
 			. ' <code>(' . sprintf( __( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')' . '</code></p></div>';
 	}
+	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	deactivate_plugins( plugin_basename( __FILE__ ) );
 
 }
