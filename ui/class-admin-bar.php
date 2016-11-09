@@ -910,11 +910,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$classes = ( ! empty( $args['classes'] ) ) ? ' classes="' . $args['classes'] . '"' : '';
 
 		if ( ! empty( $args['label'] ) ) {
-			$html .= '<label for="' . $id . '">' . $args['label'] . '</label> ';
+			$html .= self::do_label( $args['label'], $id );
 		}
 		$html .= '<input type="text" value="' . $value . '"' . $placeholder . '' . $classes . ' id="' . $id . '" name="' . $name . '"/>';
 		if ( ! empty( $args['description'] ) ) {
-			$html .= '<p class="description ab-item">' . $args['description'] . '</p>';
+			$html .= self::do_description( $args['description'] );
 		}
 		return $html;
 	}
@@ -954,10 +954,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$html .= '<input type="checkbox" value="1" class="checkbox' . $classes . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
 		if ( ! empty( $args['label'] ) ) {
-			$html .= '<label for="' . $id . '">' . $args['label'] . '</label>';
+			$html .= self::do_label( $args['label'], $id );
 		}
 		if ( ! empty( $args['description'] ) ) {
-			$html .= '<p class="description ab-item">' . $args['description'] . '</p>';
+			$html .= self::do_description( $args['description'] );
 		}
 		return $html;
 	}
@@ -1002,10 +1002,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 				$html .= '<input type="radio" value="' . $args['compare'] . '" class="radio' . $classes . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
 				if ( ! empty( $args['label'] ) ) {
-					$html .= '<label for="' . $id . '">' . $args['label'] . '</label>';
+					$html .= self::do_label( $args['label'], $id );
 				}
 				if ( ! empty( $args['description'] ) ) {
-					$html .= '<p class="description ab-item">' . $args['description'] . '</p>';
+					$html .= self::do_description( $args['description'] );
 				}
 			}
 		}
@@ -1043,7 +1043,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$name = str_replace( '-', '_', $id );
 
 			if ( ! empty( $data['label'] ) ) {
-				$html .= '<label for="' . $id . '">' . $data['label'] . '</label>';
+				$html .= self::do_label( $data['label'], $id );
 			}
 
 			if ( empty( $data['value'] ) ) {
@@ -1061,7 +1061,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$html .= '</select>';
 
 			if ( ! empty( $data['description'] ) ) {
-				$html .= '<p class="description ab-item">' . $data['description'] . '</p>';
+				$html .= self::do_description( $data['description'] );
 			}
 		}
 		return $html;
@@ -1069,12 +1069,34 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Returns icon html for WP admin bar
-	 * @since   1.6.x
+	 * @since   1.6.1
 	 * @param   string  $icon
 	 * @return  string
 	 */
 	public static function do_icon( $icon ) {
 		return '<span class="ab-icon dashicons ' . $icon . '" aria-hidden="true"></span>';
+	}
+
+	/**
+	 * Returns label html for WP admin bar
+	 * @since   1.6.1
+	 * @param   string  $label
+	 * @param   string  $for
+	 * @return  string
+	 */
+	public static function do_label( $label, $for = '' ) {
+		$for = ( ! empty( $for ) ) ? ' for="' . $for . '"' : '';
+		return '<label' . $for . '>' . $label . '</label>';
+	}
+
+	/**
+	 * Returns description html for WP admin bar
+	 * @since   1.6.1
+	 * @param   string  $text
+	 * @return  string
+	 */
+	public static function do_description( $text ) {
+		return '<p class="description ab-item">' . $text . '</p>';
 	}
 
 	/**
