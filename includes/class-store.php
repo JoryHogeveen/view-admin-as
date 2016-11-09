@@ -269,6 +269,9 @@ final class VAA_View_Admin_As_Store
 	 */
 	public function store_users() {
 
+		// Load the superior admins
+		$superior_admins = VAA_API::get_superior_admins();
+
 		// Is the current user a super admin?
 		$is_super_admin = is_super_admin( $this->get_curUser()->ID );
 		// Is it also one of the manually configured superior admins?
@@ -282,11 +285,11 @@ final class VAA_View_Admin_As_Store
 			if ( in_array( $this->get_curUser()->user_login, $users ) ) {
 				unset( $users[ array_search( $this->get_curUser()->user_login, $users ) ] );
 			}
-			// Convert logins to WP_User objects and filter them for superior admins
+			// Convert login to WP_User objects and filter them for superior admins
 			foreach ( $users as $key => $user_login ) {
 				$user = get_user_by( 'login', $user_login );
-				if ( $user && ! in_array( $user->user_login, VAA_API::get_superior_admins() ) ) {
-					$users[ $key ] = get_user_by( 'login', $user_login );
+				if ( $user && ! in_array( $user->user_login, $superior_admins ) ) {
+					$users[ $key ] = $user;
 				} else {
 					unset( $users[ $key ] );
 				}
@@ -297,7 +300,7 @@ final class VAA_View_Admin_As_Store
 			$user_args = array(
 				'orderby' => 'display_name',
 				// @since  1.5.2  Exclude the current user
-				'exclude' => array_merge( VAA_API::get_superior_admins(), array( $this->get_curUser()->ID ) ),
+				'exclude' => array_merge( $superior_admins, array( $this->get_curUser()->ID ) ),
 			);
 			// Do not get regular admins for normal installs (WP 4.4+)
 			if ( ! is_multisite() && ! $is_superior_admin ) {
@@ -546,7 +549,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @param   int|bool     $user_id     ID of the user being deleted/removed
 	 * @param   object|bool  $user        User object provided by the wp_login hook
-	 * @param   bool         $reset_only  Only reset (not delet) the user meta
+	 * @param   bool         $reset_only  Only reset (not delete) the user meta
 	 * @return  bool
 	 */
 	public function delete_user_meta( $user_id = false, $user = false, $reset_only = true ) {
