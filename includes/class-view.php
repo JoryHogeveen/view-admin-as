@@ -74,6 +74,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				// Change the capabilities (map_meta_cap is better for compatibility with network admins)
 				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
 			}
+
+			// @since  1.6.1  Force own locale on view
+			if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
+				add_action( 'init', array( $this, 'freeze_locale' ) );
+			}
 		}
 
 	}
@@ -503,6 +508,23 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				}
 			}
 			return $view_as;
+		}
+		return false;
+	}
+
+	/**
+	 * Set the locale for the current view
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 */
+	public function freeze_locale() {
+		if ( function_exists( 'get_user_locale' ) && function_exists( 'switch_to_locale' ) ) {
+			$locale = get_user_locale( $this->store->get_curUser()->ID );
+			if ( $locale != get_locale() ) {
+				switch_to_locale( $locale );
+			}
+			return true;
 		}
 		return false;
 	}

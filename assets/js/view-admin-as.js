@@ -302,6 +302,20 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 			VAA_View_Admin_As.ajax( viewAs, false );
 		});
+
+		// Enable freeze locale
+		$(document).on('change', VAA_View_Admin_As.prefix+root+'-freeze-locale input#' + prefix + '-freeze-locale', function( e ) {
+			e.preventDefault();
+			var viewAs = { user_setting : { freeze_locale : "no" } };
+			if ( this.checked ) {
+				viewAs = { user_setting : { freeze_locale : "yes" } };
+			}
+			var reload = false;
+			if ( typeof VAA_View_Admin_As.view_as == 'object' && typeof VAA_View_Admin_As.view_as.user != 'undefined' ) {
+				reload = true;
+			}
+			VAA_View_Admin_As.ajax( viewAs, reload );
+		});
 	};
 
 

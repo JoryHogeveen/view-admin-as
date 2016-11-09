@@ -82,6 +82,7 @@ final class VAA_View_Admin_As_Store
 		'admin_menu_location' => 'top-secondary',
 		'force_group_users' => 'no',
 		'hide_front' => 'no',
+		'freeze_locale' => 'no',
 	);
 
 	/**
@@ -98,6 +99,7 @@ final class VAA_View_Admin_As_Store
 		'admin_menu_location' => array( 'top-secondary', 'my-account' ),
 		'force_group_users' => array( 'yes', 'no' ),
 		'hide_front' => array( 'yes', 'no' ),
+		'freeze_locale' => array( 'yes', 'no' ),
 	);
 
 	/**

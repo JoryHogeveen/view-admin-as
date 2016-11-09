@@ -412,6 +412,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 
+		$admin_bar->add_node( array(
+			'id'        => $root . '-freeze-locale',
+			'parent'    => $root,
+			'title'     => '<input type="checkbox" value="1" class="checkbox ' . $root . '-freeze-locale" id="' . $root . '-freeze-locale" name="vaa_settings_freeze_locale" ' . checked( $this->get_userSettings('freeze_locale'), 'yes', false ) . '>
+							<label for="' . $root . '-freeze-locale">' . __('Freeze locale', 'view-admin-as') . '</label>
+							<p class="description ab-item">' . __('Force your own locale setting to the current view', 'view-admin-as') . '</p>',
+			'href'      => false,
+			'meta'      => array(
+				'class'    => 'auto-height',
+			),
+		) );
+
 		/**
 		 * force_group_users setting
 		 * @since   1.5.2

@@ -446,6 +446,7 @@ final class VAA_View_Admin_As
 				'__no_users_found' => esc_html__( 'No users found.', 'view-admin-as' ),
 				'__success' => esc_html__( 'Success', 'view-admin-as' ),
 				'__confirm' => esc_html__( 'Are you sure?', 'view-admin-as' ),
+				'view_as' => $this->store->get_viewAs(),
 				'settings' => $this->store->get_settings(),
 				'settings_user' => $this->store->get_userSettings()
 			);
