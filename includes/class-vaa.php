@@ -215,7 +215,7 @@ final class VAA_View_Admin_As
 			 * Validate if the current user has access to the functionalities
 			 *
 			 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
-			 *                Disable plugin functions for nedwork admin pages
+			 *                Disable plugin functions for network admin pages
 			 * @since  1.4    Make sure we have a session for the current user
 			 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
 			 *                Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
@@ -223,8 +223,8 @@ final class VAA_View_Admin_As
 			 */
 			if (   ( is_super_admin( $this->store->get_curUser()->ID )
 				     || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
-				&& ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
-				&& $this->store->get_curUserSession() != ''
+			    && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
+			    && $this->store->get_curUserSession() != ''
 			) {
 				$this->enable = true;
 			}
@@ -418,11 +418,25 @@ final class VAA_View_Admin_As
 	public function enqueue_scripts() {
 		// Only enqueue scripts if the admin bar is enabled otherwise they have no use
 		if ( ( is_admin_bar_showing() || VAA_API::is_vaa_toolbar_showing() ) && $this->is_enabled() ) {
-			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min'; // Use non-minified versions
-			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->store->get_version(); // Prevent browser cache
 
-			wp_enqueue_style(   'vaa_view_admin_as_style', VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css', array(), $version );
-			wp_enqueue_script(  'vaa_view_admin_as_script', VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js', array( 'jquery' ), $version, true );
+			// Use non-minified versions
+			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+			// Prevent browser cache
+			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->store->get_version();
+
+			wp_enqueue_style(
+				'vaa_view_admin_as_style',
+				VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css',
+				array(),
+				$version
+			);
+			wp_enqueue_script(
+				'vaa_view_admin_as_script',
+				VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js',
+				array( 'jquery' ),
+				$version,
+				true // load in footer
+			);
 
 			$script_localization = array(
 				'ajaxurl' => admin_url( 'admin-ajax.php' ),
@@ -458,7 +472,8 @@ final class VAA_View_Admin_As
 		if ( $this->is_enabled() ) {
 
 			/**
-			 * Keep the third parameter pointing to the languages folder within this plugin to enable support for custom .mo files
+			 * Keep the third parameter pointing to the languages folder within this plugin
+			 * to enable support for custom .mo files
 			 *
 			 * @todo look into 4.6 changes Maybe the same can be done in an other way
 			 * @see https://make.wordpress.org/core/2016/07/06/i18n-improvements-in-4-6/
@@ -535,7 +550,7 @@ final class VAA_View_Admin_As
 	 */
 	public function add_module( $data ) {
 		if ( ! empty( $data['id'] ) && ! empty( $data['instance'] ) && is_object( $data['instance'] ) ) {
-			$this->modules[ $data['id'] ] = $data['instance'];
+			$this->modules[ (string) $data['id'] ] = $data['instance'];
 			return true;
 		}
 		return false;
@@ -614,7 +629,7 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Main View Admin As Instance.
+	 * Main View Admin As instance.
 	 *
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *

@@ -19,7 +19,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	};
 }
 
-(function($) {
+( function( $ ) {
 
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
@@ -90,8 +90,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			if ( $('button', this).attr('name') == 'reload' ) {
 				window.location.reload();
 			} else {
-				viewAs = { reset : true };
-				VAA_View_Admin_As.ajax( viewAs, true );
+				VAA_View_Admin_As.ajax( { reset : true }, true );
 				return false;
 			}
 		});

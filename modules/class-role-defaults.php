@@ -276,7 +276,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Ajax handler, called from main plugin
+	 * Ajax handler, called from main ajax handler
 	 *
 	 * @since   1.4
 	 * @access  public
