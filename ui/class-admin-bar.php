@@ -412,17 +412,24 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 
-		$admin_bar->add_node( array(
-			'id'        => $root . '-freeze-locale',
-			'parent'    => $root,
-			'title'     => '<input type="checkbox" value="1" class="checkbox ' . $root . '-freeze-locale" id="' . $root . '-freeze-locale" name="vaa_settings_freeze_locale" ' . checked( $this->get_userSettings('freeze_locale'), 'yes', false ) . '>
-							<label for="' . $root . '-freeze-locale">' . __('Freeze locale', 'view-admin-as') . '</label>
-							<p class="description ab-item">' . __('Force your own locale setting to the current view', 'view-admin-as') . '</p>',
-			'href'      => false,
-			'meta'      => array(
-				'class'    => 'auto-height',
-			),
-		) );
+		/**
+		 * Force own locale on view, WP 4.7+ only
+		 * @see     https://github.com/JoryHogeveen/view-admin-as/issues/21
+		 * @since   1.6.1
+		 */
+		if ( function_exists( 'get_user_locale' ) && function_exists( 'switch_to_locale' ) ) {
+			$admin_bar->add_node( array(
+				'id'        => $root . '-freeze-locale',
+				'parent'    => $root,
+				'title'     => '<input type="checkbox" value="1" class="checkbox ' . $root . '-freeze-locale" id="' . $root . '-freeze-locale" name="vaa_settings_freeze_locale" ' . checked( $this->get_userSettings('freeze_locale'), 'yes', false ) . '>
+								<label for="' . $root . '-freeze-locale">' . __('Freeze locale', 'view-admin-as') . '</label>
+								<p class="description ab-item">' . __('Force your own locale setting to the current view', 'view-admin-as') . '</p>',
+				'href'      => false,
+				'meta'      => array(
+					'class'    => 'auto-height',
+				),
+			) );
+		}
 
 		/**
 		 * force_group_users setting
