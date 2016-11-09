@@ -190,7 +190,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$this->init_store_role_defaults();
 
 			// Show the admin bar node
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 10, 5 );
+			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 5, 2 );
 		}
 	}
 
