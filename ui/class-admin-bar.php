@@ -262,7 +262,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			array(
 				'parent' => $root . '-about',
 				'id'     => $root . '-about-author',
-				'title'  => 'Keraweb (Jory Hogeveen)',
+				'title'  => 'Keraweb • Jory Hogeveen',
 				'href'   => 'https://profiles.wordpress.org/keraweb/',
 				'meta'   => array(
 					'target' => '_blank'
