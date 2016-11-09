@@ -24,7 +24,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Populate the instance
-	 * @since  1.6
+	 * @since   1.6
 	 */
 	protected function __construct() {
 		self::$_instance = $this;
@@ -41,10 +41,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init() {
 
-		if ( false !== $this->store->get_viewAs() ) {
+		/*if ( false !== $this->store->get_viewAs() ) {
 			// WooCommerce
 			remove_filter( 'show_admin_bar', 'wc_disable_admin_bar', 10 );
-		}
+		}*/
 
 		// Pods 2.x (only needed for the role selector)
 		if ( $this->store->get_viewAs('role') ) {
@@ -138,7 +138,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @see     init()
 	 */
-	public function members_register_cap_group () {
+	public function members_register_cap_group() {
 
 		if ( function_exists( 'members_register_cap_group' ) ) {
 			// Register the vaa group.
