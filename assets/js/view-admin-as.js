@@ -9,13 +9,14 @@
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	var VAA_View_Admin_As = {
-		'ajaxurl': null,
-		'siteurl': '',
-		'_debug': false,
-		'_vaa_nonce': '',
-		'__no_users_found': 'No users found.',
-		'__success': 'Success',
-		'__confirm': 'Are you sure?'
+		ajaxurl: null,
+		siteurl: '',
+		_debug: false,
+		_vaa_nonce: '',
+		__no_users_found: 'No users found.',
+		__success: 'Success',
+		__confirm: 'Are you sure?',
+		view_as: false
 	};
 }
 
@@ -98,7 +99,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
-			if ( $('button', this).attr('name') == 'reload' ) {
+			if ( $('button', this).attr('name') == 'vaa_reload' ) {
 				window.location.reload();
 			} else {
 				VAA_View_Admin_As.ajax( { reset : true }, true );
@@ -136,7 +137,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			'view_admin_as': viewAs
 		};
 
-		if ( $(VAA_View_Admin_As.prefix+'#vaa_settings_view_mode_single').is(':checked') && ( typeof viewAs.caps !== 'undefined' || typeof viewAs.role !== 'undefined' || typeof viewAs.user !== 'undefined' ) ) {
+		if ( $(VAA_View_Admin_As.prefix+'#vaa-settings-view-mode-single').is(':checked') && ( typeof viewAs.caps !== 'undefined' || typeof viewAs.role !== 'undefined' || typeof viewAs.user !== 'undefined' ) ) {
 
 			body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
 			var form = $('#vaa_single_mode_form');
@@ -563,7 +564,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		prefix = 'vaa-role-defaults';
 
 		// Enable apply defaults on register
-		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-register-enable input#' + prefix + '-register-enable', function( e ) {
+		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-register-enable input#' + prefix + '-setting-register-enable', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { apply_defaults_on_register : 0 } };
 			if ( this.checked ) {
@@ -573,7 +574,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Disable screen settings for users who can't access this plugin
-		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-disable-user-screen-options input#' + prefix + '-disable-user-screen-options', function( e ) {
+		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-disable-user-screen-options input#' + prefix + '-setting-disable-user-screen-options', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { disable_user_screen_options : 0 } };
 			if ( this.checked ) {
@@ -583,7 +584,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Lock meta box order and locations for users who can't access this plugin
-		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-lock-meta-boxes input#' + prefix + '-lock-meta-boxes', function( e ) {
+		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-lock-meta-boxes input#' + prefix + '-setting-lock-meta-boxes', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { lock_meta_boxes : 0 } };
 			if ( this.checked ) {

@@ -196,9 +196,13 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$name = 'reload';
 			}
 			$admin_bar->add_node( array(
-				'id'        => self::$root . '_reset',
+				'id'        => self::$root . '-reset',
 				'parent'    => self::$root,
-				'title'     => '<button id="reset-view" class="button button-secondary" name="' . $name . '">' . __('Reset to default', 'view-admin-as') . '</button>', // __('Default', 'view-admin-as')
+				'title'     => self::do_button( array(
+					'name'     => self::$root . '-' . $name,
+					'label'    => __('Reset to default', 'view-admin-as'),
+					'classes'  => 'button-secondary'
+				) ),
 				'href'      => false,
 				'meta'      => array(
 					'title'    => esc_attr__('Reset to default', 'view-admin-as'),
@@ -374,12 +378,22 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'        => $root . '-admin-menu-location',
 			'parent'    => $root,
-			'title'     => '<label for="' . $root . '-admin-menu-location">' . __('Location', 'view-admin-as') . ': &nbsp; </label>
-							<select class="select" id="' . $root . '-admin-menu-location" name="vaa_settings_admin_menu_location">
-									<option value="top-secondary" ' . selected( $this->get_userSettings('admin_menu_location'), 'top-secondary', false ) . ' >' . __( 'Default', 'view-admin-as' ) . '</option>
-									<option value="my-account" ' . selected( $this->get_userSettings('admin_menu_location'), 'my-account', false ) . ' >' . __( 'My account', 'view-admin-as' ) . '</option>
-							</select>
-							<p class="description ab-item">' . __('Change the location of this menu node', 'view-admin-as') . '</p>',
+			'title'     => self::do_select( array(
+				'name'        => $root . '-admin-menu-location',
+				'value'       => $this->get_userSettings('admin_menu_location'),
+				'label'       => __('Location', 'view-admin-as') . ': &nbsp; ',
+				'description' => __('Change the location of this menu node', 'view-admin-as'),
+				'values'      => array(
+					array(
+						'compare' => 'top-secondary',
+						'label' => __( 'Default', 'view-admin-as' )
+					),
+					array(
+						'compare' => 'my-account',
+						'label' => __( 'My account', 'view-admin-as' )
+					)
+				)
+			) ),
 			'href'      => false,
 			'meta'      => array(
 				'class'    => 'auto-height',
@@ -389,11 +403,22 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'        => $root . '-view-mode',
 			'parent'    => $root,
-			'title'     => //'<p for="vaa_settings_view_mode">' . __('View mode', 'view-admin-as') . '</p>
-							'<input type="radio" value="browse" class="radio ' . $root . '-view-mode" id="' . $root . '-view-mode-browse" name="vaa_settings_view_mode" ' . checked( $this->get_userSettings('view_mode'), 'browse', false ) . '> <label for="' . $root . '-view-mode-browse">' . __('Browse mode', 'view-admin-as') . '</label>
-							<p class="description ab-item">' . __('Store view and use WordPress with this view', 'view-admin-as') . ' (' . __('default', 'view-admin-as') . ')</p>
-							<input type="radio" value="single" class="radio ' . $root . '-view-mode" id="' . $root . '-view-mode-single" name="vaa_settings_view_mode" ' . checked( $this->get_userSettings('view_mode'), 'single', false ) . '> <label for="' . $root . '-view-mode-single">' . __('Single switch mode', 'view-admin-as') . '</label>
-							<p class="description ab-item">' . __('Choose view on every pageload. This setting doesn\'t store views', 'view-admin-as') . '</p>',
+			'title'     => self::do_radio( array(
+				'name'     => $root . '-view-mode',
+				'value'    => $this->get_userSettings('view_mode'),
+				'values'   => array(
+					array(
+						'compare'     => 'browse',
+						'label'       => __('Browse mode', 'view-admin-as'),
+						'description' => __('Store view and use WordPress with this view', 'view-admin-as')
+					),
+					array(
+						'compare'     => 'single',
+						'label'       => __('Single switch mode', 'view-admin-as'),
+						'description' => __('Choose view on every pageload. This setting doesn\'t store views', 'view-admin-as')
+					)
+				)
+			) ),
 			'href'      => false,
 			'meta'      => array(
 				'class'    => 'auto-height',
@@ -403,9 +428,13 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'        => $root . '-hide-front',
 			'parent'    => $root,
-			'title'     => '<input type="checkbox" value="1" class="checkbox ' . $root . '-hide-front" id="' . $root . '-hide-front" name="vaa_settings_hide_front" ' . checked( $this->get_userSettings('hide_front'), 'yes', false ) . '>
-							<label for="' . $root . '-hide-front">' . __('Hide on frontend', 'view-admin-as') . '</label>
-							<p class="description ab-item">' . __('Hide on frontend when no view is selected and the admin bar is not shown', 'view-admin-as') . '</p>',
+			'title'     => self::do_checkbox( array(
+				'name'        => $root . '-hide-front',
+				'value'       => $this->get_userSettings('hide_front'),
+				'compare'     => 'yes',
+				'label'       => __('Hide on frontend', 'view-admin-as'),
+				'description' => __('Hide on frontend when no view is selected and the admin bar is not shown', 'view-admin-as')
+			) ),
 			'href'      => false,
 			'meta'      => array(
 				'class'    => 'auto-height',
@@ -421,9 +450,13 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'        => $root . '-freeze-locale',
 				'parent'    => $root,
-				'title'     => '<input type="checkbox" value="1" class="checkbox ' . $root . '-freeze-locale" id="' . $root . '-freeze-locale" name="vaa_settings_freeze_locale" ' . checked( $this->get_userSettings('freeze_locale'), 'yes', false ) . '>
-								<label for="' . $root . '-freeze-locale">' . __('Freeze locale', 'view-admin-as') . '</label>
-								<p class="description ab-item">' . __('Force your own locale setting to the current view', 'view-admin-as') . '</p>',
+				'title'     => self::do_checkbox( array(
+					'name'        => $root . '-freeze-locale',
+					'value'       => $this->get_userSettings('freeze_locale'),
+					'compare'     => 'yes',
+					'label'       => __('Freeze locale', 'view-admin-as'),
+					'description' => __('Force your own locale setting to the current view', 'view-admin-as')
+				) ),
 				'href'      => false,
 				'meta'      => array(
 					'class'    => 'auto-height',
@@ -439,9 +472,13 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'        => $root . '-force-group-users',
 				'parent'    => $root,
-				'title'     => '<input type="checkbox" value="1" class="checkbox" id="' . $root . '-force-group-users" name="vaa_settings_force_group_users" ' . checked( $this->get_userSettings('force_group_users'), "yes", false ) . '>
-								<label for="' . $root . '-force-group-users">' . __('Group users', 'view-admin-as') . '</label>
-								<p class="description ab-item">' . __('Group users under their assigned roles', 'view-admin-as') . '</p>',
+				'title'     => self::do_checkbox( array(
+					'name'        => $root . '-force-group-users',
+					'value'       => $this->get_userSettings('force_group_users'),
+					'compare'     => 'yes',
+					'label'       => __('Group users', 'view-admin-as'),
+					'description' => __('Group users under their assigned roles', 'view-admin-as')
+				) ),
 				'href'      => false,
 				'meta'      => array(
 					'class'    => 'auto-height',
@@ -519,81 +556,84 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			) );
 
 			// Capabilities submenu
-				$admin_bar->add_node( array(
-					'id'        => $root . '-applycaps',
-					'parent'    => $root . '-quickselect',
-					'title'     => '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply', 'view-admin-as') . '</button>
-									<a tabindex="0" id="close-caps-popup" class="button vaa-icon button-secondary" name="close-caps-popup"><span class="ab-icon dashicons dashicons-dismiss"></span></a>
-									<a tabindex="0" id="open-caps-popup" class="button vaa-icon button-secondary" name="open-caps-popup"><span class="ab-icon dashicons dashicons-plus-alt"></span></a>',
-					'href'      => false,
-					'meta'      => array(
-						'class'    => 'vaa-button-container',
-					),
-				) );
-				$admin_bar->add_node( array(
-					'id'        => $root . '-filtercaps',
-					'parent'    => $root . '-quickselect',
-					'title'     => '<input id="filter-caps" name="vaa-filter" placeholder="' . esc_attr__('Filter', 'view-admin-as') . '" />',
-					'href'      => false,
-					'meta'      => array(
-						'class'    => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
-					),
-				) );
-				$role_select_options = '';
-				foreach ( $this->get_roles() as $role_key => $role ) {
-					$role_select_options .= '<option value="' . esc_attr( $role_key ) . '" data-caps=\'' . json_encode( $role->capabilities ) . '\'>= ' . translate_user_role( $role->name ) . '</option>';
-					$role_select_options .= '<option value="reversed-' . esc_attr( $role_key ) . '" data-reverse="1" data-caps=\'' . json_encode( $role->capabilities ) . '\'>≠ ' . translate_user_role( $role->name ) . '</option>';
-				}
-				$admin_bar->add_node( array(
-					'id'        => $root . '-selectrolecaps',
-					'parent'    => $root . '-quickselect',
-					'title'     => '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default', 'view-admin-as') . '</option>' . $role_select_options . '</select>',
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
-						'html'      => '',
-					),
-				) );
-				$admin_bar->add_node( array(
-					'id'        => $root . '-bulkselectcaps',
-					'parent'    => $root . '-quickselect',
-					'title'     => '' . __('All', 'view-admin-as') . ': &nbsp;
-									<button id="select-all-caps" class="button button-secondary" name="select-all-caps">' . __('Select', 'view-admin-as') . '</button>
-									<button id="deselect-all-caps" class="button button-secondary" name="deselect-all-caps">' . __('Deselect', 'view-admin-as') . '</button>',
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'vaa-button-container vaa-clear-float',
-					),
-				) );
-				$caps_quickselect_content = '';
-				foreach ( $this->get_caps() as $cap_name => $cap_val ) {
-					$class = 'vaa-cap-item';
-					$checked = '';
-					// check if we've selected a capability view and we've changed some capabilities
-					$selected_caps = $this->get_viewAs('caps');
-					if ( isset( $selected_caps[ $cap_name ] ) ) {
-						if ( 1 == $selected_caps[ $cap_name ] ) {
-							$checked = ' checked="checked"';
-						}
-					} elseif ( 1 == $cap_val ) {
+			$admin_bar->add_node( array(
+				'id'        => $root . '-applycaps',
+				'parent'    => $root . '-quickselect',
+				'title'     => '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply', 'view-admin-as') . '</button>
+								<a tabindex="0" id="close-caps-popup" class="button vaa-icon button-secondary" name="close-caps-popup"><span class="ab-icon dashicons dashicons-dismiss"></span></a>
+								<a tabindex="0" id="open-caps-popup" class="button vaa-icon button-secondary" name="open-caps-popup"><span class="ab-icon dashicons dashicons-plus-alt"></span></a>',
+				'href'      => false,
+				'meta'      => array(
+					'class'    => 'vaa-button-container',
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'        => $root . '-filtercaps',
+				'parent'    => $root . '-quickselect',
+				'title'     => VAA_View_Admin_As_Admin_Bar::do_input( array(
+					'name' => $root . '-filtercaps',
+					'placeholder' => esc_attr__('Filter', 'view-admin-as')
+				) ),
+				'href'      => false,
+				'meta'      => array(
+					'class'    => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
+				),
+			) );
+			$role_select_options = '';
+			foreach ( $this->get_roles() as $role_key => $role ) {
+				$role_select_options .= '<option value="' . esc_attr( $role_key ) . '" data-caps=\'' . json_encode( $role->capabilities ) . '\'>= ' . translate_user_role( $role->name ) . '</option>';
+				$role_select_options .= '<option value="reversed-' . esc_attr( $role_key ) . '" data-reverse="1" data-caps=\'' . json_encode( $role->capabilities ) . '\'>≠ ' . translate_user_role( $role->name ) . '</option>';
+			}
+			$admin_bar->add_node( array(
+				'id'        => $root . '-selectrolecaps',
+				'parent'    => $root . '-quickselect',
+				'title'     => '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default', 'view-admin-as') . '</option>' . $role_select_options . '</select>',
+				'href'      => false,
+				'meta'      => array(
+					'class'     => 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
+					'html'      => '',
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'        => $root . '-bulkselectcaps',
+				'parent'    => $root . '-quickselect',
+				'title'     => '' . __('All', 'view-admin-as') . ': &nbsp;
+								<button id="select-all-caps" class="button button-secondary" name="select-all-caps">' . __('Select', 'view-admin-as') . '</button>
+								<button id="deselect-all-caps" class="button button-secondary" name="deselect-all-caps">' . __('Deselect', 'view-admin-as') . '</button>',
+				'href'      => false,
+				'meta'      => array(
+					'class'     => 'vaa-button-container vaa-clear-float',
+				),
+			) );
+			$caps_quickselect_content = '';
+			foreach ( $this->get_caps() as $cap_name => $cap_val ) {
+				$class = 'vaa-cap-item';
+				$checked = '';
+				// check if we've selected a capability view and we've changed some capabilities
+				$selected_caps = $this->get_viewAs('caps');
+				if ( isset( $selected_caps[ $cap_name ] ) ) {
+					if ( 1 == $selected_caps[ $cap_name ] ) {
 						$checked = ' checked="checked"';
 					}
-					// The list of capabilities
-					$caps_quickselect_content .=
-						'<div class="ab-item '.$class.'">
-							<input class="checkbox" value="' . esc_attr( $cap_name ) . '" id="vaa_' . esc_attr( $cap_name ) . '" name="vaa_' . esc_attr( $cap_name ) . '" type="checkbox"' . $checked . '>
-							<label for="vaa_' . esc_attr( $cap_name ) . '">' . str_replace( '_', ' ', $cap_name ) . '</label>
-						</div>';
+				} elseif ( 1 == $cap_val ) {
+					$checked = ' checked="checked"';
 				}
-				$admin_bar->add_node( array(
-					'id'        => $root . '-quickselect-options',
-					'parent'    => $root . '-quickselect',
-					'title'     => $caps_quickselect_content,
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'ab-vaa-multipleselect auto-height',
-					),
-				) );
+				// The list of capabilities
+				$caps_quickselect_content .=
+					'<div class="ab-item '.$class.'">
+						<input class="checkbox" value="' . esc_attr( $cap_name ) . '" id="vaa_' . esc_attr( $cap_name ) . '" name="vaa_' . esc_attr( $cap_name ) . '" type="checkbox"' . $checked . '>
+						<label for="vaa_' . esc_attr( $cap_name ) . '">' . str_replace( '_', ' ', $cap_name ) . '</label>
+					</div>';
+			}
+			$admin_bar->add_node( array(
+				'id'        => $root . '-quickselect-options',
+				'parent'    => $root . '-quickselect',
+				'title'     => $caps_quickselect_content,
+				'href'      => false,
+				'meta'      => array(
+					'class'     => 'ab-vaa-multipleselect auto-height',
+				),
+			) );
 
 			/**
 			 * Add items at the end of the caps group
@@ -745,9 +785,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 			if ( true === $this->searchUsers ) {
 				$admin_bar->add_node( array(
-					'id'        => self::$root . 'searchuser',
+					'id'        => $root . '-searchusers',
 					'parent'    => $root,
-					'title'     => '<input id="search" name="vaa-search" placeholder="' . esc_attr__('Search', 'view-admin-as') . ' (' . strtolower( __('Username', 'view-admin-as') ) . ')" />',
+					'title'     => self::do_input( array(
+						'name' => $root . '-searchusers',
+						'placeholder' => esc_attr__('Search', 'view-admin-as') . ' (' . strtolower( __('Username', 'view-admin-as') ) . ')'
+					) ),
 					'href'      => false,
 					'meta'      => array(
 						'class'     => 'ab-vaa-search search-users',
@@ -766,7 +809,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					$class .= ' current';
 					$href = false;
 				}
-
 				if ( true === $this->groupUserRoles ) {
 					// Users grouped under roles
 					foreach ( $user->roles as $role ) {
@@ -814,6 +856,215 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			 */
 			do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, self::$root );
 		}
+	}
+
+	/**
+	 * Generate button HTML for node
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @static
+	 * @param   array  $args {
+	 *     Required. An array of field arguments
+	 *     @type  string  $name         Required
+	 *     @type  string  $label        Optional
+	 *     @type  string  $classes      Optional
+	 * }
+	 * @return  string
+	 */
+	public static function do_button( $args ) {
+		$id = esc_attr( $args['name'] );
+		$name = str_replace( '-', '_', $id );
+		$label = esc_attr( ( ! empty( $args['label'] ) ) ? $args['label'] : $args['value'] );
+		$classes = ' classes="button' . ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' ) . '"';
+		return '<button name="' . $name . '" id="' . $id . '"' . $classes . '>' . $label . '</button>';
+	}
+
+	/**
+	 * Generate text input HTML for node
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @static
+	 * @param   array  $args {
+	 *     Required. An array of field arguments
+	 *     @type  string  $name         Required
+	 *     @type  string  $placeholder  Optional
+	 *     @type  string  $default      Optional
+	 *     @type  string  $value        Optional
+	 *     @type  string  $label        Optional
+	 *     @type  string  $description  Optional
+	 *     @type  string  $classes      Optional
+	 * }
+	 * @return  string
+	 */
+	public static function do_input( $args ) {
+
+		$html = '';
+
+		$id = esc_attr( $args['name'] );
+		$name = str_replace( '-', '_', $id );
+		$default = ( ! empty( $args['default'] ) ) ? $args['default'] : '';
+		$value = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
+		$placeholder = ( ! empty( $args['placeholder'] ) ) ? ' placeholder="' . $args['placeholder'] . '"' : '';
+		$classes = ( ! empty( $args['classes'] ) ) ? ' classes="' . $args['classes'] . '"' : '';
+
+		if ( ! empty( $args['label'] ) ) {
+			$html .= '<label for="' . $id . '">' . $args['label'] . '</label> ';
+		}
+		$html .= '<input type="text" value="' . $value . '"' . $placeholder . '' . $classes . ' id="' . $id . '" name="' . $name . '"/>';
+		if ( ! empty( $args['description'] ) ) {
+			$html .= '<p class="description ab-item">' . $args['description'] . '</p>';
+		}
+		return $html;
+	}
+
+	/**
+	 * Generate checkbox HTML for node
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @static
+	 * @param   array  $args {
+	 *     Required. An array of field arguments
+	 *     @type  string  $name         Required
+	 *     @type  string  $compare      Optional
+	 *     @type  string  $value        Optional
+	 *     @type  string  $label        Optional
+	 *     @type  string  $description  Optional
+	 *     @type  string  $classes      Optional
+	 * }
+	 * @return  string
+	 */
+	public static function do_checkbox( $args ) {
+
+		$html = '';
+
+		$id = esc_attr( $args['name'] );
+		$name = str_replace( '-', '_', $id );
+
+		if ( empty( $args['value'] ) ) {
+			$args['value'] = null;
+		}
+		if ( empty( $args['compare'] ) ) {
+			$args['compare'] = 1;
+		}
+		$checked = checked( $args['value'], $args['compare'], false );
+		$classes = ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '';
+
+		$html .= '<input type="checkbox" value="1" class="checkbox' . $classes . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
+		if ( ! empty( $args['label'] ) ) {
+			$html .= '<label for="' . $id . '">' . $args['label'] . '</label>';
+		}
+		if ( ! empty( $args['description'] ) ) {
+			$html .= '<p class="description ab-item">' . $args['description'] . '</p>';
+		}
+		return $html;
+	}
+
+	/**
+	 * Generate radio HTML for node
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @static
+	 * @param   array  $data {
+	 *     Required. An array of arrays with field arguments
+	 *     @type  string  $name   Required
+	 *     @type  string  $value  Optional
+	 *     @type  array   $values {
+	 *         @type  array  $args {
+	 *             @type  string  $compare      Required
+	 *             @type  string  $label        Optional
+	 *             @type  string  $description  Optional
+	 *             @type  string  $classes      Optional
+	 *         }
+	 *     }
+	 * }
+	 * @return  string
+	 */
+	public static function do_radio( $data ) {
+
+		$html = '';
+
+		if ( is_array( $data ) ) {
+			foreach( $data['values'] as $args ) {
+
+				$id = esc_attr( $data['name'] . '-' . $args['compare'] );
+				$name = str_replace( '-', '_', esc_attr( $data['name'] ) );
+
+				if ( empty( $data['value'] ) ) {
+					$data['value'] = null;
+				}
+				$checked = checked( $data['value'], $args['compare'], false );
+				$classes = ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '';
+				$classes .= ' ' . esc_attr( $data['name'] );
+
+				$html .= '<input type="radio" value="' . $args['compare'] . '" class="radio' . $classes . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
+				if ( ! empty( $args['label'] ) ) {
+					$html .= '<label for="' . $id . '">' . $args['label'] . '</label>';
+				}
+				if ( ! empty( $args['description'] ) ) {
+					$html .= '<p class="description ab-item">' . $args['description'] . '</p>';
+				}
+			}
+		}
+		return $html;
+	}
+
+	/**
+	 * Generate selectbox HTML for node
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @static
+	 * @param   array  $data {
+	 *     Required. An array of arrays with field arguments
+	 *     @type  string  $name         Required
+	 *     @type  string  $value        Optional
+	 *     @type  string  $classes      Optional
+	 *     @type  string  $label        Optional
+	 *     @type  string  $description  Optional
+	 *     @type  array   $values {
+	 *         @type  array  $args {
+	 *             @type  string  $compare  Required
+	 *             @type  string  $label    Optional
+	 *         }
+	 *     }
+	 * }
+	 * @return  string
+	 */
+	public static function do_select( $data ) {
+
+		$html = '';
+
+		if ( is_array( $data ) && ! empty( $data['values'] ) ) {
+			$id = esc_attr( $data['name'] );
+			$name = str_replace( '-', '_', $id );
+
+			if ( ! empty( $data['label'] ) ) {
+				$html .= '<label for="' . $id . '">' . $data['label'] . '</label>';
+			}
+
+			if ( empty( $data['value'] ) ) {
+				$data['value'] = null;
+			}
+			$classes = ( ! empty( $data['classes'] ) ) ? ' ' . $data['classes'] : '';
+			$html .= '<select class="selectbox' . $classes . '" id="' . $id . '" name="' . $name . '"/>';
+
+			foreach( $data['values'] as $args ) {
+				$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['compare'];
+				$selected = selected( $data['value'], $args['compare'], false );
+				$html .= '<option value="' . $args['compare'] . '"' . $selected . '>' . $label . '</option>';
+
+			}
+			$html .= '</select>';
+
+			if ( ! empty( $data['description'] ) ) {
+				$html .= '<p class="description ab-item">' . $data['description'] . '</p>';
+			}
+		}
+		return $html;
 	}
 
 	/**
