@@ -687,7 +687,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			do_action( 'vaa_admin_bar_roles_before', $admin_bar, self::$root );
 
 			// Add the roles
-			foreach( $this->get_roles() as $role_key => $role ) {
+			foreach ( $this->get_roles() as $role_key => $role ) {
 				$parent = $root;
 				$href = '#';
 				$class = 'vaa-role-item';
@@ -799,7 +799,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				) );
 			}
 			// Add the users
-			foreach( $this->get_users() as $user_key => $user ) {
+			foreach ( $this->get_users() as $user_key => $user ) {
 				$parent = $root;
 				$href = '#';
 				$title = $user->data->display_name;
@@ -989,7 +989,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$html = '';
 
 		if ( is_array( $data ) && ! empty( $data['values'] ) ) {
-			foreach( $data['values'] as $args ) {
+			foreach ( $data['values'] as $args ) {
 
 				$id = esc_attr( $data['name'] . '-' . $args['compare'] );
 				$name = str_replace( '-', '_', esc_attr( $data['name'] ) );
@@ -1056,7 +1056,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$classes = ( ! empty( $data['classes'] ) ) ? ' ' . $data['classes'] : '';
 			$html .= '<select class="selectbox' . $classes . '" id="' . $id . '" name="' . $name . '"/>';
 
-			foreach( $data['values'] as $args ) {
+			foreach ( $data['values'] as $args ) {
 				$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['compare'];
 				$selected = selected( $data['value'], $args['compare'], false );
 				$html .= '<option value="' . $args['compare'] . '"' . $selected . '>' . $label . '</option>';

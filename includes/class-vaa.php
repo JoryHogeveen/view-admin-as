@@ -113,7 +113,7 @@ final class VAA_View_Admin_As
 
 		} else {
 
-			$this->add_notice('class-error-base', array(
+			$this->add_notice('class-error-core', array(
 				'type' => 'notice-error',
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
 					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
@@ -293,7 +293,7 @@ final class VAA_View_Admin_As
 			$this->add_notice('class-error-admin-bar', array(
 				'type' => 'notice-error',
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
+					. __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
 					. ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin_Bar' ) . ')</code>',
 			) );
 		}
@@ -307,7 +307,7 @@ final class VAA_View_Admin_As
 			$this->add_notice('class-error-toolbar', array(
 				'type' => 'notice-error',
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-				    . __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
+				    . __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
 				    . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Toolbar' ) . ')</code>',
 			) );
 		}
@@ -321,7 +321,7 @@ final class VAA_View_Admin_As
 			$this->add_notice('class-error-admin', array(
 				'type' => 'notice-error',
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-				    . __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
+				    . __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
 				    . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin' ) . ')</code>',
 			) );
 		}
@@ -439,16 +439,19 @@ final class VAA_View_Admin_As
 			);
 
 			$script_localization = array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-				'siteurl' => get_site_url(),
-				'_debug' => ( defined('WP_DEBUG') && WP_DEBUG ) ? (bool) WP_DEBUG : false,
+				// Data
+				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'siteurl'       => get_site_url(),
+				'settings'      => $this->store->get_settings(),
+				'settings_user' => $this->store->get_userSettings(),
+				'view_as'       => $this->store->get_viewAs(),
+				// Other
+				'_debug'     => ( defined('WP_DEBUG') && WP_DEBUG ) ? (bool) WP_DEBUG : false,
 				'_vaa_nonce' => $this->store->get_nonce( true ),
+				// i18n
 				'__no_users_found' => esc_html__( 'No users found.', 'view-admin-as' ),
-				'__success' => esc_html__( 'Success', 'view-admin-as' ),
-				'__confirm' => esc_html__( 'Are you sure?', 'view-admin-as' ),
-				'view_as' => $this->store->get_viewAs(),
-				'settings' => $this->store->get_settings(),
-				'settings_user' => $this->store->get_userSettings()
+				'__success'        => esc_html__( 'Success', 'view-admin-as' ),
+				'__confirm'        => esc_html__( 'Are you sure?', 'view-admin-as' )
 			);
 			foreach ( $this->get_modules() as $name => $module ) {
 				if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
