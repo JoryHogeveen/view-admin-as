@@ -4,7 +4,7 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6.x
+ * @version 1.6.1
  */
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {
@@ -170,7 +170,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 						/**
 						 * Reload the page
 						 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
-						 * @since  1.6.x  Fix issue with anchors
+						 * @since  1.6.1  Fix issue with anchors
 						 */
 						window.location.hash = '';
 						window.location.replace(

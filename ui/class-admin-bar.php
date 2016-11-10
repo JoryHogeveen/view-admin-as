@@ -7,7 +7,7 @@
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.5
- * @version 1.6.x
+ * @version 1.6.1
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -970,8 +970,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @static
 	 * @param   array  $data {
 	 *     Required. An array of arrays with field arguments
-	 *     @type  string  $name   Required
-	 *     @type  string  $value  Optional
+	 *     @type  string  $name         Required
+	 *     @type  string  $value        Optional
+	 *     @type  string  $description  Optional
 	 *     @type  array   $values {
 	 *         @type  array  $args {
 	 *             @type  string  $compare      Required
@@ -987,7 +988,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$html = '';
 
-		if ( is_array( $data ) ) {
+		if ( is_array( $data ) && ! empty( $data['values'] ) ) {
 			foreach( $data['values'] as $args ) {
 
 				$id = esc_attr( $data['name'] . '-' . $args['compare'] );
@@ -1007,6 +1008,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				if ( ! empty( $args['description'] ) ) {
 					$html .= self::do_description( $args['description'] );
 				}
+			}
+			if ( ! empty( $data['description'] ) ) {
+				$html .= self::do_description( $data['description'] );
 			}
 		}
 		return $html;

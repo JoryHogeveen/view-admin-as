@@ -541,7 +541,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Add extra modules
 	 *
-	 * @since   1.6.x
+	 * @since   1.6.1
 	 * @param   array  $data {
 	 *     Required. An array of module info
 	 *     @type  string  $id        The module name, choose wisely since this is used for validation

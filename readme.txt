@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults
 Requires at least: 3.5
 Tested up to: 4.7
-Stable tag: 1.6
+Stable tag: 1.6.1
 
 View the WordPress admin as a different role, switch between users, temporarily change your capabilities, set default screen settings for roles.
 
@@ -162,6 +162,12 @@ This plugin is also useful to support your clients and/or users. For example; ma
 
 == Changelog ==
 
+= 1.6.1 =
+
+*	Feature: Freeze locale, force your own locale setting over that of a selected view. (Requires WP 4.7) [#21](https://github.com/JoryHogeveen/view-admin-as/issues/21)
+*	A11y: Added keyboard tab indexes
+*	Fix: reloading when anchor tags are set in the url [#17](https://github.com/JoryHogeveen/view-admin-as/issues/17)
+
 = 1.6 =
 
 *	Feature: Lock meta boxes [#9](https://github.com/JoryHogeveen/view-admin-as/issues/9)
@@ -173,60 +179,6 @@ This plugin is also useful to support your clients and/or users. For example; ma
 *	Compatibility: PHP 5.2 (WP minimum)
 *	Fix: occasional issues with enabling the Role Defaults module
 *	Refactor whole backend into multiple classes for more flexibility in future development
-
-= 1.5.3 =
-
-*	Feature: Switch between super admins on network pages (currently only available for superior admins, see `view_admin_as_superior_admins` filter)
-*	Improvement: Better handling of role defaults for new users
-*	Improvement: Also hide the screen options for all users who can access this plugin default functionalities but can't access the role defaults module
-*	UX: Confirm before deleting role defaults
-*	UI: Translate user roles in front end (WP issue workaround)
-*	UI: Fix icon sizes across browsers
-*	Tested for WordPress 4.6
-
-= 1.5.2.1 =
-
-*	Fix: minor bug with displaying role names
-*	Fix: minor bug with displaying role defaults menu item
-
-= 1.5.2 =
-
-*	Feature: Added the `view_admin_as_superior_admins` filter. Grant admins the capability to view other admins. There is no UI for this!
-*	Improvement: (Module Role Defaults) Added forbidden meta keys to make sure user entered keys (filter) are ok to use.
-*	Improvement: (Settings tab) Add the option to group users under their roles. This option is only available when there are less than 15 users and roles, otherwise this is default
-*	Improvement: `view_admin_as_role_defaults` capability for access to the "Role Defaults" module when a user isn't a super admin
-*	Performance: Less queries for user validation
-*	Fix: (Module Role Defaults) Problem solved with un-setting meta keys
-*	Fix: Problem solved with anchor tags preventing javascript from reloading
-*	Fix: Problem solved with reset button on single switch mode
-*	UI: Move "Role Defaults" to the top
-*	UI: Remove the reset button when no view is selected
-*	UI: Added some of those pretty dashicons
-*	UI: Allow titles to toggle content
-*	Resource: Started with [viewadminas.wordpress.com](https://viewadminas.wordpress.com/ "viewadminas.wordpress.com")
-
-= 1.5.1 =
-
-*	Feature: `view_admin_as` capability for non-admin users to enable limited access to this plugin (they won't be able to view or edit equal or admin users and roles). This capability requires the `edit_users` capability (+ `manage_network_users` for multisite installations)
-*	Feature: Ability to disable the "screen settings" option for all users that don't have access to this plugin
-*	Fix: die_handler for https
-*	Fix: Reset currently loaded metadata as well when resetting a view (refresh is no longer needed, minor bug in 1.5)
-*	Added notices on compatibility errors
-
-= 1.5 =
-
-*	Upgrade notice: The plugin code changed a lot, please clear your cache after updating
-*	Feature: Import and export functions for module "Role defaults"
-*	Feature: (Settings tab) View mode "browse" and "single"
-*	Feature: (Settings tab) Change location of this plugin menu
-*	Improvement: Better capability filter (used for changing capabilities and roles)
-*	Improvement: Added some actions for extension purposes
-*	Improvement: Better version compare
-*	Improvement: Better code standards and data validation
-*	Compatibility: Backwards compatibility until WP 3.5+ (3.8+ is highly recommended, 4.0+ is best!)
-*	Security: Better data validation and usage of a nonce (although in this case I don't think it made any difference for actual security, it's still good to implement proper security!)
-*	i18n: All translations are now managed with translate.wordpress.org
-*	Screenshots updated
 
 = Older versions =
 
