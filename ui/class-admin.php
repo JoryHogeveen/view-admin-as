@@ -8,7 +8,6 @@
  * @package view-admin-as
  * @since   1.6
  * @version 1.6
- * @see wp-includes/class-wp-admin-bar.php
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
