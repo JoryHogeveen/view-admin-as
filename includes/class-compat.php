@@ -41,15 +41,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init() {
 
-		/*if ( false !== $this->store->get_viewAs() ) {
-			// WooCommerce
-			remove_filter( 'show_admin_bar', 'wc_disable_admin_bar', 10 );
-		}*/
-
-		// Pods 2.x (only needed for the role selector)
-		if ( $this->store->get_viewAs('role') ) {
-			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 10, 3 );
-		}
+		add_action( 'vaa_view_admin_as_init', array( $this, 'init_after' ) );
 
 		/**
 		 * Add our caps to the members plugin
@@ -61,6 +53,27 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		// Get caps from other plugins
 		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ) );
 
+	}
+
+	/**
+	 * Fix compatibility issues on load
+	 * Called from 'vaa_view_admin_as_init' hook (after loading all data)
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @return  void
+	 */
+	public function init_after() {
+
+		/*if ( false !== $this->store->get_viewAs() ) {
+			// WooCommerce
+			remove_filter( 'show_admin_bar', 'wc_disable_admin_bar', 10 );
+		}*/
+
+		if ( $this->store->get_viewAs('role') ) {
+			// Pods 2.x (only needed for the role selector)
+			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -125,9 +138,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		}
 
 		$role_caps = $this->store->get_roles( $this->store->get_viewAs('role') )->capabilities;
-		if ( ! array_key_exists( $cap, $role_caps ) || ( 1 != $role_caps[$cap] ) ) {
+		if ( ! array_key_exists( $cap, $role_caps ) || ( 1 != $role_caps[ $cap ] ) ) {
 			return false;
 		}
+
 		return true;
 	}
 
