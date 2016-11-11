@@ -281,7 +281,7 @@ final class VAA_View_Admin_As_Store
 
 		if ( is_network_admin() ) {
 
-			// Get super admins (returns logins)
+			// Get super admins (returns login's)
 			$users = get_super_admins();
 			// Remove current user
 			if ( in_array( $this->get_curUser()->user_login, $users ) ) {
@@ -663,17 +663,17 @@ final class VAA_View_Admin_As_Store
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Store|bool
+	 * @param   object  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_Store
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self();
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 
 	/**

@@ -1111,17 +1111,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Admin_Bar|bool
+	 * @param   object  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_Admin_Bar
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self();
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 
 } // end class

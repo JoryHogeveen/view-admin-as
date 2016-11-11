@@ -177,7 +177,7 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Run the plugin!
-	 * Check current user, load nessesary data and register all used hooks
+	 * Check current user, load necessary data and register all used hooks
 	 *
 	 * @since   0.1
 	 * @access  private
@@ -645,8 +645,8 @@ final class VAA_View_Admin_As
 	 * @param   object  $caller
 	 * @return  VAA_View_Admin_As
 	 */
-	public static function get_instance( $caller ) {
-		if ( in_array( get_class( $caller ), self::$vaa_class_names ) ) {
+	public static function get_instance( $caller = null ) {
+		if ( is_object( $caller ) && in_array( get_class( $caller ), self::$vaa_class_names ) ) {
 			return self::$_instance;
 		}
 		return null;

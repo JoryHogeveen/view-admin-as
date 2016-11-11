@@ -93,7 +93,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 
 		/**
-		 * Only allow settings for admin users or users with the correct apabilities
+		 * Only allow settings for admin users or users with the correct capabilities
 		 *
 		 * @since  1.5.2    Validate custom capability view_admin_as_role_defaults
 		 * @since  1.5.2.1  Validate is_super_admin (bug in 1.5.2)
@@ -252,7 +252,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Validates meta keys in case forbitten or invalid meta keys are added
+	 * Validates meta keys in case forbidden or invalid meta keys are added
 	 *
 	 * @since   1.5.2
 	 * @access  private
@@ -486,8 +486,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Initialize the sync funcionality (store defaults)
-	 * Init function/action to load nessesary data and register all used hooks
+	 * Initialize the sync functionality (store defaults)
+	 * Init function/action to load necessary data and register all used hooks
 	 * IMPORTANT! This function should ONLY be used when a role view is selected!
 	 *
 	 * @since   1.4
@@ -503,7 +503,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Check if the meta_key maches one of the predefined metakeys in the role defaults
+	 * Check if the meta_key matches one of the predefined metakeys in the role defaults
 	 * If there is a match and the role default value is set, return this value instead of the current user value.
 	 *
 	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
@@ -533,7 +533,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Check if the meta_key maches one of the predefined metakeys to store as defaults.
+	 * Check if the meta_key matches one of the predefined metakeys to store as defaults.
 	 * If there is a match, store the update to the defaults and cancel the update for the current user.
 	 *
 	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
@@ -604,10 +604,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @param   string  $role
+	 * @param   string|array  $role  Role name or array of role names or just "all" for all roles
 	 * @return  bool
 	 */
-	private function clear_role_defaults( $role ) { // option to set $role to "all" or pass an array of multiple roles
+	private function clear_role_defaults( $role ) {
 		$role_defaults = $this->get_optionData( 'roles' );
 		if ( ! is_array( $role ) ) {
 			if ( isset( $role_defaults ) && $role == 'all' ) {
@@ -796,7 +796,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Add admin bar menu's
-	 *
 	 *
 	 * @since   1.4
 	 * @since   1.5.2   Changed hook to vaa_admin_bar_settings_after (previous: 'vaa_admin_bar_roles_before')
@@ -1125,17 +1124,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Role_Defaults|bool
+	 * @param   object  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_Role_Defaults
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self();
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 
 } // end class
