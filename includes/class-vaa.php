@@ -542,7 +542,7 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Add extra modules
+	 * Register extra modules
 	 *
 	 * @since   1.6.1
 	 * @param   array  $data {
@@ -552,7 +552,7 @@ final class VAA_View_Admin_As
 	 * }
 	 * @return  bool
 	 */
-	public function add_module( $data ) {
+	public function register_module( $data ) {
 		if ( ! empty( $data['id'] ) && ! empty( $data['instance'] ) && is_object( $data['instance'] ) ) {
 			$this->modules[ (string) $data['id'] ] = $data['instance'];
 			return true;
