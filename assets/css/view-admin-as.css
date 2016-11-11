@@ -102,7 +102,7 @@
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #wp-admin-bar-vaa-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: solid transparent; border-width: 0 10px 0 0;}
 
 #wpadminbar #wp-admin-bar-vaa .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
-#wpadminbar #wp-admin-bar-vaa button {float: none; text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle;}
+#wpadminbar #wp-admin-bar-vaa button {float: none; text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle; cursor: pointer;}
 #wpadminbar #wp-admin-bar-vaa .vaa-icon {padding: 0 2px 1px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-icon .ab-icon {margin: 0;}
 #wpadminbar #wp-admin-bar-vaa button.vaa-icon .ab-icon {padding: 0;}

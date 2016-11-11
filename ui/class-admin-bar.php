@@ -206,7 +206,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'href'      => false,
 				'meta'      => array(
 					'title'    => esc_attr__('Reset to default', 'view-admin-as'),
-					'class'    => 'vaa-reset-item',
+					'class'    => 'vaa-reset-item vaa-button-container',
 					'rel'      => $rel
 				),
 			) );
