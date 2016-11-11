@@ -567,6 +567,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'class'    => 'vaa-button-container',
 				),
 			) );
+
 			$admin_bar->add_node( array(
 				'id'        => $root . '-filtercaps',
 				'parent'    => $root . '-quickselect',
@@ -579,51 +580,86 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'class'    => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
 				),
 			) );
-			$role_select_options = '';
+
+			$role_select_options = array(
+				array(
+					'value' => 'default',
+					'label' => __('Default', 'view-admin-as')
+				)
+			);
 			foreach ( $this->get_roles() as $role_key => $role ) {
-				$role_select_options .= '<option value="' . esc_attr( $role_key ) . '" data-caps=\'' . json_encode( $role->capabilities ) . '\'>= ' . translate_user_role( $role->name ) . '</option>';
-				$role_select_options .= '<option value="reversed-' . esc_attr( $role_key ) . '" data-reverse="1" data-caps=\'' . json_encode( $role->capabilities ) . '\'>≠ ' . translate_user_role( $role->name ) . '</option>';
+				$role_select_options[] = array(
+					'compare' => esc_attr( $role_key ),
+					'label' => '= ' . translate_user_role( $role->name ),
+					'attr' => array(
+						'data-caps' => json_encode( $role->capabilities ),
+					)
+				);
+				$role_select_options[] = array(
+					'compare' => 'reversed-' . esc_attr( $role_key ),
+					'label' => '≠ ' . translate_user_role( $role->name ),
+					'attr' => array(
+						'data-caps' => json_encode( $role->capabilities ),
+						'data-reverse' => '1'
+					)
+				);
 			}
 			$admin_bar->add_node( array(
 				'id'        => $root . '-selectrolecaps',
 				'parent'    => $root . '-quickselect',
-				'title'     => '<select id="select-role-caps" name="vaa-selectrole"><option value="default">' . __('Default', 'view-admin-as') . '</option>' . $role_select_options . '</select>',
+				'title'     => self::do_select( array(
+					'name'     => $root . '-selectrolecaps',
+					'values'   => $role_select_options
+				) ),
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
 					'html'      => '',
 				),
 			) );
+
 			$admin_bar->add_node( array(
 				'id'        => $root . '-bulkselectcaps',
 				'parent'    => $root . '-quickselect',
-				'title'     => '' . __('All', 'view-admin-as') . ': &nbsp;
-								<button id="select-all-caps" class="button button-secondary" name="select-all-caps">' . __('Select', 'view-admin-as') . '</button>
-								<button id="deselect-all-caps" class="button button-secondary" name="deselect-all-caps">' . __('Deselect', 'view-admin-as') . '</button>',
+				'title'     => self::do_button( array(
+					'name'     => 'select-all-caps',
+					'label'    => __('Select', 'view-admin-as'),
+					'classes'  => 'button-secondary'
+				) ) . ' ' . self::do_button( array(
+					'name'     => 'deselect-all-caps',
+					'label'    => __('Deselect', 'view-admin-as'),
+					'classes'  => 'button-secondary'
+				) ),
 				'href'      => false,
 				'meta'      => array(
 					'class'     => 'vaa-button-container vaa-clear-float',
 				),
 			) );
+
 			$caps_quickselect_content = '';
 			foreach ( $this->get_caps() as $cap_name => $cap_val ) {
 				$class = 'vaa-cap-item';
-				$checked = '';
+				$checked = false;
 				// check if we've selected a capability view and we've changed some capabilities
 				$selected_caps = $this->get_viewAs('caps');
 				if ( isset( $selected_caps[ $cap_name ] ) ) {
 					if ( 1 == $selected_caps[ $cap_name ] ) {
-						$checked = ' checked="checked"';
+						$checked = true;
 					}
 				} elseif ( 1 == $cap_val ) {
-					$checked = ' checked="checked"';
+					$checked = true;
 				}
 				// The list of capabilities
 				$caps_quickselect_content .=
-					'<div class="ab-item '.$class.'">
-						<input class="checkbox" value="' . esc_attr( $cap_name ) . '" id="vaa_' . esc_attr( $cap_name ) . '" name="vaa_' . esc_attr( $cap_name ) . '" type="checkbox"' . $checked . '>
-						<label for="vaa_' . esc_attr( $cap_name ) . '">' . str_replace( '_', ' ', $cap_name ) . '</label>
-					</div>';
+					'<div class="ab-item '.$class.'">'
+						. self::do_checkbox( array(
+							'name'           => 'vaa_cap_' . esc_attr( $cap_name ),
+							'value'          => $checked,
+							'compare'        => true,
+							'checkbox_value' => esc_attr( $cap_name ),
+							'label'          => str_replace( '_', ' ', $cap_name )
+						) )
+					. '</div>';
 			}
 			$admin_bar->add_node( array(
 				'id'        => $root . '-quickselect-options',
@@ -869,6 +905,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $name         Required
 	 *     @type  string  $label        Optional
 	 *     @type  string  $classes      Optional
+	 *     @type  array   $attr         Optional
 	 * }
 	 * @return  string
 	 */
@@ -877,7 +914,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$name = str_replace( '-', '_', $id );
 		$label = esc_attr( ( ! empty( $args['label'] ) ) ? $args['label'] : $args['value'] );
 		$classes = ' classes="button' . ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' ) . '"';
-		return '<button name="' . $name . '" id="' . $id . '"' . $classes . '>' . $label . '</button>';
+		$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
+		return '<button name="' . $name . '" id="' . $id . '"' . $classes . $attr . '>' . $label . '</button>';
 	}
 
 	/**
@@ -895,6 +933,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $label        Optional
 	 *     @type  string  $description  Optional
 	 *     @type  string  $classes      Optional
+	 *     @type  array   $attr         Optional
 	 * }
 	 * @return  string
 	 */
@@ -908,11 +947,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$value = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
 		$placeholder = ( ! empty( $args['placeholder'] ) ) ? ' placeholder="' . $args['placeholder'] . '"' : '';
 		$classes = ( ! empty( $args['classes'] ) ) ? ' classes="' . $args['classes'] . '"' : '';
+		$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
 
 		if ( ! empty( $args['label'] ) ) {
 			$html .= self::do_label( $args['label'], $id );
 		}
-		$html .= '<input type="text" value="' . $value . '"' . $placeholder . '' . $classes . ' id="' . $id . '" name="' . $name . '"/>';
+		$html .= '<input type="text" value="' . $value . '"' . $placeholder . '' . $classes . $attr . ' id="' . $id . '" name="' . $name . '"/>';
 		if ( ! empty( $args['description'] ) ) {
 			$html .= self::do_description( $args['description'] );
 		}
@@ -927,12 +967,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @static
 	 * @param   array  $args {
 	 *     Required. An array of field arguments
-	 *     @type  string  $name         Required
-	 *     @type  string  $compare      Optional
-	 *     @type  string  $value        Optional
-	 *     @type  string  $label        Optional
-	 *     @type  string  $description  Optional
-	 *     @type  string  $classes      Optional
+	 *     @type  string  $name            Required
+	 *     @type  string  $compare         Optional
+	 *     @type  string  $value           Optional
+	 *     @type  string  $checkbox_value  Optional  (default: 1)
+	 *     @type  string  $label           Optional
+	 *     @type  string  $description     Optional
+	 *     @type  string  $classes         Optional
+	 *     @type  array   $attr            Optional
 	 * }
 	 * @return  string
 	 */
@@ -951,8 +993,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		}
 		$checked = checked( $args['value'], $args['compare'], false );
 		$classes = ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '';
+		$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
+		$value = ( ! empty( $args['checkbox_value'] ) ) ? $args['checkbox_value'] : '1';
 
-		$html .= '<input type="checkbox" value="1" class="checkbox' . $classes . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
+		$html .= '<input type="checkbox" value="' . $value . '" class="checkbox' . $classes . $attr . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
 		if ( ! empty( $args['label'] ) ) {
 			$html .= self::do_label( $args['label'], $id );
 		}
@@ -979,6 +1023,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *             @type  string  $label        Optional
 	 *             @type  string  $description  Optional
 	 *             @type  string  $classes      Optional
+	 *             @type  array   $attr         Optional
 	 *         }
 	 *     }
 	 * }
@@ -1000,8 +1045,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$checked = checked( $data['value'], $args['compare'], false );
 				$classes = ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '';
 				$classes .= ' ' . esc_attr( $data['name'] );
+				$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
 
-				$html .= '<input type="radio" value="' . $args['compare'] . '" class="radio' . $classes . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
+				$html .= '<input type="radio" value="' . $args['compare'] . '" class="radio' . $classes . $attr . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
 				if ( ! empty( $args['label'] ) ) {
 					$html .= self::do_label( $args['label'], $id );
 				}
@@ -1026,13 +1072,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     Required. An array of arrays with field arguments
 	 *     @type  string  $name         Required
 	 *     @type  string  $value        Optional
-	 *     @type  string  $classes      Optional
 	 *     @type  string  $label        Optional
 	 *     @type  string  $description  Optional
+	 *     @type  string  $classes      Optional
+	 *     @type  array   $attr         Optional
 	 *     @type  array   $values {
 	 *         @type  array  $args {
 	 *             @type  string  $compare  Required
+	 *             @type  string  $value    Optional  (Alias for compare)
 	 *             @type  string  $label    Optional
+	 *             @type  string  $classes  Optional
+	 *             @type  array   $attr     Optional
 	 *         }
 	 *     }
 	 * }
@@ -1054,12 +1104,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$data['value'] = null;
 			}
 			$classes = ( ! empty( $data['classes'] ) ) ? ' ' . $data['classes'] : '';
-			$html .= '<select class="selectbox' . $classes . '" id="' . $id . '" name="' . $name . '"/>';
+			$attr = ( ! empty( $data['attr'] ) ) ? self::parse_attr_to_html( $data['attr'] ) : '';
+			$html .= '<select class="selectbox' . $classes . $attr . '" id="' . $id . '" name="' . $name . '"/>';
 
 			foreach ( $data['values'] as $args ) {
+
+				if ( empty( $args['compare'] ) ) {
+					$args['compare'] = $args['value'];
+				}
 				$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['compare'];
 				$selected = selected( $data['value'], $args['compare'], false );
-				$html .= '<option value="' . $args['compare'] . '"' . $selected . '>' . $label . '</option>';
+				$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
+				$html .= '<option value="' . $args['compare'] . '"' . $attr . $selected . '>' . $label . '</option>';
 
 			}
 			$html .= '</select>';
@@ -1101,6 +1157,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 */
 	public static function do_description( $text ) {
 		return '<p class="description ab-item">' . $text . '</p>';
+	}
+
+	/**
+	 * Converts an array of attributes to a HTML string format starting with a space
+	 * @since   1.6.1
+	 * @param   array   $array
+	 * @return  string
+	 */
+	public static function parse_attr_to_html( $array ) {
+		$str = '';
+		if ( is_array( $array ) && ! empty( $array ) ) {
+			foreach ( $array as $attr => $value ) {
+				$array[ $attr ] = esc_attr( $attr ) . '="' . esc_attr( $value ) . '"';
+			}
+			$str = ' ' . implode( ' ', $array );
+		}
+		return $str;
 	}
 
 	/**

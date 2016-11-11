@@ -477,7 +477,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				 VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = {};
 				 VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = false;
 			} else {
-				var selectedRoleElement = $(VAA_View_Admin_As.prefix+root+'-selectrolecaps #select-role-caps option[value="' + VAA_View_Admin_As.caps_filter_settings.selectedRole + '"]');
+				var selectedRoleElement = $(VAA_View_Admin_As.prefix+root+'-selectrolecaps #vaa-caps-selectrolecaps option[value="' + VAA_View_Admin_As.caps_filter_settings.selectedRole + '"]');
 				VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = JSON.parse( selectedRoleElement.attr('data-caps') );
 				if ( '1' == selectedRoleElement.attr('data-reverse') ) {
 					VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = true;
