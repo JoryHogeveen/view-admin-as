@@ -1130,6 +1130,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns icon html for WP admin bar
 	 * @since   1.6.1
+	 * @static
 	 * @param   string  $icon
 	 * @return  string
 	 */
@@ -1140,6 +1141,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns label html for WP admin bar
 	 * @since   1.6.1
+	 * @static
 	 * @param   string  $label
 	 * @param   string  $for
 	 * @return  string
@@ -1152,6 +1154,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns description html for WP admin bar
 	 * @since   1.6.1
+	 * @static
 	 * @param   string  $text
 	 * @return  string
 	 */
@@ -1162,6 +1165,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Converts an array of attributes to a HTML string format starting with a space
 	 * @since   1.6.1
+	 * @static
 	 * @param   array   $array
 	 * @return  string
 	 */
