@@ -165,8 +165,11 @@ This plugin is also useful to support your clients and/or users. For example; ma
 = 1.6.1 =
 
 *	Feature: Freeze locale, force your own locale setting over that of a selected view. (Requires WP 4.7) [#21](https://github.com/JoryHogeveen/view-admin-as/issues/21)
-*	A11y: Added keyboard tab indexes
-*	Fix: reloading when anchor tags are set in the url [#17](https://github.com/JoryHogeveen/view-admin-as/issues/17)
+*	Enhancement: Added a11y keyboard tab indexes
+*	Fix: Reloading when anchor tags are set in the url [#17](https://github.com/JoryHogeveen/view-admin-as/issues/17)
+*	Other minor fixes
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/20)
 
 = 1.6 =
 
