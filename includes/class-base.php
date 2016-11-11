@@ -88,6 +88,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.5
 	 * @access  public
+	 * @param   VAA_View_Admin_As
 	 * @return  void
 	 */
 	final public function load_vaa( $vaa ) {

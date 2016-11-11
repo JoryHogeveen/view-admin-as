@@ -183,6 +183,8 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 *	Fix: occasional issues with enabling the Role Defaults module
 *	Refactor whole backend into multiple classes for more flexibility in future development
 
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/8)
+
 = Older versions =
 
 Complete changelog: [viewadminas.wordpress.com/changelog/](https://viewadminas.wordpress.com/changelog/ "viewadminas.wordpress.com/changelog/")
