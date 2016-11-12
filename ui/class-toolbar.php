@@ -24,24 +24,26 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_Admin_Bar
+	 * @since  1.6
+	 * @static
+	 * @var    VAA_View_Admin_As_Admin_Bar
 	 */
 	private static $_instance = null;
 
 	/**
 	 * Is this toolbar being rendered?
 	 *
-	 * @since   1.6
-	 * @var     bool
+	 * @since  1.6
+	 * @static
+	 * @var    bool
 	 */
 	public static $showing = false;
 
 	/**
 	 * View Admin As store
 	 *
-	 * @since   1.6
-	 * @var     object|bool
+	 * @since  1.6
+	 * @var    object|bool
 	 */
 	private $vaa_store = false;
 

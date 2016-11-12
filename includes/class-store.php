@@ -17,8 +17,9 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_Store
+	 * @since  1.6
+	 * @static
+	 * @var    VAA_View_Admin_As_Store
 	 */
 	private static $_instance = null;
 

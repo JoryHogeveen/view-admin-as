@@ -17,8 +17,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.5
-	 * @var     VAA_View_Admin_As_Role_Defaults
+	 * @since  1.5
+	 * @static
+	 * @var    VAA_View_Admin_As_Role_Defaults
 	 */
 	private static $_instance = null;
 

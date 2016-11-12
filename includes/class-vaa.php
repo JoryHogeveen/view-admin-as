@@ -18,6 +18,7 @@ final class VAA_View_Admin_As
 	 * The single instance of the class.
 	 *
 	 * @since  1.4.1
+	 * @static
 	 * @var    VAA_View_Admin_As
 	 */
 	private static $_instance = null;
@@ -28,6 +29,7 @@ final class VAA_View_Admin_As
 	 * @see    get_instance()
 	 *
 	 * @since  1.6
+	 * @static
 	 * @var    array
 	 */
 	private static $vaa_class_names = array();

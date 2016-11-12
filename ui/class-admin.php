@@ -19,8 +19,9 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_Admin_Bar
+	 * @since  1.6
+	 * @static
+	 * @var    VAA_View_Admin_As_Admin_Bar
 	 */
 	private static $_instance = null;
 

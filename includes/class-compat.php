@@ -17,8 +17,9 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_Compat
+	 * @since  1.6
+	 * @static
+	 * var     VAA_View_Admin_As_Compat
 	 */
 	private static $_instance = null;
 

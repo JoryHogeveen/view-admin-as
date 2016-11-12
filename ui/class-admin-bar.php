@@ -17,15 +17,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.5
-	 * @var     VAA_View_Admin_As_Admin_Bar
+	 * @since  1.5
+	 * @static
+	 * @var    VAA_View_Admin_As_Admin_Bar
 	 */
 	private static $_instance = null;
 
 	/**
 	 * Admin bar root item ID
 	 *
-	 * @since  1.6-dev
+	 * @since  1.6.1
+	 * @static
 	 * @var    string
 	 */
 	public static $root = 'vaa';
