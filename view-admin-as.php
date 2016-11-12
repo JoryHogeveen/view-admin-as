@@ -40,12 +40,12 @@
 
 if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
-	define( 'VIEW_ADMIN_AS_VERSION', '1.6.1' );
+	define( 'VIEW_ADMIN_AS_VERSION',    '1.6.1' );
 	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.6' );
-	define( 'VIEW_ADMIN_AS_FILE', __FILE__ );
-	define( 'VIEW_ADMIN_AS_BASENAME', plugin_basename( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
+	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
+	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
+	define( 'VIEW_ADMIN_AS_DIR',        plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
+	define( 'VIEW_ADMIN_AS_URL',        plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
 
 	// Include main init class file
 	require_once( VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php' );
@@ -54,6 +54,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	 * Main instance of View Admin As.
 	 *
 	 * Returns the main instance of VAA_View_Admin_As to prevent the need to use globals.
+	 * Only for internal use. If the $caller parameter passes an unknown object it will return null.
 	 *
 	 * @since   1.4.1
 	 * @since   1.6     $caller parameter

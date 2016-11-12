@@ -4,11 +4,11 @@
  *
  * Toolbar UI for View Admin As
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
  * @version 1.6
- * @see wp-includes/class-wp-admin-bar.php
+ * @see     wp-includes/class-wp-admin-bar.php
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -131,7 +131,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @access  public
 	 * @static
 	 * @param   object  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Admin_Bar
+	 * @return  VAA_View_Admin_As_Toolbar
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {

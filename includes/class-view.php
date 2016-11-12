@@ -93,10 +93,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class
 	 * @access  public
 	 *
-	 * @param   array   $caps       The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
-	 * @param   string  $cap        The capability that was requested
-	 * @param   int     $user_id    The ID of the user (not used)
-	 * @param   array   $args       Adds the context to the cap. Typically the object ID (not used)
+	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
+	 * @param   string  $cap      The capability that was requested
+	 * @param   int     $user_id  The ID of the user (not used)
+	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used)
 	 * @return  array   $caps
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
@@ -111,7 +111,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		if ( false !== $filter_caps ) {
-			// Force it to be an array
+			// Cast to an array
 			$filter_caps = (array) $filter_caps;
 			foreach ( $caps as $actual_cap ) {
 				if ( ! array_key_exists( $actual_cap, $filter_caps ) || ( 1 != (int) $filter_caps[ $actual_cap ] ) ) {
@@ -292,7 +292,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class
 	 * @access  public
 	 *
-	 * @param   array|bool   $data
+	 * @param   array|bool  $data
 	 * @return  bool
 	 */
 	public function update_view( $data = false ) {

@@ -76,14 +76,15 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.5
 	 * @since  1.5.2  added force_group_users
 	 * @since  1.6    Moved to this class from main class
+	 * @since  1.6.1  added freeze_locale
 	 * @var    array
 	 */
 	private $defaultUserSettings = array(
-		'view_mode' => 'browse',
 		'admin_menu_location' => 'top-secondary',
-		'force_group_users' => 'no',
-		'hide_front' => 'no',
-		'freeze_locale' => 'no',
+		'force_group_users'   => 'no',
+		'freeze_locale'       => 'no',
+		'hide_front'          => 'no',
+		'view_mode'           => 'browse',
 	);
 
 	/**
@@ -93,14 +94,15 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.5
 	 * @since  1.5.2  added force_group_users
 	 * @since  1.6    Moved to this class from main class
+	 * @since  1.6.1  added freeze_locale
 	 * @var    array
 	 */
 	private $allowedUserSettings = array(
-		'view_mode' => array( 'browse', 'single' ),
 		'admin_menu_location' => array( 'top-secondary', 'my-account' ),
-		'force_group_users' => array( 'yes', 'no' ),
-		'hide_front' => array( 'yes', 'no' ),
-		'freeze_locale' => array( 'yes', 'no' ),
+		'force_group_users'   => array( 'yes', 'no' ),
+		'freeze_locale'       => array( 'yes', 'no' ),
+		'hide_front'          => array( 'yes', 'no' ),
+		'view_mode'           => array( 'browse', 'single' ),
 	);
 
 	/**
@@ -315,14 +317,14 @@ final class VAA_View_Admin_As_Store
 
 		$userids = array();
 		$usernames = array();
-		// Loop though all users
+
 		foreach ( $users as $user_key => $user ) {
 
 			// If the current user is not a superior admin, run the user filters
 			if ( true !== $is_superior_admin ) {
 
 				/**
-				 * Implement checks instead of is_super_admin() because it adds a lot unnecessary queries
+				 * Implement checks instead of is_super_admin() because it adds a lot of unnecessary queries
 				 *
 				 * @since  1.5.2
 				 * @See    is_super_admin()
@@ -363,8 +365,8 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @see     store_users()
 	 *
-	 * @param   array   $users
-	 * @return  array   $users
+	 * @param   array  $users
+	 * @return  array  $users
 	 */
 	public function filter_sort_users_by_role( $users ) {
 		if ( ! $this->get_roles() ) {
@@ -518,7 +520,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @param   array       $settings
 	 * @param   string      $type      global / user
-	 * @return  array|bool  $settings
+	 * @return  array|bool  $settings / false
 	 */
 	public function validate_settings( $settings, $type ) {
 		if ( $type == 'global' ) {

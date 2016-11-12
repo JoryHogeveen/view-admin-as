@@ -19,7 +19,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * var     VAA_View_Admin_As_Compat
+	 * @var    VAA_View_Admin_As_Compat
 	 */
 	private static $_instance = null;
 
@@ -46,12 +46,15 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Add our caps to the members plugin
-		 * @since 1.6
+		 * @since  1.6
 		 */
 		add_filter( 'members_get_capabilities', array( $this, 'add_capabilities' ) );
 		add_action( 'members_register_cap_groups', array( $this, 'members_register_cap_group' ) );
 
-		// Get caps from other plugins
+		/**
+		 * Get caps from other plugins
+		 * @since  1.5
+		 */
 		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ) );
 
 	}

@@ -4,7 +4,7 @@
  *
  * Set default screen settings for roles and apply them on users through various bulk actions.
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.4
  * @version 1.6.1
@@ -36,7 +36,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * %% stands for a wildcard and can be anything
 	 *
 	 * @since  1.4
-	 * @since  1.5.2    Set both values and keys to fix problem with unsetting a key through the filter
+	 * @since  1.5.2  Set both values and keys to fix problem with unsetting a key through the filter
 	 * @var    array
 	 */
 	private $meta = array(
@@ -162,7 +162,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Print script in the admin header
 		 * Also handles the lock_meta_boxes setting
-		 * @since 1.6
+		 * @since  1.6
 		 */
 		add_action( 'admin_print_scripts', array( $this, 'admin_print_scripts' ), 100 );
 	}
@@ -205,7 +205,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Setting: Lock meta box order and locations for all users who can't access role defaults
-		 *
 		 * @since  1.6
 		 */
 		if ( true == $this->get_optionData('lock_meta_boxes')
@@ -217,7 +216,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					/**
 					 * Lock meta boxes in position by disabling sorting.
 					 *
-					 * Credits go to Chris Van Patten:
+					 * Credits - Chris Van Patten:
 					 * http://wordpress.stackexchange.com/a/44539
 					 */
 					$('.meta-box-sortables').sortable( { disabled: true } );

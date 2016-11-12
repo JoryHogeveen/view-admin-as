@@ -4,7 +4,7 @@
  *
  * Admin Bar UI for View Admin As
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.5
  * @version 1.6.1

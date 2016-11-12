@@ -53,7 +53,7 @@ final class VAA_View_Admin_As
 	 * VAA Store
 	 *
 	 * @since  1.6
-	 * @var    array
+	 * @var    VAA_View_Admin_As_Store
 	 */
 	private $store = null;
 
@@ -61,7 +61,7 @@ final class VAA_View_Admin_As
 	 * VAA View handler
 	 *
 	 * @since  1.6
-	 * @var    array
+	 * @var    VAA_View_Admin_As_View
 	 */
 	private $view = null;
 
@@ -69,7 +69,8 @@ final class VAA_View_Admin_As
 	 * VAA UI classes that are loaded
 	 *
 	 * @since  1.5
-	 * @var    array
+	 * @see    load_ui()
+	 * @var    array of objects
 	 */
 	private $ui = array();
 
@@ -77,7 +78,9 @@ final class VAA_View_Admin_As
 	 * Other VAA modules that are loaded
 	 *
 	 * @since  1.4
-	 * @var    array
+	 * @see    load_modules()
+	 * @see    register_module()
+	 * @var    array of objects
 	 */
 	private $modules = array();
 
@@ -99,8 +102,8 @@ final class VAA_View_Admin_As
 
 		add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
 
-		// Returns true on conflict
-		if ( (boolean) $this->validate_versions() ) {
+		// Returns false on conflict
+		if ( ! (boolean) $this->validate_versions() ) {
 			return;
 		}
 
@@ -128,8 +131,8 @@ final class VAA_View_Admin_As
 	 * Load required classes and files
 	 * Returns false on conflict
 	 *
-	 * @since  1.6
-	 * @return bool
+	 * @since   1.6
+	 * @return  bool
 	 */
 	private function load() {
 
@@ -164,8 +167,8 @@ final class VAA_View_Admin_As
 	/**
 	 * Instantiate function that checks if the plugin is already loaded
 	 *
-	 * @since  1.6
-	 * @access public
+	 * @since   1.6
+	 * @access  public
 	 */
 	public function init() {
 		static $loaded = false;
@@ -191,6 +194,7 @@ final class VAA_View_Admin_As
 		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
 		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
 
+		// We can't do this check before `plugins_loaded` hook
 		if ( is_user_logged_in() ) {
 
 			$this->store->set_nonce( 'view-admin-as' );
@@ -512,7 +516,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @return  null|VAA_View_Admin_As_Store
+	 * @return  VAA_View_Admin_As_Store
 	 */
 	public function store() {
 		return $this->store;
@@ -523,7 +527,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @return  null|VAA_View_Admin_As_View
+	 * @return  VAA_View_Admin_As_View
 	 */
 	public function view() {
 		return $this->view;
@@ -535,7 +539,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.5
 	 * @access  public
-	 * @param   string|bool  $key  The module key
+	 * @param   string|bool  $key  (optional) The module key
 	 * @return  array|object
 	 */
 	public function get_modules( $key = false ) {
@@ -608,7 +612,7 @@ final class VAA_View_Admin_As
 	 */
 	private function validate_versions() {
 		global $wp_version;
-		$conflict = false;
+		$valid = true;
 
 		// Validate PHP
 		/*if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
@@ -618,6 +622,7 @@ final class VAA_View_Admin_As
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
+			$valid = false;
 		}*/
 
 		// Validate WP
@@ -628,9 +633,9 @@ final class VAA_View_Admin_As
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
-			$conflict = true;
+			$valid = false;
 		}
-		return $conflict;
+		return $valid;
 	}
 
 	/**

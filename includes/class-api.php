@@ -17,9 +17,9 @@ final class VAA_API
 	/**
 	 * Check if the user is a superior admin
 	 *
-	 * @since  1.5.3
-	 * @since  1.6    Moved to this class from main class
-	 * @access public
+	 * @since   1.5.3
+	 * @since   1.6    Moved to this class from main class
+	 * @access  public
 	 * @static
 	 * @api
 	 *
@@ -34,9 +34,9 @@ final class VAA_API
 	/**
 	 * Get the superior admin ID's (filter since 1.5.2)
 	 *
-	 * @since  1.5.3
-	 * @since  1.6    Moved to this class from main class
-	 * @access public
+	 * @since   1.5.3
+	 * @since   1.6    Moved to this class from main class
+	 * @access  public
 	 * @static
 	 * @api
 	 *
@@ -121,12 +121,12 @@ final class VAA_API
 	/**
 	 * Is our custom toolbar showing?
 	 *
-	 * @since  1.6
-	 * @access public
+	 * @since   1.6
+	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @return bool
+	 * @return  bool
 	 */
 	public static function is_vaa_toolbar_showing() {
 
@@ -139,14 +139,14 @@ final class VAA_API
 	/**
 	 * Appends the "reset-view" parameter to the current URL
 	 *
-	 * @since  1.6
-	 * @access public
+	 * @since   1.6
+	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param  string  $url  (optional) Use a defined url create the reset link
-	 * @param  bool    $all  (optional) Reset all views link?
-	 * @return string
+	 * @param   string  $url  (optional) Use a defined url create the reset link
+	 * @param   bool    $all  (optional) Reset all views link?
+	 * @return  string
 	 */
 	public static function get_reset_link( $url = '', $all = false ) {
 
@@ -170,13 +170,13 @@ final class VAA_API
 	/**
 	 * Removes the "reset-view" or "reset-all-views" parameter to the current URL
 	 *
-	 * @since  1.6
-	 * @access public
+	 * @since   1.6
+	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param  string  $url  (optional) Use a defined url to remove the reset link
-	 * @return string
+	 * @param   string  $url  (optional) Use a defined url to remove the reset link
+	 * @return  string
 	 */
 	public static function remove_reset_link( $url = '' ) {
 

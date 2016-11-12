@@ -4,7 +4,7 @@
  *
  * Admin UI hooks for View Admin As
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
  * @version 1.6
@@ -93,7 +93,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @static
 	 * @param   object  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Admin_Bar
+	 * @return  VAA_View_Admin_As_Admin
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
