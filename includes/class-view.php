@@ -277,10 +277,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		// Browse mode
 		if ( $this->store->get_userSettings('view_mode') == 'browse' ) {
 			$meta = $this->store->get_userMeta('views');
-			if (   is_array( $meta )
-			       && isset( $meta[ $this->store->get_curUserSession() ] )
-			       && isset( $meta[ $this->store->get_curUserSession() ]['view'] )
-			) {
+			if ( isset( $meta[ $this->store->get_curUserSession() ]['view'] ) ) {
 				return $this->validate_view_as_data( $meta[ $this->store->get_curUserSession() ]['view'] );
 			}
 		}
@@ -302,7 +299,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( false != $data && $data = $this->validate_view_as_data( $data ) ) {
 			$meta = $this->store->get_userMeta('views');
 			// Make sure it is an array (no array means no valid data so we can safely clear it)
-			if ( ! $meta || ! is_array( $meta ) ) {
+			if ( ! is_array( $meta ) ) {
 				$meta = array();
 			}
 			// Add the new view metadata and expiration date
@@ -338,7 +335,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( isset( $user->ID ) ) {
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// Check if this user session has metadata
-			if ( isset( $meta['views'] ) && isset( $meta['views'][ $this->store->get_curUserSession() ] ) ) {
+			if ( isset( $meta['views'][ $this->store->get_curUserSession() ] ) ) {
 				// Remove metadata from this session
 				unset( $meta['views'][ $this->store->get_curUserSession() ] );
 				// Update current metadata if it is the current user
@@ -375,7 +372,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( isset( $user->ID ) ) {
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, loop it
-			if ( isset( $meta['views'] ) && 0 < count( $meta['views'] ) ) {
+			if ( isset( $meta['views'] ) ) {
+				if ( ! is_array( $meta['views'] ) ) {
+					$meta['views'] = array();
+				}
 				foreach ( $meta['views'] as $key => $value ) {
 					// Check expiration date: if it doesn't exist or is in the past, remove it
 					if ( ! isset( $meta['views'][ $key ]['expire'] ) || time() > $meta['views'][ $key ]['expire'] ) {

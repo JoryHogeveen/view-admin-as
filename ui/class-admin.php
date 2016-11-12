@@ -21,7 +21,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Admin_Bar
+	 * @var    VAA_View_Admin_As_Admin
 	 */
 	private static $_instance = null;
 

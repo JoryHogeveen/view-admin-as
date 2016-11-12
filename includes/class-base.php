@@ -75,7 +75,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Protected to make sure it isn't declared elsewhere
 	 *
 	 * @since   1.5.3
-	 * @param   object  $vaa  (optional) Pass VAA object
+	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object
 	 * @access  protected
 	 */
 	protected function __construct( $vaa = null ) {

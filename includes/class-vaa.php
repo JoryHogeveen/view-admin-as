@@ -26,10 +26,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Classes that are allowed to use this class
 	 *
-	 * @see    get_instance()
-	 *
 	 * @since  1.6
 	 * @static
+	 * @see    get_instance()
 	 * @var    array
 	 */
 	private static $vaa_class_names = array();

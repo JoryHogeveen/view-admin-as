@@ -131,7 +131,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $caps;
+	private $caps = array();
 
 	/**
 	 * Array of available roles
@@ -140,7 +140,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $roles;
+	private $roles = array();
 
 	/**
 	 * Array of available user objects
@@ -149,7 +149,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $users;
+	private $users = array();
 
 	/**
 	 * Expiration time for view data
@@ -196,7 +196,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $usernames;
+	private $usernames = array();
 
 	/**
 	 * Array of available user ID's (key) and display names (value)
@@ -205,7 +205,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $userids;
+	private $userids = array();
 
 	/**
 	 * The selected user object (if the user view is selected)
