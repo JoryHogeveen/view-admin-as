@@ -140,7 +140,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			'view_admin_as': viewAs
 		};
 
-		// @since  1.5  Check view mode
+		/**
+		 *  @since  1.5  Check view mode
+		 *  @todo   improve if statement and form creation
+ 		 */
 		if ( $(VAA_View_Admin_As.prefix+'#vaa-settings-view-mode-single').is(':checked') && ( typeof viewAs.caps !== 'undefined' || typeof viewAs.role !== 'undefined' || typeof viewAs.user !== 'undefined' ) ) {
 
 			body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
@@ -273,7 +276,8 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 	/**
 	 * SETTINGS
-	**/
+	 * @since  1.5
+	 */
 	VAA_View_Admin_As.init_settings = function() {
 
 		var root = VAA_View_Admin_As.root + '-settings',

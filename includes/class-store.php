@@ -666,13 +666,13 @@ final class VAA_View_Admin_As_Store
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
 	 * @return  VAA_View_Admin_As_Store
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}

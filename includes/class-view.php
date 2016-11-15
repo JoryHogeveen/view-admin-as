@@ -26,11 +26,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	/**
 	 * VAA_View_Admin_As_View constructor.
 	 *
-	 * @since  1.6
+	 * @since   1.6
+	 * @since   1.6.1  $vaa param
+	 * @access  protected
+	 * @param   VAA_View_Admin_As  $vaa
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		parent::__construct();
+		parent::__construct( $vaa );
 
 		// When a user logs in or out, reset the view to default
 		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
@@ -538,13 +541,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
 	 * @return  VAA_View_Admin_As_View
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}

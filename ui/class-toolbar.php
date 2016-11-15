@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6
+ * @version 1.6.1
  * @see     wp-includes/class-wp-admin-bar.php
  */
 
@@ -52,11 +52,13 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * Protected to make sure it isn't declared elsewhere
 	 *
 	 * @since   1.6
+	 * @since   1.6.1  $vaa param
 	 * @access  protected
+	 * @param   VAA_View_Admin_As  $vaa
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		$this->vaa_store = View_Admin_As( $this )->store();
+		$this->vaa_store = $vaa->store();
 
 		if ( ! is_admin() ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
@@ -136,7 +138,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}

@@ -61,18 +61,20 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Protected to make sure it isn't declared elsewhere
 	 *
 	 * @since   1.5
+	 * @since   1.6.1  $vaa param
 	 * @access  protected
+	 * @param   VAA_View_Admin_As  $vaa
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		parent::__construct();
+		parent::__construct( $vaa );
 
 		if ( $this->is_vaa_enabled() ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
 
 		// Load data
-		$this->set_optionData( get_option( $this->get_optionKey() ) );
+		//$this->set_optionData( get_option( $this->get_optionKey() ) );
 	}
 
 	/**
@@ -1190,13 +1192,13 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   object  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
 	 * @return  VAA_View_Admin_As_Admin_Bar
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}
