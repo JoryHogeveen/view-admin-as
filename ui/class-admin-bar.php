@@ -286,55 +286,22 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		do_action( 'vaa_admin_bar_info_before', $admin_bar, $root, self::$root );
 
-		$info_links = array(
-			array(
-				'id'    => $root . '-support',
-				'title' => self::do_icon( 'dashicons-testimonial' ) . __( 'Need support?', 'view-admin-as' ),
-				'href'  => 'https://wordpress.org/support/plugin/view-admin-as/',
-			),
-			array(
-				'id'    => $root . '-review',
-				'title' => self::do_icon( 'dashicons-star-filled' ) . __( 'Give 5 stars on WordPress.org!', 'view-admin-as' ),
-				'href'  => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
-			),
-			array(
-				'id'    => $root . '-translate',
-				'title' => self::do_icon( 'dashicons-translation' ) . __( 'Help translating this plugin!', 'view-admin-as' ),
-				'href'  => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
-			),
-			array(
-				'id'    => $root . '-issue',
-				'title' => self::do_icon( 'dashicons-lightbulb' ) . __( 'Have ideas or a bug report?', 'view-admin-as' ),
-				'href'  => 'https://github.com/JoryHogeveen/view-admin-as/issues',
-			),
-			array(
-				'id'    => $root . '-docs',
-				'title' => self::do_icon( 'dashicons-book-alt' ) . __( 'Documentation', 'view-admin-as' ),
-				'href'  => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
-			),
-			array(
-				'id'    => $root . '-github',
-				'title' => self::do_icon( 'dashicons-editor-code' ) . __( 'Follow development on GitHub', 'view-admin-as' ),
-				'href'  => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
-			),
-			array(
-				'id'    => $root . '-donate',
-				'title' => self::do_icon( 'dashicons-smiley' ) . __( 'Buy me a coffee!', 'view-admin-as' ),
-				'href'  => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
-			)
-		);
+		// Add the general admin links
+		if ( is_callable( array( $this->vaa->get_ui('admin'), 'get_links' ) ) ) {
+			$info_links = $this->vaa->get_ui('admin')->get_links();
 
-		foreach ( $info_links as $link ) {
-			$admin_bar->add_node( array(
-				'parent' => $root,
-				'id'     => $link['id'],
-				'title'  => $link['title'],
-				'href'   => $link['href'],
-				'meta'   => array(
-					'class'  => 'auto-height vaa-has-icon',
-					'target' => '_blank'
-				),
-			) );
+			foreach ( $info_links as $id => $link ) {
+				$admin_bar->add_node( array(
+					'parent' => $root,
+					'id'     => $root . '-' . $id,
+					'title'  => self::do_icon( $link['icon'] ) . $link['description'],
+					'href'   => esc_url( $link['url'] ),
+					'meta'   => array(
+						'class'  => 'auto-height vaa-has-icon',
+						'target' => '_blank'
+					),
+				) );
+			}
 		}
 
 		/**
