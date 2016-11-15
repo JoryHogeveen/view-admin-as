@@ -534,6 +534,19 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Get UI classes
+	 * If a key is provided it will only a single UI object
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @param   string|bool  $key  (optional) UI class name
+	 * @return  array|object
+	 */
+	public function get_ui( $key ) {
+		return VAA_API::get_array_data( $this->ui, $key );
+	}
+
+	/**
 	 * Get current modules
 	 * If a key is provided it will only return that module
 	 *
