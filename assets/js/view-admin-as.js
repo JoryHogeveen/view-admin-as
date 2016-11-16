@@ -4,22 +4,23 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6.x
+ * @version 1.7
  */
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	var VAA_View_Admin_As = {
-		'ajaxurl': null,
-		'siteurl': '',
-		'_debug': false,
-		'_vaa_nonce': '',
-		'__no_users_found': 'No users found.',
-		'__success': 'Success',
-		'__confirm': 'Are you sure?'
+		ajaxurl: null,
+		siteurl: '',
+		view_as: false,
+		_debug: false,
+		_vaa_nonce: '',
+		__no_users_found: 'No users found.',
+		__success: 'Success',
+		__confirm: 'Are you sure?'
 	};
 }
 
-(function($) {
+( function( $ ) {
 
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
@@ -34,6 +35,14 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.ajaxurl = ajaxurl;
 	}
 
+	// @since  1.6.1  Prevent swipe events to be seen as a click (bug in some browsers)
+	VAA_View_Admin_As._touchmove = false;
+	$( document ).on( 'touchmove', function() {
+		VAA_View_Admin_As._touchmove = true;
+	} );
+	$( document ).on( 'touchstart', function() {
+		VAA_View_Admin_As._touchmove = false;
+	} );
 
 	/**
 	 * BASE INIT
@@ -54,6 +63,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				if ( ! $(this).hasClass('active') ) {
 					toggleContent.hide();
 				}
+
 				$(this).on( 'click', function( e ) {
 					e.preventDefault();
 					if ( $(this).hasClass('active') ) {
@@ -64,6 +74,8 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 						$(this).addClass('active');
 					}
 				});
+
+				// @since  1.6.1  Keyboard A11y
 				$(this).on( 'keyup', function( e ) {
 					e.preventDefault();
 					/**
@@ -86,13 +98,15 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Process reset
-		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
 			e.preventDefault();
-			if ( $('button', this).attr('name') == 'reload' ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			if ( $('button', this).attr('name') == 'vaa_reload' ) {
 				window.location.reload();
 			} else {
-				viewAs = { reset : true };
-				VAA_View_Admin_As.ajax( viewAs, true );
+				VAA_View_Admin_As.ajax( { reset : true }, true );
 				return false;
 			}
 		});
@@ -110,7 +124,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 		var body = $('body');
 
-		$('#wpadminbar .vaa-update').remove();
+		$('#wpadminbar .vaa-notice').remove();
 		// @todo dashicon loader?
 		body.append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url(\'' + VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif\') center center no-repeat; background-size: contain;"></span></div>');
 		$('body #vaa-overlay').fadeIn('fast');
@@ -127,7 +141,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			'view_admin_as': viewAs
 		};
 
-		if ( $(VAA_View_Admin_As.prefix+'#vaa_settings_view_mode_single').is(':checked') && ( typeof viewAs.caps !== 'undefined' || typeof viewAs.role !== 'undefined' || typeof viewAs.user !== 'undefined' ) ) {
+		/**
+		 *  @since  1.5  Check view mode
+		 *  @todo   improve if statement and form creation
+ 		 */
+		if ( $(VAA_View_Admin_As.prefix+'#vaa-settings-view-mode-single').is(':checked') && ( typeof viewAs.caps !== 'undefined' || typeof viewAs.role !== 'undefined' || typeof viewAs.user !== 'undefined' ) ) {
 
 			body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
 			var form = $('#vaa_single_mode_form');
@@ -160,7 +178,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 						/**
 						 * Reload the page
 						 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
-						 * @since  1.6.x  Fix issue with anchors
+						 * @since  1.6.1  Fix issue with anchors
 						 */
 						window.location.hash = '';
 						window.location.replace(
@@ -196,10 +214,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	 * @param  {string}  type
 	 */
 	VAA_View_Admin_As.notice = function( notice, type ) {
-		$('#wp-admin-bar-top-secondary').append('<li class="vaa-update vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
-		$('#wpadminbar .vaa-update .remove').click( function() { $(this).parent().remove(); } );
+		var root = '#wpadminbar .vaa-notice';
+		$('#wp-admin-bar-top-secondary').append('<li class="vaa-notice vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
+		$(root+' .remove').click( function() { $(this).parent().remove(); } );
 		// Remove it after 5 seconds
-		setTimeout( function(){ $('#wpadminbar .vaa-update').fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
+		setTimeout( function(){ $(root).fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
 	};
 
 
@@ -259,13 +278,14 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 	/**
 	 * SETTINGS
-	**/
+	 * @since  1.5
+	 */
 	VAA_View_Admin_As.init_settings = function() {
 
 		var root = VAA_View_Admin_As.root + '-settings',
 			prefix = 'vaa-settings';
 
-		// Location
+		// @since  1.5  Location
 		$(document).on('change', VAA_View_Admin_As.prefix+root+'-admin-menu-location select#' + prefix + '-admin-menu-location', function( e ) {
 			e.preventDefault();
 			var val = $(this).val();
@@ -275,7 +295,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 		});
 
-		// View mode
+		// @since  1.5  View mode
 		$(document).on('change', VAA_View_Admin_As.prefix+root+'-view-mode input.radio.' + prefix + '-view-mode', function( e ) {
 			e.preventDefault();
 			var val = $(this).val();
@@ -285,7 +305,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 		});
 
-		// Force group users
+		// @since  1.5.2  Force group users
 		$(document).on('change', VAA_View_Admin_As.prefix+root+'-force-group-users input#' + prefix + '-force-group-users', function( e ) {
 			e.preventDefault();
 			var viewAs = { user_setting : { force_group_users : "no" } };
@@ -295,7 +315,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, true );
 		});
 
-		// Enable hide front
+		// @since  1.6  Enable hide front
 		$(document).on('change', VAA_View_Admin_As.prefix+root+'-hide-front input#' + prefix + '-hide-front', function( e ) {
 			e.preventDefault();
 			var viewAs = { user_setting : { hide_front : "no" } };
@@ -303,6 +323,20 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				viewAs = { user_setting : { hide_front : "yes" } };
 			}
 			VAA_View_Admin_As.ajax( viewAs, false );
+		});
+
+		// @since  1.6.1  Enable freeze locale
+		$(document).on('change', VAA_View_Admin_As.prefix+root+'-freeze-locale input#' + prefix + '-freeze-locale', function( e ) {
+			e.preventDefault();
+			var viewAs = { user_setting : { freeze_locale : "no" } };
+			if ( this.checked ) {
+				viewAs = { user_setting : { freeze_locale : "yes" } };
+			}
+			var reload = false;
+			if ( typeof VAA_View_Admin_As.view_as == 'object' && typeof VAA_View_Admin_As.view_as.user != 'undefined' ) {
+				reload = true;
+			}
+			VAA_View_Admin_As.ajax( viewAs, reload );
 		});
 	};
 
@@ -313,7 +347,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.init_roles = function() {
 
 		// Process role views
-		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-role-item > a.ab-item', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-role-item > a.ab-item', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			if ( ! $(this).parent().hasClass('not-a-view') ) {
 				var viewAs = { role : String( $(this).attr('rel') ) };
@@ -332,7 +369,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		var root = VAA_View_Admin_As.root + '-users';
 
 		// Process user views
-		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-user-item > a.ab-item', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-user-item > a.ab-item', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			if ( ! $(this).parent().hasClass('not-a-view') ) {
 				var viewAs = { user : parseInt( $(this).attr('rel') ) };
@@ -373,6 +413,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 	/**
 	 * CAPABILITIES
+	 * @since  1.3
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
@@ -442,7 +483,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				 VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = {};
 				 VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = false;
 			} else {
-				var selectedRoleElement = $(VAA_View_Admin_As.prefix+root+'-selectrolecaps #select-role-caps option[value="' + VAA_View_Admin_As.caps_filter_settings.selectedRole + '"]');
+				var selectedRoleElement = $(VAA_View_Admin_As.prefix+root+'-selectrolecaps #vaa-caps-selectrolecaps option[value="' + VAA_View_Admin_As.caps_filter_settings.selectedRole + '"]');
 				VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = JSON.parse( selectedRoleElement.attr('data-caps') );
 				if ( '1' == selectedRoleElement.attr('data-reverse') ) {
 					VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = true;
@@ -466,7 +507,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 
 		// Select all capabilities
-		$(document).on('click', VAA_View_Admin_As.prefix+root+' button#select-all-caps', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+' button#select-all-caps', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item').each( function() {
 				if ( $(this).is(':visible') ){
@@ -476,7 +520,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			return false;
 		});
 		// Deselect all capabilities
-		$(document).on('click', VAA_View_Admin_As.prefix+root+' button#deselect-all-caps', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+' button#deselect-all-caps', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item').each( function() {
 				if ( $(this).is(':visible') ){
@@ -487,7 +534,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// Process view: capabilities
-		$(document).on('click', VAA_View_Admin_As.prefix+root+' button#apply-caps-view', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+' button#apply-caps-view', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var newCaps = '';
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item input').each( function() {
@@ -505,6 +555,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 	/**
 	 * MODULE: Role Defaults
+	 * @since  1.4
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
@@ -524,8 +575,8 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		root = VAA_View_Admin_As.root + '-role-defaults';
 		prefix = 'vaa-role-defaults';
 
-		// Enable apply defaults on register
-		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-register-enable input#' + prefix + '-register-enable', function( e ) {
+		// @since  1.4  Enable apply defaults on register
+		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-register-enable input#' + prefix + '-setting-register-enable', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { apply_defaults_on_register : 0 } };
 			if ( this.checked ) {
@@ -534,8 +585,8 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		});
 
-		// Disable screen settings for users who can't access this plugin
-		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-disable-user-screen-options input#' + prefix + '-disable-user-screen-options', function( e ) {
+		// @since  1.5.3  Disable screen settings for users who can't access this plugin
+		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-disable-user-screen-options input#' + prefix + '-setting-disable-user-screen-options', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { disable_user_screen_options : 0 } };
 			if ( this.checked ) {
@@ -544,8 +595,8 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		});
 
-		// Lock meta box order and locations for users who can't access this plugin
-		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-lock-meta-boxes input#' + prefix + '-lock-meta-boxes', function( e ) {
+		// @since  1.6  Lock meta box order and locations for users who can't access this plugin
+		$(document).on('change', VAA_View_Admin_As.prefix+root+'-setting-lock-meta-boxes input#' + prefix + '-setting-lock-meta-boxes', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { lock_meta_boxes : 0 } };
 			if ( this.checked ) {
@@ -554,7 +605,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		});
 
-		// Filter users
+		// @since  1.4  Filter users
 		$(document).on('keyup', VAA_View_Admin_As.prefix+root+'-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
 			e.preventDefault();
 			if ( $(this).val().length >= 1 ) {
@@ -574,8 +625,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 		});
 
-		// Apply defaults to users
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-bulk-users-apply button#' + prefix + '-bulk-users-apply', function( e ) {
+		// @since  1.4  Apply defaults to users
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-bulk-users-apply button#' + prefix + '-bulk-users-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = [];
 			$(VAA_View_Admin_As.prefix+root+'-bulk-users-select .ab-item.vaa-item input').each( function() {
@@ -590,8 +644,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			return false;
 		});
 
-		// Apply defaults to users by role
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-bulk-roles-apply button#' + prefix + '-bulk-roles-apply', function( e ) {
+		// @since  1.4  Apply defaults to users by role
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-bulk-roles-apply button#' + prefix + '-bulk-roles-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-bulk-roles-select select#' + prefix + '-bulk-roles-select').val();
 			if ( val && '' !== val ) {
@@ -601,8 +658,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			return false;
 		});
 
-		// Clear role defaults
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
+		// @since  1.4  Clear role defaults
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-clear-roles-select select#' + prefix + '-clear-roles-select').val();
 			if ( val && '' !== val ) {
@@ -614,8 +674,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			return false;
 		});
 
-		// Export role defaults
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-export-roles-export button#' + prefix + '-export-roles-export', function( e ) {
+		// @since  1.5  Export role defaults
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-export-roles-export button#' + prefix + '-export-roles-export', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-export-roles-select select#' + prefix + '-export-roles-select').val();
 			if ( val && '' !== val ) {
@@ -625,8 +688,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			return false;
 		});
 
-		// Import role defaults
-		$(document).on('click', VAA_View_Admin_As.prefix+root+'-import-roles-import button#' + prefix + '-import-roles-import', function( e ) {
+		// @since  1.5  Import role defaults
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-import-roles-import button#' + prefix + '-import-roles-import', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-import-roles-input textarea#' + prefix + '-import-roles-input').val();
 			if ( val && '' !== val ) {
@@ -660,4 +726,4 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	}
 
 
-})( jQuery );
+} )( jQuery );

@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6
+ * @version 1.6.1
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -17,18 +17,22 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_Update
+	 * @since  1.6
+	 * @static
+	 * @var    VAA_View_Admin_As_Update
 	 */
 	private static $_instance = null;
 
 	/**
 	 * Populate the instance
-	 * @since  1.6
+	 * @since   1.6
+	 * @since   1.6.1  $vaa param
+	 * @access  protected
+	 * @param   VAA_View_Admin_As  $vaa
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		parent::__construct();
+		parent::__construct( $vaa );
 	}
 
 	/**
@@ -90,16 +94,16 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Update|bool
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_Update
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 }

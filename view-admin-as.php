@@ -3,7 +3,7 @@
  * Plugin Name: View Admin As
  * Description: View the WordPress admin as a specific role, switch between users and temporarily change your capabilities.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.6.1-dev
+ * Version:     1.7-dev
  * Author:      Jory Hogeveen
  * Author URI:  https://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -13,7 +13,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6
+ * @version 1.7-dev
  */
 
 /*
@@ -40,12 +40,12 @@
 
 if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
-	define( 'VIEW_ADMIN_AS_VERSION', '1.6.1-dev' );
+	define( 'VIEW_ADMIN_AS_VERSION',    '1.7-dev' );
 	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.6' );
-	define( 'VIEW_ADMIN_AS_FILE', __FILE__ );
-	define( 'VIEW_ADMIN_AS_BASENAME', plugin_basename( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
+	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
+	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
+	define( 'VIEW_ADMIN_AS_DIR',        plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
+	define( 'VIEW_ADMIN_AS_URL',        plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
 
 	// Include main init class file
 	require_once( VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php' );
@@ -54,6 +54,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	 * Main instance of View Admin As.
 	 *
 	 * Returns the main instance of VAA_View_Admin_As to prevent the need to use globals.
+	 * Only for internal use. If the $caller parameter passes an unknown object it will return null.
 	 *
 	 * @since   1.4.1
 	 * @since   1.6     $caller parameter
@@ -77,6 +78,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 			. __('Plugin not activated because of a conflict with an other plugin or theme', 'view-admin-as')
 			. ' <code>(' . sprintf( __( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')' . '</code></p></div>';
 	}
+	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	deactivate_plugins( plugin_basename( __FILE__ ) );
 
 }

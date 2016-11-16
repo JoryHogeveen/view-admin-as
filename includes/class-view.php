@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6
+ * @version 1.7
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -17,19 +17,23 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_View
+	 * @since  1.6
+	 * @static
+	 * @var    VAA_View_Admin_As_View
 	 */
 	private static $_instance = null;
 
 	/**
 	 * VAA_View_Admin_As_View constructor.
 	 *
-	 * @since  1.6
+	 * @since   1.6
+	 * @since   1.6.1  $vaa param
+	 * @access  protected
+	 * @param   VAA_View_Admin_As  $vaa
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		parent::__construct();
+		parent::__construct( $vaa );
 
 		// When a user logs in or out, reset the view to default
 		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
@@ -71,8 +75,30 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			}
 
 			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
-				// Change the capabilities (map_meta_cap is better for compatibility with network admins)
-				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
+
+				/**
+				 * Check for the custom vaa_visitor role
+				 * @since  1.7
+				 */
+				if ( $this->store->get_viewAs('role') == 'vaa_visitor' ) {
+
+					// Short circuit needed for visitor view BEFORE the current user is set
+					if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
+						$this->ajax_view_admin_as();
+					}
+
+					// Set the current user to 0/false if viewing as a site visitor
+					$this->store->set_selectedUser( wp_set_current_user( 0 ) );
+
+				} else {
+					// Change the capabilities (map_meta_cap is better for compatibility with network admins)
+					add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
+				}
+			}
+
+			// @since  1.6.1  Force own locale on view
+			if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
+				add_action( 'init', array( $this, 'freeze_locale' ) );
 			}
 		}
 
@@ -87,10 +113,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class
 	 * @access  public
 	 *
-	 * @param   array   $caps       The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
-	 * @param   string  $cap        The capability that was requested
-	 * @param   int     $user_id    The ID of the user (not used)
-	 * @param   array   $args       Adds the context to the cap. Typically the object ID (not used)
+	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
+	 * @param   string  $cap      The capability that was requested
+	 * @param   int     $user_id  The ID of the user (not used)
+	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used)
 	 * @return  array   $caps
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
@@ -105,7 +131,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		if ( false !== $filter_caps ) {
-			// Force it to be an array
+			// Cast to an array
 			$filter_caps = (array) $filter_caps;
 			foreach ( $caps as $actual_cap ) {
 				if ( ! array_key_exists( $actual_cap, $filter_caps ) || ( 1 != (int) $filter_caps[ $actual_cap ] ) ) {
@@ -271,10 +297,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		// Browse mode
 		if ( $this->store->get_userSettings('view_mode') == 'browse' ) {
 			$meta = $this->store->get_userMeta('views');
-			if (   is_array( $meta )
-			       && isset( $meta[ $this->store->get_curUserSession() ] )
-			       && isset( $meta[ $this->store->get_curUserSession() ]['view'] )
-			) {
+			if ( isset( $meta[ $this->store->get_curUserSession() ]['view'] ) ) {
 				return $this->validate_view_as_data( $meta[ $this->store->get_curUserSession() ]['view'] );
 			}
 		}
@@ -289,19 +312,19 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class
 	 * @access  public
 	 *
-	 * @param   array|bool   $data
+	 * @param   array|bool  $data
 	 * @return  bool
 	 */
 	public function update_view( $data = false ) {
-		if ( false != $data ) {
+		if ( false != $data && $data = $this->validate_view_as_data( $data ) ) {
 			$meta = $this->store->get_userMeta('views');
 			// Make sure it is an array (no array means no valid data so we can safely clear it)
-			if ( ! $meta || ! is_array( $meta ) ) {
+			if ( ! is_array( $meta ) ) {
 				$meta = array();
 			}
 			// Add the new view metadata and expiration date
 			$meta[ $this->store->get_curUserSession() ] = array(
-				'view' => $this->validate_view_as_data( $data ),
+				'view' => $data,
 				'expire' => ( time() + $this->store->get_metaExpiration() ),
 			);
 			// Update metadata (returns: true on success, false on failure)
@@ -332,7 +355,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( isset( $user->ID ) ) {
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// Check if this user session has metadata
-			if ( isset( $meta['views'] ) && isset( $meta['views'][ $this->store->get_curUserSession() ] ) ) {
+			if ( isset( $meta['views'][ $this->store->get_curUserSession() ] ) ) {
 				// Remove metadata from this session
 				unset( $meta['views'][ $this->store->get_curUserSession() ] );
 				// Update current metadata if it is the current user
@@ -369,7 +392,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( isset( $user->ID ) ) {
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, loop it
-			if ( isset( $meta['views'] ) && 0 < count( $meta['views'] ) ) {
+			if ( isset( $meta['views'] ) ) {
+				if ( ! is_array( $meta['views'] ) ) {
+					$meta['views'] = array();
+				}
 				foreach ( $meta['views'] as $key => $value ) {
 					// Check expiration date: if it doesn't exist or is in the past, remove it
 					if ( ! isset( $meta['views'][ $key ]['expire'] ) || time() > $meta['views'][ $key ]['expire'] ) {
@@ -508,6 +534,23 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * Set the locale for the current view
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 */
+	public function freeze_locale() {
+		if ( function_exists( 'get_user_locale' ) && function_exists( 'switch_to_locale' ) ) {
+			$locale = get_user_locale( $this->store->get_curUser()->ID );
+			if ( $locale != get_locale() ) {
+				switch_to_locale( $locale );
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Main Instance.
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
@@ -515,17 +558,17 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_View|bool
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_View
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 
 } // end class
