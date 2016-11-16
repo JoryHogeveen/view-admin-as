@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6
+ * @version 1.6.1
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -17,18 +17,22 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_Compat
+	 * @since  1.6
+	 * @static
+	 * @var    VAA_View_Admin_As_Compat
 	 */
 	private static $_instance = null;
 
 	/**
 	 * Populate the instance
-	 * @since  1.6
+	 * @since   1.6
+	 * @since   1.6.1  $vaa param
+	 * @access  protected
+	 * @param   VAA_View_Admin_As  $vaa
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		parent::__construct();
+		parent::__construct( $vaa );
 	}
 
 	/**
@@ -41,26 +45,42 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init() {
 
-		if ( false !== $this->store->get_viewAs() ) {
-			// WooCommerce
-			remove_filter( 'show_admin_bar', 'wc_disable_admin_bar', 10 );
-		}
-
-		// Pods 2.x (only needed for the role selector)
-		if ( $this->store->get_viewAs('role') ) {
-			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 10, 3 );
-		}
+		add_action( 'vaa_view_admin_as_init', array( $this, 'init_after' ) );
 
 		/**
 		 * Add our caps to the members plugin
-		 * @since 1.6
+		 * @since  1.6
 		 */
 		add_filter( 'members_get_capabilities', array( $this, 'add_capabilities' ) );
 		add_action( 'members_register_cap_groups', array( $this, 'members_register_cap_group' ) );
 
-		// Get caps from other plugins
+		/**
+		 * Get caps from other plugins
+		 * @since  1.5
+		 */
 		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ) );
 
+	}
+
+	/**
+	 * Fix compatibility issues on load
+	 * Called from 'vaa_view_admin_as_init' hook (after loading all data)
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @return  void
+	 */
+	public function init_after() {
+
+		/*if ( false !== $this->store->get_viewAs() ) {
+			// WooCommerce
+			remove_filter( 'show_admin_bar', 'wc_disable_admin_bar', 10 );
+		}*/
+
+		if ( $this->store->get_viewAs('role') ) {
+			// Pods 2.x (only needed for the role selector)
+			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -125,9 +145,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		}
 
 		$role_caps = $this->store->get_roles( $this->store->get_viewAs('role') )->capabilities;
-		if ( ! array_key_exists( $cap, $role_caps ) || ( 1 != $role_caps[$cap] ) ) {
+		if ( ! array_key_exists( $cap, $role_caps ) || ( 1 != $role_caps[ $cap ] ) ) {
 			return false;
 		}
+
 		return true;
 	}
 
@@ -138,7 +159,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @see     init()
 	 */
-	public function members_register_cap_group () {
+	public function members_register_cap_group() {
 
 		if ( function_exists( 'members_register_cap_group' ) ) {
 			// Register the vaa group.
@@ -161,17 +182,17 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Compat|bool
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_Compat
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 
 } // end class

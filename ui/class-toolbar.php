@@ -4,11 +4,11 @@
  *
  * Toolbar UI for View Admin As
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6
- * @see wp-includes/class-wp-admin-bar.php
+ * @version 1.6.1
+ * @see     wp-includes/class-wp-admin-bar.php
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -24,37 +24,41 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_Admin_Bar
+	 * @since  1.6
+	 * @static
+	 * @var    VAA_View_Admin_As_Toolbar
 	 */
 	private static $_instance = null;
 
 	/**
 	 * Is this toolbar being rendered?
 	 *
-	 * @since   1.6
-	 * @var     bool
+	 * @since  1.6
+	 * @static
+	 * @var    bool
 	 */
 	public static $showing = false;
 
 	/**
 	 * View Admin As store
 	 *
-	 * @since   1.6
-	 * @var     object|bool
+	 * @since  1.6
+	 * @var    object
 	 */
-	private $vaa_store = false;
+	private $vaa_store = null;
 
 	/**
 	 * Construct function
 	 * Protected to make sure it isn't declared elsewhere
 	 *
 	 * @since   1.6
+	 * @since   1.6.1  $vaa param
 	 * @access  protected
+	 * @param   VAA_View_Admin_As  $vaa
 	 */
-	protected function __construct() {
+	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		$this->vaa_store = View_Admin_As( $this )->store();
+		$this->vaa_store = $vaa->store();
 
 		if ( ! is_admin() ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
@@ -128,17 +132,17 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Admin_Bar|bool
+	 * @param   object  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_Toolbar
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 
 } // end class

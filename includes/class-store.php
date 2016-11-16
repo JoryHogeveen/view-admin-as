@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6
+ * @version 1.6.1
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -17,8 +17,9 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.6
-	 * @var     VAA_View_Admin_As_Store
+	 * @since  1.6
+	 * @static
+	 * @var    VAA_View_Admin_As_Store
 	 */
 	private static $_instance = null;
 
@@ -75,13 +76,15 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.5
 	 * @since  1.5.2  added force_group_users
 	 * @since  1.6    Moved to this class from main class
+	 * @since  1.6.1  added freeze_locale
 	 * @var    array
 	 */
 	private $defaultUserSettings = array(
-		'view_mode' => 'browse',
 		'admin_menu_location' => 'top-secondary',
-		'force_group_users' => 'no',
-		'hide_front' => 'no',
+		'force_group_users'   => 'no',
+		'freeze_locale'       => 'no',
+		'hide_front'          => 'no',
+		'view_mode'           => 'browse',
 	);
 
 	/**
@@ -91,13 +94,15 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.5
 	 * @since  1.5.2  added force_group_users
 	 * @since  1.6    Moved to this class from main class
+	 * @since  1.6.1  added freeze_locale
 	 * @var    array
 	 */
 	private $allowedUserSettings = array(
-		'view_mode' => array( 'browse', 'single' ),
 		'admin_menu_location' => array( 'top-secondary', 'my-account' ),
-		'force_group_users' => array( 'yes', 'no' ),
-		'hide_front' => array( 'yes', 'no' ),
+		'force_group_users'   => array( 'yes', 'no' ),
+		'freeze_locale'       => array( 'yes', 'no' ),
+		'hide_front'          => array( 'yes', 'no' ),
+		'view_mode'           => array( 'browse', 'single' ),
 	);
 
 	/**
@@ -128,7 +133,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $caps;
+	private $caps = array();
 
 	/**
 	 * Array of available roles
@@ -137,7 +142,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $roles;
+	private $roles = array();
 
 	/**
 	 * Array of available user objects
@@ -146,7 +151,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $users;
+	private $users = array();
 
 	/**
 	 * Expiration time for view data
@@ -193,7 +198,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $usernames;
+	private $usernames = array();
 
 	/**
 	 * Array of available user ID's (key) and display names (value)
@@ -202,7 +207,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
-	private $userids;
+	private $userids = array();
 
 	/**
 	 * The selected user object (if the user view is selected)
@@ -248,7 +253,8 @@ final class VAA_View_Admin_As_Store
 				}
 			}
 		}
-		// @since 	1.5.2.1 	Merge role names with the role objects
+
+		// @since  1.5.2.1  Merge role names with the role objects
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $role_names[ $role_key ] ) ) {
 				$roles[ $role_key ]->name = $role_names[ $role_key ];
@@ -268,6 +274,9 @@ final class VAA_View_Admin_As_Store
 	 */
 	public function store_users() {
 
+		// Load the superior admins
+		$superior_admins = VAA_API::get_superior_admins();
+
 		// Is the current user a super admin?
 		$is_super_admin = is_super_admin( $this->get_curUser()->ID );
 		// Is it also one of the manually configured superior admins?
@@ -275,17 +284,17 @@ final class VAA_View_Admin_As_Store
 
 		if ( is_network_admin() ) {
 
-			// Get super admins (returns logins)
+			// Get super admins (returns login's)
 			$users = get_super_admins();
 			// Remove current user
 			if ( in_array( $this->get_curUser()->user_login, $users ) ) {
 				unset( $users[ array_search( $this->get_curUser()->user_login, $users ) ] );
 			}
-			// Convert logins to WP_User objects and filter them for superior admins
+			// Convert login to WP_User objects and filter them for superior admins
 			foreach ( $users as $key => $user_login ) {
 				$user = get_user_by( 'login', $user_login );
-				if ( $user && ! in_array( $user->user_login, VAA_API::get_superior_admins() ) ) {
-					$users[ $key ] = get_user_by( 'login', $user_login );
+				if ( $user && ! in_array( $user->user_login, $superior_admins ) ) {
+					$users[ $key ] = $user;
 				} else {
 					unset( $users[ $key ] );
 				}
@@ -296,7 +305,7 @@ final class VAA_View_Admin_As_Store
 			$user_args = array(
 				'orderby' => 'display_name',
 				// @since  1.5.2  Exclude the current user
-				'exclude' => array_merge( VAA_API::get_superior_admins(), array( $this->get_curUser()->ID ) ),
+				'exclude' => array_merge( $superior_admins, array( $this->get_curUser()->ID ) ),
 			);
 			// Do not get regular admins for normal installs (WP 4.4+)
 			if ( ! is_multisite() && ! $is_superior_admin ) {
@@ -308,14 +317,14 @@ final class VAA_View_Admin_As_Store
 
 		$userids = array();
 		$usernames = array();
-		// Loop though all users
+
 		foreach ( $users as $user_key => $user ) {
 
 			// If the current user is not a superior admin, run the user filters
 			if ( true !== $is_superior_admin ) {
 
 				/**
-				 * Implement checks instead of is_super_admin() because it adds a lot unnecessary queries
+				 * Implement checks instead of is_super_admin() because it adds a lot of unnecessary queries
 				 *
 				 * @since  1.5.2
 				 * @See    is_super_admin()
@@ -356,8 +365,8 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @see     store_users()
 	 *
-	 * @param   array   $users
-	 * @return  array   $users
+	 * @param   array  $users
+	 * @return  array  $users
 	 */
 	public function filter_sort_users_by_role( $users ) {
 		if ( ! $this->get_roles() ) {
@@ -511,7 +520,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @param   array       $settings
 	 * @param   string      $type      global / user
-	 * @return  array|bool  $settings
+	 * @return  array|bool  $settings / false
 	 */
 	public function validate_settings( $settings, $type ) {
 		if ( $type == 'global' ) {
@@ -545,7 +554,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @param   int|bool     $user_id     ID of the user being deleted/removed
 	 * @param   object|bool  $user        User object provided by the wp_login hook
-	 * @param   bool         $reset_only  Only reset (not delet) the user meta
+	 * @param   bool         $reset_only  Only reset (not delete) the user meta
 	 * @return  bool
 	 */
 	public function delete_user_meta( $user_id = false, $user = false, $reset_only = true ) {
@@ -657,17 +666,17 @@ final class VAA_View_Admin_As_Store
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Store|bool
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_Store
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self();
+				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 
 	/**

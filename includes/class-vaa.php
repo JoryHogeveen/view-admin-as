@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6
+ * @version 1.6.1
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -18,6 +18,7 @@ final class VAA_View_Admin_As
 	 * The single instance of the class.
 	 *
 	 * @since  1.4.1
+	 * @static
 	 * @var    VAA_View_Admin_As
 	 */
 	private static $_instance = null;
@@ -25,9 +26,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Classes that are allowed to use this class
 	 *
-	 * @see    get_instance()
-	 *
 	 * @since  1.6
+	 * @static
+	 * @see    get_instance()
 	 * @var    array
 	 */
 	private static $vaa_class_names = array();
@@ -52,7 +53,7 @@ final class VAA_View_Admin_As
 	 * VAA Store
 	 *
 	 * @since  1.6
-	 * @var    array
+	 * @var    VAA_View_Admin_As_Store
 	 */
 	private $store = null;
 
@@ -60,7 +61,7 @@ final class VAA_View_Admin_As
 	 * VAA View handler
 	 *
 	 * @since  1.6
-	 * @var    array
+	 * @var    VAA_View_Admin_As_View
 	 */
 	private $view = null;
 
@@ -68,7 +69,8 @@ final class VAA_View_Admin_As
 	 * VAA UI classes that are loaded
 	 *
 	 * @since  1.5
-	 * @var    array
+	 * @see    load_ui()
+	 * @var    array of objects
 	 */
 	private $ui = array();
 
@@ -76,7 +78,9 @@ final class VAA_View_Admin_As
 	 * Other VAA modules that are loaded
 	 *
 	 * @since  1.4
-	 * @var    array
+	 * @see    load_modules()
+	 * @see    register_module()
+	 * @var    array of objects
 	 */
 	private $modules = array();
 
@@ -98,8 +102,8 @@ final class VAA_View_Admin_As
 
 		add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
 
-		// Returns true on conflict
-		if ( (boolean) $this->validate_versions() ) {
+		// Returns false on conflict
+		if ( ! (boolean) $this->validate_versions() ) {
 			return;
 		}
 
@@ -113,7 +117,7 @@ final class VAA_View_Admin_As
 
 		} else {
 
-			$this->add_notice('class-error-base', array(
+			$this->add_notice('class-error-core', array(
 				'type' => 'notice-error',
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
 					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
@@ -127,8 +131,8 @@ final class VAA_View_Admin_As
 	 * Load required classes and files
 	 * Returns false on conflict
 	 *
-	 * @since  1.6
-	 * @return bool
+	 * @since   1.6
+	 * @return  bool
 	 */
 	private function load() {
 
@@ -163,8 +167,8 @@ final class VAA_View_Admin_As
 	/**
 	 * Instantiate function that checks if the plugin is already loaded
 	 *
-	 * @since  1.6
-	 * @access public
+	 * @since   1.6
+	 * @access  public
 	 */
 	public function init() {
 		static $loaded = false;
@@ -177,7 +181,7 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Run the plugin!
-	 * Check current user, load nessesary data and register all used hooks
+	 * Check current user, load necessary data and register all used hooks
 	 *
 	 * @since   0.1
 	 * @access  private
@@ -190,6 +194,7 @@ final class VAA_View_Admin_As
 		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
 		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
 
+		// We can't do this check before `plugins_loaded` hook
 		if ( is_user_logged_in() ) {
 
 			$this->store->set_nonce( 'view-admin-as' );
@@ -215,7 +220,7 @@ final class VAA_View_Admin_As
 			 * Validate if the current user has access to the functionalities
 			 *
 			 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
-			 *                Disable plugin functions for nedwork admin pages
+			 *                Disable plugin functions for network admin pages
 			 * @since  1.4    Make sure we have a session for the current user
 			 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
 			 *                Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
@@ -223,8 +228,8 @@ final class VAA_View_Admin_As
 			 */
 			if (   ( is_super_admin( $this->store->get_curUser()->ID )
 				     || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
-				&& ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
-				&& $this->store->get_curUserSession() != ''
+			    && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
+			    && $this->store->get_curUserSession() != ''
 			) {
 				$this->enable = true;
 			}
@@ -268,7 +273,7 @@ final class VAA_View_Admin_As
 			} else {
 				// Extra security check for non-admins who did something naughty or we're demoted to a lesser role
 				// If they have settings etc. we'll keep them in case they get promoted again
-				add_action( 'wp_login', array( $this, 'reset_all_views' ), 10, 2 );
+				add_action( 'wp_login', array( $this->view, 'reset_all_views' ), 10, 2 );
 			}
 		}
 	}
@@ -284,6 +289,20 @@ final class VAA_View_Admin_As
 	 */
 	private function load_ui() {
 
+		// WP admin modifications
+		if ( ! class_exists('VAA_View_Admin_As_Admin') ) {
+			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin.php' );
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin';
+			$this->ui['admin'] = VAA_View_Admin_As_Admin::get_instance( $this );
+		} else {
+			$this->add_notice('class-error-admin', array(
+				'type' => 'notice-error',
+				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
+				             . __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
+				             . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin' ) . ')</code>',
+			) );
+		}
+
 		// The default admin bar ui
 		if ( ! class_exists('VAA_View_Admin_As_Admin_Bar') ) {
 			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin-bar.php' );
@@ -293,7 +312,7 @@ final class VAA_View_Admin_As
 			$this->add_notice('class-error-admin-bar', array(
 				'type' => 'notice-error',
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
+					. __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
 					. ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin_Bar' ) . ')</code>',
 			) );
 		}
@@ -307,22 +326,8 @@ final class VAA_View_Admin_As
 			$this->add_notice('class-error-toolbar', array(
 				'type' => 'notice-error',
 				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-				    . __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
+				    . __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
 				    . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Toolbar' ) . ')</code>',
-			) );
-		}
-
-		// WP admin modifications
-		if ( ! class_exists('VAA_View_Admin_As_Admin') ) {
-			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin';
-			$this->ui['static_actions'] = VAA_View_Admin_As_Admin::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-admin', array(
-				'type' => 'notice-error',
-				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-				    . __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
-				    . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin' ) . ')</code>',
 			) );
 		}
 	}
@@ -395,7 +400,7 @@ final class VAA_View_Admin_As
 ?>
 <div>
 	<h3><?php _e( 'View Admin As', 'view-admin-as' ) ?>:</h3>
-	<?php _e( 'The view you have selected is not permitted to view this page, please choose one of the options below.', 'view-admin-as' ) ?>
+	<?php _e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', 'view-admin-as' ) ?>
 	<ul>
 		<?php foreach ( $options as $option ) { ?>
 		<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
@@ -418,25 +423,45 @@ final class VAA_View_Admin_As
 	public function enqueue_scripts() {
 		// Only enqueue scripts if the admin bar is enabled otherwise they have no use
 		if ( ( is_admin_bar_showing() || VAA_API::is_vaa_toolbar_showing() ) && $this->is_enabled() ) {
-			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min'; // Use non-minified versions
-			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->store->get_version(); // Prevent browser cache
 
-			wp_enqueue_style(   'vaa_view_admin_as_style', VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css', array(), $version );
-			wp_enqueue_script(  'vaa_view_admin_as_script', VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js', array( 'jquery' ), $version, true );
+			// Use non-minified versions
+			$suffix = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+			// Prevent browser cache
+			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->store->get_version();
+
+			wp_enqueue_style(
+				'vaa_view_admin_as_style',
+				VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css',
+				array(),
+				$version
+			);
+			wp_enqueue_script(
+				'vaa_view_admin_as_script',
+				VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js',
+				array( 'jquery' ),
+				$version,
+				true // load in footer
+			);
 
 			$script_localization = array(
-				'ajaxurl' => admin_url( 'admin-ajax.php' ),
-				'siteurl' => get_site_url(),
-				'_debug' => ( defined('WP_DEBUG') && WP_DEBUG ) ? (bool) WP_DEBUG : false,
+				// Data
+				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'siteurl'       => get_site_url(),
+				'settings'      => $this->store->get_settings(),
+				'settings_user' => $this->store->get_userSettings(),
+				'view_as'       => $this->store->get_viewAs(),
+				// Other
+				'_debug'     => ( defined('WP_DEBUG') && WP_DEBUG ) ? (bool) WP_DEBUG : false,
 				'_vaa_nonce' => $this->store->get_nonce( true ),
+				// i18n
 				'__no_users_found' => esc_html__( 'No users found.', 'view-admin-as' ),
-				'__success' => esc_html__( 'Success', 'view-admin-as' ),
-				'__confirm' => esc_html__( 'Are you sure?', 'view-admin-as' ),
-				'settings' => $this->store->get_settings(),
-				'settings_user' => $this->store->get_userSettings()
+				'__success'        => esc_html__( 'Success', 'view-admin-as' ),
+				'__confirm'        => esc_html__( 'Are you sure?', 'view-admin-as' )
 			);
 			foreach ( $this->get_modules() as $name => $module ) {
-				$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
+				if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
+					$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
+				}
 			}
 
 			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', $script_localization );
@@ -456,7 +481,8 @@ final class VAA_View_Admin_As
 		if ( $this->is_enabled() ) {
 
 			/**
-			 * Keep the third parameter pointing to the languages folder within this plugin to enable support for custom .mo files
+			 * Keep the third parameter pointing to the languages folder within this plugin
+			 * to enable support for custom .mo files
 			 *
 			 * @todo look into 4.6 changes Maybe the same can be done in an other way
 			 * @see https://make.wordpress.org/core/2016/07/06/i18n-improvements-in-4-6/
@@ -490,7 +516,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @return  null|VAA_View_Admin_As_Store
+	 * @return  VAA_View_Admin_As_Store
 	 */
 	public function store() {
 		return $this->store;
@@ -501,10 +527,23 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @return  null|VAA_View_Admin_As_View
+	 * @return  VAA_View_Admin_As_View
 	 */
 	public function view() {
 		return $this->view;
+	}
+
+	/**
+	 * Get UI classes
+	 * If a key is provided it will only a single UI object
+	 *
+	 * @since   1.6.1
+	 * @access  public
+	 * @param   string|bool  $key  (optional) UI class name
+	 * @return  array|object
+	 */
+	public function get_ui( $key ) {
+		return VAA_API::get_array_data( $this->ui, $key );
 	}
 
 	/**
@@ -513,11 +552,30 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.5
 	 * @access  public
-	 * @param   string|bool  $key  The module key
+	 * @param   string|bool  $key  (optional) The module key
 	 * @return  array|object
 	 */
 	public function get_modules( $key = false ) {
 		return VAA_API::get_array_data( $this->modules, $key );
+	}
+
+	/**
+	 * Register extra modules
+	 *
+	 * @since   1.6.1
+	 * @param   array  $data {
+	 *     Required. An array of module info
+	 *     @type  string  $id        The module name, choose wisely since this is used for validation
+	 *     @type  object  $instance  The module class reference/instance
+	 * }
+	 * @return  bool
+	 */
+	public function register_module( $data ) {
+		if ( ! empty( $data['id'] ) && ! empty( $data['instance'] ) && is_object( $data['instance'] ) ) {
+			$this->modules[ (string) $data['id'] ] = $data['instance'];
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -567,7 +625,7 @@ final class VAA_View_Admin_As
 	 */
 	private function validate_versions() {
 		global $wp_version;
-		$conflict = false;
+		$valid = true;
 
 		// Validate PHP
 		/*if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
@@ -577,6 +635,7 @@ final class VAA_View_Admin_As
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
+			$valid = false;
 		}*/
 
 		// Validate WP
@@ -587,13 +646,13 @@ final class VAA_View_Admin_As
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
-			$conflict = true;
+			$valid = false;
 		}
-		return $conflict;
+		return $valid;
 	}
 
 	/**
-	 * Main View Admin As Instance.
+	 * Main View Admin As instance.
 	 *
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *
@@ -605,8 +664,8 @@ final class VAA_View_Admin_As
 	 * @param   object  $caller
 	 * @return  VAA_View_Admin_As
 	 */
-	public static function get_instance( $caller ) {
-		if ( in_array( get_class( $caller ), self::$vaa_class_names ) ) {
+	public static function get_instance( $caller = null ) {
+		if ( is_object( $caller ) && in_array( get_class( $caller ), self::$vaa_class_names ) ) {
 			return self::$_instance;
 		}
 		return null;
