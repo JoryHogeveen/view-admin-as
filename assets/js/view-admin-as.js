@@ -4,7 +4,7 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6.1
+ * @version 1.7
  */
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {
@@ -123,7 +123,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 		var body = $('body');
 
-		$('#wpadminbar .vaa-update').remove();
+		$('#wpadminbar .vaa-notice').remove();
 		// @todo dashicon loader?
 		body.append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url(\'' + VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif\') center center no-repeat; background-size: contain;"></span></div>');
 		$('body #vaa-overlay').fadeIn('fast');
@@ -213,10 +213,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	 * @param  {string}  type
 	 */
 	VAA_View_Admin_As.notice = function( notice, type ) {
-		$('#wp-admin-bar-top-secondary').append('<li class="vaa-update vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
-		$('#wpadminbar .vaa-update .remove').click( function() { $(this).parent().remove(); } );
+		var root = '#wpadminbar .vaa-notice';
+		$('#wp-admin-bar-top-secondary').append('<li class="vaa-notice vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
+		$(root+' .remove').click( function() { $(this).parent().remove(); } );
 		// Remove it after 5 seconds
-		setTimeout( function(){ $('#wpadminbar .vaa-update').fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
+		setTimeout( function(){ $(root).fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
 	};
 
 

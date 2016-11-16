@@ -4,7 +4,7 @@
  *
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6.1
+ * @version 1.7
  */
 
 #vaa-overlay {position: fixed; top: 0; left: 0; height: 100%; width: 100%; background: rgba(255,255,255,0.85); display: none; z-index: 999999999;}
@@ -19,10 +19,10 @@
 #vaa-overlay.error {background-color: rgba(220, 50, 50, 0.85);}
 #vaa-overlay.success {background-color: rgba(70, 180, 80, 0.85);}
 */
-#wpadminbar .vaa-update.vaa-error {display: inline-block; color: #dc3232; background: #fff; padding: 0 10px;}
-#wpadminbar .vaa-update.vaa-error .ab-icon:before {color: #dc3232;}
-#wpadminbar .vaa-update.vaa-success {display: inline-block; color: #46b450; background: #fff; padding: 0 10px;}
-#wpadminbar .vaa-update.vaa-success .ab-icon:before {color: #46b450;}
+#wpadminbar .vaa-notice.vaa-error {display: inline-block; color: #dc3232; background: #fff; padding: 0 10px;}
+#wpadminbar .vaa-notice.vaa-error .ab-icon:before {color: #dc3232;}
+#wpadminbar .vaa-notice.vaa-success {display: inline-block; color: #46b450; background: #fff; padding: 0 10px;}
+#wpadminbar .vaa-notice.vaa-success .ab-icon:before {color: #46b450;}
 
 #wpadminbar #wp-admin-bar-vaa ul li,
 #wpadminbar #wp-admin-bar-vaa .ab-item {clear: both;}
