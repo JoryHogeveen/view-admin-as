@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6.1
+ * @version 1.7
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -336,25 +336,38 @@ final class VAA_View_Admin_As
 	 * Load the modules
 	 *
 	 * @since   1.5
-	 * @since   1.5.1   added notice on class name conflict
+	 * @since   1.5.1   added notice on class name conflict (removed in 1.7)
+	 * @since   1.7     Generic loading of modules
 	 * @access  private
 	 * @return  void
 	 */
 	private function load_modules() {
 
-		// The role defaults module (screen settings)
-		if ( ! class_exists('VAA_View_Admin_As_Role_Defaults') ) {
-			require( VIEW_ADMIN_AS_DIR . 'modules/class-role-defaults.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Role_Defaults';
-			$this->modules['role_defaults'] = VAA_View_Admin_As_Role_Defaults::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-role-defaults', array(
-				'type' => 'notice-error',
-				'message' =>'<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
-					. ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Role_Defaults' ) . ')</code>',
-			) );
+		$files = scandir( VIEW_ADMIN_AS_DIR . 'modules' );
+
+		foreach ( $files as $file ) {
+			if ( ! in_array( $file, array( '.', '..', 'index.php' ) ) ) {
+				$file_info = pathinfo( $file );
+
+				// Single file modules
+				if ( ! empty( $file_info['extension'] ) ) {
+					if ( 'php' == $file_info['extension'] && is_file( VIEW_ADMIN_AS_DIR . 'modules/' . $file ) ) {
+						include( VIEW_ADMIN_AS_DIR . 'modules/' . $file );
+					}
+				}
+				// Directory modules
+				elseif ( is_file( VIEW_ADMIN_AS_DIR . 'modules/' . $file . '/' . $file . '.php' ) ) {
+					include( VIEW_ADMIN_AS_DIR . 'modules/' . $file . '/' . $file . '.php' );
+				}
+			}
 		}
+
+		/**
+		 * Module loaded. Hook is used for other modules related to View Admin As
+		 * @since  1.7
+		 * @param  object  $this  VAA_View_Admin_As
+		 */
+		do_action( 'vaa_view_admin_as_modules_loaded', $this );
 	}
 
 	/**

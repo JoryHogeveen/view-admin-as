@@ -7,10 +7,12 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.4
- * @version 1.6.1
+ * @version 1.7
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+
+add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Role_Defaults', 'get_instance' ) );
 
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 {
@@ -80,6 +82,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 		parent::__construct( $vaa );
+
+		// Add this class to the modules in the main class
+		$this->vaa->register_module( array(
+			'id'       => 'role_defaults',
+			'instance' => self::$_instance
+		) );
 
 		// Load data
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
