@@ -13,37 +13,41 @@
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
+add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Groups', 'get_instance' ) );
+
 final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 {
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since   1.7
-	 * @var     VAA_View_Admin_As_Compat
+	 * @since  1.7
+	 * @static
+	 * @var    VAA_View_Admin_As_Groups
 	 */
 	private static $_instance = null;
 
 	/**
 	 * The existing groups
-	 * @since   1.7
-	 * @var     array of objects: Groups_Group
-	 * @see     groups/lib/core/class-groups-group.php -> Groups_Groups
+	 *
+	 * @since  1.7
+	 * @see    groups/lib/core/class-groups-group.php -> Groups_Groups
+	 * @var    array of objects: Groups_Group
 	 */
 	private $groups;
 
 	/**
-	 *
-	 * @since   1.7
-	 * @var     Groups_Group
-	 * @see     groups/lib/core/class-groups-group.php -> Groups_Groups
+	 * @since  1.7
+	 * @see    groups/lib/core/class-groups-group.php -> Groups_Groups
+	 * @var    Groups_Group
 	 */
 	private $selectedGroup;
 
 	/**
-	 * Populate the instance
+	 * Populate the instance and validate Groups plugin
+	 *
 	 * @since   1.7
 	 * @access  protected
-	 * @param   object  $vaa  The main class
+	 * @param   VAA_View_Admin_As  $vaa
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -55,34 +59,36 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		  && ! is_network_admin()
 		) {
 
-			$this->vaa->add_module( array(
+			$this->vaa->register_module( array(
 				'id'       => 'groups',
-				'instance' => $this
+				'instance' => self::$_instance
 			) );
 
 			$this->store_groups();
 
 			add_action( 'vaa_view_admin_as_init', array( $this, 'init' ) );
 		}
-
 	}
 
 	/**
 	 * Initialize the Groups module
 	 * @since   1.7
 	 * @access  public
-	 * @param   VAA_View_Admin_As  $vaa
 	 */
-	public function init( $vaa ) {
+	public function init() {
 
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
 
 		if ( $this->get_viewAs('groups') && $this->get_groups( $this->get_viewAs('groups') ) ) {
 
 			$this->selectedGroup = new Groups_Group( $this->get_viewAs('groups') );
+
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
-			//add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 10, 4 );
+
+			// Filter group capabilities
 			add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
+
+			// Filter user-group relationships
 			add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
 
 			/**
@@ -95,7 +101,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Ajax handler, called from main plugin view class
+	 * Ajax handler, called from main ajax handler
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -136,14 +142,16 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		// See https://codex.wordpress.org/Function_Reference/apply_filters_ref_array
 		if ( is_array( $result ) ) {
 			$cap = $result[2];
-			$object = $result[1];
+			//$object = $result[1];
 			$result = $result[0];
 		}
 
-		if ( $this->selectedGroup && is_callable( array( $this->selectedGroup, 'can' ) ) && ! $this->selectedGroup->can( $cap ) ) {
+		if (    $this->selectedGroup
+		     && is_callable( array( $this->selectedGroup, 'can' ) )
+		     && ! $this->selectedGroup->can( $cap )
+		) {
 			$result = false;
 		}
-
 		return $result;
 	}
 
@@ -185,6 +193,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @since   1.7
 	 * @access  public
 	 * @param   WP_Admin_Bar  $admin_bar
+	 * @param   string        $root
 	 */
 	public function admin_bar_menu( $admin_bar, $root ) {
 
@@ -219,7 +228,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			do_action( 'vaa_admin_bar_groups_before', $admin_bar );
 
 			// Add the groups
-			foreach( $this->get_groups() as $group_key => $group ) {
+			foreach ( $this->get_groups() as $group_key => $group ) {
 				$href = '#';
 				$class = 'vaa-group-item';
 				$title = $group->name;
@@ -259,7 +268,6 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			 */
 			do_action( 'vaa_admin_bar_groups_after', $admin_bar );
 		}
-
 	}
 
 	/**
@@ -271,7 +279,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		$groups = Groups_Group::get_groups();
 
 		if ( ! empty( $groups ) ) {
-			foreach( $groups as $group ) {
+			foreach ( $groups as $group ) {
 				$this->groups[ $group->group_id ] = $group;
 			}
 		}
@@ -280,10 +288,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Get a group by ID
 	 *
-	 * @since  1.7
+	 * @since   1.7
 	 * @access  public
-	 * @param  string  $key
-	 * @return mixed
+	 * @param   string  $key
+	 * @return  mixed
 	 */
 	public function get_groups( $key = '' ) {
 		if ( empty( $key ) ) {
@@ -300,17 +308,17 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @since   1.7
 	 * @access  public
 	 * @static
-	 * @param   object|bool  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Compat|bool
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @return  VAA_View_Admin_As_Groups
 	 */
-	public static function get_instance( $caller = false ) {
+	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self( $caller );
 			}
 			return self::$_instance;
 		}
-		return false;
+		return null;
 	}
 
 } // end class
