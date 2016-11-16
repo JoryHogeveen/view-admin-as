@@ -60,12 +60,6 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		 */
 		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ) );
 
-		// Load Groups compat module
-		if ( class_exists( 'Groups_Group' ) ) {
-			include( VIEW_ADMIN_AS_DIR . 'modules/class-groups.php' );
-			VAA_View_Admin_As_Groups::get_instance( $this->vaa );
-		}
-
 	}
 
 	/**
