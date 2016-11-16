@@ -705,11 +705,15 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 	/**
 	 * MODULE: Groups
+	 * @since  1.7
 	 */
 	VAA_View_Admin_As.init_module_groups = function() {
 
 		// Process groups views
-		$(document).on('click', VAA_View_Admin_As.prefix+'.vaa-group-item > a.ab-item', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-group-item > a.ab-item', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
 			e.preventDefault();
 			if ( ! $(this).parent().hasClass('not-a-view') ) {
 				var viewAs = { groups : String( $(this).attr('rel') ) };
@@ -717,7 +721,6 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				return false;
 			}
 		});
-
 	};
 
 	// We require a nonce to use this plugin
