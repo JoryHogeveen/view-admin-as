@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.1
+ * @version 1.7
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -75,8 +75,25 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			}
 
 			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
-				// Change the capabilities (map_meta_cap is better for compatibility with network admins)
-				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
+
+				/**
+				 * Check for the custom vaa_visitor role
+				 * @since  1.7
+				 */
+				if ( $this->store->get_viewAs('role') == 'vaa_visitor' ) {
+
+					// Short circuit needed for visitor view BEFORE the current user is set
+					if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
+						$this->ajax_view_admin_as();
+					}
+
+					// Set the current user to 0/false if viewing as a site visitor
+					$this->store->set_selectedUser( wp_set_current_user( 0 ) );
+
+				} else {
+					// Change the capabilities (map_meta_cap is better for compatibility with network admins)
+					add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
+				}
 			}
 
 			// @since  1.6.1  Force own locale on view

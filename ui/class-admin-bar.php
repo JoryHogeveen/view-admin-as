@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.5
- * @version 1.6.1
+ * @version 1.7
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -144,7 +144,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$title = __('Modified view', 'view-admin-as');
 		}
 		if ( $this->get_viewAs('role') ) {
-			$title = __('Viewing as role', 'view-admin-as') . ': ' . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
+			if ( $this->get_viewAs('role') == 'vaa_visitor' ) {
+				$title = __('Viewing as site visitor', 'view-admin-as');
+			} else {
+				$title = __('Viewing as role', 'view-admin-as') . ': ' . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
+			}
 		}
 		if ( $this->get_viewAs('user') ) {
 			$selected_user_roles = array();
@@ -699,7 +703,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$href = '#';
 				$class = 'vaa-role-item';
 				$has_icon = false;
-				$title = translate_user_role( $role->name );
+
+				// @since  1.7  dummy role vaa_visitor
+				if ( $role_key == 'vaa_visitor' ) {
+					$title = self::do_icon( 'dashicons-universal-access' ) . $role->name;
+					$has_icon = true;
+				} else {
+					$title = translate_user_role( $role->name );
+				}
 				// Check if the users need to be grouped under their roles
 				if ( true === $this->groupUserRoles ) {
 					$class .= ' vaa-menupop'; // make sure items are aligned properly when some roles don't have users
