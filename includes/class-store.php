@@ -274,10 +274,12 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class
+	 * @since   1.7    Reduce user queries to 1 for non-network pages with custom query handling
 	 * @access  public
 	 * @return  void
 	 */
 	public function store_users() {
+		global $wpdb;
 
 		// Load the superior admins
 		$superior_admins = VAA_API::get_superior_admins();
@@ -287,6 +289,20 @@ final class VAA_View_Admin_As_Store
 		// Is it also one of the manually configured superior admins?
 		$is_superior_admin = VAA_API::is_superior_admin( $this->get_curUser()->ID );
 
+		/**
+		 * Base user query
+		 * Also gets the roles from the user meta table
+		 * @since  1.7
+		 * @todo   Use it for network pages as well?
+		 */
+		$user_query = array(
+			'select'    => "SELECT {$wpdb->users}.*, {$wpdb->usermeta}.meta_value as roles",
+			'from'      => "FROM {$wpdb->users}",
+			'left_join' => "LEFT JOIN {$wpdb->usermeta} ON {$wpdb->users}.ID = {$wpdb->usermeta}.user_id",
+			'where'     => "WHERE {$wpdb->usermeta}.meta_key = '{$wpdb->get_blog_prefix()}capabilities'",
+			'order_by'  => "ORDER BY {$wpdb->users}.display_name"
+		);
+
 		if ( is_network_admin() ) {
 
 			// Get super admins (returns login's)
@@ -295,6 +311,7 @@ final class VAA_View_Admin_As_Store
 			if ( in_array( $this->get_curUser()->user_login, $users ) ) {
 				unset( $users[ array_search( $this->get_curUser()->user_login, $users ) ] );
 			}
+
 			// Convert login to WP_User objects and filter them for superior admins
 			foreach ( $users as $key => $user_login ) {
 				$user = get_user_by( 'login', $user_login );
@@ -308,19 +325,64 @@ final class VAA_View_Admin_As_Store
 
 		} else {
 
+			/*
 			$user_args = array(
 				'orderby' => 'display_name',
 				// @since  1.5.2  Exclude the current user
-				'exclude' => array_merge( $superior_admins, array( $this->get_curUser()->ID ) ),
+				'exclude' => array_merge( $superior_admins, array( $this->get_curUser()->ID ) )
 			);
-			// Do not get regular admins for normal installs (WP 4.4+)
+			// @since  1.5.2  Do not get regular admins for normal installs (WP 4.4+)
 			if ( ! is_multisite() && ! $is_superior_admin ) {
 				$user_args['role__not_in'] = 'administrator';
 			}
+
 			// Sort users by role and filter them on available roles
 			$users = $this->filter_sort_users_by_role( get_users( $user_args ) );
+			*/
+
+			/**
+			 * Exclude current user and superior admins (values are user ID's)
+			 *
+			 * @since  1.5.2  Exclude the current user
+			 * @since  1.7    Exclude in SQL format
+			 */
+			$exclude = implode( ',', array_unique( array_merge( $superior_admins, array( $this->get_curUser()->ID ) ) ) );
+			$user_query['where'] .= " AND {$wpdb->users}.ID NOT IN ({$exclude})";
+
+			/**
+			 * Do not get regular admins for normal installs
+			 *
+			 * @since  1.5.2  WP 4.4+ only
+			 * @since  1.7    Exclude in SQL format (Not WP dependent)
+			 */
+			if ( ! is_multisite() && ! $is_superior_admin ) {
+				$user_query['where'] .= " AND {$wpdb->usermeta}.meta_value NOT LIKE '%administrator%'";
+			}
+
+			// Run query and WP_User object generation (OBJECT_K to the user ID as key)
+			$users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K );
+
+			$users = array();
+			// Temp set users
+			$this->set_users( $users_results );
+			// Short circuit the meta queries (not needed)
+			add_filter( 'get_user_metadata', array( $this, '_filter_get_user_capabilities' ), 10, 3 );
+			foreach ( $users_results as $user ) {
+				$user->roles = unserialize( $user->roles );
+				$users[ $user->ID ] = new WP_User( $user );
+			}
+			// Restore the default meta queries
+			remove_filter( 'get_user_metadata', array( $this, '_filter_get_user_capabilities' ) );
+			// Clear temp users
+			$this->set_users( array() );
+
+			//if ( ! is_network_admin() ) {
+				// Sort users by role and filter them on available roles
+				$users = $this->filter_sort_users_by_role( $users );
+			//}
 		}
 
+		// @todo Maybe $userids and $usernames isn't needed anymore
 		$userids = array();
 		$usernames = array();
 
@@ -360,6 +422,35 @@ final class VAA_View_Admin_As_Store
 		$this->set_users( $users );
 		$this->set_userids( $userids );
 		$this->set_usernames( $usernames );
+	}
+
+	/**
+	 * Filter the WP_User object construction to short circuit the extra meta queries
+	 *
+	 * FOR INTERNAL USE ONLY!!!
+	 *
+	 * @see  wp-includes/class-wp-user.php WP_User->_init_caps()
+	 * @see  get_user_metadata filter in get_metadata()
+	 * @link https://developer.wordpress.org/reference/functions/get_metadata/
+	 *
+	 * @since   1.7
+	 * @param   null    $null
+	 * @param   int     $user_id
+	 * @param   string  $meta_key
+	 * @return  mixed
+	 */
+	public function _filter_get_user_capabilities( $null, $user_id, $meta_key ) {
+		global $wpdb;
+		if ( $wpdb->get_blog_prefix() . 'capabilities' == $meta_key && array_key_exists( $user_id, $this->get_users() ) ) {
+			// Always return an array format due to $single handling (unused 4th parameter)
+			$roles = $this->get_users( $user_id )->roles;
+			if ( is_string( $roles ) ) {
+				// It is still raw DB data, unserialize it
+				$roles = unserialize( $roles );
+			}
+			return array( $roles );
+		}
+		return $null;
 	}
 
 	/**
