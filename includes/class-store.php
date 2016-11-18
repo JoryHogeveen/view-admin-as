@@ -301,9 +301,9 @@ final class VAA_View_Admin_As_Store
 		$user_query = array(
 			'select'    => "SELECT users.*, usermeta.meta_value AS roles",
 			'from'      => "FROM {$wpdb->users} users",
-			'left_join' => "LEFT JOIN {$wpdb->usermeta} usermeta ON users.ID = usermeta.user_id",
-			'where'     => "WHERE usermeta.meta_key = '{$wpdb->get_blog_prefix()}capabilities'",
-			'order_by'  => "ORDER BY users.display_name"
+			'left_join' => "INNER JOIN {$wpdb->usermeta} usermeta ON ( users.ID = usermeta.user_id )",
+			'where'     => "WHERE ( usermeta.meta_key = '{$wpdb->get_blog_prefix()}capabilities' )",
+			'order_by'  => "ORDER BY users.display_name ASC"
 		);
 
 		if ( is_network_admin() ) {
