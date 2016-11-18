@@ -323,6 +323,11 @@ final class VAA_View_Admin_As_Store
 				}
 			}
 
+			// Build network super admins where clause
+			/*if ( ! empty( $users ) && $include = implode( ',', $users ) ) {
+				$user_query['where'] .= " AND {$wpdb->users}.user_login IN ({$include})";
+			}*/
+
 		} else {
 
 			/*
