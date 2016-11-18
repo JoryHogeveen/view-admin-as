@@ -124,8 +124,14 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 				'support' => array(
 					'title' => __( 'Support', 'view-admin-as' ),
 					'description' => __( 'Need support?', 'view-admin-as' ),
-					'icon'  => 'dashicons-testimonial',
+					'icon'  => 'dashicons-admin-comments',
 					'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
+				),
+				'slack' => array(
+					'title' => __( 'Slack', 'view-admin-as' ),
+					'description' => __( 'Contact me directly on Slack', 'view-admin-as' ),
+					'icon'  => 'dashicons-testimonial',
+					'url'   => 'https://keraweb.slack.com/',
 				),
 				'review' => array(
 					'title' => __( 'Review', 'view-admin-as' ),
