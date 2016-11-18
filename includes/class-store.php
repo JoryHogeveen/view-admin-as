@@ -298,7 +298,8 @@ final class VAA_View_Admin_As_Store
 			// Convert login to WP_User objects and filter them for superior admins
 			foreach ( $users as $key => $user_login ) {
 				$user = get_user_by( 'login', $user_login );
-				if ( $user && ! in_array( $user->user_login, $superior_admins ) ) {
+				// Compare user ID with superior admins array
+				if ( $user && ! in_array( $user->ID, $superior_admins ) ) {
 					$users[ $key ] = $user;
 				} else {
 					unset( $users[ $key ] );
