@@ -292,15 +292,18 @@ final class VAA_View_Admin_As_Store
 		/**
 		 * Base user query
 		 * Also gets the roles from the user meta table
+		 * Reduces queries to 1 when getting the available users
+		 *
 		 * @since  1.7
 		 * @todo   Use it for network pages as well?
+		 * @todo   Check options https://github.com/JoryHogeveen/view-admin-as/issues/24
 		 */
 		$user_query = array(
-			'select'    => "SELECT {$wpdb->users}.*, {$wpdb->usermeta}.meta_value as roles",
-			'from'      => "FROM {$wpdb->users}",
-			'left_join' => "LEFT JOIN {$wpdb->usermeta} ON {$wpdb->users}.ID = {$wpdb->usermeta}.user_id",
-			'where'     => "WHERE {$wpdb->usermeta}.meta_key = '{$wpdb->get_blog_prefix()}capabilities'",
-			'order_by'  => "ORDER BY {$wpdb->users}.display_name"
+			'select'    => "SELECT users.*, usermeta.meta_value AS roles",
+			'from'      => "FROM {$wpdb->users} users",
+			'left_join' => "LEFT JOIN {$wpdb->usermeta} usermeta ON users.ID = usermeta.user_id",
+			'where'     => "WHERE usermeta.meta_key = '{$wpdb->get_blog_prefix()}capabilities'",
+			'order_by'  => "ORDER BY users.display_name"
 		);
 
 		if ( is_network_admin() ) {
@@ -325,7 +328,7 @@ final class VAA_View_Admin_As_Store
 
 			// Build network super admins where clause
 			/*if ( ! empty( $users ) && $include = implode( ',', $users ) ) {
-				$user_query['where'] .= " AND {$wpdb->users}.user_login IN ({$include})";
+				$user_query['where'] .= " AND users.user_login IN ({$include})";
 			}*/
 
 		} else {
@@ -352,16 +355,16 @@ final class VAA_View_Admin_As_Store
 			 * @since  1.7    Exclude in SQL format
 			 */
 			$exclude = implode( ',', array_unique( array_merge( $superior_admins, array( $this->get_curUser()->ID ) ) ) );
-			$user_query['where'] .= " AND {$wpdb->users}.ID NOT IN ({$exclude})";
+			$user_query['where'] .= " AND users.ID NOT IN ({$exclude})";
 
 			/**
 			 * Do not get regular admins for normal installs
 			 *
-			 * @since  1.5.2  WP 4.4+ only
+			 * @since  1.5.2  WP 4.4+ only >> ( 'role__not_in' => 'administrator' )
 			 * @since  1.7    Exclude in SQL format (Not WP dependent)
 			 */
 			if ( ! is_multisite() && ! $is_superior_admin ) {
-				$user_query['where'] .= " AND {$wpdb->usermeta}.meta_value NOT LIKE '%administrator%'";
+				$user_query['where'] .= " AND usermeta.meta_value NOT LIKE '%administrator%'";
 			}
 
 			// Run query and WP_User object generation (OBJECT_K to the user ID as key)
@@ -397,10 +400,12 @@ final class VAA_View_Admin_As_Store
 			if ( true !== $is_superior_admin ) {
 
 				/**
-				 * Implement checks instead of is_super_admin() because it adds a lot of unnecessary queries
+				 * Implement in_array() on get_super_admins() check instead of is_super_admin()
+				 * Reduces the amount of queries while the end result is the same.
 				 *
 				 * @since  1.5.2
-				 * @See    is_super_admin()
+				 * @See    wp-includes/capabilities.php >> get_super_admins()
+				 * @See    wp-includes/capabilities.php >> is_super_admin()
 				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
 				 */
 				//if ( is_super_admin( $user->ID ) ) {
@@ -434,9 +439,9 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * FOR INTERNAL USE ONLY!!!
 	 *
-	 * @see  wp-includes/class-wp-user.php WP_User->_init_caps()
-	 * @see  get_user_metadata filter in get_metadata()
-	 * @link https://developer.wordpress.org/reference/functions/get_metadata/
+	 * @see   wp-includes/class-wp-user.php WP_User->_init_caps()
+	 * @see   get_user_metadata filter in get_metadata()
+	 * @link  https://developer.wordpress.org/reference/functions/get_metadata/
 	 *
 	 * @since   1.7
 	 * @param   null    $null
