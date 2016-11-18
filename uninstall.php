@@ -62,7 +62,7 @@ function vaa_uninstall( $blog_id = false ) {
 		$user_meta_keys[] = 'view-admin-as';
 
 		global $wpdb;
-		$all_users = $wpdb->get_results( "SELECT ID FROM $wpdb->users" );
+		$all_users = $wpdb->get_results( "SELECT ID FROM {$wpdb->users}" );
 		foreach ( $all_users as $user ) {
 			foreach ( $user_meta_keys as $user_meta_key ) {
 				delete_user_meta( $user->ID, $user_meta_key );
