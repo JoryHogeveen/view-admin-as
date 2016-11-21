@@ -581,6 +581,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'label' => __('Default', 'view-admin-as')
 				)
 			);
+			if ( $this->store->get_viewAs() ) {
+				$role_select_options[] = array(
+					'compare' => 'vaa',
+					'label'   => '= ' . __( 'Current view', 'view-admin-as' ),
+					'attr'    => array(
+						'data-caps' => json_encode( $this->store->get_selectedCaps() ),
+					)
+				);
+				$role_select_options[] = array(
+					'compare' => 'reversed-vaa',
+					'label'   => '≠ ' . __( 'Current view', 'view-admin-as' ),
+					'attr'    => array(
+						'data-caps'    => json_encode( $this->store->get_selectedCaps() ),
+						'data-reverse' => '1'
+					)
+				);
+			}
 			foreach ( $this->get_roles() as $role_key => $role ) {
 				$role_select_options[] = array(
 					'compare' => esc_attr( $role_key ),
@@ -642,6 +659,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					}
 				} elseif ( 1 == $cap_val ) {
 					$checked = true;
+				}
+				// Check for this capability in any view set
+				if ( $this->vaa->view()->current_view_can( $cap_name ) ) {
+					$class .= ' current';
 				}
 				// The list of capabilities
 				$caps_quickselect_content .=
