@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.7
+ * @version 1.6.x
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -336,8 +336,8 @@ final class VAA_View_Admin_As
 	 * Load the modules
 	 *
 	 * @since   1.5
-	 * @since   1.5.1   added notice on class name conflict (removed in 1.7)
-	 * @since   1.7     Generic loading of modules
+	 * @since   1.5.1   Added notice on class name conflict (removed in 1.6.x)
+	 * @since   1.6.x   Generic loading of modules
 	 * @access  private
 	 * @return  void
 	 */
@@ -364,7 +364,7 @@ final class VAA_View_Admin_As
 
 		/**
 		 * Module loaded. Hook is used for other modules related to View Admin As
-		 * @since  1.7
+		 * @since  1.6.x
 		 * @param  object  $this  VAA_View_Admin_As
 		 */
 		do_action( 'vaa_view_admin_as_modules_loaded', $this );

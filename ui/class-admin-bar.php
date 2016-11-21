@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.5
- * @version 1.7
+ * @version 1.6.x
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -911,7 +911,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add admin bar menu visitor view
 	 *
-	 * @since   1.7
+	 * @since   1.6.x
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 * @param   object  $admin_bar
@@ -958,6 +958,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate button HTML for node
 	 *
 	 * @since   1.6.1
+	 * @since   1.6.x  Added $element option
 	 * @access  public
 	 * @static
 	 * @param   array  $args {

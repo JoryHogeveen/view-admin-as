@@ -2,9 +2,9 @@
  * View Admin As
  * https://wordpress.org/plugins/view-admin-as/
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.7
+ * @version 1.6.x
  */
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {
@@ -110,7 +110,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 		});
 
-		// @since  1.7  Visitor view
+		// @since  1.6.x  Visitor view
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+VAA_View_Admin_As.root+'-visitor-view > .ab-item', function( e ) {
 			e.preventDefault();
 			if ( true === VAA_View_Admin_As._touchmove ) {

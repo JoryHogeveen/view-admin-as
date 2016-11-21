@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.7
+ * @version 1.6.x
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -277,7 +277,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class
-	 * @since   1.7    Reduce user queries to 1 for non-network pages with custom query handling
+	 * @since   1.6.x  Reduce user queries to 1 for non-network pages with custom query handling
 	 * @access  public
 	 * @return  void
 	 */
@@ -297,7 +297,7 @@ final class VAA_View_Admin_As_Store
 		 * Also gets the roles from the user meta table
 		 * Reduces queries to 1 when getting the available users
 		 *
-		 * @since  1.7
+		 * @since  1.6.x
 		 * @todo   Use it for network pages as well?
 		 * @todo   Check options https://github.com/JoryHogeveen/view-admin-as/issues/24
 		 */
@@ -355,7 +355,7 @@ final class VAA_View_Admin_As_Store
 			 * Exclude current user and superior admins (values are user ID's)
 			 *
 			 * @since  1.5.2  Exclude the current user
-			 * @since  1.7    Exclude in SQL format
+			 * @since  1.6.x  Exclude in SQL format
 			 */
 			$exclude = implode( ',',
 				array_unique(
@@ -370,7 +370,7 @@ final class VAA_View_Admin_As_Store
 			 * Do not get regular admins for normal installs
 			 *
 			 * @since  1.5.2  WP 4.4+ only >> ( 'role__not_in' => 'administrator' )
-			 * @since  1.7    Exclude in SQL format (Not WP dependent)
+			 * @since  1.6.x  Exclude in SQL format (Not WP dependent)
 			 */
 			if ( ! is_multisite() && ! $is_superior_admin ) {
 				$user_query['where'] .= " AND usermeta.meta_value NOT LIKE '%administrator%'";
@@ -456,7 +456,7 @@ final class VAA_View_Admin_As_Store
 	 * @see   get_user_metadata filter in get_metadata()
 	 * @link  https://developer.wordpress.org/reference/functions/get_metadata/
 	 *
-	 * @since   1.7
+	 * @since   1.6.x
 	 * @param   null    $null
 	 * @param   int     $user_id
 	 * @param   string  $meta_key
