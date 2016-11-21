@@ -890,6 +890,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $name         Required
 	 *     @type  string  $label        Optional
 	 *     @type  string  $classes      Optional
+	 *     @type  string  $element      Optional
 	 *     @type  array   $attr         Optional
 	 * }
 	 * @return  string
@@ -897,10 +898,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public static function do_button( $args ) {
 		$id = esc_attr( $args['name'] );
 		$name = str_replace( '-', '_', $id );
-		$label = esc_attr( ( ! empty( $args['label'] ) ) ? $args['label'] : $args['value'] );
-		$classes = ' classes="button' . ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' ) . '"';
+		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['value'];
+		$classes = ' class="button' . ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' ) . '"';
+		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
 		$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
-		return '<button name="' . $name . '" id="' . $id . '"' . $classes . $attr . '>' . $label . '</button>';
+		return '<' . $elem . ' name="' . $name . '" id="' . $id . '"' . $classes . $attr . '>' . $label . '</' . $elem . '>';
 	}
 
 	/**
