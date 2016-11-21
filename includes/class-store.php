@@ -269,11 +269,6 @@ final class VAA_View_Admin_As_Store
 			}
 		}
 
-		// @since  1.7  Add a visitor role (no role or capabilities)
-		$roles[ 'vaa_visitor' ] = new stdClass();
-		$roles[ 'vaa_visitor' ]->name = __( 'No role (site visitor)', 'view-admin-as' );
-		$roles[ 'vaa_visitor' ]->capabilities = array();
-
 		$this->set_roles( $roles );
 	}
 

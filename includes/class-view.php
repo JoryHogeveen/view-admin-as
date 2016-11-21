@@ -71,34 +71,46 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			// Change current user object so changes can be made on various screen settings
 			// wp_set_current_user() returns the new user object
 			if ( $this->store->get_viewAs('user') ) {
+
+				// @since  1.6.1  Force own locale on view
+				if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
+					add_action( 'init', array( $this, 'freeze_locale' ) );
+				}
+
 				$this->store->set_selectedUser( wp_set_current_user( $this->store->get_viewAs('user') ) );
+
+				if ( is_object( $this->store->get_selectedUser() ) ) {
+					$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
+				}
 			}
 
 			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
 
-				/**
-				 * Check for the custom vaa_visitor role
-				 * @since  1.7
-				 */
-				if ( $this->store->get_viewAs('role') == 'vaa_visitor' ) {
-
-					// Short circuit needed for visitor view BEFORE the current user is set
-					if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
-						$this->ajax_view_admin_as();
-					}
-
-					// Set the current user to 0/false if viewing as a site visitor
-					$this->store->set_selectedUser( wp_set_current_user( 0 ) );
-
-				} else {
-					// Change the capabilities (map_meta_cap is better for compatibility with network admins)
-					add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
+				if ( $this->store->get_viewAs('role') && $this->store->get_roles() ) {
+					// Role view
+					$this->store->set_selectedCaps( $this->store->get_roles( $this->store->get_viewAs('role') )->capabilities );
+				} elseif ( $this->store->get_viewAs('caps') ) {
+					// Caps view
+					$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
 				}
+
+				// Change the capabilities (map_meta_cap is better for compatibility with network admins)
+				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
 			}
 
-			// @since  1.6.1  Force own locale on view
-			if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
-				add_action( 'init', array( $this, 'freeze_locale' ) );
+			/**
+			 * Check for the visitor view
+			 * @since  1.6.x
+			 */
+			if ( $this->store->get_viewAs('visitor') ) {
+
+				// Short circuit needed for visitor view BEFORE the current user is set
+				if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
+					$this->ajax_view_admin_as();
+				}
+
+				// Set the current user to 0/false if viewing as a site visitor
+				$this->store->set_selectedUser( wp_set_current_user( 0 ) );
 			}
 		}
 
@@ -121,20 +133,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
-		$filter_caps = false;
-		if ( $this->store->get_viewAs('role') && $this->store->get_roles() ) {
-			// Role view
-			$filter_caps = $this->store->get_roles( $this->store->get_viewAs('role') )->capabilities;
-		} elseif ( $this->store->get_viewAs('caps') ) {
-			// Caps view
-			$filter_caps = $this->store->get_viewAs('caps');
-		}
+		$filter_caps = $this->store->get_selectedCaps();
 
-		if ( false !== $filter_caps ) {
-			// Cast to an array
-			$filter_caps = (array) $filter_caps;
+		if ( ! empty( $filter_caps ) ) {
 			foreach ( $caps as $actual_cap ) {
-				if ( ! array_key_exists( $actual_cap, $filter_caps ) || ( 1 != (int) $filter_caps[ $actual_cap ] ) ) {
+				if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
 					// Regular
 					$caps[ $cap ] = '';
 					// Network admins
@@ -144,6 +147,30 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Similar function to current_user_can()
+	 *
+	 * @since   1.6.x
+	 * @param   string  $cap
+	 * @param   array   $caps  Optional, defaults to the selected caps for the current view
+	 * @return  bool
+	 */
+	public function current_view_can( $cap, $caps = array() ) {
+
+		if ( empty( $caps ) ) {
+			$caps = $this->store->get_selectedCaps();
+		}
+
+		if (   is_array( $caps )
+			&& array_key_exists( $cap, $caps )
+		    && 1 == (int) $caps[ $cap ]
+		    && 'do_not_allow' !== $caps[ $cap ]
+		) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -181,8 +208,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		// Stop selecting the same view! :)
 		if (   ( isset( $view_as['role'] ) && ( $this->store->get_viewAs('role') && $this->store->get_viewAs('role') == $view_as['role'] ) )
-		       || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs('user') && $this->store->get_viewAs('user') == $view_as['user'] ) )
-		       || ( isset( $view_as['reset'] ) && false == $this->store->get_viewAs() )
+		    || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs('user') && $this->store->get_viewAs('user') == $view_as['user'] ) )
+		    || ( isset( $view_as['visitor'] ) && ( $this->store->get_viewAs('visitor') ) )
+		    || ( isset( $view_as['reset'] ) && false == $this->store->get_viewAs() )
 		) {
 			wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('This view is already selected!', 'view-admin-as') ) );
 		}
@@ -220,6 +248,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('These are your default capabilities!', 'view-admin-as') ) );
 				}
 			}
+		}
+		elseif ( isset( $view_as['visitor'] ) ) {
+			$success = $this->update_view( $view_as );
 		}
 		elseif ( isset( $view_as['reset'] ) ) {
 			$success = $this->reset_view();
@@ -464,7 +495,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function validate_view_as_data( $view_as ) {
 
-		$allowed_keys = array( 'setting', 'user_setting', 'reset', 'caps', 'role', 'user' );
+		$allowed_keys = array( 'setting', 'user_setting', 'reset', 'caps', 'role', 'user', 'visitor' );
 
 		// Add module keys to the allowed keys
 		foreach ( $this->get_modules() as $key => $val ) {
@@ -525,6 +556,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 						if ( ! is_numeric( $view_as['user'] ) || ! $this->store->get_userids() || ! array_key_exists( (int) $view_as['user'], $this->store->get_userids() ) ) {
 							unset( $view_as['user'] );
 						}
+						break;
+					case 'visitor':
+						$view_as['visitor'] = (bool) $view_as['visitor'];
 						break;
 				}
 			}

@@ -44,8 +44,11 @@
 
 #wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item,
-#wpadminbar #wp-admin-bar-vaa .current-parent > .ab-item {font-weight: bold;}
-#wpadminbar #wp-admin-bar-vaa .current > .ab-item::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 17px; vertical-align: middle; font-weight: normal;}
+#wpadminbar #wp-admin-bar-vaa .current > label,
+#wpadminbar #wp-admin-bar-vaa .current-parent > .ab-item,
+#wpadminbar #wp-admin-bar-vaa .current-parent > label {font-weight: bold;}
+#wpadminbar #wp-admin-bar-vaa .current > .ab-item::after,
+#wpadminbar #wp-admin-bar-vaa .current > label::after{content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 17px; vertical-align: middle; font-weight: normal;}
 
 #wpadminbar .ab-top-secondary .menupop .vaa-menupop > .ab-item {padding-left: 2em; padding-right: 1em;}
 #wpadminbar .ab-top-secondary .menupop .vaa-menupop > .ab-item .ab-icon {margin-left: -20px; margin-right: 4px;}

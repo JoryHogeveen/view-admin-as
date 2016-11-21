@@ -833,9 +833,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		$role_select_options = '';
 		foreach ( $this->get_roles() as $role_key => $role ) {
-			if ( $role_key == 'vaa_visitor' )
-				continue;
-
 			$role_select_options .= '<option value="' . esc_attr( $role_key ) . '">' . translate_user_role( $role->name ) . '</option>';
 		}
 

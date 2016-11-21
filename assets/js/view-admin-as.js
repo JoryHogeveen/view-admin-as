@@ -109,6 +109,15 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				return false;
 			}
 		});
+
+		// @since  1.7  Visitor view
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+VAA_View_Admin_As.root+'-visitor-view > .ab-item', function( e ) {
+			e.preventDefault();
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			VAA_View_Admin_As.ajax( { visitor : true }, true );
+		});
 	};
 
 

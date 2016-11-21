@@ -110,10 +110,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		// Add the caps nodes to the admin bar
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_caps' ), 10 );
 
-		// Roles are not used on network pages
 		if ( ! is_network_admin() ) {
+
 			// Add the roles nodes to the admin bar
+			// Roles are not used on network pages
 			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_roles' ), 20 );
+
+			// Add the visitor view nodes under roles
+			// There are no outside visitors on network pages
+			add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_menu_visitor' ), 10, 2 );
+			// Fallback action for when there are no roles available
+			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_visitor' ), 31 );
 		}
 
 		// Add the users nodes to the admin bar
@@ -144,11 +151,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$title = __('Modified view', 'view-admin-as');
 		}
 		if ( $this->get_viewAs('role') ) {
-			if ( $this->get_viewAs('role') == 'vaa_visitor' ) {
-				$title = __('Viewing as site visitor', 'view-admin-as');
-			} else {
-				$title = __('Viewing as role', 'view-admin-as') . ': ' . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
-			}
+			$title = __('Viewing as role', 'view-admin-as') . ': ' . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
 		}
 		if ( $this->get_viewAs('user') ) {
 			$selected_user_roles = array();
@@ -156,6 +159,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$selected_user_roles[] = translate_user_role( $this->get_roles( $role )->name );
 			}
 			$title = __('Viewing as user', 'view-admin-as') . ': ' . $this->get_selectedUser()->data->display_name . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
+		}
+		if ( $this->get_viewAs('visitor') ) {
+			$title = __('Viewing as site visitor', 'view-admin-as');
 		}
 
 		/**
@@ -713,17 +719,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			// Add the roles
 			foreach ( $this->get_roles() as $role_key => $role ) {
 				$parent = $root;
-				$href = '#';
-				$class = 'vaa-role-item';
-				$has_icon = false;
-
-				// @since  1.7  dummy role vaa_visitor
-				if ( $role_key == 'vaa_visitor' ) {
-					$title = self::do_icon( 'dashicons-universal-access' ) . $role->name;
-					$has_icon = true;
-				} else {
-					$title = translate_user_role( $role->name );
-				}
+				$href   = '#';
+				$class  = 'vaa-role-item';
+				$title  = translate_user_role( $role->name );
 				// Check if the users need to be grouped under their roles
 				if ( true === $this->groupUserRoles ) {
 					$class .= ' vaa-menupop'; // make sure items are aligned properly when some roles don't have users
@@ -741,9 +739,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					if ( 0 < $user_count ) {
 						$title = $title . ' <span class="user-count">(' . $user_count . ')</span>';
 					}
-				}
-				if ( $has_icon ) {
-					$class .= ' vaa-has-icon';
 				}
 				// Check if this role is the current view
 				if ( $this->get_viewAs('role') && $this->get_viewAs('role') == strtolower( $role->name ) ) {
@@ -890,6 +885,52 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			 */
 			do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, self::$root );
 		}
+	}
+
+	/**
+	 * Add admin bar menu visitor view
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @see     'vaa_admin_bar_menu' action
+	 * @param   object  $admin_bar
+	 * @param   string  $root  Optional
+	 * @return  void
+	 */
+	public function admin_bar_menu_visitor( $admin_bar, $root = '' ) {
+		static $done;
+		if ( $done ) return;
+
+		$class = 'vaa-visitor-view vaa-has-icon';
+
+		if ( empty( $root ) || $root == self::$root ) {
+
+			$admin_bar->add_group( array(
+				'id'     => self::$root . '-visitor',
+				'parent' => self::$root,
+				'meta'   => array(
+					'class' => 'ab-sub-secondary',
+				),
+			) );
+
+			$root = self::$root . '-visitor';
+			$class .= ' ab-vaa-title';
+		} else {
+			$class .= ' vaa-menupop';
+		}
+
+		$admin_bar->add_node( array(
+			'id'     => self::$root . '-visitor-view',
+			'parent' => $root,
+			'title'  => self::do_icon( 'dashicons-universal-access' ) . __( 'Site visitor', 'view-admin-as' ),
+			'href'   => '#',
+			'meta'   => array(
+				'title' => esc_attr__('View as site visitor', 'view-admin-as'),
+				'class' => $class
+			)
+		) );
+
+		$done = true;
 	}
 
 	/**
