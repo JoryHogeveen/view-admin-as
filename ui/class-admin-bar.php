@@ -645,7 +645,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 							'value'          => $checked,
 							'compare'        => true,
 							'checkbox_value' => esc_attr( $cap_name ),
-							'label'          => str_replace( '_', ' ', $cap_name )
+							'label'          => $cap_name
 						) )
 					. '</div>';
 			}
