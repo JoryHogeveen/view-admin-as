@@ -177,11 +177,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		// Add menu item
 		$admin_bar->add_node( array(
-			'id'        => self::$root,
-			'parent'    => $root,
-			'title'     => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
-			'href'      => false,
-			'meta'      => array(
+			'id'     => self::$root,
+			'parent' => $root,
+			'title'  => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
+			'href'   => false,
+			'meta'   => array(
 				'title'    => __('View Admin As', 'view-admin-as'),
 				'tabindex' => '0'
 			),
@@ -204,18 +204,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$name = 'reload';
 			}
 			$admin_bar->add_node( array(
-				'id'        => self::$root . '-reset',
-				'parent'    => self::$root,
-				'title'     => self::do_button( array(
-					'name'     => self::$root . '-' . $name,
-					'label'    => __('Reset to default', 'view-admin-as'),
-					'classes'  => 'button-secondary'
+				'id'     => self::$root . '-reset',
+				'parent' => self::$root,
+				'title'  => self::do_button( array(
+					'name'    => self::$root . '-' . $name,
+					'label'   => __('Reset to default', 'view-admin-as'),
+					'classes' => 'button-secondary'
 				) ),
-				'href'      => false,
-				'meta'      => array(
-					'title'    => esc_attr__('Reset to default', 'view-admin-as'),
-					'class'    => 'vaa-reset-item vaa-button-container',
-					'rel'      => $rel
+				'href'   => false,
+				'meta'   => array(
+					'title' => esc_attr__('Reset to default', 'view-admin-as'),
+					'class' => 'vaa-reset-item vaa-button-container',
+					'rel'   => $rel
 				),
 			) );
 		}
@@ -244,21 +244,21 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$root = self::$root . '-info';
 
 		$admin_bar->add_node( array(
-			'id'        => $root,
-			'parent'    => self::$root,
-			'title'     => self::do_icon( 'dashicons-info' ) . __('Info', 'view-admin-as'),
-			'href'      => false,
-			'meta'      => array(
+			'id'     => $root,
+			'parent' => self::$root,
+			'title'  => self::do_icon( 'dashicons-info' ) . __('Info', 'view-admin-as'),
+			'href'   => false,
+			'meta'   => array(
 				'class'    => 'vaa-has-icon',
 				'tabindex' => '0'
 			),
 		) );
 
 		$admin_bar->add_group( array(
-			'id'        => $root . '-about',
-			'parent'    => $root,
-			'meta'      => array(
-				'class'     => 'ab-sub-secondary',
+			'id'     => $root . '-about',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
 			)
 		) );
 
@@ -332,11 +332,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$root = self::$root . '-settings';
 
 		$admin_bar->add_node( array(
-			'id'        => $root,
-			'parent'    => self::$root,
-			'title'     => self::do_icon( 'dashicons-admin-settings' ) . __('Settings', 'view-admin-as'),
-			'href'      => false,
-			'meta'      => array(
+			'id'     => $root,
+			'parent' => self::$root,
+			'title'  => self::do_icon( 'dashicons-admin-settings' ) . __('Settings', 'view-admin-as'),
+			'href'   => false,
+			'meta'   => array(
 				'class'    => 'vaa-has-icon',
 				'tabindex' => '0'
 			),
@@ -351,9 +351,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_settings_before', $admin_bar, $root, self::$root );
 
 		$admin_bar->add_node( array(
-			'id'        => $root . '-admin-menu-location',
-			'parent'    => $root,
-			'title'     => self::do_select( array(
+			'id'     => $root . '-admin-menu-location',
+			'parent' => $root,
+			'title'  => self::do_select( array(
 				'name'        => $root . '-admin-menu-location',
 				'value'       => $this->get_userSettings('admin_menu_location'),
 				'label'       => __('Location', 'view-admin-as') . ': &nbsp; ',
@@ -369,16 +369,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					)
 				)
 			) ),
-			'href'      => false,
-			'meta'      => array(
-				'class'    => 'auto-height',
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
 			),
 		) );
 
 		$admin_bar->add_node( array(
-			'id'        => $root . '-view-mode',
-			'parent'    => $root,
-			'title'     => self::do_radio( array(
+			'id'     => $root . '-view-mode',
+			'parent' => $root,
+			'title'  => self::do_radio( array(
 				'name'     => $root . '-view-mode',
 				'value'    => $this->get_userSettings('view_mode'),
 				'values'   => array(
@@ -394,25 +394,25 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					)
 				)
 			) ),
-			'href'      => false,
-			'meta'      => array(
-				'class'    => 'auto-height',
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
 			),
 		) );
 
 		$admin_bar->add_node( array(
-			'id'        => $root . '-hide-front',
-			'parent'    => $root,
-			'title'     => self::do_checkbox( array(
+			'id'     => $root . '-hide-front',
+			'parent' => $root,
+			'title'  => self::do_checkbox( array(
 				'name'        => $root . '-hide-front',
 				'value'       => $this->get_userSettings('hide_front'),
 				'compare'     => 'yes',
 				'label'       => __('Hide on frontend', 'view-admin-as'),
 				'description' => __('Hide on frontend when no view is selected and the admin bar is not shown', 'view-admin-as')
 			) ),
-			'href'      => false,
-			'meta'      => array(
-				'class'    => 'auto-height',
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
 			),
 		) );
 
@@ -423,18 +423,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		if ( function_exists( 'get_user_locale' ) && function_exists( 'switch_to_locale' ) ) {
 			$admin_bar->add_node( array(
-				'id'        => $root . '-freeze-locale',
-				'parent'    => $root,
-				'title'     => self::do_checkbox( array(
+				'id'     => $root . '-freeze-locale',
+				'parent' => $root,
+				'title'  => self::do_checkbox( array(
 					'name'        => $root . '-freeze-locale',
 					'value'       => $this->get_userSettings('freeze_locale'),
 					'compare'     => 'yes',
 					'label'       => __('Freeze locale', 'view-admin-as'),
 					'description' => __('Force your own locale setting to the current view', 'view-admin-as')
 				) ),
-				'href'      => false,
-				'meta'      => array(
-					'class'    => 'auto-height',
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'auto-height',
 				),
 			) );
 		}
@@ -445,17 +445,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		if ( true !== $this->groupUserRoles || 15 >= ( count( $this->get_users() ) + count( $this->get_roles() ) ) ) {
 			$admin_bar->add_node( array(
-				'id'        => $root . '-force-group-users',
-				'parent'    => $root,
-				'title'     => self::do_checkbox( array(
+				'id'     => $root . '-force-group-users',
+				'parent' => $root,
+				'title'  => self::do_checkbox( array(
 					'name'        => $root . '-force-group-users',
 					'value'       => $this->get_userSettings('force_group_users'),
 					'compare'     => 'yes',
 					'label'       => __('Group users', 'view-admin-as'),
 					'description' => __('Group users under their assigned roles', 'view-admin-as')
 				) ),
-				'href'      => false,
-				'meta'      => array(
+				'href'   => false,
+				'meta'   => array(
 					'class'    => 'auto-height',
 					'tabindex' => '0'
 				),
@@ -490,18 +490,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$root = self::$root . '-caps';
 
 			$admin_bar->add_group( array(
-				'id'        => $root,
-				'parent'    => self::$root,
-				'meta'      => array(
-					'class'     => 'ab-sub-secondary',
+				'id'     => $root,
+				'parent' => self::$root,
+				'meta'   => array(
+					'class' => 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => $root . '-title',
-				'parent'    => $root,
-				'title'     => self::do_icon( 'dashicons-admin-generic' ) . __('Capabilities', 'view-admin-as'),
-				'href'      => false,
-				'meta'      => array(
+				'id'     => $root . '-title',
+				'parent' => $root,
+				'title'  => self::do_icon( 'dashicons-admin-generic' ) . __('Capabilities', 'view-admin-as'),
+				'href'   => false,
+				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 					'tabindex' => '0'
 				),
@@ -520,11 +520,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$caps_quickselect_class .= ' current';
 			}
 			$admin_bar->add_node( array(
-				'id'        => $root . '-quickselect',
-				'parent'    => $root,
-				'title'     => __('Select', 'view-admin-as'),
-				'href'      => false,
-				'meta'      => array(
+				'id'     => $root . '-quickselect',
+				'parent' => $root,
+				'title'  => __('Select', 'view-admin-as'),
+				'href'   => false,
+				'meta'   => array(
 					'class'    => $caps_quickselect_class,
 					'tabindex' => '0'
 				),
@@ -544,15 +544,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			) );
 
 			$admin_bar->add_node( array(
-				'id'        => $root . '-filtercaps',
-				'parent'    => $root . '-quickselect',
-				'title'     => VAA_View_Admin_As_Admin_Bar::do_input( array(
-					'name' => $root . '-filtercaps',
+				'id'     => $root . '-filtercaps',
+				'parent' => $root . '-quickselect',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
+					'name'        => $root . '-filtercaps',
 					'placeholder' => esc_attr__('Filter', 'view-admin-as')
 				) ),
-				'href'      => false,
-				'meta'      => array(
-					'class'    => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
 				),
 			) );
 
@@ -565,49 +565,49 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			foreach ( $this->get_roles() as $role_key => $role ) {
 				$role_select_options[] = array(
 					'compare' => esc_attr( $role_key ),
-					'label' => '= ' . translate_user_role( $role->name ),
-					'attr' => array(
+					'label'   => '= ' . translate_user_role( $role->name ),
+					'attr'    => array(
 						'data-caps' => json_encode( $role->capabilities ),
 					)
 				);
 				$role_select_options[] = array(
 					'compare' => 'reversed-' . esc_attr( $role_key ),
-					'label' => '≠ ' . translate_user_role( $role->name ),
-					'attr' => array(
-						'data-caps' => json_encode( $role->capabilities ),
+					'label'   => '≠ ' . translate_user_role( $role->name ),
+					'attr'    => array(
+						'data-caps'    => json_encode( $role->capabilities ),
 						'data-reverse' => '1'
 					)
 				);
 			}
 			$admin_bar->add_node( array(
-				'id'        => $root . '-selectrolecaps',
-				'parent'    => $root . '-quickselect',
-				'title'     => self::do_select( array(
-					'name'     => $root . '-selectrolecaps',
-					'values'   => $role_select_options
+				'id'     => $root . '-selectrolecaps',
+				'parent' => $root . '-quickselect',
+				'title'  => self::do_select( array(
+					'name'   => $root . '-selectrolecaps',
+					'values' => $role_select_options
 				) ),
-				'href'      => false,
-				'meta'      => array(
-					'class'     => 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
-					'html'      => '',
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
+					'html'  => '',
 				),
 			) );
 
 			$admin_bar->add_node( array(
-				'id'        => $root . '-bulkselectcaps',
-				'parent'    => $root . '-quickselect',
-				'title'     => self::do_button( array(
-					'name'     => 'select-all-caps',
-					'label'    => __('Select', 'view-admin-as'),
-					'classes'  => 'button-secondary'
+				'id'     => $root . '-bulkselectcaps',
+				'parent' => $root . '-quickselect',
+				'title'  => self::do_button( array(
+					'name'    => 'select-all-caps',
+					'label'   => __('Select', 'view-admin-as'),
+					'classes' => 'button-secondary'
 				) ) . ' ' . self::do_button( array(
-					'name'     => 'deselect-all-caps',
-					'label'    => __('Deselect', 'view-admin-as'),
-					'classes'  => 'button-secondary'
+					'name'    => 'deselect-all-caps',
+					'label'   => __('Deselect', 'view-admin-as'),
+					'classes' => 'button-secondary'
 				) ),
-				'href'      => false,
-				'meta'      => array(
-					'class'     => 'vaa-button-container vaa-clear-float',
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'vaa-button-container vaa-clear-float',
 				),
 			) );
 
@@ -637,12 +637,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					. '</div>';
 			}
 			$admin_bar->add_node( array(
-				'id'        => $root . '-quickselect-options',
-				'parent'    => $root . '-quickselect',
-				'title'     => $caps_quickselect_content,
-				'href'      => false,
-				'meta'      => array(
-					'class'     => 'ab-vaa-multipleselect auto-height',
+				'id'     => $root . '-quickselect-options',
+				'parent' => $root . '-quickselect',
+				'title'  => $caps_quickselect_content,
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'ab-vaa-multipleselect auto-height',
 				),
 			) );
 
@@ -672,18 +672,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$root = self::$root . '-roles';
 
 			$admin_bar->add_group( array(
-				'id'        => $root,
-				'parent'    => self::$root,
-				'meta'      => array(
-					'class'     => 'ab-sub-secondary',
+				'id'     => $root,
+				'parent' => self::$root,
+				'meta'   => array(
+					'class' => 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => $root . '-title',
-				'parent'    => $root,
-				'title'     => self::do_icon( 'dashicons-groups' ) . __('Roles', 'view-admin-as'),
-				'href'      => false,
-				'meta'      => array(
+				'id'     => $root . '-title',
+				'parent' => $root,
+				'title'  => self::do_icon( 'dashicons-groups' ) . __('Roles', 'view-admin-as'),
+				'href'   => false,
+				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 					'tabindex' => '0'
 				),
@@ -738,14 +738,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					$href = false;
 				}
 				$admin_bar->add_node( array(
-					'id'        => $root . '-role-' . $role_key,
-					'parent'    => $parent,
-					'title'     => $title,
-					'href'      => $href,
-					'meta'      => array(
-						'title'     => esc_attr__('View as', 'view-admin-as') . ' ' . translate_user_role( $role->name ),
-						'class'     => $class,
-						'rel'       => $role_key
+					'id'     => $root . '-role-' . $role_key,
+					'parent' => $parent,
+					'title'  => $title,
+					'href'   => $href,
+					'meta'   => array(
+						// Translators: %s stands for the translated role name
+						'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), translate_user_role( $role->name ) ),
+						'class' => $class,
+						'rel'   => $role_key
 					),
 				) );
 			}
@@ -776,18 +777,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$root = self::$root . '-users';
 
 			$admin_bar->add_group( array(
-				'id'        => $root,
-				'parent'    => self::$root,
-				'meta'      => array(
-					'class'     => 'ab-sub-secondary',
+				'id'     => $root,
+				'parent' => self::$root,
+				'meta'   => array(
+					'class' => 'ab-sub-secondary',
 				),
 			) );
 			$admin_bar->add_node( array(
-				'id'        => $root . '-title',
-				'parent'    => $root,
-				'title'     => self::do_icon( 'dashicons-admin-users' ) . __('Users', 'view-admin-as'),
-				'href'      => false,
-				'meta'      => array(
+				'id'     => $root . '-title',
+				'parent' => $root,
+				'title'  => self::do_icon( 'dashicons-admin-users' ) . __('Users', 'view-admin-as'),
+				'href'   => false,
+				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 					'tabindex' => '0'
 				),
@@ -803,25 +804,25 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 			if ( true === $this->searchUsers ) {
 				$admin_bar->add_node( array(
-					'id'        => $root . '-searchusers',
-					'parent'    => $root,
-					'title'     => self::do_input( array(
+					'id'     => $root . '-searchusers',
+					'parent' => $root,
+					'title'  => self::do_input( array(
 						'name' => $root . '-searchusers',
 						'placeholder' => esc_attr__('Search', 'view-admin-as') . ' (' . strtolower( __('Username', 'view-admin-as') ) . ')'
 					) ),
-					'href'      => false,
-					'meta'      => array(
-						'class'     => 'ab-vaa-search search-users',
-						'html'      => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu"></ul>',
+					'href'   => false,
+					'meta'   => array(
+						'class' => 'ab-vaa-search search-users',
+						'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu"></ul>',
 					),
 				) );
 			}
 			// Add the users
 			foreach ( $this->get_users() as $user_key => $user ) {
 				$parent = $root;
-				$href = '#';
-				$title = $user->data->display_name;
-				$class = 'vaa-user-item';
+				$href   = '#';
+				$class  = 'vaa-user-item';
+				$title  = $user->data->display_name;
 				// Check if this user is the current view
 				if ( $this->get_viewAs('user') && $this->get_viewAs('user') == $user->data->ID ) {
 					$class .= ' current';
@@ -832,14 +833,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					foreach ( $user->roles as $role ) {
 						$parent = self::$root . '-roles-role-' . $role;
 						$admin_bar->add_node( array(
-							'id'        => $root . '-user-' . $user->data->ID . '-' . $role,
-							'parent'    => $parent,
-							'title'     => $title,
-							'href'      => $href,
-							'meta'      => array(
-								'title'     => esc_attr__('View as', 'view-admin-as') . ' ' . $user->data->display_name,
-								'class'     => $class,
-								'rel'       => $user->data->ID,
+							'id'     => $root . '-user-' . $user->data->ID . '-' . $role,
+							'parent' => $parent,
+							'title'  => $title,
+							'href'   => $href,
+							'meta'   => array(
+								// Translators: %s stands for the user display name
+								'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), $user->data->display_name ),
+								'class' => $class,
+								'rel'   => $user->data->ID,
 							),
 						) );
 					}
@@ -853,14 +855,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					}
 					$title = $title.' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
 					$admin_bar->add_node( array(
-						'id'        => $root . '-user-' . $user->data->ID,
-						'parent'    => $parent,
-						'title'     => $title,
-						'href'      => $href,
-						'meta'      => array(
-							'title'     => esc_attr__('View as', 'view-admin-as') . ' ' . $user->data->display_name,
-							'class'     => $class,
-							'rel'       => $user->data->ID,
+						'id'     => $root . '-user-' . $user->data->ID,
+						'parent' => $parent,
+						'title'  => $title,
+						'href'   => $href,
+						'meta'   => array(
+							// Translators: %s stands for the user display name
+							'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), $user->data->display_name ),
+							'class' => $class,
+							'rel'   => $user->data->ID,
 						),
 					) );
 				}
