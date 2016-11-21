@@ -219,6 +219,14 @@ final class VAA_View_Admin_As_Store
 	private $selectedUser;
 
 	/**
+	 * The selected capabilities (if a view is selected)
+	 *
+	 * @since  1.6.x
+	 * @var    array
+	 */
+	private $selectedCaps = array();
+
+	/**
 	 * Populate the instance
 	 * @since  1.6
 	 */
@@ -705,6 +713,7 @@ final class VAA_View_Admin_As_Store
 	public function get_roles( $key = false )               { return VAA_API::get_array_data( $this->roles, $key ); }
 	public function get_users( $key = false )               { return VAA_API::get_array_data( $this->users, $key ); }
 	public function get_selectedUser()                      { return $this->selectedUser; }
+	public function get_selectedCaps()                      { return $this->selectedCaps; }
 	public function get_userids()                           { return $this->userids; }
 	public function get_usernames()                         { return $this->usernames; }
 	public function get_optionKey()                         { return (string) $this->optionKey; }
@@ -740,6 +749,7 @@ final class VAA_View_Admin_As_Store
 	public function set_userids( $var )                                 { $this->userids = array_map( 'strval', (array) $var ); }
 	public function set_usernames( $var )                               { $this->usernames = array_map( 'strval', (array) $var ); }
 	public function set_selectedUser( $var )                            { $this->selectedUser = $var; }
+	public function set_selectedCaps( $var )                            { $this->selectedCaps = (array) $var; }
 	public function set_defaultSettings( $var )                         { $this->defaultSettings = array_map( 'strval', (array) $var ); }
 	public function set_allowedSettings( $var )                         { $this->allowedSettings = $var; }
 	public function set_defaultUserSettings( $var )                     { $this->defaultUserSettings = array_map( 'strval', (array) $var ); }
