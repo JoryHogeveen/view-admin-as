@@ -359,7 +359,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				// Remove metadata from this session
 				unset( $meta['views'][ $this->store->get_curUserSession() ] );
 				// Update current metadata if it is the current user
-				if ( $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure)
@@ -406,7 +406,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					$meta['views'] = false;
 				}
 				// Update current metadata if it is the current user
-				if ( $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure)
@@ -441,7 +441,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			if ( isset( $meta['views'] ) ) {
 				$meta['views'] = false;
 				// Update current metadata if it is the current user
-				if ( $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure)
