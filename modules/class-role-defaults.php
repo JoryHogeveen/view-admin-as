@@ -173,8 +173,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 * Print script in the admin header
 		 * Also handles the lock_meta_boxes setting
 		 * @since  1.6
+		 * @since  1.6.2  Move to footer
 		 */
-		add_action( 'admin_print_scripts', array( $this, 'admin_print_scripts' ), 100 );
+		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
 	}
 
 	/**
@@ -211,26 +212,30 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6
 	 * @access  public
 	 */
-	public function admin_print_scripts() {
+	public function admin_print_footer_scripts() {
 
 		/**
 		 * Setting: Lock meta box order and locations for all users who can't access role defaults
 		 * @since  1.6
+		 * @since  1.6.2  Improved conditions + check if sortable is enqueued and active
 		 */
 		if ( true == $this->get_optionData('lock_meta_boxes')
-		     && ! ( $this->is_vaa_enabled() && ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) )
+		     && ! ( $this->is_vaa_enabled() || is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') )
+		     && wp_script_is( 'jquery-ui-sortable', 'enqueued' )
 		) {
 			?>
 			<script type="text/javascript">
 				jQuery(document).ready( function($) {
-					/**
-					 * Lock meta boxes in position by disabling sorting.
-					 *
-					 * Credits - Chris Van Patten:
-					 * http://wordpress.stackexchange.com/a/44539
-					 */
-					$('.meta-box-sortables').sortable( { disabled: true } );
-					$('.postbox .hndle').css( 'cursor', 'pointer' );
+					if ( $.fn.sortable && $('.ui-sortable').length ) {
+						/**
+						 * Lock meta boxes in position by disabling sorting.
+						 *
+						 * Credits - Chris Van Patten:
+						 * http://wordpress.stackexchange.com/a/44539
+						 */
+						$('.meta-box-sortables').sortable( { disabled: true } );
+						$('.postbox .hndle').css( 'cursor', 'pointer' );
+					}
 				});
 			</script>
 			<?php
