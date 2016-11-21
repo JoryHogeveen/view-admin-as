@@ -532,14 +532,27 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 			// Capabilities submenu
 			$admin_bar->add_node( array(
-				'id'        => $root . '-applycaps',
-				'parent'    => $root . '-quickselect',
-				'title'     => '<button id="apply-caps-view" class="button button-primary" name="apply-caps-view">' . __('Apply', 'view-admin-as') . '</button>
-								<a tabindex="0" id="close-caps-popup" class="button vaa-icon button-secondary" name="close-caps-popup"><span class="ab-icon dashicons dashicons-dismiss"></span></a>
-								<a tabindex="0" id="open-caps-popup" class="button vaa-icon button-secondary" name="open-caps-popup"><span class="ab-icon dashicons dashicons-plus-alt"></span></a>',
-				'href'      => false,
-				'meta'      => array(
-					'class'    => 'vaa-button-container',
+				'id'     => $root . '-applycaps',
+				'parent' => $root . '-quickselect',
+				'title'  => self::do_button( array(
+						'name'    => 'apply-caps-view',
+						'label'   => __('Apply', 'view-admin-as'),
+						'classes' => 'button-primary'
+					) ) . self::do_button( array(
+						'name'    => 'close-caps-popup',
+						'label'   => self::do_icon( 'dashicons-editor-contract' ),
+						'classes' => 'button-secondary vaa-icon',
+						'element' => 'a'
+					) ) . self::do_button( array(
+						'name'    => 'open-caps-popup',
+						'label'   => self::do_icon( 'dashicons-editor-expand' ),
+						'classes' => 'button-secondary vaa-icon',
+						'element' => 'a'
+					)
+				),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'vaa-button-container',
 				),
 			) );
 
