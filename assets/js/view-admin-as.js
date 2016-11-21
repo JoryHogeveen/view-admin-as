@@ -521,7 +521,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 			e.preventDefault();
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item').each( function() {
-				if ( $(this).is(':visible') ){
+				if ( $(this).is(':visible') ) {
 					$('input', this).prop( "checked", true );
 				}
 			});
@@ -534,7 +534,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 			e.preventDefault();
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item').each( function() {
-				if ( $(this).is(':visible') ){
+				if ( $(this).is(':visible') ) {
 					$('input', this).prop( "checked", false );
 				}
 			});

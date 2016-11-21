@@ -565,7 +565,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-filtercaps',
 				'parent' => $root . '-quickselect',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
+				'title'  => self::do_input( array(
 					'name'        => $root . '-filtercaps',
 					'placeholder' => esc_attr__('Filter', 'view-admin-as')
 				) ),

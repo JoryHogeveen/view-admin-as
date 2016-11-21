@@ -164,7 +164,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		if (   is_array( $caps )
-			&& array_key_exists( $cap, $caps )
+		    && array_key_exists( $cap, $caps )
 		    && 1 == (int) $caps[ $cap ]
 		    && 'do_not_allow' !== $caps[ $cap ]
 		) {

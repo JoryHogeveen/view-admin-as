@@ -17,7 +17,7 @@ if ( ! class_exists( 'WP_Admin_Bar' ) && file_exists( ABSPATH . WPINC . '/class-
 	require_once( ABSPATH . WPINC . '/class-wp-admin-bar.php' );
 }
 
-if ( class_exists( 'WP_Admin_Bar' ) ) {
+if ( class_exists( 'WP_Admin_Bar' ) && ! class_exists( 'VAA_View_Admin_As_Toolbar' ) ) {
 
 final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 {

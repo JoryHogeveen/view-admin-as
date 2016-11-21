@@ -12,7 +12,7 @@
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
-if ( ! class_exists( 'VAA_View_Admin_As_Static_Actions' ) ) {
+if ( ! class_exists( 'VAA_View_Admin_As_Admin' ) ) {
 
 final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 {
@@ -131,7 +131,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 					'title' => __( 'Slack', 'view-admin-as' ),
 					'description' => __( 'Contact me directly on Slack', 'view-admin-as' ),
 					'icon'  => 'dashicons-testimonial',
-					'url'   => 'https://keraweb.slack.com/',
+					'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
 				),
 				'review' => array(
 					'title' => __( 'Review', 'view-admin-as' ),

@@ -13,7 +13,7 @@
 #vaa-overlay .vaa-overlay-container > .remove {position: absolute; right: -10px; top: -10px; background: #FFF; width: 20px; height: 20px;}
 #vaa-overlay .vaa-overlay-container > .remove:hover {cursor: pointer;}
 
-#vaa-overlay.inner {position: absolute;}
+#vaa-overlay.inner,
 #vaa-overlay.inner .vaa-loader-icon {position: absolute;}
 /*
 #vaa-overlay.error {background-color: rgba(220, 50, 50, 0.85);}
