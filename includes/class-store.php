@@ -335,7 +335,7 @@ final class VAA_View_Admin_As_Store
 			}
 
 			// Build network super admins where clause
-			/*if ( ! empty( $users ) && $include = implode( ',', $users ) ) {
+			/*if ( ! empty( $users ) && $include = implode( ',', array_map( 'strval', $users ) ) ) {
 				$user_query['where'] .= " AND users.user_login IN ({$include})";
 			}*/
 
@@ -362,7 +362,13 @@ final class VAA_View_Admin_As_Store
 			 * @since  1.5.2  Exclude the current user
 			 * @since  1.7    Exclude in SQL format
 			 */
-			$exclude = implode( ',', array_unique( array_merge( $superior_admins, array( $this->get_curUser()->ID ) ) ) );
+			$exclude = implode( ',',
+				array_unique(
+					array_map( 'absint',
+						array_merge( $superior_admins, array( $this->get_curUser()->ID ) )
+					)
+				)
+			);
 			$user_query['where'] .= " AND users.ID NOT IN ({$exclude})";
 
 			/**
@@ -375,19 +381,22 @@ final class VAA_View_Admin_As_Store
 				$user_query['where'] .= " AND usermeta.meta_value NOT LIKE '%administrator%'";
 			}
 
-			// Run query and WP_User object generation (OBJECT_K to the user ID as key)
+			// Run query (OBJECT_K to set the user ID as key)
 			$users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K );
 
 			$users = array();
 			// Temp set users
 			$this->set_users( $users_results );
-			// Short circuit the meta queries (not needed)
+			// @hack  Short circuit the meta queries (not needed)
 			add_filter( 'get_user_metadata', array( $this, '_filter_get_user_capabilities' ), 10, 3 );
+
+			// Turn query results into WP_User objects
 			foreach ( $users_results as $user ) {
 				$user->roles = unserialize( $user->roles );
 				$users[ $user->ID ] = new WP_User( $user );
 			}
-			// Restore the default meta queries
+
+			// @hack  Restore the default meta queries
 			remove_filter( 'get_user_metadata', array( $this, '_filter_get_user_capabilities' ) );
 			// Clear temp users
 			$this->set_users( array() );
@@ -446,6 +455,7 @@ final class VAA_View_Admin_As_Store
 	 * Filter the WP_User object construction to short circuit the extra meta queries
 	 *
 	 * FOR INTERNAL USE ONLY!!!
+	 * @hack
 	 *
 	 * @see   wp-includes/class-wp-user.php WP_User->_init_caps()
 	 * @see   get_user_metadata filter in get_metadata()
