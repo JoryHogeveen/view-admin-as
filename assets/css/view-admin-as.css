@@ -40,7 +40,7 @@
 #wpadminbar #wp-admin-bar-vaa > div > ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
 
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
-#wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.9em; font-style: italic; margin-bottom: 7px; white-space: normal;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
 
 #wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item,
