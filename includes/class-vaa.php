@@ -171,7 +171,7 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 */
 	public function init() {
-		static $loaded = false;
+		static $loaded;
 
 		if ( ! $loaded ) {
 			$this->run();
