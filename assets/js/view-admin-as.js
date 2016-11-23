@@ -4,7 +4,8 @@
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6.x
+ * @version 1.6.2
+ * @preserve
  */
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {
@@ -63,8 +64,12 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					toggleContent.hide();
 				}
 
-				$(this).on( 'click', function( e ) {
+				$(this).on( 'click touchend', function( e ) {
 					e.preventDefault();
+					e.stopPropagation();
+					if ( true === VAA_View_Admin_As._touchmove ) {
+						return;
+					}
 					if ( $(this).hasClass('active') ) {
 						toggleContent.slideUp('fast');
 						$(this).removeClass('active');
@@ -110,7 +115,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 		});
 
-		// @since  1.6.x  Visitor view
+		// @since  1.6.2  Visitor view
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+VAA_View_Admin_As.root+'-visitor-view > .ab-item', function( e ) {
 			e.preventDefault();
 			if ( true === VAA_View_Admin_As._touchmove ) {
@@ -125,8 +130,8 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	 * Apply the selected view
 	 * viewAs format: { VIEWTYPE : VIEWDATA }
 	 *
-	 * @params  object  viewAs
-	 * @params  boolean reload
+	 * @params  {object}   viewAs
+	 * @params  {boolean}  reload
 	 */
 	VAA_View_Admin_As.ajax = function( viewAs, reload ) {
 
