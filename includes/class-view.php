@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.x
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -79,6 +79,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 				$this->store->set_selectedUser( wp_set_current_user( $this->store->get_viewAs('user') ) );
 
+				// @since  1.6.2  Set the caps for this view
 				if ( is_object( $this->store->get_selectedUser() ) ) {
 					$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
 				}
@@ -86,6 +87,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
 
+				// @since  1.6.2  Set the caps for this view
 				if ( $this->store->get_viewAs('role') && $this->store->get_roles() ) {
 					// Role view
 					$this->store->set_selectedCaps( $this->store->get_roles( $this->store->get_viewAs('role') )->capabilities );
@@ -98,10 +100,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
 			}
 
-			/**
-			 * Check for the visitor view
-			 * @since  1.6.x
-			 */
+			// @since  1.6.2  Check for the visitor view
 			if ( $this->store->get_viewAs('visitor') ) {
 
 				// Short circuit needed for visitor view BEFORE the current user is set
@@ -152,7 +151,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Similar function to current_user_can()
 	 *
-	 * @since   1.6.x
+	 * @since   1.6.2
 	 * @param   string  $cap
 	 * @param   array   $caps  Optional, defaults to the selected caps for the current view
 	 * @return  bool

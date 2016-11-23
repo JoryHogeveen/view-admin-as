@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.x
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -167,9 +167,9 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class
-	 * @var    object
+	 * @var    WP_User
 	 */
-	private $curUser = false;
+	private $curUser;
 
 	/**
 	 * Current user session
@@ -183,13 +183,13 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Selected view mode
 	 *
-	 * Format: array( VIEW_TYPE => NAME )
+	 * Format: array( VIEW_TYPE => VIEW_DATA )
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class
-	 * @var    array|bool
+	 * @var    array
 	 */
-	private $viewAs = false;
+	private $viewAs = array();
 
 	/**
 	 * Array of available usernames (key) and display names (value)
@@ -214,14 +214,14 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class
-	 * @var    object
+	 * @var    WP_User
 	 */
 	private $selectedUser;
 
 	/**
 	 * The selected capabilities (if a view is selected)
 	 *
-	 * @since  1.6.x
+	 * @since  1.6.2
 	 * @var    array
 	 */
 	private $selectedCaps = array();
@@ -241,11 +241,12 @@ final class VAA_View_Admin_As_Store
 	 * @since   1.5.2  Get role objects instead of arrays
 	 * @since   1.6    Moved to this class from main class
 	 * @access  public
+	 * @global  WP_Roles  $wp_roles
 	 * @return  void
 	 */
 	public function store_roles() {
-
 		global $wp_roles;
+
 		// Store available roles
 		$roles = $wp_roles->role_objects; // role_objects for objects, roles for arrays
 		$role_names = $wp_roles->role_names;
@@ -277,8 +278,9 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class
-	 * @since   1.6.x  Reduce user queries to 1 for non-network pages with custom query handling
+	 * @since   1.6.2  Reduce user queries to 1 for non-network pages with custom query handling
 	 * @access  public
+	 * @global  wpdb  $wpdb
 	 * @return  void
 	 */
 	public function store_users() {
@@ -297,7 +299,7 @@ final class VAA_View_Admin_As_Store
 		 * Also gets the roles from the user meta table
 		 * Reduces queries to 1 when getting the available users
 		 *
-		 * @since  1.6.x
+		 * @since  1.6.2
 		 * @todo   Use it for network pages as well?
 		 * @todo   Check options https://github.com/JoryHogeveen/view-admin-as/issues/24
 		 */
@@ -355,7 +357,7 @@ final class VAA_View_Admin_As_Store
 			 * Exclude current user and superior admins (values are user ID's)
 			 *
 			 * @since  1.5.2  Exclude the current user
-			 * @since  1.6.x  Exclude in SQL format
+			 * @since  1.6.2  Exclude in SQL format
 			 */
 			$exclude = implode( ',',
 				array_unique(
@@ -370,7 +372,7 @@ final class VAA_View_Admin_As_Store
 			 * Do not get regular admins for normal installs
 			 *
 			 * @since  1.5.2  WP 4.4+ only >> ( 'role__not_in' => 'administrator' )
-			 * @since  1.6.x  Exclude in SQL format (Not WP dependent)
+			 * @since  1.6.2  Exclude in SQL format (Not WP dependent)
 			 */
 			if ( ! is_multisite() && ! $is_superior_admin ) {
 				$user_query['where'] .= " AND usermeta.meta_value NOT LIKE '%administrator%'";
@@ -456,7 +458,8 @@ final class VAA_View_Admin_As_Store
 	 * @see   get_user_metadata filter in get_metadata()
 	 * @link  https://developer.wordpress.org/reference/functions/get_metadata/
 	 *
-	 * @since   1.6.x
+	 * @since   1.6.2
+	 * @global  wpdb    $wpdb
 	 * @param   null    $null
 	 * @param   int     $user_id
 	 * @param   string  $meta_key
@@ -513,12 +516,14 @@ final class VAA_View_Admin_As_Store
 	 * @since   1.4.1
 	 * @since   1.6    Moved to this class from main class
 	 * @access  public
+	 * @global  WP_Roles  $wp_roles
 	 * @return  void
 	 */
 	public function store_caps() {
 
 		// Get all available roles and capabilities
 		global $wp_roles;
+
 		// Get current user capabilities
 		$caps = $this->get_curUser()->allcaps;
 
@@ -731,10 +736,10 @@ final class VAA_View_Admin_As_Store
 	public function get_allowedSettings( $key = false )     { return VAA_API::get_array_data( $this->allowedSettings, $key ); }
 	public function get_defaultUserSettings( $key = false ) { return VAA_API::get_array_data( $this->defaultUserSettings, $key ); }
 	public function get_allowedUserSettings( $key = false ) { return VAA_API::get_array_data( $this->allowedUserSettings, $key ); }
-	public function get_settings( $key = false )            {
+	public function get_settings( $key = false ) {
 		return VAA_API::get_array_data( $this->validate_settings( $this->get_optionData( 'settings' ), 'global' ), $key );
 	}
-	public function get_userSettings( $key = false )        {
+	public function get_userSettings( $key = false ) {
 		return VAA_API::get_array_data( $this->validate_settings( $this->get_userMeta( 'settings' ), 'user' ), $key );
 	}
 

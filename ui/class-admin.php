@@ -116,6 +116,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * Plugin links
 	 *
 	 * @since   1.6.1
+	 * @since   1.6.2  Added Slack channel link
 	 * @return  array
 	 */
 	public function get_links() {

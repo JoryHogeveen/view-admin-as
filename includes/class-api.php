@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -66,11 +66,11 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   array        $array  The requested array
-	 * @param   string|bool  $key    Return only a key of the requested array (optional)
-	 * @return  array|string
+	 * @param   array   $array  The requested array
+	 * @param   string  $key    Return only a key of the requested array (optional)
+	 * @return  mixed
 	 */
-	final public static function get_array_data( $array, $key = false ) {
+	final public static function get_array_data( $array, $key = null ) {
 		if ( $key ) {
 			if ( isset( $array[ $key ] ) ) {
 				return $array[ $key ];
@@ -89,13 +89,13 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   array        $array   Original array
-	 * @param   mixed        $var     The new value
-	 * @param   string|bool  $key     The array key for the value (optional)
-	 * @param   bool         $append  If the key doesn't exist in the original array, append it (optional)
-	 * @return  array|string
+	 * @param   array   $array   Original array
+	 * @param   mixed   $var     The new value
+	 * @param   string  $key     The array key for the value (optional)
+	 * @param   bool    $append  If the key doesn't exist in the original array, append it (optional)
+	 * @return  mixed
 	 */
-	final public static function set_array_data( $array, $var, $key = false, $append = false ) {
+	final public static function set_array_data( $array, $var, $key = null, $append = false ) {
 		if ( $key ) {
 			if ( true === $append && ! is_array( $array ) ) {
 				$array = array();

@@ -41,9 +41,11 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	 * @since   1.4
 	 * @since   1.6    Moved to this class from main class
 	 * @access  private
+	 * @global  wpdb  $wpdb
 	 * @return  void
 	 */
 	private function db_update() {
+		global $wpdb;
 		$defaults = array(
 			'db_version' => VIEW_ADMIN_AS_DB_VERSION,
 		);
@@ -53,7 +55,6 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 		// Clear the user views for update to 1.5+
 		if ( version_compare( $current_db_version, '1.5', '<' ) ) {
 			// Reset user meta for all users
-			global $wpdb;
 			$all_users = $wpdb->get_results( "SELECT ID FROM {$wpdb->users}" );
 			foreach ( $all_users as $user ) {
 				$this->store->delete_user_meta( $user->ID, false, true ); // true for reset_only

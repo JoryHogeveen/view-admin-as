@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.4
- * @version 1.6.x
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -123,6 +123,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.4
 	 * @access  private
+	 * @global  wpdb  $wpdb
 	 * @return  void
 	 */
 	private function init() {
