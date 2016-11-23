@@ -338,21 +338,6 @@ final class VAA_View_Admin_As_Store
 
 		} else {
 
-			/*
-			$user_args = array(
-				'orderby' => 'display_name',
-				// @since  1.5.2  Exclude the current user
-				'exclude' => array_merge( $superior_admins, array( $this->get_curUser()->ID ) )
-			);
-			// @since  1.5.2  Do not get regular admins for normal installs (WP 4.4+)
-			if ( ! is_multisite() && ! $is_superior_admin ) {
-				$user_args['role__not_in'] = 'administrator';
-			}
-
-			// Sort users by role and filter them on available roles
-			$users = $this->filter_sort_users_by_role( get_users( $user_args ) );
-			*/
-
 			/**
 			 * Exclude current user and superior admins (values are user ID's)
 			 *
@@ -379,24 +364,40 @@ final class VAA_View_Admin_As_Store
 			}
 
 			// Run query (OBJECT_K to set the user ID as key)
-			$users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K );
+			if ( $users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K ) ) {
 
-			$users = array();
-			// Temp set users
-			$this->set_users( $users_results );
-			// @hack  Short circuit the meta queries (not needed)
-			add_filter( 'get_user_metadata', array( $this, '_filter_get_user_capabilities' ), 10, 3 );
+				$users = array();
+				// Temp set users
+				$this->set_users( $users_results );
+				// @hack  Short circuit the meta queries (not needed)
+				add_filter( 'get_user_metadata', array( $this, '_filter_get_user_capabilities' ), 10, 3 );
 
-			// Turn query results into WP_User objects
-			foreach ( $users_results as $user ) {
-				$user->roles = unserialize( $user->roles );
-				$users[ $user->ID ] = new WP_User( $user );
+				// Turn query results into WP_User objects
+				foreach ( $users_results as $user ) {
+					$user->roles = unserialize( $user->roles );
+					$users[ $user->ID ] = new WP_User( $user );
+				}
+
+				// @hack  Restore the default meta queries
+				remove_filter( 'get_user_metadata', array( $this, '_filter_get_user_capabilities' ) );
+				// Clear temp users
+				$this->set_users( array() );
+
+			} else {
+
+				// Fallback to WP native functions
+				$user_args = array(
+					'orderby' => 'display_name',
+					// @since  1.5.2  Exclude the current user
+					'exclude' => array_merge( $superior_admins, array( $this->get_curUser()->ID ) )
+				);
+				// @since  1.5.2  Do not get regular admins for normal installs (WP 4.4+)
+				if ( ! is_multisite() && ! $is_superior_admin ) {
+					$user_args['role__not_in'] = 'administrator';
+				}
+
+				$users = get_users( $user_args );
 			}
-
-			// @hack  Restore the default meta queries
-			remove_filter( 'get_user_metadata', array( $this, '_filter_get_user_capabilities' ) );
-			// Clear temp users
-			$this->set_users( array() );
 
 			//if ( ! is_network_admin() ) {
 				// Sort users by role and filter them on available roles
