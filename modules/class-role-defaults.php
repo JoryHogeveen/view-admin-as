@@ -837,9 +837,20 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		$root = $root . '-role-defaults';
 
-		$role_select_options = '';
+		$role_select_options = array(
+			array(
+				'label' => ' --- '
+			),
+			array(
+				'value' => 'all',
+				'label' => __('All roles', 'view-admin-as')
+			)
+		);
 		foreach ( $this->get_roles() as $role_key => $role ) {
-			$role_select_options .= '<option value="' . esc_attr( $role_key ) . '">' . translate_user_role( $role->name ) . '</option>';
+			$role_select_options[] = array(
+				'value' => esc_attr( $role_key ),
+				'label' => translate_user_role( $role->name )
+			);
 		}
 
 		$admin_bar->add_node( array(
@@ -985,8 +996,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-roles-select',
 				'parent' => $root . '-bulk-roles',
-				'title'  => '<select id="' . $root . '-bulk-roles-select" name="role-defaults-bulk-roles-select"><option value=""> --- </option><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
-				            . $role_select_options . '</select>',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+					'name' => $root . '-bulk-roles-select',
+					'values' => $role_select_options
+				) ),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last
@@ -1030,8 +1043,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-export-roles-select',
 				'parent' => $root . '-export',
-				'title'  => '<select id="' . $root . '-export-roles-select" name="role-defaults-export-roles-select"><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
-				            . $role_select_options . '</select>',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+					'name' => $root . '-export-roles-select',
+					'values' => $role_select_options
+				) ),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last
@@ -1113,8 +1128,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-clear-roles-select',
 				'parent' => $root . '-clear',
-				'title'  => '<select id="' . $root . '-clear-roles-select" name="role-defaults-clear-roles-select"><option value=""> --- </option><option value="all">' . __('All roles', 'view-admin-as') . '</option>'
-				            . $role_select_options . '</select>',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+					'name' => $root . '-clear-roles-select',
+					'values' => $role_select_options
+				) ),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last
