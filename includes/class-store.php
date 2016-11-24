@@ -24,13 +24,21 @@ final class VAA_View_Admin_As_Store
 	private static $_instance = null;
 
 	/**
-	 * Current user session
+	 * The nonce
 	 *
 	 * @since  1.3.4
 	 * @since  1.6    Moved to this class from main class
 	 * @var    string
 	 */
 	private $nonce = '';
+
+	/**
+	 * The parsed nonce
+	 *
+	 * @since  1.6.2
+	 * @var    string
+	 */
+	private $nonce_parsed = '';
 
 	/**
 	 * Database option key
@@ -721,11 +729,14 @@ final class VAA_View_Admin_As_Store
 	public function get_userMetaKey()                       { return (string) $this->userMetaKey; }
 	public function get_userMeta( $key = false )            { return VAA_API::get_array_data( $this->userMeta, $key ); }
 	public function get_metaExpiration()                    { return (int) $this->metaExpiration; }
-	public function get_nonce( $parsed = false )            { return ( $parsed ) ? wp_create_nonce( $this->nonce ) : $this->nonce; }
 	public function get_defaultSettings( $key = false )     { return VAA_API::get_array_data( $this->defaultSettings, $key ); }
 	public function get_defaultUserSettings( $key = false ) { return VAA_API::get_array_data( $this->defaultUserSettings, $key ); }
 	public function get_allowedSettings( $key = false )     { return (array) VAA_API::get_array_data( $this->allowedSettings, $key ); }
 	public function get_allowedUserSettings( $key = false ) { return (array) VAA_API::get_array_data( $this->allowedUserSettings, $key ); }
+
+	public function get_nonce( $parsed = false ) {
+		return ( $parsed ) ? $this->nonce_parsed : $this->nonce;
+	}
 
 	public function get_settings( $key = false ) {
 		return VAA_API::get_array_data( $this->validate_settings( $this->get_optionData( 'settings' ), 'global' ), $key );
@@ -747,11 +758,15 @@ final class VAA_View_Admin_As_Store
 	public function set_userids( $var )                               { $this->userids = array_map( 'strval', (array) $var ); }
 	public function set_curUser( $var )                               { $this->curUser = $var; }
 	public function set_curUserSession( $var )                        { $this->curUserSession = (string) $var; }
-	public function set_nonce( $var )                                 { $this->nonce = (string) $var; }
 	public function set_selectedUser( $var )                          { $this->selectedUser = $var; }
 	public function set_selectedCaps( $var )                          { $this->selectedCaps = (array) $var; }
 	public function set_defaultSettings( $var )                       { $this->defaultSettings = array_map( 'strval', (array) $var ); }
 	public function set_defaultUserSettings( $var )                   { $this->defaultUserSettings = array_map( 'strval', (array) $var ); }
+
+	public function set_nonce( $var ) {
+		$this->nonce = (string) $var;
+		$this->nonce_parsed = wp_create_nonce( (string) $var );
+	}
 
 	public function set_allowedSettings( $var, $key = false, $append = false ) {
 		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $var, $key, $append );
