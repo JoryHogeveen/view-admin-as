@@ -4,6 +4,7 @@
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
+ * @since   1.1
  * @version 1.6.2
  * @preserve
  */
@@ -150,3 +151,23 @@
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-label {display: none;}
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa:hover > .ab-item .ab-icon {margin-left: 6px;}
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa:hover > .ab-item .ab-label {display: inline-block;}
+
+/**
+ * Responsive (still disabled for production)
+ */
+@media screen and (min-width: 480px) and (max-width: 782px) {
+    /*#wpadminbar #wp-admin-bar-vaa {display: block; position: static;}*/
+	#wpadminbar #wp-admin-bar-vaa > div > ul,
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-submenu {padding: 5px 0;}
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item {padding: 8px 16px;}
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item > .ab-item {padding: 8px 0;}
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper:last-child .ab-item.description {margin-bottom: 0;}
+	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: top;}
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon > .ab-item > .ab-icon {font-size: 30px !important; margin-left: -6px; margin-top: -1px;}
+	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 12px; padding-right: 12px;}
+
+	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-hide-responsive {display: none;}
+
+	#wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox,
+	#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {width: 24px; height: 24px;}
+}
