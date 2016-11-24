@@ -192,15 +192,6 @@ final class VAA_View_Admin_As_Store
 	private $viewAs = array();
 
 	/**
-	 * Array of available usernames (key) and display names (value)
-	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class
-	 * @var    array
-	 */
-	private $usernames = array();
-
-	/**
 	 * Array of available user ID's (key) and display names (value)
 	 *
 	 * @since  0.1
@@ -446,7 +437,6 @@ final class VAA_View_Admin_As_Store
 
 		$this->set_users( $users );
 		$this->set_userids( $userids );
-		$this->set_usernames( $usernames );
 	}
 
 	/**
@@ -724,19 +714,19 @@ final class VAA_View_Admin_As_Store
 	public function get_roles( $key = false )               { return VAA_API::get_array_data( $this->roles, $key ); }
 	public function get_users( $key = false )               { return VAA_API::get_array_data( $this->users, $key ); }
 	public function get_selectedUser()                      { return $this->selectedUser; }
-	public function get_selectedCaps()                      { return $this->selectedCaps; }
-	public function get_userids()                           { return $this->userids; }
-	public function get_usernames()                         { return $this->usernames; }
+	public function get_selectedCaps()                      { return (array) $this->selectedCaps; }
+	public function get_userids()                           { return (array) $this->userids; }
 	public function get_optionKey()                         { return (string) $this->optionKey; }
 	public function get_optionData( $key = false )          { return VAA_API::get_array_data( $this->optionData, $key ); }
 	public function get_userMetaKey()                       { return (string) $this->userMetaKey; }
 	public function get_userMeta( $key = false )            { return VAA_API::get_array_data( $this->userMeta, $key ); }
-	public function get_metaExpiration()                    { return $this->metaExpiration; }
+	public function get_metaExpiration()                    { return (int) $this->metaExpiration; }
 	public function get_nonce( $parsed = false )            { return ( $parsed ) ? wp_create_nonce( $this->nonce ) : $this->nonce; }
 	public function get_defaultSettings( $key = false )     { return VAA_API::get_array_data( $this->defaultSettings, $key ); }
-	public function get_allowedSettings( $key = false )     { return VAA_API::get_array_data( $this->allowedSettings, $key ); }
 	public function get_defaultUserSettings( $key = false ) { return VAA_API::get_array_data( $this->defaultUserSettings, $key ); }
-	public function get_allowedUserSettings( $key = false ) { return VAA_API::get_array_data( $this->allowedUserSettings, $key ); }
+	public function get_allowedSettings( $key = false )     { return (array) VAA_API::get_array_data( $this->allowedSettings, $key ); }
+	public function get_allowedUserSettings( $key = false ) { return (array) VAA_API::get_array_data( $this->allowedUserSettings, $key ); }
+
 	public function get_settings( $key = false ) {
 		return VAA_API::get_array_data( $this->validate_settings( $this->get_optionData( 'settings' ), 'global' ), $key );
 	}
@@ -750,29 +740,51 @@ final class VAA_View_Admin_As_Store
 	/*
 	 * Setters
 	 */
-	public function set_viewAs( $var, $key = false, $append = false )   { $this->viewAs = VAA_API::set_array_data( $this->viewAs, $var, $key, $append ); }
-	public function set_caps( $var, $key = false, $append = false )     { $this->caps   = VAA_API::set_array_data( $this->caps, $var, $key, $append ); }
-	public function set_roles( $var, $key = false, $append = false )    { $this->roles  = VAA_API::set_array_data( $this->roles, $var, $key, $append ); }
-	public function set_users( $var, $key = false, $append = false )    { $this->users  = VAA_API::set_array_data( $this->users, $var, $key, $append ); }
-	public function set_curUser( $var )                                 { $this->curUser = $var; }
-	public function set_curUserSession( $var )                          { $this->curUserSession = (string) $var; }
-	public function set_nonce( $var )                                   { $this->nonce = (string) $var; }
-	public function set_userids( $var )                                 { $this->userids = array_map( 'strval', (array) $var ); }
-	public function set_usernames( $var )                               { $this->usernames = array_map( 'strval', (array) $var ); }
-	public function set_selectedUser( $var )                            { $this->selectedUser = $var; }
-	public function set_selectedCaps( $var )                            { $this->selectedCaps = (array) $var; }
-	public function set_defaultSettings( $var )                         { $this->defaultSettings = array_map( 'strval', (array) $var ); }
-	public function set_allowedSettings( $var )                         { $this->allowedSettings = $var; }
-	public function set_defaultUserSettings( $var )                     { $this->defaultUserSettings = array_map( 'strval', (array) $var ); }
-	public function set_allowedUserSettings( $var )                     { $this->allowedUserSettings = $var; }
+	public function set_viewAs( $var, $key = false, $append = false ) { $this->viewAs = VAA_API::set_array_data( $this->viewAs, $var, $key, $append ); }
+	public function set_caps( $var, $key = false, $append = false )   { $this->caps   = VAA_API::set_array_data( $this->caps, $var, $key, $append ); }
+	public function set_roles( $var, $key = false, $append = false )  { $this->roles  = VAA_API::set_array_data( $this->roles, $var, $key, $append ); }
+	public function set_users( $var, $key = false, $append = false )  { $this->users  = VAA_API::set_array_data( $this->users, $var, $key, $append ); }
+	public function set_userids( $var )                               { $this->userids = array_map( 'strval', (array) $var ); }
+	public function set_curUser( $var )                               { $this->curUser = $var; }
+	public function set_curUserSession( $var )                        { $this->curUserSession = (string) $var; }
+	public function set_nonce( $var )                                 { $this->nonce = (string) $var; }
+	public function set_selectedUser( $var )                          { $this->selectedUser = $var; }
+	public function set_selectedCaps( $var )                          { $this->selectedCaps = (array) $var; }
+	public function set_defaultSettings( $var )                       { $this->defaultSettings = array_map( 'strval', (array) $var ); }
+	public function set_defaultUserSettings( $var )                   { $this->defaultUserSettings = array_map( 'strval', (array) $var ); }
+
+	public function set_allowedSettings( $var, $key = false, $append = false ) {
+		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $var, $key, $append );
+	}
+	public function set_allowedUserSettings( $var, $key = false, $append = false ) {
+		$this->allowedUserSettings = VAA_API::set_array_data( $this->allowedUserSettings, $var, $key, $append );
+	}
 	public function set_settings( $var, $key = false, $append = false ) {
-		$this->set_optionData( $this->validate_settings( VAA_API::set_array_data( $this->get_settings(), $var, $key, $append ), 'global' ), 'settings', true );
+		$this->set_optionData(
+			$this->validate_settings(
+				VAA_API::set_array_data( $this->get_settings(), $var, $key, $append ),
+				'global'
+			),
+			'settings',
+			true
+		);
 	}
 	public function set_userSettings( $var, $key = false, $append = false ) {
-		$this->set_userMeta( $this->validate_settings( VAA_API::set_array_data( $this->get_userSettings(), $var, $key, $append ), 'user' ), 'settings', true );
+		$this->set_userMeta(
+			$this->validate_settings(
+				VAA_API::set_array_data( $this->get_userSettings(), $var, $key, $append ),
+				'user'
+			),
+			'settings',
+			true
+		);
 	}
-	public function set_optionData( $var, $key = false, $append = false ) { $this->optionData = VAA_API::set_array_data( $this->optionData, $var, $key, $append ); }
-	public function set_userMeta( $var, $key = false, $append = false ) { $this->userMeta = VAA_API::set_array_data( $this->userMeta, $var, $key, $append ); }
+	public function set_optionData( $var, $key = false, $append = false ) {
+		$this->optionData = VAA_API::set_array_data( $this->optionData, $var, $key, $append );
+	}
+	public function set_userMeta( $var, $key = false, $append = false ) {
+		$this->userMeta = VAA_API::set_array_data( $this->userMeta, $var, $key, $append );
+	}
 
 	/*
 	 * Update
