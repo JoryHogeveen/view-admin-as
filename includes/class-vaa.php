@@ -474,17 +474,19 @@ final class VAA_View_Admin_As
 
 			/**
 			 * Add basic view types for automated use in JS
+			 *
 			 * - Menu items require the class vaa-TYPE-item (through the add_node() meta key)
 			 * - Menu items require the rel attribute for the view data to be send (string or numeric)
+			 * - Menu items require a href attribute (needs to be an <a> element), I'd set it to '#'
 			 *
 			 * @since  1.6.2
 			 * @param  array
 			 * @return array
 			 */
-			$script_localization['view_types'] = array_merge(
+			$script_localization['view_types'] = array_unique( array_merge(
 				apply_filters( 'view_admin_as_view_types', array() ),
 				array( 'user', 'role', 'caps', 'visitor' )
-			);
+			) );
 
 			foreach ( $this->get_modules() as $name => $module ) {
 				if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
