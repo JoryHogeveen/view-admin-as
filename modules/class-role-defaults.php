@@ -928,10 +928,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					if ( $role_data = $this->get_roles( $role ) ) {
 						$role_name = translate_user_role( $role_data->name );
 						$bulk_users_select_content .=
-							'<div class="ab-item vaa-item">
-								<input class="checkbox" value="' . $user->ID.'|'.$role . '" id="' . $root . '-bulk-users-select-' . $user->ID . '" name="role-defaults-bulk-users-select[]" type="checkbox">
-								<label for="' . $root . '-bulk-users-select-' . $user->ID . '"><span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span></label>
-							</div>';
+							'<div class="ab-item vaa-item">'
+								. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+									'name'           => 'role-defaults-bulk-users-select[]',
+									'id'             => $root . '-bulk-users-select-' . $user->ID,
+									'checkbox_value' => $user->ID.'|'.$role,
+									'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>'
+								) )
+							. '</div>';
 					}
 				}
 			}
