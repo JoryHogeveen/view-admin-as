@@ -89,6 +89,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			'instance' => self::$_instance
 		) );
 
+		/**
+		 * Add capabilities for this module
+		 * @since 1.6
+		 */
+		$this->capabilities = array( 'view_admin_as_role_defaults' );
+		add_filter( '_vaa_add_capabilities', array( $this, 'add_capabilities' ) );
+
 		// Load data
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
 
@@ -127,19 +134,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	private function init() {
-
-		/**
-		 * Add capabilities for this module
-		 * @since 1.6
-		 */
-		$this->capabilities = array( 'view_admin_as_role_defaults' );
-		add_filter( '_vaa_add_capabilities', array( $this, 'add_capabilities' ) );
+		global $wpdb;
 
 		/**
 		 * Replace %% with the current table prefix and add it to the array of forbidden meta keys
 		 * @since 1.5.2
 		 */
-		global $wpdb;
 		foreach ( $this->meta_forbidden as $key => $meta_key ) {
 			if ( strpos( $meta_key, '%%' ) !== false ) {
 				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->prefix, $meta_key );
