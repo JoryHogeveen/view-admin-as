@@ -471,6 +471,21 @@ final class VAA_View_Admin_As
 				'__success'        => esc_html__( 'Success', 'view-admin-as' ),
 				'__confirm'        => esc_html__( 'Are you sure?', 'view-admin-as' )
 			);
+
+			/**
+			 * Add basic view types for automated use in JS
+			 * - Menu items require the class vaa-TYPE-item (through the add_node() meta key)
+			 * - Menu items require the rel attribute for the view data to be send (string or numeric)
+			 *
+			 * @since  1.6.2
+			 * @param  array
+			 * @return array
+			 */
+			$script_localization['view_types'] = array_merge(
+				apply_filters( 'view_admin_as_view_types', array() ),
+				array( 'user', 'role', 'visitor' )
+			);
+
 			foreach ( $this->get_modules() as $name => $module ) {
 				if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
 					$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();

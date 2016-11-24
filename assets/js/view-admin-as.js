@@ -13,6 +13,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		ajaxurl: null,
 		siteurl: '',
 		view_as: false,
+		view_types: [ 'user', 'role', 'visitor' ],
 		_debug: false,
 		_vaa_nonce: '',
 		__no_users_found: 'No users found.',
@@ -51,7 +52,6 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.init = function() {
 
 		VAA_View_Admin_As.init_caps();
-		VAA_View_Admin_As.init_roles();
 		VAA_View_Admin_As.init_users();
 		VAA_View_Admin_As.init_settings();
 		VAA_View_Admin_As.init_module_role_defaults();
@@ -115,20 +115,27 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 		});
 
-		// @since  1.6.2  Visitor view
-		$(document).on('click touchend', VAA_View_Admin_As.prefix+VAA_View_Admin_As.root+'-visitor-view > .ab-item', function( e ) {
-			e.preventDefault();
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			VAA_View_Admin_As.ajax( { visitor : true }, true );
-		});
+		// @since  1.6.2  Process basic views
+		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
+			$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-'+type+'-item > a.ab-item', function( e ) {
+				if ( true === VAA_View_Admin_As._touchmove ) {
+					return;
+				}
+				e.preventDefault();
+				if ( ! $(this).parent().hasClass('not-a-view') ) {
+					var viewAs = {};
+					viewAs[ type ] = String( $(this).attr('rel') );
+					VAA_View_Admin_As.ajax( viewAs, true );
+					return false;
+				}
+			});
+		} );
 	};
 
 
 	/**
 	 * Apply the selected view
-	 * viewAs format: { VIEWTYPE : VIEWDATA }
+	 * viewAs format: { VIEW_TYPE : VIEW_DATA }
 	 *
 	 * @params  {object}   viewAs
 	 * @params  {boolean}  reload
@@ -355,44 +362,13 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * ROLES
-	**/
-	VAA_View_Admin_As.init_roles = function() {
-
-		// Process role views
-		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-role-item > a.ab-item', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			if ( ! $(this).parent().hasClass('not-a-view') ) {
-				var viewAs = { role : String( $(this).attr('rel') ) };
-				VAA_View_Admin_As.ajax( viewAs, true );
-				return false;
-			}
-		});
-	};
-
-
-	/**
 	 * USERS
+	 * Extra functions for user views
+	 * @since  1.2
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
 		var root = VAA_View_Admin_As.root + '-users';
-
-		// Process user views
-		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-user-item > a.ab-item', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			if ( ! $(this).parent().hasClass('not-a-view') ) {
-				var viewAs = { user : parseInt( $(this).attr('rel') ) };
-				VAA_View_Admin_As.ajax( viewAs, true );
-				return false;
-			}
-		});
 
 		// Search users
 		$(document).on('keyup', VAA_View_Admin_As.prefix+root+' .ab-vaa-search.search-users input', function() {
@@ -716,11 +692,9 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 	};
 
-
 	// We require a nonce to use this plugin
 	if ( 'undefined' != typeof VAA_View_Admin_As._vaa_nonce ) {
 		VAA_View_Admin_As.init();
 	}
-
 
 } )( jQuery );

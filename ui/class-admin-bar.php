@@ -922,7 +922,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		static $done;
 		if ( $done ) return;
 
-		$class = 'vaa-visitor-view vaa-has-icon';
+		$class = 'vaa-visitor-item vaa-has-icon';
 
 		if ( empty( $root ) || $root == self::$root ) {
 
@@ -947,7 +947,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'href'   => '#',
 			'meta'   => array(
 				'title' => esc_attr__('View as site visitor', 'view-admin-as'),
-				'class' => $class
+				'class' => $class,
+				'rel'   => true
 			)
 		) );
 
