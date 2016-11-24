@@ -1177,6 +1177,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $classes      Optional
 	 *     @type  array   $attr         Optional
 	 *     @type  array   $values {
+	 *         Arrays of selectbox value data
 	 *         @type  array  $args {
 	 *             @type  string  $compare  Required
 	 *             @type  string  $value    Optional  (Alias for compare)
@@ -1216,7 +1217,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			foreach ( $data['values'] as $args ) {
 
 				if ( empty( $args['compare'] ) ) {
-					$args['compare'] = $args['value'];
+					$args['compare'] = ( ! empty( $args['value'] ) ) ? $args['value'] : false;
 				}
 				$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['compare'];
 				$selected = selected( $data['value'], $args['compare'], false );
