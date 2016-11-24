@@ -59,7 +59,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$this->reset_all_views();
 		}
 
-		// Admin selector ajax return
+		// Short circuit needed for visitor view (BEFORE the current user is set)
+		if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
+			$this->ajax_view_admin_as();
+		}
+
+		// Admin selector ajax return (fallback)
 		add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 		//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 
@@ -102,11 +107,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 			// @since  1.6.2  Check for the visitor view
 			if ( $this->store->get_viewAs('visitor') ) {
-
-				// Short circuit needed for visitor view BEFORE the current user is set
-				if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
-					$this->ajax_view_admin_as();
-				}
 
 				// Set the current user to 0/false if viewing as a site visitor
 				$this->store->set_selectedUser( wp_set_current_user( 0 ) );
