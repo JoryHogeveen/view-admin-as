@@ -483,7 +483,7 @@ final class VAA_View_Admin_As
 			 */
 			$script_localization['view_types'] = array_merge(
 				apply_filters( 'view_admin_as_view_types', array() ),
-				array( 'user', 'role', 'visitor' )
+				array( 'user', 'role', 'caps', 'visitor' )
 			);
 
 			foreach ( $this->get_modules() as $name => $module ) {

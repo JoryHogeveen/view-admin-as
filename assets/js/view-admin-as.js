@@ -13,7 +13,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		ajaxurl: null,
 		siteurl: '',
 		view_as: false,
-		view_types: [ 'user', 'role', 'visitor' ],
+		view_types: [ 'user', 'role', 'caps', 'visitor' ],
 		_debug: false,
 		_vaa_nonce: '',
 		__no_users_found: 'No users found.',
@@ -144,9 +144,9 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 		var body = $('body');
 
-		$('#wpadminbar .vaa-notice').remove();
+		$('.vaa-notice', '#wpadminbar').remove();
 		// @todo dashicon loader?
-		body.append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url(\'' + VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif\') center center no-repeat; background-size: contain;"></span></div>');
+		body.append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url('+VAA_View_Admin_As.siteurl+'/wp-includes/images/spinner-2x.gif) center center no-repeat; background-size: contain;"></span></div>');
 		$('body #vaa-overlay').fadeIn('fast');
 
 		var fullPopup = false;
@@ -474,18 +474,13 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			} else {
 				var selectedRoleElement = $(VAA_View_Admin_As.prefix+root+'-selectrolecaps #vaa-caps-selectrolecaps option[value="' + VAA_View_Admin_As.caps_filter_settings.selectedRole + '"]');
 				VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = JSON.parse( selectedRoleElement.attr('data-caps') );
-				if ( '1' == selectedRoleElement.attr('data-reverse') ) {
-					VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = true;
-				} else {
-					VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = false;
-				}
+				VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = ( '1' == selectedRoleElement.attr('data-reverse') );
 			}
 			VAA_View_Admin_As.filter_capabilities();
 		});
 
 		// Filter capabilities with text input
 		$(document).on('keyup', VAA_View_Admin_As.prefix+root+' .ab-vaa-filter input', function() {
-			//VAA_View_Admin_As.caps_filter_settings;
 			if ( 1 <= $(this).val().length ) {
 				VAA_View_Admin_As.caps_filter_settings.filterString = $(this).val();
 			} else {
