@@ -18,15 +18,15 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Option key
 	 *
 	 * @since  1.5
-	 * @var    string|bool
+	 * @var    string
 	 */
-	protected $optionKey = false;
+	protected $optionKey = '';
 
 	/**
 	 * Option data
 	 *
 	 * @since  1.5
-	 * @var    array|bool
+	 * @var    mixed
 	 */
 	protected $optionData = false;
 
@@ -117,20 +117,25 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @return  bool
 	 */
-	final public function is_enabled() { return (bool) $this->enable; }
+	public function is_enabled() { return (bool) $this->enable; }
 
 	/**
 	 * Set plugin enabled true/false
 	 *
 	 * @since   1.5.1
+	 * @since   1.6.2  Make database update optional
 	 * @access  protected
 	 * @param   bool
+	 * @param   bool  $update  Do database update?
 	 * @return  bool
 	 */
-	protected function set_enable( $bool = false ) {
-		$success = $this->update_optionData( $bool, 'enable', true );
+	protected function set_enable( $bool = false, $update = true ) {
+		$success = true;
+		if ( $update && $this->get_optionKey() ) {
+			$success = $this->update_optionData( (bool) $bool, 'enable', true );
+		}
 		if ( $success ) {
-			$this->enable = $bool;
+			$this->enable = (bool) $bool;
 		}
 		return $success;
 	}
@@ -145,7 +150,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function add_capabilities( $caps ) {
-		foreach ( $this->capabilities as $cap ) {
+		foreach ( (array) $this->capabilities as $cap ) {
 			$caps[ $cap ] = $cap;
 		}
 		return $caps;
@@ -153,7 +158,7 @@ abstract class VAA_View_Admin_As_Class_Base
 
 	/*
 	 * VAA Store Getters
-	 * Make sure that you've called vaa_init(); BEFORE using these functions!
+	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
 	 */
 	protected function get_curUser()                           { return $this->store->get_curUser(); }
 	protected function get_curUserSession()                    { return $this->store->get_curUserSession(); }
