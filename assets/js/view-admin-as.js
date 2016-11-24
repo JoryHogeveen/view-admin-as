@@ -161,11 +161,19 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			'view_admin_as': viewAs
 		};
 
+		var isView = false;
+		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
+			if ( typeof viewAs[ type ] != 'undefined' ) {
+				isView = true;
+				return true;
+			}
+		});
+
 		/**
 		 *  @since  1.5  Check view mode
-		 *  @todo   improve if statement and form creation
+		 *  @todo   Improve form creation
  		 */
-		if ( $(VAA_View_Admin_As.prefix+'#vaa-settings-view-mode-single').is(':checked') && ( typeof viewAs.caps !== 'undefined' || typeof viewAs.role !== 'undefined' || typeof viewAs.user !== 'undefined' ) ) {
+		if ( $(VAA_View_Admin_As.prefix+'#vaa-settings-view-mode-single').is(':checked') && isView ) {
 
 			body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
 			var form = $('#vaa_single_mode_form');
