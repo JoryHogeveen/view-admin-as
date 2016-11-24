@@ -223,7 +223,8 @@ final class VAA_View_Admin_As
 			 *                Disable plugin functions for network admin pages
 			 * @since  1.4    Make sure we have a session for the current user
 			 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
-			 *                Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
+			 *                Note that in network installations the non-admin user also needs the manage_network_users
+			 *                capability (of not the edit_users will return false)
 			 * @since  1.5.3  Enable on network pages for superior admins
 			 */
 			if (   ( is_super_admin( $this->store->get_curUser()->ID )
@@ -673,7 +674,9 @@ final class VAA_View_Admin_As
 		if ( version_compare( $wp_version, '3.5', '<' ) ) {
 			$this->add_notice('wp-version', array(
 				'type' => 'notice-error',
-				'message' => __('View Admin As', 'view-admin-as') . ': ' . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'WordPress', '3.5' ),
+				'message' => __('View Admin As', 'view-admin-as') . ': '
+				             // Translators, first %s stands for "WordPress", second stands for version 3.5
+				             . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'WordPress', '3.5' ),
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );

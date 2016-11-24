@@ -151,14 +151,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$title = __('Modified view', 'view-admin-as');
 		}
 		if ( $this->get_viewAs('role') ) {
-			$title = __('Viewing as role', 'view-admin-as') . ': ' . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
+			$title = __('Viewing as role', 'view-admin-as') . ': '
+			         . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
 		}
 		if ( $this->get_viewAs('user') ) {
 			$selected_user_roles = array();
 			foreach ( $this->get_selectedUser()->roles as $role ) {
 				$selected_user_roles[] = translate_user_role( $this->get_roles( $role )->name );
 			}
-			$title = __('Viewing as user', 'view-admin-as') . ': ' . $this->get_selectedUser()->data->display_name . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
+			$title = __('Viewing as user', 'view-admin-as') . ': '
+			         . $this->get_selectedUser()->data->display_name
+			         . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 		}
 		if ( $this->get_viewAs('visitor') ) {
 			$title = __('Viewing as site visitor', 'view-admin-as');
@@ -176,7 +179,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		if ( empty( $root ) ) {
 			$root = 'top-secondary';
-			if ( $this->get_userSettings('admin_menu_location') && in_array( $this->get_userSettings('admin_menu_location'), $this->get_allowedUserSettings('admin_menu_location') ) ) {
+			if ( $this->get_userSettings('admin_menu_location')
+			     && in_array( $this->get_userSettings('admin_menu_location'), $this->get_allowedUserSettings('admin_menu_location') )
+			) {
 				$root = $this->get_userSettings('admin_menu_location');
 			}
 		}
@@ -547,12 +552,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					) ) . self::do_button( array(
 						'name'    => 'close-caps-popup',
 						'label'   => self::do_icon( 'dashicons-editor-contract' ),
-						'classes' => 'button-secondary vaa-icon',
+						'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
 						'element' => 'a'
 					) ) . self::do_button( array(
 						'name'    => 'open-caps-popup',
 						'label'   => self::do_icon( 'dashicons-editor-expand' ),
-						'classes' => 'button-secondary vaa-icon',
+						'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
 						'element' => 'a'
 					)
 				),
@@ -975,11 +980,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public static function do_button( $args ) {
 		$id = esc_attr( $args['name'] );
 		$name = str_replace( '-', '_', $id );
-		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['value'];
-		$classes = ' class="button' . ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' ) . '"';
 		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
-		$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
-		return '<' . $elem . ' name="' . $name . '" id="' . $id . '"' . $classes . $attr . '>' . $label . '</' . $elem . '>';
+		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['value'];
+		$classes = ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' );
+
+		$args['attr']['id'] = $id;
+		$args['attr']['name'] = $name;
+		$args['attr']['class'] = 'button' . $classes;
+
+		$attr = self::parse_attr_to_html( $args['attr'] );
+
+		return '<' . $elem . ' ' . $attr . '>' . $label . '</' . $elem . '>';
 	}
 
 	/**
@@ -1008,15 +1019,22 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$id = esc_attr( $args['name'] );
 		$name = str_replace( '-', '_', $id );
 		$default = ( ! empty( $args['default'] ) ) ? $args['default'] : '';
-		$value = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
-		$placeholder = ( ! empty( $args['placeholder'] ) ) ? ' placeholder="' . $args['placeholder'] . '"' : '';
-		$classes = ( ! empty( $args['classes'] ) ) ? ' classes="' . $args['classes'] . '"' : '';
-		$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
+		$placeholder = ( ! empty( $args['placeholder'] ) ) ? $args['placeholder'] : '';
+		$classes = ( ! empty( $args['classes'] ) ) ? $args['classes'] : '';
+
+		$args['attr']['type'] = 'text';
+		$args['attr']['id'] = $id;
+		$args['attr']['name'] = $name;
+		$args['attr']['placeholder'] = $placeholder;
+		$args['attr']['value'] = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
+		$args['attr']['class'] = $classes;
+
+		$attr = self::parse_attr_to_html( $args['attr'] );
 
 		if ( ! empty( $args['label'] ) ) {
 			$html .= self::do_label( $args['label'], $id );
 		}
-		$html .= '<input type="text" value="' . $value . '"' . $placeholder . '' . $classes . $attr . ' id="' . $id . '" name="' . $name . '"/>';
+		$html .= '<input ' . $attr . '/>';
 		if ( ! empty( $args['description'] ) ) {
 			$html .= self::do_description( $args['description'] );
 		}
@@ -1057,10 +1075,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		}
 		$checked = checked( $args['value'], $args['compare'], false );
 		$classes = ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '';
-		$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
-		$value = ( ! empty( $args['checkbox_value'] ) ) ? $args['checkbox_value'] : '1';
 
-		$html .= '<input type="checkbox" value="' . $value . '" class="checkbox' . $classes . $attr . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
+		$args['attr']['type'] = 'checkbox';
+		$args['attr']['id'] = $id;
+		$args['attr']['name'] = $name;
+		$args['attr']['value'] = ( ! empty( $args['checkbox_value'] ) ) ? $args['checkbox_value'] : '1';
+		$args['attr']['class'] = 'checkbox' . $classes;
+
+		$attr = self::parse_attr_to_html( $args['attr'] );
+
+		$html .= '<input ' . $attr . ' ' . $checked . '/>';
 		if ( ! empty( $args['label'] ) ) {
 			$html .= self::do_label( $args['label'], $id );
 		}
@@ -1109,9 +1133,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$checked = checked( $data['value'], $args['compare'], false );
 				$classes = ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '';
 				$classes .= ' ' . esc_attr( $data['name'] );
-				$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
 
-				$html .= '<input type="radio" value="' . $args['compare'] . '" class="radio' . $classes . $attr . '" id="' . $id . '" name="' . $name . '" ' . $checked . '/>';
+				$args['attr']['type'] = 'radio';
+				$args['attr']['id'] = $id;
+				$args['attr']['name'] = $name;
+				$args['attr']['value'] = $args['compare'];
+				$args['attr']['class'] = 'radio' . $classes;
+
+				$attr = self::parse_attr_to_html( $args['attr'] );
+
+				$html .= '<input ' . $attr . ' ' . $checked . '/>';
 				if ( ! empty( $args['label'] ) ) {
 					$html .= self::do_label( $args['label'], $id );
 				}
@@ -1167,9 +1198,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			if ( empty( $data['value'] ) ) {
 				$data['value'] = null;
 			}
+
 			$classes = ( ! empty( $data['classes'] ) ) ? ' ' . $data['classes'] : '';
-			$attr = ( ! empty( $data['attr'] ) ) ? self::parse_attr_to_html( $data['attr'] ) : '';
-			$html .= '<select class="selectbox' . $classes . $attr . '" id="' . $id . '" name="' . $name . '"/>';
+
+			$data['attr']['id'] = $id;
+			$data['attr']['name'] = $name;
+			$data['attr']['class'] = 'selectbox' . $classes;
+			$attr = self::parse_attr_to_html( $data['attr'] );
+
+			$html .= '<select ' . $attr . '/>';
 
 			foreach ( $data['values'] as $args ) {
 
@@ -1178,8 +1215,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				}
 				$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['compare'];
 				$selected = selected( $data['value'], $args['compare'], false );
-				$attr = ( ! empty( $args['attr'] ) ) ? self::parse_attr_to_html( $args['attr'] ) : '';
-				$html .= '<option value="' . $args['compare'] . '"' . $attr . $selected . '>' . $label . '</option>';
+
+				$args['attr']['value'] = $args['compare'];
+				$attr = self::parse_attr_to_html( $args['attr'] );
+
+				$html .= '<option ' . $attr . ' ' . $selected . '>' . $label . '</option>';
 
 			}
 			$html .= '</select>';

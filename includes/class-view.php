@@ -211,7 +211,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		    || ( isset( $view_as['visitor'] ) && ( $this->store->get_viewAs('visitor') ) )
 		    || ( isset( $view_as['reset'] ) && false == $this->store->get_viewAs() )
 		) {
-			wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('This view is already selected!', 'view-admin-as') ) );
+			wp_send_json_error( array(
+				'type' => 'error',
+				'content' => esc_html__('This view is already selected!', 'view-admin-as')
+			) );
 		}
 
 		// Update user metadata with selected view
@@ -233,7 +236,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				if ( $success != true ) {
 					$db_view_value = $this->get_view();
 					if ( $db_view_value['caps'] == $this->store->get_caps() ) {
-						wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('This view is already selected!', 'view-admin-as') ) );
+						wp_send_json_error( array(
+							'type' => 'error',
+							'content' => esc_html__('This view is already selected!', 'view-admin-as')
+						) );
 					}
 				}
 			} else {
@@ -244,7 +250,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					$success = true; // and continue
 				} else {
 					// The user is in his default view, reset is invalid
-					wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('These are your default capabilities!', 'view-admin-as') ) );
+					wp_send_json_error( array(
+						'type' => 'error',
+						'content' => esc_html__('These are your default capabilities!', 'view-admin-as')
+					) );
 				}
 			}
 		}
@@ -279,7 +288,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( true == $success ) {
 			wp_send_json_success(); // ahw yeah
 		} else {
-			wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('Something went wrong, please try again.', 'view-admin-as') ) ); // fail
+			wp_send_json_error( array(
+				'type' => 'error',
+				'content' => esc_html__('Something went wrong, please try again.', 'view-admin-as')
+			) );
 		}
 
 		die(); // Just to make sure it's actually dead..

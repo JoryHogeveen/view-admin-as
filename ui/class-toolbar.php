@@ -86,7 +86,9 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 */
 	public function vaa_toolbar_init() {
 
-		if ( ! is_admin_bar_showing() && ( 'no' == $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_viewAs() ) ) {
+		if ( ! is_admin_bar_showing()
+		     && ( 'no' == $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_viewAs() )
+		) {
 
 			self::$showing = true;
 
@@ -132,7 +134,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   object  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class
 	 * @return  VAA_View_Admin_As_Toolbar
 	 */
 	public static function get_instance( $caller = null ) {

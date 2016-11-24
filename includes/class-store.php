@@ -452,6 +452,7 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * FOR INTERNAL USE ONLY!!!
 	 * @hack
+	 * @internal
 	 *
 	 * @see   wp-includes/class-wp-user.php WP_User->_init_caps()
 	 * @see   get_user_metadata filter in get_metadata()
