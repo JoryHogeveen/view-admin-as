@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.5
- * @version 1.6
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -50,17 +50,17 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * View Admin As object
 	 *
 	 * @since  1.5
-	 * @var    object|bool
+	 * @var    VAA_View_Admin_As
 	 */
-	protected $vaa = false;
+	protected $vaa = null;
 
 	/**
 	 * View Admin As store object
 	 *
 	 * @since  1.6
-	 * @var    object|bool
+	 * @var    VAA_View_Admin_As_Store
 	 */
-	protected $store = false;
+	protected $store = null;
 
 	/**
 	 * Script localization data
@@ -98,7 +98,9 @@ abstract class VAA_View_Admin_As_Class_Base
 		if ( ! is_object( $vaa ) || 'VAA_View_Admin_As' != get_class( $vaa ) ) {
 			$this->vaa = View_Admin_As( $this );
 		}
-		$this->store = $this->vaa->store();
+		if ( $this->vaa ) {
+			$this->store = $this->vaa->store();
+		}
 	}
 
 	/**
@@ -180,7 +182,7 @@ abstract class VAA_View_Admin_As_Class_Base
 
 	/*
 	 * VAA Getters
-	 * Make sure that you've called vaa_init(); BEFORE using these functions!
+	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
 	 */
 	protected function get_modules( $key = false ) { return $this->vaa->get_modules( $key ); }
 
