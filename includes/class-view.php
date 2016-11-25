@@ -179,11 +179,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * Store format: array( VIEW_NAME => VIEW_DATA );
 	 *
 	 * @since   0.1
-	 * @since   1.3     Added caps key
-	 * @since   1.4     Added module keys
+	 * @since   1.3     Added caps handler
+	 * @since   1.4     Added module handler
 	 * @since   1.5     Validate a nonce
-	 *                  Added global and user setting keys
+	 *                  Added global and user setting handler
 	 * @since   1.6     Moved to this class from main class
+	 * @since   1.6.2   Added visitor view handler
 	 * @access  public
 	 * @return  void
 	 */
@@ -209,7 +210,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if (   ( isset( $view_as['role'] ) && ( $this->store->get_viewAs('role') && $this->store->get_viewAs('role') == $view_as['role'] ) )
 		    || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs('user') && $this->store->get_viewAs('user') == $view_as['user'] ) )
 		    || ( isset( $view_as['visitor'] ) && ( $this->store->get_viewAs('visitor') ) )
-		    || ( isset( $view_as['reset'] ) && false == $this->store->get_viewAs() )
 		) {
 			wp_send_json_error( array(
 				'type' => 'error',
@@ -218,7 +218,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		// Update user metadata with selected view
-		if ( isset( $view_as['role'] ) || isset( $view_as['user'] ) ) {
+		if ( isset( $view_as['role'] ) || isset( $view_as['user'] ) || isset( $view_as['visitor'] ) ) {
 			$success = $this->update_view( $view_as );
 		}
 		elseif ( isset( $view_as['caps'] ) ) {
@@ -256,9 +256,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					) );
 				}
 			}
-		}
-		elseif ( isset( $view_as['visitor'] ) ) {
-			$success = $this->update_view( $view_as );
 		}
 		elseif ( isset( $view_as['reset'] ) ) {
 			$success = $this->reset_view();
