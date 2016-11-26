@@ -45,8 +45,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		parent::__construct( $vaa );
 
 		// When a user logs in or out, reset the view to default
-		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
-		add_action( 'wp_login', array( $this, 'reset_view' ), 10, 2 );
+		add_action( 'wp_login',  array( $this, 'cleanup_views' ), 10, 2 );
+		add_action( 'wp_login',  array( $this, 'reset_view' ), 10, 2 );
 		add_action( 'wp_logout', array( $this, 'reset_view' ) );
 
 		/**
@@ -523,6 +523,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function validate_view_as_data( $view_as ) {
 
+		if ( ! is_array( $view_as ) ) {
+			return false;
+		}
+
 		$allowed_keys = array( 'setting', 'user_setting', 'reset', 'caps', 'role', 'user', 'visitor' );
 
 		// Add module keys to the allowed keys
@@ -532,10 +536,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		// @since  1.6.2  Filter is documented in VAA_View_Admin_As::enqueue_scripts (includes/class-vaa.php)
 		$allowed_keys = array_unique( array_merge( apply_filters( 'view_admin_as_view_types', array() ), $allowed_keys ) );
-
-		if ( ! is_array( $view_as ) ) {
-			return false;
-		}
 
 		// We only want allowed keys and data, otherwise it's not added through this plugin.
 		foreach ( $view_as as $key => $value ) {
