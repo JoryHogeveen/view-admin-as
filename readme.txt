@@ -161,8 +161,9 @@ This plugin is also useful to support your clients and/or users. For example; ma
 
 = 1.6.2 =
 
-*	Feature: A new view! You can now see your site as a unregistered visitor (no need to switch browsers)
-*	Enhancement: Recuded needed queries to 1 when getting the available users. Performance improvement to the native WP function `get_users()` (with fallback if needed)
+*	Feature: A new view! You can now see your site as an unregistered visitor (no need to switch browsers) [#14](https://github.com/JoryHogeveen/view-admin-as/issues/14)
+*	Enhancement: Reduced queries needed for getting the available users to **1**! Performance improvement to the native WP function `get_users()` (with fallback if needed) [#24](https://github.com/JoryHogeveen/view-admin-as/issues/24)
+*	Enhancement: Add all existing roles that have defaults to the clear list even if they have been removed from WP [#22](https://github.com/JoryHogeveen/view-admin-as/issues/22)
 *	Enhancement: Enable the current view as a capability filter
 *	Enhancement: Highlight the view capabilities in the capability menu
 *	Fix: Hide our toolbar on customizer pages. Switching in customizer not possible (yet)

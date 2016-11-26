@@ -545,7 +545,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			// Do not check $single, this logic is in wp-includes/meta.php line 487
 			return array( $new_meta );
 		}
-		return null; // Go on as normal
+		return $null; // Go on as normal
 	}
 
 	/**
@@ -574,11 +574,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$this->update_role_defaults( $this->get_viewAs('role'), $meta_key, $meta_value );
 			return false; // Do not update current user meta
 		}
-		return null; // Go on as normal
+		return $null; // Go on as normal
 	}
 
 	/**
 	 * Get defaults of a role
+	 * @todo  Make use of the API
+	 * @todo  Enable getting all role defaults or all defaults of a role instead of just one key
 	 *
 	 * @since   1.4
 	 * @access  private
@@ -1107,6 +1109,35 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 
+			/**
+			 * Add all existing roles from defaults to the clear list if they have been removed from WP
+			 * Don't show roles that don't have data
+			 *
+			 * @see    https://github.com/JoryHogeveen/view-admin-as/issues/22
+			 * @since  1.6.2
+			 */
+			$role_clear_options = array(
+				array(
+					'label' => ' --- '
+				),
+				array(
+					'value' => 'all',
+					'label' => __('All roles', 'view-admin-as')
+				)
+			);
+			foreach ( $this->get_optionData( 'roles' ) as $role_key => $role ) {
+				if ( ! empty( $role_key ) ) {
+					$role_name = $role_key;
+					if ( $this->store->get_roles( $role_key ) ) {
+						$role_name = translate_user_role( $this->store->get_roles( $role_key )->name );
+					}
+					$role_clear_options[] = array(
+						'value' => esc_attr( $role_key ),
+						'label' => $role_name
+					);
+				}
+			}
+
 			/* Clear actions */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-clear',
@@ -1130,7 +1161,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'parent' => $root . '-clear',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
 					'name' => $root . '-clear-roles-select',
-					'values' => $role_select_options
+					'values' => $role_clear_options
 				) ),
 				'href'   => false,
 				'meta'   => array(
