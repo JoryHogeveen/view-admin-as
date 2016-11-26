@@ -530,87 +530,94 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$allowed_keys[] = $key;
 		}
 
-		// Filter is documented in VAA_View_Admin_As::enqueue_scripts (includes/class-vaa.php)
+		// @since  1.6.2  Filter is documented in VAA_View_Admin_As::enqueue_scripts (includes/class-vaa.php)
 		$allowed_keys = array_unique( array_merge( apply_filters( 'view_admin_as_view_types', array() ), $allowed_keys ) );
 
-		// We only want allowed keys and data, otherwise it's not added through this plugin.
-		if ( is_array( $view_as ) ) {
-			foreach ( $view_as as $key => $value ) {
-				// Check for keys that are not allowed
-				if ( ! in_array( $key, $allowed_keys ) ) {
-					unset( $view_as[ $key ] );
-				}
-				switch ( $key ) {
+		if ( ! is_array( $view_as ) ) {
+			return false;
+		}
 
-					case 'caps':
-						// Make sure we have the latest added capabilities
-						$this->store->store_caps();
-						if ( ! $this->store->get_caps() ) {
-							unset( $view_as['caps'] );
-							continue;
+		// We only want allowed keys and data, otherwise it's not added through this plugin.
+		foreach ( $view_as as $key => $value ) {
+			// Check for keys that are not allowed
+			if ( ! in_array( $key, $allowed_keys ) ) {
+				unset( $view_as[ $key ] );
+			}
+			switch ( $key ) {
+
+				case 'caps':
+					// Make sure we have the latest added capabilities
+					$this->store->store_caps();
+					if ( ! $this->store->get_caps() ) {
+						unset( $view_as['caps'] );
+						continue;
+					}
+					if ( is_array( $view_as['caps'] ) ) {
+						// The data is an array, most likely from the database
+						foreach ( $view_as['caps'] as $cap_key => $cap_value ) {
+							if ( ! array_key_exists( $cap_key, $this->store->get_caps() ) ) {
+								unset( $view_as['caps'][ $cap_key ] );
+							}
+						}
+					} elseif ( is_string( $view_as['caps'] ) ) {
+						// The data is a string so we'll need to convert it to an array
+						$new_caps = explode( ',', $view_as['caps'] );
+						$view_as['caps'] = array();
+						foreach ( $new_caps as $cap_key => $cap_value ) {
+							$cap = explode( ':', $cap_value );
+							// Make sure the exploded values are valid
+							if ( isset( $cap[1] ) && array_key_exists( $cap[0], $this->store->get_caps() ) ) {
+								$view_as['caps'][ strip_tags( $cap[0] ) ] = (int) $cap[1];
+							}
 						}
 						if ( is_array( $view_as['caps'] ) ) {
-							// The data is an array, most likely from the database
-							foreach ( $view_as['caps'] as $cap_key => $cap_value ) {
-								if ( ! array_key_exists( $cap_key, $this->store->get_caps() ) ) {
-									unset( $view_as['caps'][ $cap_key ] );
-								}
-							}
-						} elseif ( is_string( $view_as['caps'] ) ) {
-							// The data is a string so we'll need to convert it to an array
-							$new_caps = explode( ',', $view_as['caps'] );
-							$view_as['caps'] = array();
-							foreach ( $new_caps as $cap_key => $cap_value ) {
-								$cap = explode( ':', $cap_value );
-								// Make sure the exploded values are valid
-								if ( isset( $cap[1] ) && array_key_exists( $cap[0], $this->store->get_caps() ) ) {
-									$view_as['caps'][ strip_tags( $cap[0] ) ] = (int) $cap[1];
-								}
-							}
-							if ( is_array( $view_as['caps'] ) ) {
-								ksort( $view_as['caps'] ); // Sort the new caps the same way we sort the existing caps
-							} else {
-								unset( $view_as['caps'] );
-							}
+							ksort( $view_as['caps'] ); // Sort the new caps the same way we sort the existing caps
 						} else {
-							// Caps data is not valid
 							unset( $view_as['caps'] );
 						}
-						break;
-
-					case 'role':
-						// Role data must be a string and exists in the loaded array of roles
-						if ( ! is_string( $view_as['role'] ) || ! $this->store->get_roles() || ! array_key_exists( $view_as['role'], $this->store->get_roles() ) ) {
-							unset( $view_as['role'] );
-						}
-						break;
-
-					case 'user':
-						// User data must be a number and exists in the loaded array of user id's
-						if ( ! is_numeric( $view_as['user'] ) || ! $this->store->get_userids() || ! array_key_exists( (int) $view_as['user'], $this->store->get_userids() ) ) {
-							unset( $view_as['user'] );
-						}
-						break;
-
-					case 'visitor':
-						$view_as['visitor'] = (bool) $view_as['visitor'];
-						break;
-
-					default:
-						/**
-						 * Validate the data for a view custom type
-						 *
-						 * @since  1.6.2
-						 * @param  mixed  $view_as[ $key ]  unvalidated view data
-						 * @return mixed  validated view data
-						 */
-						$view_as[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, $view_as[ $key ] );
+					} else {
+						// Caps data is not valid
+						unset( $view_as['caps'] );
+					}
 					break;
-				}
+
+				case 'role':
+					// Role data must be a string and exists in the loaded array of roles
+					if (    ! is_string( $view_as['role'] )
+					     || ! $this->store->get_roles()
+					     || ! array_key_exists( $view_as['role'], $this->store->get_roles() )
+					) {
+						unset( $view_as['role'] );
+					}
+					break;
+
+				case 'user':
+					// User data must be a number and exists in the loaded array of user id's
+					if (    ! is_numeric( $view_as['user'] )
+					     || ! $this->store->get_userids()
+					     || ! array_key_exists( (int) $view_as['user'], $this->store->get_userids() )
+					) {
+						unset( $view_as['user'] );
+					}
+					break;
+
+				case 'visitor':
+					$view_as['visitor'] = (bool) $view_as['visitor'];
+					break;
+
+				default:
+					/**
+					 * Validate the data for a view custom type
+					 *
+					 * @since  1.6.2
+					 * @param  mixed  $view_as[ $key ]  unvalidated view data
+					 * @return mixed  validated view data
+					 */
+					$view_as[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, $view_as[ $key ] );
+				break;
 			}
-			return $view_as;
 		}
-		return false;
+		return $view_as;
 	}
 
 	/**
