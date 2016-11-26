@@ -3,6 +3,7 @@
  * View Admin As - Class Base
  *
  * Base class that gets the VAA data from the main class
+ * Use this class as an extender for other classes
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
@@ -168,9 +169,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	protected function get_caps( $key = false )                { return $this->store->get_caps( $key ); }
 	protected function get_roles( $key = false )               { return $this->store->get_roles( $key ); }
 	protected function get_users( $key = false )               { return $this->store->get_users( $key ); }
-	protected function get_selectedUser()                      { return $this->store->get_selectedUser(); }
 	protected function get_userids()                           { return $this->store->get_userids(); }
-	protected function get_usernames()                         { return $this->store->get_usernames(); }
+	protected function get_selectedUser()                      { return $this->store->get_selectedUser(); }
+	protected function get_selectedCaps()                      { return $this->store->get_selectedCaps(); }
 	protected function get_settings( $key = false )            { return $this->store->get_settings( $key ); }
 	protected function get_userSettings( $key = false )        { return $this->store->get_userSettings( $key ); }
 	protected function get_defaultSettings( $key = false )     { return $this->store->get_defaultSettings( $key ); }
@@ -205,7 +206,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/*
-	 * Update
+	 * Native Update
 	 */
 	protected function update_optionData( $var, $key = false, $append = false ) {
 		$this->set_optionData( $var, $key, $append );

@@ -2,7 +2,7 @@
 /**
  * View Admin As - Class API
  *
- * API class that stores the VAA data for use
+ * API class that holds general functions
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as

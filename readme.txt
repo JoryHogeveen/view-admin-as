@@ -42,7 +42,7 @@ This plugin will work with most other plugins.
 
 Fixed compatibility issues:
 
-*   **Pods** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine wether to show the Pods menu when you are in an other view.
+*   **Pods** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine whether to show the Pods menu when you are in an other view.
 *   **Members / User Role Editor** - Support for multiple roles per user. (since 1.2.2)
 *   **Genesis Framework** *(and probably other theme frameworks)* - Changed "init" hook to "plugins_loaded" for theme support (since 1.3.3)
 
@@ -114,7 +114,7 @@ And if even that doesn't work just add "?reset-view" in the address bar and you'
 Example: http://www.your.domain/wp-admin/?reset-view
 
 = 4. What data is stored for role defaults and how can I change this? =
-Please see the `view_admin_as_role_defaults_meta` filter at https://viewadminas.wordpress.com/documentation/actions-filters/!
+Please see the `view_admin_as_role_defaults_meta` filter at [Actions & Filters](https://viewadminas.wordpress.com/documentation/actions-filters/)!
 
 = 5. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins?
