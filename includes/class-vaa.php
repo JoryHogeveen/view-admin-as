@@ -364,7 +364,7 @@ final class VAA_View_Admin_As
 		}
 
 		/**
-		 * Module loaded. Hook is used for other modules related to View Admin As
+		 * Modules loaded. Hook is used for other modules related to View Admin As
 		 * @since  1.6.2
 		 * @param  object  $this  VAA_View_Admin_As
 		 */
@@ -476,9 +476,9 @@ final class VAA_View_Admin_As
 			/**
 			 * Add basic view types for automated use in JS
 			 *
-			 * - Menu items require the class vaa-TYPE-item (through the add_node() meta key)
+			 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key)
 			 * - Menu items require the rel attribute for the view data to be send (string or numeric)
-			 * - Menu items require a href attribute (needs to be an <a> element), I'd set it to '#'
+			 * - Menu items require the href attribute (the node needs to be an <a> element), I'd set it to '#'
 			 *
 			 * @since  1.6.2
 			 * @param  array
@@ -602,8 +602,10 @@ final class VAA_View_Admin_As
 	 * @return  bool
 	 */
 	public function register_module( $data ) {
-		if ( ! empty( $data['id'] ) && ! empty( $data['instance'] ) && is_object( $data['instance'] ) ) {
-			$this->modules[ (string) $data['id'] ] = $data['instance'];
+		if (    ! empty( $data['id'] )       && is_string( $data['id'] )
+		     && ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		) {
+			$this->modules[ $data['id'] ] = $data['instance'];
 			return true;
 		}
 		return false;
