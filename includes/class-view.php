@@ -530,6 +530,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$allowed_keys[] = $key;
 		}
 
+		// Filter is documented in VAA_View_Admin_As::enqueue_scripts (includes/class-vaa.php)
+		$allowed_keys = array_unique( array_merge( apply_filters( 'view_admin_as_view_types', array() ), $allowed_keys ) );
+
 		// We only want allowed keys and data, otherwise it's not added through this plugin.
 		if ( is_array( $view_as ) ) {
 			foreach ( $view_as as $key => $value ) {
@@ -538,6 +541,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					unset( $view_as[ $key ] );
 				}
 				switch ( $key ) {
+
 					case 'caps':
 						// Make sure we have the latest added capabilities
 						$this->store->store_caps();
@@ -573,21 +577,35 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 							unset( $view_as['caps'] );
 						}
 						break;
+
 					case 'role':
 						// Role data must be a string and exists in the loaded array of roles
 						if ( ! is_string( $view_as['role'] ) || ! $this->store->get_roles() || ! array_key_exists( $view_as['role'], $this->store->get_roles() ) ) {
 							unset( $view_as['role'] );
 						}
 						break;
+
 					case 'user':
 						// User data must be a number and exists in the loaded array of user id's
 						if ( ! is_numeric( $view_as['user'] ) || ! $this->store->get_userids() || ! array_key_exists( (int) $view_as['user'], $this->store->get_userids() ) ) {
 							unset( $view_as['user'] );
 						}
 						break;
+
 					case 'visitor':
 						$view_as['visitor'] = (bool) $view_as['visitor'];
 						break;
+
+					default:
+						/**
+						 * Validate the data for a view custom type
+						 *
+						 * @since  1.6.2
+						 * @param  mixed  $view_as[ $key ]  unvalidated view data
+						 * @return mixed  validated view data
+						 */
+						$view_as[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, $view_as[ $key ] );
+					break;
 				}
 			}
 			return $view_as;
