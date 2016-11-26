@@ -4,9 +4,9 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 3.5
 Tested up to: 4.7
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 
-View the WordPress admin as a different role, switch between users, temporarily change your capabilities, view as a visitor, set default screen settings for roles.
+View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
 
 == Description ==
 
@@ -158,6 +158,17 @@ This plugin is also useful to support your clients and/or users. For example; ma
 8. Admin bar when a view is selected + the reset button location
 
 == Changelog ==
+
+= 1.6.2 =
+
+*	Feature: A new view! You can now see your site as a unregistered visitor (no need to switch browsers)
+*	Enhancement: Recuded needed queries to 1 when getting the available users. Performance improvement to the native WP function `get_users()` (with fallback if needed)
+*	Enhancement: Enable the current view as a capability filter
+*	Enhancement: Highlight the view capabilities in the capability menu
+*	Fix: Hide our toolbar on customizer pages. Switching in customizer not possible (yet)
+*	Other minor improvements
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/23)
 
 = 1.6.1 =
 
