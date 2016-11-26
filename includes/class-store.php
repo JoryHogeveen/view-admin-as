@@ -162,15 +162,6 @@ final class VAA_View_Admin_As_Store
 	private $users = array();
 
 	/**
-	 * Expiration time for view data
-	 *
-	 * @since  1.3.4
-	 * @since  1.6    Moved to this class from main class
-	 * @var    int
-	 */
-	private $metaExpiration = 86400; // one day: ( 24 * 60 * 60 )
-
-	/**
 	 * Current user object
 	 *
 	 * @since  0.1
@@ -729,7 +720,6 @@ final class VAA_View_Admin_As_Store
 	public function get_optionData( $key = false )          { return VAA_API::get_array_data( $this->optionData, $key ); }
 	public function get_userMetaKey()                       { return (string) $this->userMetaKey; }
 	public function get_userMeta( $key = false )            { return VAA_API::get_array_data( $this->userMeta, $key ); }
-	public function get_metaExpiration()                    { return (int) $this->metaExpiration; }
 	public function get_defaultSettings( $key = false )     { return VAA_API::get_array_data( $this->defaultSettings, $key ); }
 	public function get_defaultUserSettings( $key = false ) { return VAA_API::get_array_data( $this->defaultUserSettings, $key ); }
 	public function get_allowedSettings( $key = false )     { return (array) VAA_API::get_array_data( $this->allowedSettings, $key ); }

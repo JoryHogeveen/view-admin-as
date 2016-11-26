@@ -24,6 +24,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
+	 * Expiration time for view data
+	 *
+	 * @since  1.3.4  (as $metaExpiration)
+	 * @since  1.6.2  Moved from main class
+	 * @var    int
+	 */
+	private $viewExpiration = 86400; // one day: ( 24 * 60 * 60 )
+
+	/**
 	 * VAA_View_Admin_As_View constructor.
 	 *
 	 * @since   1.6
@@ -39,6 +48,17 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
 		add_action( 'wp_login', array( $this, 'reset_view' ), 10, 2 );
 		add_action( 'wp_logout', array( $this, 'reset_view' ) );
+
+		/**
+		 * Change expiration time for view meta
+		 *
+		 * @example  You can set it to 1 to always clear everything after login
+		 * @example  0 will be overwritten!
+		 *
+		 * @param  int  $viewExpiration  86400 (1 day in seconds)
+		 * @return int
+		 */
+		$this->viewExpiration = absint( apply_filters( 'view_admin_as_view_expiration', $this->viewExpiration ) );
 	}
 
 	/**
@@ -364,7 +384,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			// Add the new view metadata and expiration date
 			$meta[ $this->store->get_curUserSession() ] = array(
 				'view' => $data,
-				'expire' => ( time() + $this->store->get_metaExpiration() ),
+				'expire' => ( time() + $this->viewExpiration ),
 			);
 			// Update metadata (returns: true on success, false on failure)
 			return $this->store->update_userMeta( $meta, 'views', true );
