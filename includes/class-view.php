@@ -152,16 +152,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
-		$filter_caps = $this->store->get_selectedCaps();
+		$filter_caps = (array) $this->store->get_selectedCaps();
 
-		if ( ! empty( $filter_caps ) ) {
-			foreach ( $caps as $actual_cap ) {
-				if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
-					// Regular
-					$caps[ $cap ] = '';
-					// Network admins
-					$caps[] = 'do_not_allow';
-				}
+		foreach ( (array) $caps as $actual_cap ) {
+			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
+				// Regular
+				$caps[ $cap ] = '';
+				// Network admins
+				$caps[] = 'do_not_allow';
 			}
 		}
 
@@ -262,7 +260,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				foreach ( $view_as['caps'] as $key => $value ) {
 					$this->store->set_caps( (int) $value, (string) $key, true );
 				}
-				if ( ! empty( $db_view['caps'] )
+				if ( isset( $db_view['caps'] )
 				     && array_filter( (array) $db_view['caps'] ) == array_filter( $this->store->get_caps() )
 				) {
 					wp_send_json_error( array(
