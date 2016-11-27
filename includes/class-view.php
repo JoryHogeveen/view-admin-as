@@ -226,8 +226,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		define( 'VAA_DOING_AJAX', true );
 
 		$success = false;
-		// @todo  stripslashes??
-		$view_as = $this->validate_view_as_data( json_decode( $_POST['view_admin_as'], true ) );
+		$view_as = $this->validate_view_as_data( json_decode( stripslashes( $_POST['view_admin_as'] ), true ) );
 
 		// Stop selecting the same view! :)
 		if (   ( isset( $view_as['role'] ) && ( $this->store->get_viewAs('role') && $this->store->get_viewAs('role') == $view_as['role'] ) )
