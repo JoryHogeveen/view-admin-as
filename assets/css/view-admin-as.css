@@ -45,7 +45,7 @@
 
 #wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item,
-#wpadminbar #wp-admin-bar-vaa .current > label,
+#wpadminbar #wp-admin-bar-vaa .current > input:checked + label,
 #wpadminbar #wp-admin-bar-vaa .current-parent > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .current-parent > label {font-weight: bold;}
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item::after,
