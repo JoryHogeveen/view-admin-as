@@ -411,6 +411,18 @@ final class VAA_View_Admin_As
 				'text' => __( 'Reset the view', 'view-admin-as' ),
 				'url' => VAA_API::get_reset_link(),
 			);
+
+			/**
+			 * Add or remove options to the die/error handler pages
+			 *
+			 * @since  1.6.2
+			 * @param  array  $options {
+			 *     @type  string  $text  The text to show
+			 *     @type  string  $url   The link
+			 * }
+			 * @return array
+			 */
+			$options = apply_filters( 'view_admin_as_error_page_options', $options );
 ?>
 <div>
 	<h3><?php _e( 'View Admin As', 'view-admin-as' ) ?>:</h3>
@@ -618,7 +630,11 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 *
 	 * @param   string  $id
-	 * @param   array   $notice  Keys: 'type' and 'message'
+	 * @param   array   $notice {
+	 *     Required array
+	 *     @type  string  $type     The WP notice type class(es)
+	 *     @type  string  $message  The notice message
+	 * }
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
