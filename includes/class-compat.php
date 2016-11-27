@@ -79,7 +79,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 		if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
 			// Pods 2.x (only needed for the role selector)
-			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 10, 3 );
+			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 99, 2 );
 		}
 	}
 
@@ -133,18 +133,13 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @see     init()
 	 *
-	 * @param   bool     $bool        Boolean provided by the pods_is_admin hook
+	 * @param   bool     $bool        Boolean provided by the pods_is_admin hook (not used)
 	 * @param   array    $caps        String or Array provided by the pods_is_admin hook
-	 * @param   string   $capability  String provided by the pods_is_admin hook (not used)
 	 * @return  bool
 	 */
-	public function pods_caps_check( $bool, $caps, $capability ) {
+	public function pods_caps_check( $bool, $caps ) {
 
-		if ( ! is_array( $caps ) ) {
-			$caps = array( $caps );
-		}
-
-		foreach( $caps as $capability ) {
+		foreach( (array) $caps as $capability ) {
 			if ( $this->vaa->view()->current_view_can( $capability ) ) {
 				return true;
 			}
