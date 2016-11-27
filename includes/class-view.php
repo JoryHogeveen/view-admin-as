@@ -113,9 +113,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
 
 				// @since  1.6.2  Set the caps for this view
-				if ( $this->store->get_viewAs('role') && $this->store->get_roles() ) {
+				if ( $this->store->get_viewAs('role')
+				     && is_object( $this->store->get_roles( $this->store->get_viewAs('role') ) )
+				) {
 					// Role view
-					$this->store->set_selectedCaps( $this->store->get_roles( $this->store->get_viewAs('role') )->capabilities );
+					$this->store->set_selectedCaps(
+						$this->store->get_roles( $this->store->get_viewAs('role') )->capabilities
+					);
 				} elseif ( $this->store->get_viewAs('caps') ) {
 					// Caps view
 					$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
