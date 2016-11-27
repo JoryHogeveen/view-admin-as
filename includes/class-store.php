@@ -240,7 +240,10 @@ final class VAA_View_Admin_As_Store
 		// Store available roles
 		$roles = $wp_roles->role_objects; // role_objects for objects, roles for arrays
 		$role_names = $wp_roles->role_names;
+
+		// @see  https://codex.wordpress.org/Plugin_API/Filter_Reference/editable_roles
 		$roles = apply_filters( 'editable_roles', $roles );
+
 		if ( ! is_super_admin( $this->get_curUser()->ID ) ) {
 			// The current user is not a super admin (or regular admin in single installations)
 			unset( $roles['administrator'] );
@@ -522,11 +525,11 @@ final class VAA_View_Admin_As_Store
 		if ( is_super_admin( $this->get_curUser()->ID ) ) {
 
 			// Store available capabilities
-			$role_caps = array();
+			$all_caps = array();
 			foreach ( $wp_roles->role_objects as $key => $role ) {
 				if ( is_array( $role->capabilities ) ) {
 					foreach ( $role->capabilities as $cap => $grant ) {
-						$role_caps[ $cap ] = $cap;
+						$all_caps[ $cap ] = $cap;
 					}
 				}
 			}
@@ -535,14 +538,15 @@ final class VAA_View_Admin_As_Store
 			 * Add compatibility for other cap managers
 			 * @since  1.5
 			 * @see    VAA_View_Admin_As_Compat->init()
-			 * @param  array  $role_caps  All capabilities found in the existing roles
+			 * @param  array  $all_caps  All capabilities found in the existing roles
+			 * @return array
 			 */
-			$role_caps = apply_filters( 'view_admin_as_get_capabilities', $role_caps );
+			$all_caps = apply_filters( 'view_admin_as_get_capabilities', $all_caps );
 
-			$role_caps = array_unique( $role_caps );
+			$all_caps = array_unique( $all_caps );
 
 			// Add new capabilities to the capability array as disabled
-			foreach ( $role_caps as $capKey => $capVal ) {
+			foreach ( $all_caps as $capKey => $capVal ) {
 				if ( is_string( $capVal ) && ! is_numeric( $capVal ) && ! array_key_exists( $capVal, $caps ) ) {
 					$caps[ $capVal ] = 0;
 				}
@@ -750,7 +754,7 @@ final class VAA_View_Admin_As_Store
 	public function set_curUser( $var )                               { $this->curUser = $var; }
 	public function set_curUserSession( $var )                        { $this->curUserSession = (string) $var; }
 	public function set_selectedUser( $var )                          { $this->selectedUser = $var; }
-	public function set_selectedCaps( $var )                          { $this->selectedCaps = (array) $var; }
+	public function set_selectedCaps( $var )                          { $this->selectedCaps = array_filter( (array) $var ); }
 	public function set_defaultSettings( $var )                       { $this->defaultSettings = array_map( 'strval', (array) $var ); }
 	public function set_defaultUserSettings( $var )                   { $this->defaultUserSettings = array_map( 'strval', (array) $var ); }
 
