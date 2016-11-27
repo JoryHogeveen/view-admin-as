@@ -159,7 +159,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		var data = {
 			'action': 'view_admin_as',
 			'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
-			'view_admin_as': viewAs
+			'view_admin_as': JSON.stringify( viewAs )
 		};
 
 		var isView = false;
@@ -181,7 +181,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			form.append('<input type="hidden" name="action" value="' + data.action + '">');
 			form.append('<input type="hidden" name="_vaa_nonce" value="' + data._vaa_nonce + '">');
 			form.append('<input id="data" type="hidden" name="view_admin_as">');
-			form.find('#data').val( JSON.stringify( data.view_admin_as ) );
+			form.find('#data').val( data.view_admin_as );
 			form.submit();
 
 		} else {
@@ -532,12 +532,12 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			var newCaps = '';
+			var newCaps = {};
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item input').each( function() {
 				if ( $(this).is(':checked') ) {
-					newCaps += $(this).attr('value') + ':' + 1 + ',';
+					newCaps[ $(this).attr('value') ] = 1;
 				} else {
-					newCaps += $(this).attr('value') + ':' + 0 + ',';
+					newCaps[ $(this).attr('value') ] = 0;
 				}
 			});
 			VAA_View_Admin_As.ajax( { caps : newCaps }, true );

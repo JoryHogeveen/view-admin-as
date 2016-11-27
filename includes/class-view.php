@@ -226,7 +226,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		define( 'VAA_DOING_AJAX', true );
 
 		$success = false;
-		$view_as = $this->validate_view_as_data( $_POST['view_admin_as'] );
+		// @todo  stripslashes??
+		$view_as = $this->validate_view_as_data( json_decode( $_POST['view_admin_as'], true ) );
 
 		// Stop selecting the same view! :)
 		if (   ( isset( $view_as['role'] ) && ( $this->store->get_viewAs('role') && $this->store->get_viewAs('role') == $view_as['role'] ) )
@@ -517,13 +518,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class
 	 * @access  public
 	 *
-	 * @param   array       $view_as
-	 * @return  array|bool  $view_as
+	 * @param   array  $view_as  Unvalidated data
+	 * @return  array  $view_as  Validated data
 	 */
 	public function validate_view_as_data( $view_as ) {
 
 		if ( ! is_array( $view_as ) ) {
-			return false;
+			return array();
 		}
 
 		$allowed_keys = array( 'setting', 'user_setting', 'reset', 'caps', 'role', 'user', 'visitor' );
@@ -545,31 +546,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			switch ( $key ) {
 
 				case 'caps':
-					// Make sure we have the latest added capabilities
-					$this->store->store_caps();
-					if ( ! $this->store->get_caps() ) {
-						unset( $view_as['caps'] );
-						continue;
-					}
 					if ( is_array( $view_as['caps'] ) ) {
 						// The data is an array, most likely from the database
 						$view_as['caps'] = array_map( 'absint', $view_as['caps'] );
-					} elseif ( is_string( $view_as['caps'] ) ) {
-						// The data is a string so we'll need to convert it to an array
-						$new_caps = explode( ',', $view_as['caps'] );
-						$view_as['caps'] = array();
-						foreach ( $new_caps as $cap_key => $cap_value ) {
-							$cap = explode( ':', (string) $cap_value );
-							// Make sure the exploded values are valid
-							if ( isset( $cap[1] ) ) {
-								$view_as['caps'][ strip_tags( (string) $cap[0] ) ] = (int) $cap[1];
-							}
-						}
-						if ( is_array( $view_as['caps'] ) ) {
-							ksort( $view_as['caps'] ); // Sort the new caps the same way we sort the existing caps
-						} else {
-							unset( $view_as['caps'] );
-						}
+						ksort( $view_as['caps'] ); // Sort the new caps the same way we sort the existing caps
 					} else {
 						// Caps data is not valid
 						unset( $view_as['caps'] );
