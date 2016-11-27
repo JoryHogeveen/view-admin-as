@@ -166,7 +166,9 @@ This plugin is also useful to support your clients and/or users. For example; ma
 *	Enhancement: Add all existing roles that have defaults to the clear list even if they have been removed from WP [#22](https://github.com/JoryHogeveen/view-admin-as/issues/22)
 *	Enhancement: Enable the current view as a capability filter
 *	Enhancement: Highlight the view capabilities in the capability menu
+*	Enhancement: Pass view data as JSON (enhances compatibility with WP capabilities)
 *	Fix: Hide our toolbar on customizer pages. Switching in customizer not possible (yet)
+*	Fix: Improve caps view handling
 *	Other minor improvements
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/23)
