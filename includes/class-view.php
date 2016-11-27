@@ -262,7 +262,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				foreach ( $view_as['caps'] as $key => $value ) {
 					$this->store->set_caps( (int) $value, (string) $key, true );
 				}
-				if ( array_filter( (array) $db_view['caps'] ) == array_filter( $this->store->get_caps() ) ) {
+				if ( ! empty( $db_view['caps'] )
+				     && array_filter( (array) $db_view['caps'] ) == array_filter( $this->store->get_caps() )
+				) {
 					wp_send_json_error( array(
 						'type' => 'error',
 						'content' => esc_html__('This view is already selected!', 'view-admin-as')
