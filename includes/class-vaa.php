@@ -494,10 +494,11 @@ final class VAA_View_Admin_As
 			 *
 			 * @since  1.6.2
 			 * @param  array
-			 * @return array
+			 * @return array  An array of strings (view types)
 			 */
+
 			$script_localization['view_types'] = array_unique( array_merge(
-				apply_filters( 'view_admin_as_view_types', array() ),
+				array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
 				array( 'user', 'role', 'caps', 'visitor' )
 			) );
 
