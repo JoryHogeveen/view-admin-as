@@ -242,38 +242,33 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$success = $this->update_view( $view_as );
 		}
 		elseif ( isset( $view_as['caps'] ) ) {
+			$db_view = $this->get_view();
 			// Check if the selected caps are equal to the default caps
-			if ( $this->store->get_caps() != $view_as['caps'] ) {
-				foreach ( $this->store->get_caps() as $key => $value ) {
-					// If the caps are valid (do not force append, see get_caps() & set_array_data() ), change them
-					if ( isset( $view_as['caps'][ $key ] ) && $view_as['caps'][ $key ] == 1 ) {
-						$this->store->set_caps( 1, $key );
-					} else {
-						$this->store->set_caps( 0, $key );
-					}
-				}
-				$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
-				if ( $success != true ) {
-					$db_view_value = $this->get_view();
-					if ( $db_view_value['caps'] == $this->store->get_caps() ) {
-						wp_send_json_error( array(
-							'type' => 'error',
-							'content' => esc_html__('This view is already selected!', 'view-admin-as')
-						) );
-					}
-				}
-			} else {
+			if ( array_filter( $this->store->get_caps() ) == array_filter( $view_as['caps'] ) ) {
 				// The selected caps are equal to the current user default caps so we can reset the view
 				$this->reset_view();
-				if ( $this->store->get_viewAs('caps') ) {
-					// The user was in a custom caps view, reset is valid
+				if ( isset( $db_view['caps'] ) ) {
+					// The user was in a custom caps view
 					$success = true; // and continue
 				} else {
-					// The user is in his default view, reset is invalid
+					// The user was in his default view, notify the user
 					wp_send_json_error( array(
 						'type' => 'error',
 						'content' => esc_html__('These are your default capabilities!', 'view-admin-as')
 					) );
+				}
+			} else {
+				// Store the selected caps
+				foreach ( $view_as['caps'] as $key => $value ) {
+					$this->store->set_caps( (int) $value, (string) $key, true );
+				}
+				if ( array_filter( (array) $db_view['caps'] ) == array_filter( $this->store->get_caps() ) ) {
+					wp_send_json_error( array(
+						'type' => 'error',
+						'content' => esc_html__('This view is already selected!', 'view-admin-as')
+					) );
+				} else {
+					$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
 				}
 			}
 		}
@@ -554,20 +549,16 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					}
 					if ( is_array( $view_as['caps'] ) ) {
 						// The data is an array, most likely from the database
-						foreach ( $view_as['caps'] as $cap_key => $cap_value ) {
-							if ( ! array_key_exists( $cap_key, $this->store->get_caps() ) ) {
-								unset( $view_as['caps'][ $cap_key ] );
-							}
-						}
+						$view_as['caps'] = array_map( 'absint', $view_as['caps'] );
 					} elseif ( is_string( $view_as['caps'] ) ) {
 						// The data is a string so we'll need to convert it to an array
 						$new_caps = explode( ',', $view_as['caps'] );
 						$view_as['caps'] = array();
 						foreach ( $new_caps as $cap_key => $cap_value ) {
-							$cap = explode( ':', $cap_value );
+							$cap = explode( ':', (string) $cap_value );
 							// Make sure the exploded values are valid
-							if ( isset( $cap[1] ) && array_key_exists( $cap[0], $this->store->get_caps() ) ) {
-								$view_as['caps'][ strip_tags( $cap[0] ) ] = (int) $cap[1];
+							if ( isset( $cap[1] ) ) {
+								$view_as['caps'][ strip_tags( (string) $cap[0] ) ] = (int) $cap[1];
 							}
 						}
 						if ( is_array( $view_as['caps'] ) ) {
