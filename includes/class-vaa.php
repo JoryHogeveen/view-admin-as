@@ -195,87 +195,88 @@ final class VAA_View_Admin_As
 		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
 
 		// We can't do this check before `plugins_loaded` hook
-		if ( is_user_logged_in() ) {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
 
-			$this->store->set_nonce( 'view-admin-as' );
+		$this->store->set_nonce( 'view-admin-as' );
 
-			// Get the current user
-			$this->store->set_curUser( wp_get_current_user() );
+		// Get the current user
+		$this->store->set_curUser( wp_get_current_user() );
 
-			// Get the current user session
-			if ( function_exists( 'wp_get_session_token' ) ) {
-				// WP 4.0+
-				$this->store->set_curUserSession( (string) wp_get_session_token() );
+		// Get the current user session
+		if ( function_exists( 'wp_get_session_token' ) ) {
+			// WP 4.0+
+			$this->store->set_curUserSession( (string) wp_get_session_token() );
+		} else {
+			$cookie = wp_parse_auth_cookie( '', 'logged_in' );
+			if ( ! empty( $cookie['token'] ) ) {
+				$this->store->set_curUserSession( (string) $cookie['token'] );
 			} else {
-				$cookie = wp_parse_auth_cookie( '', 'logged_in' );
-				if ( ! empty( $cookie['token'] ) ) {
-					$this->store->set_curUserSession( (string) $cookie['token'] );
-				} else {
-					// Fallback. This disables the use of multiple views in different sessions
-					$this->store->set_curUserSession( $this->store->get_curUser()->ID );
-				}
+				// Fallback. This disables the use of multiple views in different sessions
+				$this->store->set_curUserSession( $this->store->get_curUser()->ID );
 			}
+		}
+
+		/**
+		 * Validate if the current user has access to the functionalities
+		 *
+		 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
+		 *                Disable plugin functions for network admin pages
+		 * @since  1.4    Make sure we have a session for the current user
+		 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
+		 *                Note that in network installations the non-admin user also needs the manage_network_users
+		 *                capability (of not the edit_users will return false)
+		 * @since  1.5.3  Enable on network pages for superior admins
+		 */
+		if (   ( is_super_admin( $this->store->get_curUser()->ID )
+				 || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
+			&& ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
+			&& $this->store->get_curUserSession() != ''
+		) {
+			$this->enable = true;
+		}
+
+		// Get database settings
+		$this->store->set_optionData( get_option( $this->store->get_optionKey() ) );
+		// Get database settings of the current user
+		$this->store->set_userMeta( get_user_meta( $this->store->get_curUser()->ID, $this->store->get_userMetaKey(), true ) );
+
+		$this->load_modules();
+
+		// Check if a database update is needed
+		VAA_View_Admin_As_Update::get_instance( $this )->maybe_db_update();
+
+		if ( $this->is_enabled() ) {
+
+			// Fix some compatibility issues, more to come!
+			VAA_View_Admin_As_Compat::get_instance( $this )->init();
+
+			$this->store->store_caps();
+			$this->store->store_roles();
+			$this->store->store_users();
+
+			$this->view->init();
+
+			$this->load_ui();
+
+			// Dúh..
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+			add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 
 			/**
-			 * Validate if the current user has access to the functionalities
-			 *
-			 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
-			 *                Disable plugin functions for network admin pages
-			 * @since  1.4    Make sure we have a session for the current user
-			 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
-			 *                Note that in network installations the non-admin user also needs the manage_network_users
-			 *                capability (of not the edit_users will return false)
-			 * @since  1.5.3  Enable on network pages for superior admins
+			 * Init is finished. Hook is used for other classes related to View Admin As
+			 * @since  1.5
+			 * @param  object  $this  VAA_View_Admin_As
 			 */
-			if (   ( is_super_admin( $this->store->get_curUser()->ID )
-				     || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
-			    && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
-			    && $this->store->get_curUserSession() != ''
-			) {
-				$this->enable = true;
-			}
+			do_action( 'vaa_view_admin_as_init', $this );
 
-			// Get database settings
-			$this->store->set_optionData( get_option( $this->store->get_optionKey() ) );
-			// Get database settings of the current user
-			$this->store->set_userMeta( get_user_meta( $this->store->get_curUser()->ID, $this->store->get_userMetaKey(), true ) );
-
-			$this->load_modules();
-
-			// Check if a database update is needed
-			VAA_View_Admin_As_Update::get_instance( $this )->maybe_db_update();
-
-			if ( $this->is_enabled() ) {
-
-				// Fix some compatibility issues, more to come!
-				VAA_View_Admin_As_Compat::get_instance( $this )->init();
-
-				$this->store->store_caps();
-				$this->store->store_roles();
-				$this->store->store_users();
-
-				$this->view->init();
-
-				$this->load_ui();
-
-				// Dúh..
-				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-				add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
-
-				/**
-				 * Init is finished. Hook is used for other classes related to View Admin As
-				 * @since  1.5
-				 * @param  object  $this  VAA_View_Admin_As
-				 */
-				do_action( 'vaa_view_admin_as_init', $this );
-
-			} else {
-				// Extra security check for non-admins who did something naughty or we're demoted to a lesser role
-				// If they have settings etc. we'll keep them in case they get promoted again
-				add_action( 'wp_login', array( $this->view, 'reset_all_views' ), 10, 2 );
-			}
+		} else {
+			// Extra security check for non-admins who did something naughty or we're demoted to a lesser role
+			// If they have settings etc. we'll keep them in case they get promoted again
+			add_action( 'wp_login', array( $this->view, 'reset_all_views' ), 10, 2 );
 		}
 	}
 
