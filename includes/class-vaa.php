@@ -189,11 +189,6 @@ final class VAA_View_Admin_As
 	 */
 	private function run() {
 
-		// Not needed, the delete_user actions already remove all metadata
-		//add_action( 'remove_user_from_blog', array( $this->store, 'delete_user_meta' ) );
-		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
-		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
-
 		// We can't do this check before `plugins_loaded` hook
 		if ( ! is_user_logged_in() ) {
 			return;

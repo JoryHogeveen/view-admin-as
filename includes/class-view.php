@@ -49,6 +49,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		add_action( 'wp_login',  array( $this, 'reset_view' ), 10, 2 );
 		add_action( 'wp_logout', array( $this, 'reset_view' ) );
 
+		// Not needed, the delete_user actions already remove all metadata, keep code for possible future use
+		//add_action( 'remove_user_from_blog', array( $this->store, 'delete_user_meta' ) );
+		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
+		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
+
 		/**
 		 * Change expiration time for view meta
 		 *
@@ -534,7 +539,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		// @since  1.6.2  Filter is documented in VAA_View_Admin_As::enqueue_scripts (includes/class-vaa.php)
-		$allowed_keys = array_unique( array_merge( apply_filters( 'view_admin_as_view_types', array() ), $allowed_keys ) );
+		$allowed_keys = array_unique( array_merge(
+			array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
+			$allowed_keys
+		) );
 
 		// We only want allowed keys and data, otherwise it's not added through this plugin.
 		foreach ( $view_as as $key => $value ) {

@@ -159,6 +159,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		var data = {
 			'action': 'view_admin_as',
 			'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
+			// @since  1.6.2  Use JSON data
 			'view_admin_as': JSON.stringify( viewAs )
 		};
 
