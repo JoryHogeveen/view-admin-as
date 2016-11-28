@@ -6,7 +6,7 @@ Requires at least: 3.5
 Tested up to: 4.7
 Stable tag: 1.6.2
 
-View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
+View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
 == Description ==
 
@@ -101,6 +101,8 @@ If the amount of users is more than 10 you can find them under their roles or yo
 Only the capabilities that are allowed for your user are shown.
 You can deselect the capabilities by clicking on them. When you would like to see the results just click the apply button on the upper left.
 
+*Please note that as an administrator you don't have all capabilities listed by default. This is because WP overrules some capability checks for super admins. **This does not happen when you are in a view!***
+
 You can also filter the roles by name or select/deselect all capabilities.
 Note: When you select/deselect capabilities while you've filtered them only the capabilities shown by your filter are affected!
 
@@ -162,13 +164,13 @@ This plugin is also useful to support your clients and/or users. For example; ma
 = 1.6.2 =
 
 *	Feature: A new view! You can now see your site as an unregistered visitor (no need to switch browsers) [#14](https://github.com/JoryHogeveen/view-admin-as/issues/14)
-*	Enhancement: Reduced queries needed for getting the available users to **1**! Performance improvement to the native WP function `get_users()` (with fallback if needed) [#24](https://github.com/JoryHogeveen/view-admin-as/issues/24)
+*	Enhancement: Reduced queries for getting the available users to **1**! *Performance improvement to the native WP function `get_users()` (with fallback if needed)* [#24](https://github.com/JoryHogeveen/view-admin-as/issues/24)
 *	Enhancement: Add all existing roles that have defaults to the clear list even if they have been removed from WP [#22](https://github.com/JoryHogeveen/view-admin-as/issues/22)
 *	Enhancement: Enable the current view as a capability filter
 *	Enhancement: Highlight the view capabilities in the capability menu
-*	Enhancement: Pass view data as JSON (enhances compatibility with WP capabilities)
-*	Fix: Hide our toolbar on customizer pages. Switching in customizer not possible (yet)
-*	Fix: Improve caps view handling
+*	Enhancement: Pass view data as JSON *(enhances compatibility with weird capability identifiers since WP doesn't escape these so it could contain special characters)*
+*	Fix: Hide our toolbar in the customizer preview. Switching in the WP Customizer not possible (yet)
+*	Fix: Improve capability view handling
 *	Other minor improvements
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/23)
