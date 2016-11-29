@@ -120,6 +120,7 @@ final class VAA_API
 
 	/**
 	 * Is our custom toolbar showing?
+	 * Do not use this before the `init` hook
 	 *
 	 * @since   1.6
 	 * @access  public
@@ -134,6 +135,25 @@ final class VAA_API
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Whether the site is being previewed in the Customizer.
+	 * For WP < 4.0
+	 *
+	 * @since   1.6.2
+	 * @see     https://developer.wordpress.org/reference/functions/is_customize_preview/
+	 * @global  WP_Customize_Manager  $wp_customize
+	 * @return  bool
+	 */
+	public static function is_customize_preview() {
+
+		if ( function_exists('is_customize_preview') ) {
+			return is_customize_preview();
+		}
+
+		global $wp_customize;
+		return ( $wp_customize instanceof WP_Customize_Manager ) && $wp_customize->is_preview();
 	}
 
 	/**

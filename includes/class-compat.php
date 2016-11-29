@@ -192,18 +192,3 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	}
 
 } // end class
-
-/**
- * WP < 4.0
- * Whether the site is being previewed in the Customizer.
- * @see    https://developer.wordpress.org/reference/functions/is_customize_preview/
- * @since  1.6.2
- * @todo   Move these type of compat functions to separate file?
- */
-if ( ! function_exists('is_customize_preview') ) {
-	function is_customize_preview() {
-		global $wp_customize;
-
-		return ( $wp_customize instanceof WP_Customize_Manager ) && $wp_customize->is_preview();
-	}
-}
