@@ -23,12 +23,12 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param  int  $user_id
-	 * @return bool
+	 * @param   int  $user_id
+	 * @return  bool
 	 */
 	public static function is_superior_admin( $user_id ) {
 		// Is it a super admin and is it one of the manually configured superior admins?
-		return ( true === is_super_admin( $user_id ) && in_array( $user_id, self::get_superior_admins() ) ) ? true : false;
+		return (bool) ( true === is_super_admin( $user_id ) && in_array( $user_id, self::get_superior_admins() ) );
 	}
 
 	/**

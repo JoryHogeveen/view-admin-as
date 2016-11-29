@@ -174,7 +174,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 * Print script in the admin header
 		 * Also handles the lock_meta_boxes setting
 		 * @since  1.6
-		 * @since  1.6.2  Move to footer
+		 * @since  1.6.2  Move to footer (changed hook)
 		 */
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
 	}
@@ -325,34 +325,26 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		}
 
-		// From here all featured need this module enabled first
+		// From here all features need this module enabled
 		if ( ! $this->is_enabled() ) {
 			return $success;
 		}
 
 		if ( isset( $data['apply_defaults_on_register'] ) ) {
-			if ( true == $data['apply_defaults_on_register'] ) {
-				$success = $this->update_optionData( true, 'apply_defaults_on_register', true );
-			} else {
-				$success = $this->update_optionData( false, 'apply_defaults_on_register', true );
-			}
+			$value = (bool) $data['apply_defaults_on_register'];
+			$success = $this->update_optionData( $value, 'apply_defaults_on_register', true );
 		}
 		if ( isset( $data['disable_user_screen_options'] ) ) {
-			if ( true == $data['disable_user_screen_options'] ) {
-				$success = $this->update_optionData( true, 'disable_user_screen_options', true );
-			} else {
-				$success = $this->update_optionData( false, 'disable_user_screen_options', true );
-			}
+			$value = (bool) $data['disable_user_screen_options'];
+			$success = $this->update_optionData( $value, 'disable_user_screen_options', true );
 		}
 		if ( isset( $data['lock_meta_boxes'] ) ) {
-			if ( true == $data['lock_meta_boxes'] ) {
-				$success = $this->update_optionData( true, 'lock_meta_boxes', true );
-			} else {
-				$success = $this->update_optionData( false, 'lock_meta_boxes', true );
-			}
+			$value = (bool) $data['lock_meta_boxes'];
+			$success = $this->update_optionData( $value, 'lock_meta_boxes', true );
 		}
 		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
 			foreach ( $data['apply_defaults_to_users'] as $userData ) {
+				// @todo Send as JSON?
 				$userData = explode( '|', $userData );
 				if ( is_numeric( $userData[0] ) && isset( $userData[1] ) && is_string( $userData[1] ) ) {
 					$success = $this->update_user_with_role_defaults( intval( $userData[0] ), $userData[1] );
@@ -839,22 +831,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		$root = $root . '-role-defaults';
 
-		$role_select_options = array(
-			array(
-				'label' => ' --- '
-			),
-			array(
-				'value' => 'all',
-				'label' => __('All roles', 'view-admin-as')
-			)
-		);
-		foreach ( $this->get_roles() as $role_key => $role ) {
-			$role_select_options[] = array(
-				'value' => esc_attr( $role_key ),
-				'label' => translate_user_role( $role->name )
-			);
-		}
-
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-register-enable',
 			'parent' => $root,
@@ -903,6 +879,22 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Bulk actions
 		 */
+
+		$role_select_options = array(
+			array(
+				'label' => ' --- '
+			),
+			array(
+				'value' => 'all',
+				'label' => ' - ' . __('All roles', 'view-admin-as') . ' - '
+			)
+		);
+		foreach ( $this->get_roles() as $role_key => $role ) {
+			$role_select_options[] = array(
+				'value' => esc_attr( $role_key ),
+				'label' => translate_user_role( $role->name )
+			);
+		}
 
 		if ( $this->get_users() ) {
 			// Users select
@@ -1122,7 +1114,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 				array(
 					'value' => 'all',
-					'label' => __('All roles', 'view-admin-as')
+					'label' => ' - ' . __('All roles', 'view-admin-as') . ' - '
 				)
 			);
 			foreach ( $this->get_optionData( 'roles' ) as $role_key => $role ) {

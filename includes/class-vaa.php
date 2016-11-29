@@ -492,7 +492,6 @@ final class VAA_View_Admin_As
 			 * @param  array
 			 * @return array  An array of strings (view types)
 			 */
-
 			$script_localization['view_types'] = array_unique( array_merge(
 				array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
 				array( 'user', 'role', 'caps', 'visitor' )
@@ -582,7 +581,7 @@ final class VAA_View_Admin_As
 	 * @param   string|bool  $key  (optional) UI class name
 	 * @return  array|object
 	 */
-	public function get_ui( $key ) {
+	public function get_ui( $key = false ) {
 		return VAA_API::get_array_data( $this->ui, $key );
 	}
 
@@ -674,17 +673,6 @@ final class VAA_View_Admin_As
 		global $wp_version;
 		$valid = true;
 
-		// Validate PHP
-		/*if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
-			$this->add_notice('php-version', array(
-				'type' => 'notice-error',
-				'message' => __('View Admin As', 'view-admin-as') . ': ' . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'PHP', '5.3' ),
-			) );
-			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
-			$valid = false;
-		}*/
-
 		// Validate WP
 		if ( version_compare( $wp_version, '3.5', '<' ) ) {
 			$this->add_notice('wp-version', array(
@@ -706,7 +694,7 @@ final class VAA_View_Admin_As
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *
 	 * @since   1.4.1
-	 * @since   1.6    Restrict access to known classes
+	 * @since   1.6    Restrict direct access to known classes
 	 * @access  public
 	 * @static
 	 * @see     View_Admin_As()

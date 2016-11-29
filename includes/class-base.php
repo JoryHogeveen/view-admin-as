@@ -105,7 +105,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Is the main class enabled? (for other classes)
+	 * Is the main functionality enabled?
 	 *
 	 * @since   1.5
 	 * @access  public
@@ -114,7 +114,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	final public function is_vaa_enabled() { return (bool) $this->vaa->is_enabled(); }
 
 	/**
-	 * Is enabled? (for other classes)
+	 * Is enabled?
 	 *
 	 * @since   1.5
 	 * @access  public

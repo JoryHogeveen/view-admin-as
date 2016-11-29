@@ -75,11 +75,20 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init() {
 
-		// Reset view to default if something goes wrong, example: http://www.your.domain/wp-admin/?reset-view
+		/**
+		 * Reset view to default if something goes wrong
+		 * @since    0.1
+		 * @since    1.2  Only check for key
+		 * @example  http://www.your.domain/wp-admin/?reset-view
+		 */
 		if ( isset( $_GET['reset-view'] ) ) {
 			$this->reset_view();
 		}
-		// Clear all user views, example: http://www.your.domain/wp-admin/?reset-all-views
+		/**
+		 * Clear all user views
+		 * @since    1.3.4
+		 * @example  http://www.your.domain/wp-admin/?reset-all-views
+		 */
 		if ( isset( $_GET['reset-all-views'] ) ) {
 			$this->reset_all_views();
 		}
@@ -151,6 +160,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   0.1
 	 * @since   1.5     Changed function name to map_meta_cap (was change_caps)
 	 * @since   1.6     Moved to this class from main class
+	 * @since   1.6.2   Use logic from current_view_can()
 	 * @access  public
 	 *
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
@@ -211,7 +221,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5     Validate a nonce
 	 *                  Added global and user setting handler
 	 * @since   1.6     Moved to this class from main class
-	 * @since   1.6.2   Added visitor view handler
+	 * @since   1.6.2   Added visitor view handler + JSON view data
 	 * @access  public
 	 * @return  void
 	 */
@@ -302,7 +312,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 						}
 					}
 				}
-				break; // POSSIBLY TODO: Only the first key is actually used at this point
+				break; // @todo Maybe check for multiple keys
 			}
 		}
 
@@ -375,11 +385,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class
 	 * @access  public
 	 *
-	 * @param   array|bool  $data
+	 * @param   array  $data
 	 * @return  bool
 	 */
-	public function update_view( $data = false ) {
-		if ( false != $data && $data = $this->validate_view_as_data( $data ) ) {
+	public function update_view( $data ) {
+		if ( $data = $this->validate_view_as_data( $data ) ) {
 			$meta = $this->store->get_userMeta('views');
 			// Make sure it is an array (no array means no valid data so we can safely clear it)
 			if ( ! is_array( $meta ) ) {
@@ -465,9 +475,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 						unset( $meta['views'][ $key ] );
 					}
 				}
-				if ( empty( $meta['views'] ) ) {
-					$meta['views'] = false;
-				}
 				// Update current metadata if it is the current user
 				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
 					$this->store->set_userMeta( $meta );
@@ -502,7 +509,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, reset it
 			if ( isset( $meta['views'] ) ) {
-				$meta['views'] = false;
+				$meta['views'] = array();
 				// Update current metadata if it is the current user
 				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
 					$this->store->set_userMeta( $meta );
@@ -527,7 +534,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function validate_view_as_data( $view_as ) {
 
-		if ( ! is_array( $view_as ) ) {
+		if ( ! is_array( $view_as ) || empty( $view_as ) ) {
 			return array();
 		}
 

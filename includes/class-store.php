@@ -61,6 +61,27 @@ final class VAA_View_Admin_As_Store
 	);
 
 	/**
+	 * User meta key for settings ans views
+	 *
+	 * @since  1.3.4
+	 * @since  1.6    Moved to this class from main class
+	 * @var    bool
+	 */
+	private $userMetaKey = 'vaa-view-admin-as';
+
+	/**
+	 * User meta value for settings ans views
+	 *
+	 * @since  1.5
+	 * @since  1.6    Moved to this class from main class
+	 * @var    array
+	 */
+	private $userMeta = array(
+		'settings',
+		'views',
+	);
+
+	/**
 	 * Array of default settings
 	 *
 	 * @since  1.5
@@ -97,7 +118,7 @@ final class VAA_View_Admin_As_Store
 
 	/**
 	 * Array of allowed settings
-	 * Key => array()
+	 * Setting name (key) => array( values )
 	 *
 	 * @since  1.5
 	 * @since  1.5.2  added force_group_users
@@ -114,27 +135,6 @@ final class VAA_View_Admin_As_Store
 	);
 
 	/**
-	 * Meta key for view data
-	 *
-	 * @since  1.3.4
-	 * @since  1.6    Moved to this class from main class
-	 * @var    bool
-	 */
-	private $userMetaKey = 'vaa-view-admin-as';
-
-	/**
-	 * Complete meta value
-	 *
-	 * @since  1.5
-	 * @since  1.6    Moved to this class from main class
-	 * @var    array
-	 */
-	private $userMeta = array(
-		'settings',
-		'views',
-	);
-
-	/**
 	 * Array of available capabilities
 	 *
 	 * @since  1.3
@@ -144,7 +144,7 @@ final class VAA_View_Admin_As_Store
 	private $caps = array();
 
 	/**
-	 * Array of available roles
+	 * Array of available roles (WP_Role objects)
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class
@@ -153,13 +153,22 @@ final class VAA_View_Admin_As_Store
 	private $roles = array();
 
 	/**
-	 * Array of available user objects
+	 * Array of available users (WP_User objects)
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class
 	 * @var    array
 	 */
 	private $users = array();
+
+	/**
+	 * Array of available user ID's (key) and display names (value)
+	 *
+	 * @since  0.1
+	 * @since  1.6    Moved to this class from main class
+	 * @var    array
+	 */
+	private $userids = array();
 
 	/**
 	 * Current user object
@@ -189,15 +198,6 @@ final class VAA_View_Admin_As_Store
 	 * @var    array
 	 */
 	private $viewAs = array();
-
-	/**
-	 * Array of available user ID's (key) and display names (value)
-	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class
-	 * @var    array
-	 */
-	private $userids = array();
 
 	/**
 	 * The selected user object (if the user view is selected)
@@ -241,7 +241,8 @@ final class VAA_View_Admin_As_Store
 		$roles = $wp_roles->role_objects; // role_objects for objects, roles for arrays
 		$role_names = $wp_roles->role_names;
 
-		// @see  https://codex.wordpress.org/Plugin_API/Filter_Reference/editable_roles
+		// @see   https://codex.wordpress.org/Plugin_API/Filter_Reference/editable_roles
+		// @todo  Parameter should probably $wp_roles->roles, verify this
 		$roles = apply_filters( 'editable_roles', $roles );
 
 		if ( ! is_super_admin( $this->get_curUser()->ID ) ) {
@@ -324,7 +325,7 @@ final class VAA_View_Admin_As_Store
 				}
 			}
 
-			// Build network super admins where clause
+			// @todo Maybe build network super admins where clause for SQL instead of `get_user_by`
 			/*if ( ! empty( $users ) && $include = implode( ',', array_map( 'strval', $users ) ) ) {
 				$user_query['where'] .= " AND users.user_login IN ({$include})";
 			}*/
@@ -392,15 +393,12 @@ final class VAA_View_Admin_As_Store
 				$users = get_users( $user_args );
 			}
 
-			//if ( ! is_network_admin() ) {
-				// Sort users by role and filter them on available roles
-				$users = $this->filter_sort_users_by_role( $users );
-			//}
+			// Sort users by role and filter them on available roles
+			$users = $this->filter_sort_users_by_role( $users );
 		}
 
-		// @todo Maybe $userids and $usernames isn't needed anymore
+		// @todo Maybe $userids isn't needed anymore
 		$userids = array();
-		$usernames = array();
 
 		foreach ( $users as $user_key => $user ) {
 
@@ -434,7 +432,6 @@ final class VAA_View_Admin_As_Store
 
 			// Add users who can't access this plugin to the users list
 			$userids[ $user->data->ID ] = $user->data->display_name;
-			$usernames[ $user->data->user_login ] = $user->data->display_name;
 		}
 
 		$this->set_users( $users );
@@ -462,12 +459,14 @@ final class VAA_View_Admin_As_Store
 	public function _filter_get_user_capabilities( $null, $user_id, $meta_key ) {
 		global $wpdb;
 		if ( $wpdb->get_blog_prefix() . 'capabilities' == $meta_key && array_key_exists( $user_id, $this->get_users() ) ) {
-			// Always return an array format due to $single handling (unused 4th parameter)
+
 			$roles = $this->get_users( $user_id )->roles;
 			if ( is_string( $roles ) ) {
 				// It is still raw DB data, unserialize it
 				$roles = unserialize( $roles );
 			}
+
+			// Always return an array format due to $single handling (unused 4th parameter)
 			return array( $roles );
 		}
 		return $null;
