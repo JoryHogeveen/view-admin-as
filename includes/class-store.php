@@ -671,14 +671,39 @@ final class VAA_View_Admin_As_Store
 	 *
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class
+	 * @since   1.6.2  Option to remove the VAA metadata for all users
 	 * @access  public
 	 *
-	 * @param   int|bool     $user_id     ID of the user being deleted/removed
-	 * @param   object|bool  $user        User object provided by the wp_login hook
-	 * @param   bool         $reset_only  Only reset (not delete) the user meta
+	 * @global  wpdb        $wpdb
+	 * @param   int|string  $user_id     ID of the user being deleted/removed (pass `all` for all users)`
+	 * @param   object      $user        User object provided by the wp_login hook
+	 * @param   bool        $reset_only  Only reset (not delete) the user meta
 	 * @return  bool
 	 */
-	public function delete_user_meta( $user_id = false, $user = false, $reset_only = true ) {
+	public function delete_user_meta( $user_id = null, $user = null, $reset_only = true ) {
+		global $wpdb;
+
+		/**
+		 * Set the first parameter to `all` to remove the meta value for all users
+		 * @since  1.6.2
+		 * @see    https://developer.wordpress.org/reference/classes/wpdb/update/
+		 * @see    https://developer.wordpress.org/reference/classes/wpdb/delete/
+		 */
+		if ( 'all' == $user_id ) {
+			if ( $reset_only ) {
+				return (bool) $wpdb->update(
+					$wpdb->usermeta, // table
+					array( 'meta_value', false ), // data
+					array( 'meta_key' => $this->get_userMetaKey() ) // where
+				);
+			} else {
+				return (bool) $wpdb->delete(
+					$wpdb->usermeta, // table
+					array( 'meta_key' => $this->get_userMetaKey() ) // where
+				);
+			}
+		}
+
 		$id = false;
 		if ( is_numeric( $user_id ) ) {
 			// Delete hooks
