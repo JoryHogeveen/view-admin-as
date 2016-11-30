@@ -401,7 +401,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			// Add the new view metadata and expiration date
 			$meta[ $this->store->get_curUserSession() ] = array(
 				'view' => $data,
-				'expire' => ( time() + $this->viewExpiration ),
+				'expire' => ( time() + (int) $this->viewExpiration ),
 			);
 			// Update metadata (returns: true on success, false on failure)
 			return $this->store->update_userMeta( $meta, 'views', true );
@@ -474,7 +474,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				}
 				foreach ( $meta['views'] as $key => $value ) {
 					// Check expiration date: if it doesn't exist or is in the past, remove it
-					if ( ! isset( $meta['views'][ $key ]['expire'] ) || time() > $meta['views'][ $key ]['expire'] ) {
+					if ( ! isset( $meta['views'][ $key ]['expire'] ) || time() > (int) $meta['views'][ $key ]['expire'] ) {
 						unset( $meta['views'][ $key ] );
 					}
 				}
