@@ -7,12 +7,12 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
-if ( ! class_exists( 'VAA_View_Admin_As_Static_Actions' ) ) {
+if ( ! class_exists( 'VAA_View_Admin_As_Admin' ) ) {
 
 final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 {
@@ -116,6 +116,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * Plugin links
 	 *
 	 * @since   1.6.1
+	 * @since   1.6.2  Added Slack channel link
 	 * @return  array
 	 */
 	public function get_links() {
@@ -126,6 +127,12 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 					'description' => __( 'Need support?', 'view-admin-as' ),
 					'icon'  => 'dashicons-testimonial',
 					'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
+				),
+				'slack' => array(
+					'title' => __( 'Slack', 'view-admin-as' ),
+					'description' => __( 'Quick help via Slack', 'view-admin-as' ),
+					'icon'  => 'dashicons-format-chat',
+					'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
 				),
 				'review' => array(
 					'title' => __( 'Review', 'view-admin-as' ),

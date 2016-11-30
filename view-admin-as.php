@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: View Admin As
- * Description: View the WordPress admin as a specific role, switch between users and temporarily change your capabilities.
+ * Description: View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
  * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.6.1
+ * Version:     1.6.2
  * Author:      Jory Hogeveen
  * Author URI:  https://www.keraweb.nl
  * Text Domain: view-admin-as
@@ -13,7 +13,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 /*
@@ -33,14 +33,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
- *
  */
 
 ! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
 
 if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
-	define( 'VIEW_ADMIN_AS_VERSION',    '1.6.1' );
+	define( 'VIEW_ADMIN_AS_VERSION',    '1.6.2' );
 	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.6' );
 	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
 	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );

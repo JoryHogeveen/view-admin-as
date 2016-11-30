@@ -3,11 +3,12 @@
  * View Admin As - Class Base
  *
  * Base class that gets the VAA data from the main class
+ * Use this class as an extender for other classes
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.5
- * @version 1.6
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -18,15 +19,15 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Option key
 	 *
 	 * @since  1.5
-	 * @var    string|bool
+	 * @var    string
 	 */
-	protected $optionKey = false;
+	protected $optionKey = '';
 
 	/**
 	 * Option data
 	 *
 	 * @since  1.5
-	 * @var    array|bool
+	 * @var    mixed
 	 */
 	protected $optionData = false;
 
@@ -50,17 +51,17 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * View Admin As object
 	 *
 	 * @since  1.5
-	 * @var    object|bool
+	 * @var    VAA_View_Admin_As
 	 */
-	protected $vaa = false;
+	protected $vaa = null;
 
 	/**
 	 * View Admin As store object
 	 *
 	 * @since  1.6
-	 * @var    object|bool
+	 * @var    VAA_View_Admin_As_Store
 	 */
-	protected $store = false;
+	protected $store = null;
 
 	/**
 	 * Script localization data
@@ -98,11 +99,13 @@ abstract class VAA_View_Admin_As_Class_Base
 		if ( ! is_object( $vaa ) || 'VAA_View_Admin_As' != get_class( $vaa ) ) {
 			$this->vaa = View_Admin_As( $this );
 		}
-		$this->store = $this->vaa->store();
+		if ( $this->vaa ) {
+			$this->store = $this->vaa->store();
+		}
 	}
 
 	/**
-	 * Is the main class enabled? (for other classes)
+	 * Is the main functionality enabled?
 	 *
 	 * @since   1.5
 	 * @access  public
@@ -111,26 +114,31 @@ abstract class VAA_View_Admin_As_Class_Base
 	final public function is_vaa_enabled() { return (bool) $this->vaa->is_enabled(); }
 
 	/**
-	 * Is enabled? (for other classes)
+	 * Is enabled?
 	 *
 	 * @since   1.5
 	 * @access  public
 	 * @return  bool
 	 */
-	final public function is_enabled() { return (bool) $this->enable; }
+	public function is_enabled() { return (bool) $this->enable; }
 
 	/**
 	 * Set plugin enabled true/false
 	 *
 	 * @since   1.5.1
+	 * @since   1.6.2  Make database update optional
 	 * @access  protected
 	 * @param   bool
+	 * @param   bool  $update  Do database update?
 	 * @return  bool
 	 */
-	protected function set_enable( $bool = false ) {
-		$success = $this->update_optionData( $bool, 'enable', true );
+	protected function set_enable( $bool = false, $update = true ) {
+		$success = true;
+		if ( $update && $this->get_optionKey() ) {
+			$success = $this->update_optionData( (bool) $bool, 'enable', true );
+		}
 		if ( $success ) {
-			$this->enable = $bool;
+			$this->enable = (bool) $bool;
 		}
 		return $success;
 	}
@@ -145,7 +153,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function add_capabilities( $caps ) {
-		foreach ( $this->capabilities as $cap ) {
+		foreach ( (array) $this->capabilities as $cap ) {
 			$caps[ $cap ] = $cap;
 		}
 		return $caps;
@@ -153,7 +161,7 @@ abstract class VAA_View_Admin_As_Class_Base
 
 	/*
 	 * VAA Store Getters
-	 * Make sure that you've called vaa_init(); BEFORE using these functions!
+	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
 	 */
 	protected function get_curUser()                           { return $this->store->get_curUser(); }
 	protected function get_curUserSession()                    { return $this->store->get_curUserSession(); }
@@ -161,9 +169,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	protected function get_caps( $key = false )                { return $this->store->get_caps( $key ); }
 	protected function get_roles( $key = false )               { return $this->store->get_roles( $key ); }
 	protected function get_users( $key = false )               { return $this->store->get_users( $key ); }
-	protected function get_selectedUser()                      { return $this->store->get_selectedUser(); }
 	protected function get_userids()                           { return $this->store->get_userids(); }
-	protected function get_usernames()                         { return $this->store->get_usernames(); }
+	protected function get_selectedUser()                      { return $this->store->get_selectedUser(); }
+	protected function get_selectedCaps()                      { return $this->store->get_selectedCaps(); }
 	protected function get_settings( $key = false )            { return $this->store->get_settings( $key ); }
 	protected function get_userSettings( $key = false )        { return $this->store->get_userSettings( $key ); }
 	protected function get_defaultSettings( $key = false )     { return $this->store->get_defaultSettings( $key ); }
@@ -175,7 +183,7 @@ abstract class VAA_View_Admin_As_Class_Base
 
 	/*
 	 * VAA Getters
-	 * Make sure that you've called vaa_init(); BEFORE using these functions!
+	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
 	 */
 	protected function get_modules( $key = false ) { return $this->vaa->get_modules( $key ); }
 
@@ -198,7 +206,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/*
-	 * Update
+	 * Native Update
 	 */
 	protected function update_optionData( $var, $key = false, $append = false ) {
 		$this->set_optionData( $var, $key, $append );

@@ -1,28 +1,29 @@
-/**
+/*!
  * View Admin As
  * https://wordpress.org/plugins/view-admin-as/
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6.1
+ * @since   1.1
+ * @version 1.6.2
+ * @preserve
  */
 
 #vaa-overlay {position: fixed; top: 0; left: 0; height: 100%; width: 100%; background: rgba(255,255,255,0.85); display: none; z-index: 999999999;}
-#vaa-overlay .vaa-loader-icon {position: fixed; width: 40px; height: 40px; top: 50%; left: 50%; margin: -20px 0 0 -20px; display: block; }
+#vaa-overlay .vaa-loader-icon {position: fixed; width: 40px; height: 40px; top: 50%; left: 50%; margin: -20px 0 0 -20px; display: block;}
 #vaa-overlay .vaa-overlay-container {max-width: 75%; min-width: 50%; max-height: 50%; min-height: 20px; margin: 5% 25%; background: #fff; box-shadow: 0 0 5px #aaa; padding: 10px; border-radius: 3px; position: relative;}
-#vaa-overlay .vaa-overlay-container > .remove {position: absolute; right: -10px; top: -10px; background: #FFF; width: 20px; height: 20px;}
-#vaa-overlay .vaa-overlay-container > .remove:hover {cursor: pointer;}
+#vaa-overlay .vaa-overlay-container > .remove {position: absolute; right: -10px; top: -10px; background: #FFF; width: 20px; height: 20px; cursor: pointer;}
 
-#vaa-overlay.inner {position: absolute;}
+#vaa-overlay.inner,
 #vaa-overlay.inner .vaa-loader-icon {position: absolute;}
 /*
 #vaa-overlay.error {background-color: rgba(220, 50, 50, 0.85);}
 #vaa-overlay.success {background-color: rgba(70, 180, 80, 0.85);}
 */
-#wpadminbar .vaa-update.vaa-error {display: inline-block; color: #dc3232; background: #fff; padding: 0 10px;}
-#wpadminbar .vaa-update.vaa-error .ab-icon:before {color: #dc3232;}
-#wpadminbar .vaa-update.vaa-success {display: inline-block; color: #46b450; background: #fff; padding: 0 10px;}
-#wpadminbar .vaa-update.vaa-success .ab-icon:before {color: #46b450;}
+#wpadminbar .vaa-notice.vaa-error {display: inline-block; color: #dc3232; background: #fff; padding: 0 10px;}
+#wpadminbar .vaa-notice.vaa-error .ab-icon:before {color: #dc3232;}
+#wpadminbar .vaa-notice.vaa-success {display: inline-block; color: #46b450; background: #fff; padding: 0 10px;}
+#wpadminbar .vaa-notice.vaa-success .ab-icon:before {color: #46b450;}
 
 #wpadminbar #wp-admin-bar-vaa ul li,
 #wpadminbar #wp-admin-bar-vaa .ab-item {clear: both;}
@@ -40,12 +41,15 @@
 #wpadminbar #wp-admin-bar-vaa > div > ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
 
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
-#wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.9em; font-style: italic; margin-bottom: 7px; white-space: normal;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
 
 #wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item,
-#wpadminbar #wp-admin-bar-vaa .current-parent > .ab-item {font-weight: bold;}
-#wpadminbar #wp-admin-bar-vaa .current > .ab-item::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 17px; vertical-align: middle; font-weight: normal;}
+#wpadminbar #wp-admin-bar-vaa .current > input:checked + label,
+#wpadminbar #wp-admin-bar-vaa .current-parent > .ab-item,
+#wpadminbar #wp-admin-bar-vaa .current-parent > label {font-weight: bold;}
+#wpadminbar #wp-admin-bar-vaa .current > .ab-item::after,
+#wpadminbar #wp-admin-bar-vaa .current > label::after{content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 17px; vertical-align: middle; font-weight: normal;}
 
 #wpadminbar .ab-top-secondary .menupop .vaa-menupop > .ab-item {padding-left: 2em; padding-right: 1em;}
 #wpadminbar .ab-top-secondary .menupop .vaa-menupop > .ab-item .ab-icon {margin-left: -20px; margin-right: 4px;}
@@ -133,16 +137,34 @@
 /**
  * Location: My Account;
  */
-
 #wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item > .ab-label {line-height: 26px;}
 #wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item > .ab-icon {top: 0;}
 
 /**
  * Our custom frontend toolbar
  */
-
 #vaa_toolbar #wpadminbar {position: fixed !important; width: auto; min-width: 0; right: 0; left: auto; border-radius: 0 0 0 5px;}
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {margin-left: 0;}
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-label {display: none;}
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa:hover > .ab-item .ab-icon {margin-left: 6px;}
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa:hover > .ab-item .ab-label {display: inline-block;}
+
+/**
+ * Responsive (still disabled for production)
+ */
+@media screen and (min-width: 480px) and (max-width: 782px) {
+    /*#wpadminbar #wp-admin-bar-vaa {display: block; position: static;}*/
+	#wpadminbar #wp-admin-bar-vaa > div > ul,
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-submenu {padding: 5px 0;}
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item {padding: 8px 16px;}
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item > .ab-item {padding: 8px 0;}
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper:last-child .ab-item.description {margin-bottom: 0;}
+	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: top;}
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon > .ab-item > .ab-icon {font-size: 30px !important; margin-left: -6px; margin-top: -1px;}
+	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 12px; padding-right: 12px;}
+
+	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-hide-responsive {display: none;}
+
+	#wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox,
+	#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {width: 24px; height: 24px;}
+}

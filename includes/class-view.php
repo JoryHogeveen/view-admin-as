@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -24,6 +24,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
+	 * Expiration time for view data
+	 *
+	 * @since  1.3.4  (as $metaExpiration)
+	 * @since  1.6.2  Moved from main class
+	 * @var    int
+	 */
+	private $viewExpiration = 86400; // one day: ( 24 * 60 * 60 )
+
+	/**
 	 * VAA_View_Admin_As_View constructor.
 	 *
 	 * @since   1.6
@@ -36,9 +45,25 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		parent::__construct( $vaa );
 
 		// When a user logs in or out, reset the view to default
-		add_action( 'wp_login', array( $this, 'cleanup_views' ), 10, 2 );
-		add_action( 'wp_login', array( $this, 'reset_view' ), 10, 2 );
+		add_action( 'wp_login',  array( $this, 'cleanup_views' ), 10, 2 );
+		add_action( 'wp_login',  array( $this, 'reset_view' ), 10, 2 );
 		add_action( 'wp_logout', array( $this, 'reset_view' ) );
+
+		// Not needed, the delete_user actions already remove all metadata, keep code for possible future use
+		//add_action( 'remove_user_from_blog', array( $this->store, 'delete_user_meta' ) );
+		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
+		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
+
+		/**
+		 * Change expiration time for view meta
+		 *
+		 * @example  You can set it to 1 to always clear everything after login
+		 * @example  0 will be overwritten!
+		 *
+		 * @param  int  $viewExpiration  86400 (1 day in seconds)
+		 * @return int
+		 */
+		$this->viewExpiration = absint( apply_filters( 'view_admin_as_view_expiration', $this->viewExpiration ) );
 	}
 
 	/**
@@ -50,38 +75,79 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init() {
 
-		// Reset view to default if something goes wrong, example: http://www.your.domain/wp-admin/?reset-view
+		/**
+		 * Reset view to default if something goes wrong
+		 * @since    0.1
+		 * @since    1.2  Only check for key
+		 * @example  http://www.your.domain/wp-admin/?reset-view
+		 */
 		if ( isset( $_GET['reset-view'] ) ) {
 			$this->reset_view();
 		}
-		// Clear all user views, example: http://www.your.domain/wp-admin/?reset-all-views
+		/**
+		 * Clear all user views
+		 * @since    1.3.4
+		 * @example  http://www.your.domain/wp-admin/?reset-all-views
+		 */
 		if ( isset( $_GET['reset-all-views'] ) ) {
 			$this->reset_all_views();
 		}
 
-		// Admin selector ajax return
-		add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
-		//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
-
 		// Get the current view (returns false if not found)
 		$this->store->set_viewAs( $this->get_view() );
+
+		// Short circuit needed for visitor view (BEFORE the current user is set)
+		if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
+			$this->ajax_view_admin_as();
+		}
+
+		// Admin selector ajax return (fallback)
+		add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+		//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 
 		if ( $this->store->get_viewAs() ) {
 
 			// Change current user object so changes can be made on various screen settings
 			// wp_set_current_user() returns the new user object
 			if ( $this->store->get_viewAs('user') ) {
+
+				// @since  1.6.1  Force own locale on view
+				if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
+					add_action( 'init', array( $this, 'freeze_locale' ), 0 );
+				}
+
 				$this->store->set_selectedUser( wp_set_current_user( $this->store->get_viewAs('user') ) );
+
+				// @since  1.6.2  Set the caps for this view
+				if ( is_object( $this->store->get_selectedUser() ) ) {
+					$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
+				}
 			}
 
 			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
+
+				// @since  1.6.2  Set the caps for this view
+				if ( $this->store->get_viewAs('role')
+				     && is_object( $this->store->get_roles( $this->store->get_viewAs('role') ) )
+				) {
+					// Role view
+					$this->store->set_selectedCaps(
+						$this->store->get_roles( $this->store->get_viewAs('role') )->capabilities
+					);
+				} elseif ( $this->store->get_viewAs('caps') ) {
+					// Caps view
+					$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
+				}
+
 				// Change the capabilities (map_meta_cap is better for compatibility with network admins)
 				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
 			}
 
-			// @since  1.6.1  Force own locale on view
-			if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
-				add_action( 'init', array( $this, 'freeze_locale' ) );
+			// @since  1.6.2  Check for the visitor view
+			if ( $this->store->get_viewAs('visitor') ) {
+
+				// Set the current user to 0/false if viewing as a site visitor
+				$this->store->set_selectedUser( wp_set_current_user( 0 ) );
 			}
 		}
 
@@ -94,6 +160,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   0.1
 	 * @since   1.5     Changed function name to map_meta_cap (was change_caps)
 	 * @since   1.6     Moved to this class from main class
+	 * @since   1.6.2   Use logic from current_view_can()
 	 * @access  public
 	 *
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
@@ -104,29 +171,42 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
 
-		$filter_caps = false;
-		if ( $this->store->get_viewAs('role') && $this->store->get_roles() ) {
-			// Role view
-			$filter_caps = $this->store->get_roles( $this->store->get_viewAs('role') )->capabilities;
-		} elseif ( $this->store->get_viewAs('caps') ) {
-			// Caps view
-			$filter_caps = $this->store->get_viewAs('caps');
-		}
+		$filter_caps = (array) $this->store->get_selectedCaps();
 
-		if ( false !== $filter_caps ) {
-			// Cast to an array
-			$filter_caps = (array) $filter_caps;
-			foreach ( $caps as $actual_cap ) {
-				if ( ! array_key_exists( $actual_cap, $filter_caps ) || ( 1 != (int) $filter_caps[ $actual_cap ] ) ) {
-					// Regular
-					$caps[ $cap ] = '';
-					// Network admins
-					$caps[] = 'do_not_allow';
-				}
+		foreach ( (array) $caps as $actual_cap ) {
+			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
+				// Regular
+				$caps[ $cap ] = '';
+				// Network admins
+				$caps[] = 'do_not_allow';
 			}
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Similar function to current_user_can()
+	 *
+	 * @since   1.6.2
+	 * @param   string  $cap
+	 * @param   array   $caps  Optional, defaults to the selected caps for the current view
+	 * @return  bool
+	 */
+	public function current_view_can( $cap, $caps = array() ) {
+
+		if ( empty( $caps ) ) {
+			$caps = $this->store->get_selectedCaps();
+		}
+
+		if (   is_array( $caps )
+		    && array_key_exists( $cap, $caps )
+		    && 1 == (int) $caps[ $cap ]
+		    && 'do_not_allow' !== $caps[ $cap ]
+		) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -136,11 +216,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * Store format: array( VIEW_NAME => VIEW_DATA );
 	 *
 	 * @since   0.1
-	 * @since   1.3     Added caps key
-	 * @since   1.4     Added module keys
+	 * @since   1.3     Added caps handler
+	 * @since   1.4     Added module handler
 	 * @since   1.5     Validate a nonce
-	 *                  Added global and user setting keys
+	 *                  Added global and user setting handler
 	 * @since   1.6     Moved to this class from main class
+	 * @since   1.6.2   Added visitor view handler + JSON view data
 	 * @access  public
 	 * @return  void
 	 */
@@ -160,47 +241,53 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		define( 'VAA_DOING_AJAX', true );
 
 		$success = false;
-		$view_as = $this->validate_view_as_data( $_POST['view_admin_as'] );
+		$view_as = $this->validate_view_as_data( json_decode( stripslashes( $_POST['view_admin_as'] ), true ) );
 
 		// Stop selecting the same view! :)
 		if (   ( isset( $view_as['role'] ) && ( $this->store->get_viewAs('role') && $this->store->get_viewAs('role') == $view_as['role'] ) )
-		       || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs('user') && $this->store->get_viewAs('user') == $view_as['user'] ) )
-		       || ( isset( $view_as['reset'] ) && false == $this->store->get_viewAs() )
+		    || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs('user') && $this->store->get_viewAs('user') == $view_as['user'] ) )
+		    || ( isset( $view_as['visitor'] ) && ( $this->store->get_viewAs('visitor') ) )
 		) {
-			wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('This view is already selected!', 'view-admin-as') ) );
+			wp_send_json_error( array(
+				'type' => 'error',
+				'content' => esc_html__('This view is already selected!', 'view-admin-as')
+			) );
 		}
 
 		// Update user metadata with selected view
-		if ( isset( $view_as['role'] ) || isset( $view_as['user'] ) ) {
+		if ( isset( $view_as['role'] ) || isset( $view_as['user'] ) || isset( $view_as['visitor'] ) ) {
 			$success = $this->update_view( $view_as );
 		}
 		elseif ( isset( $view_as['caps'] ) ) {
+			$db_view = $this->get_view();
 			// Check if the selected caps are equal to the default caps
-			if ( $this->store->get_caps() != $view_as['caps'] ) {
-				foreach ( $this->store->get_caps() as $key => $value ) {
-					// If the caps are valid (do not force append, see get_caps() & set_array_data() ), change them
-					if ( isset( $view_as['caps'][ $key ] ) && $view_as['caps'][ $key ] == 1 ) {
-						$this->store->set_caps( 1, $key );
-					} else {
-						$this->store->set_caps( 0, $key );
-					}
-				}
-				$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
-				if ( $success != true ) {
-					$db_view_value = $this->get_view();
-					if ( $db_view_value['caps'] == $this->store->get_caps() ) {
-						wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('This view is already selected!', 'view-admin-as') ) );
-					}
-				}
-			} else {
+			if ( array_filter( $this->store->get_caps() ) == array_filter( $view_as['caps'] ) ) {
 				// The selected caps are equal to the current user default caps so we can reset the view
 				$this->reset_view();
-				if ( $this->store->get_viewAs('caps') ) {
-					// The user was in a custom caps view, reset is valid
+				if ( isset( $db_view['caps'] ) ) {
+					// The user was in a custom caps view
 					$success = true; // and continue
 				} else {
-					// The user is in his default view, reset is invalid
-					wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('These are your default capabilities!', 'view-admin-as') ) );
+					// The user was in his default view, notify the user
+					wp_send_json_error( array(
+						'type' => 'error',
+						'content' => esc_html__('These are your default capabilities!', 'view-admin-as')
+					) );
+				}
+			} else {
+				// Store the selected caps
+				foreach ( $view_as['caps'] as $key => $value ) {
+					$this->store->set_caps( (int) $value, (string) $key, true );
+				}
+				if ( isset( $db_view['caps'] )
+				     && array_filter( (array) $db_view['caps'] ) == array_filter( $this->store->get_caps() )
+				) {
+					wp_send_json_error( array(
+						'type' => 'error',
+						'content' => esc_html__('This view is already selected!', 'view-admin-as')
+					) );
+				} else {
+					$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
 				}
 			}
 		}
@@ -220,19 +307,24 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					$module = $this->get_modules( $key );
 					if ( is_callable( array( $module, 'ajax_handler' ) ) ) {
 						$success = $module->ajax_handler( $data );
-						if ( is_string( $success ) && ! empty( $success ) ) {
+						if ( ! is_bool( $success ) && ! empty( $success ) ) {
 							wp_send_json_error( $success );
+						} elseif ( false === $success ) {
+							break; // Default error
 						}
 					}
 				}
-				break; // POSSIBLY TODO: Only the first key is actually used at this point
+				break; // @todo Maybe check for multiple keys
 			}
 		}
 
 		if ( true == $success ) {
 			wp_send_json_success(); // ahw yeah
 		} else {
-			wp_send_json_error( array( 'type' => 'error', 'content' => esc_html__('Something went wrong, please try again.', 'view-admin-as') ) ); // fail
+			wp_send_json_error( array(
+				'type' => 'error',
+				'content' => esc_html__('Something went wrong, please try again.', 'view-admin-as')
+			) );
 		}
 
 		die(); // Just to make sure it's actually dead..
@@ -295,11 +387,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class
 	 * @access  public
 	 *
-	 * @param   array|bool  $data
+	 * @param   array  $data
 	 * @return  bool
 	 */
-	public function update_view( $data = false ) {
-		if ( false != $data && $data = $this->validate_view_as_data( $data ) ) {
+	public function update_view( $data ) {
+		$data = $this->validate_view_as_data( $data );
+		if ( $data ) {
 			$meta = $this->store->get_userMeta('views');
 			// Make sure it is an array (no array means no valid data so we can safely clear it)
 			if ( ! is_array( $meta ) ) {
@@ -308,7 +401,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			// Add the new view metadata and expiration date
 			$meta[ $this->store->get_curUserSession() ] = array(
 				'view' => $data,
-				'expire' => ( time() + $this->store->get_metaExpiration() ),
+				'expire' => ( time() + (int) $this->viewExpiration ),
 			);
 			// Update metadata (returns: true on success, false on failure)
 			return $this->store->update_userMeta( $meta, 'views', true );
@@ -342,7 +435,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				// Remove metadata from this session
 				unset( $meta['views'][ $this->store->get_curUserSession() ] );
 				// Update current metadata if it is the current user
-				if ( $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure)
@@ -381,15 +474,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				}
 				foreach ( $meta['views'] as $key => $value ) {
 					// Check expiration date: if it doesn't exist or is in the past, remove it
-					if ( ! isset( $meta['views'][ $key ]['expire'] ) || time() > $meta['views'][ $key ]['expire'] ) {
+					if ( ! isset( $meta['views'][ $key ]['expire'] ) || time() > (int) $meta['views'][ $key ]['expire'] ) {
 						unset( $meta['views'][ $key ] );
 					}
 				}
-				if ( empty( $meta['views'] ) ) {
-					$meta['views'] = false;
-				}
 				// Update current metadata if it is the current user
-				if ( $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure)
@@ -422,9 +512,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, reset it
 			if ( isset( $meta['views'] ) ) {
-				$meta['views'] = false;
+				$meta['views'] = array();
 				// Update current metadata if it is the current user
-				if ( $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure)
@@ -442,78 +532,84 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class
 	 * @access  public
 	 *
-	 * @param   array       $view_as
-	 * @return  array|bool  $view_as
+	 * @param   array  $view_as  Unvalidated data
+	 * @return  array  $view_as  Validated data
 	 */
 	public function validate_view_as_data( $view_as ) {
 
-		$allowed_keys = array( 'setting', 'user_setting', 'reset', 'caps', 'role', 'user' );
+		if ( ! is_array( $view_as ) || empty( $view_as ) ) {
+			return array();
+		}
+
+		$allowed_keys = array( 'setting', 'user_setting', 'reset', 'caps', 'role', 'user', 'visitor' );
 
 		// Add module keys to the allowed keys
 		foreach ( $this->get_modules() as $key => $val ) {
 			$allowed_keys[] = $key;
 		}
 
+		// @since  1.6.2  Filter is documented in VAA_View_Admin_As::enqueue_scripts (includes/class-vaa.php)
+		$allowed_keys = array_unique( array_merge(
+			array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
+			$allowed_keys
+		) );
+
 		// We only want allowed keys and data, otherwise it's not added through this plugin.
-		if ( is_array( $view_as ) ) {
-			foreach ( $view_as as $key => $value ) {
-				// Check for keys that are not allowed
-				if ( ! in_array( $key, $allowed_keys ) ) {
-					unset( $view_as[ $key ] );
-				}
-				switch ( $key ) {
-					case 'caps':
-						// Make sure we have the latest added capabilities
-						$this->store->store_caps();
-						if ( ! $this->store->get_caps() ) {
-							unset( $view_as['caps'] );
-							continue;
-						}
-						if ( is_array( $view_as['caps'] ) ) {
-							// The data is an array, most likely from the database
-							foreach ( $view_as['caps'] as $cap_key => $cap_value ) {
-								if ( ! array_key_exists( $cap_key, $this->store->get_caps() ) ) {
-									unset( $view_as['caps'][ $cap_key ] );
-								}
-							}
-						} elseif ( is_string( $view_as['caps'] ) ) {
-							// The data is a string so we'll need to convert it to an array
-							$new_caps = explode( ',', $view_as['caps'] );
-							$view_as['caps'] = array();
-							foreach ( $new_caps as $cap_key => $cap_value ) {
-								$cap = explode( ':', $cap_value );
-								// Make sure the exploded values are valid
-								if ( isset( $cap[1] ) && array_key_exists( $cap[0], $this->store->get_caps() ) ) {
-									$view_as['caps'][ strip_tags( $cap[0] ) ] = (int) $cap[1];
-								}
-							}
-							if ( is_array( $view_as['caps'] ) ) {
-								ksort( $view_as['caps'] ); // Sort the new caps the same way we sort the existing caps
-							} else {
-								unset( $view_as['caps'] );
-							}
-						} else {
-							// Caps data is not valid
-							unset( $view_as['caps'] );
-						}
-						break;
-					case 'role':
-						// Role data must be a string and exists in the loaded array of roles
-						if ( ! is_string( $view_as['role'] ) || ! $this->store->get_roles() || ! array_key_exists( $view_as['role'], $this->store->get_roles() ) ) {
-							unset( $view_as['role'] );
-						}
-						break;
-					case 'user':
-						// User data must be a number and exists in the loaded array of user id's
-						if ( ! is_numeric( $view_as['user'] ) || ! $this->store->get_userids() || ! array_key_exists( (int) $view_as['user'], $this->store->get_userids() ) ) {
-							unset( $view_as['user'] );
-						}
-						break;
-				}
+		foreach ( $view_as as $key => $value ) {
+			// Check for keys that are not allowed
+			if ( ! in_array( $key, $allowed_keys ) ) {
+				unset( $view_as[ $key ] );
 			}
-			return $view_as;
+			switch ( $key ) {
+
+				case 'caps':
+					if ( is_array( $view_as['caps'] ) ) {
+						// The data is an array, most likely from the database
+						$view_as['caps'] = array_map( 'absint', $view_as['caps'] );
+						ksort( $view_as['caps'] ); // Sort the new caps the same way we sort the existing caps
+					} else {
+						// Caps data is not valid
+						unset( $view_as['caps'] );
+					}
+					break;
+
+				case 'role':
+					// Role data must be a string and exists in the loaded array of roles
+					if (    ! is_string( $view_as['role'] )
+					     || ! $this->store->get_roles()
+					     || ! array_key_exists( $view_as['role'], $this->store->get_roles() )
+					) {
+						unset( $view_as['role'] );
+					}
+					break;
+
+				case 'user':
+					// User data must be a number and exists in the loaded array of user id's
+					if (    ! is_numeric( $view_as['user'] )
+					     || ! $this->store->get_userids()
+					     || ! array_key_exists( (int) $view_as['user'], $this->store->get_userids() )
+					) {
+						unset( $view_as['user'] );
+					}
+					break;
+
+				case 'visitor':
+					$view_as['visitor'] = (bool) $view_as['visitor'];
+					break;
+
+				default:
+					/**
+					 * Validate the data for a view custom type
+					 *
+					 * @since  1.6.2
+					 * @param  mixed  $view_as[ $key ]  unvalidated view data
+					 * @return mixed  validated view data
+					 */
+					$view_as[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, $view_as[ $key ] );
+				break;
+			}
 		}
-		return false;
+		return $view_as;
 	}
 
 	/**

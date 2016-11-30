@@ -2,9 +2,11 @@
  * View Admin As
  * https://wordpress.org/plugins/view-admin-as/
  *
- * @author Jory Hogeveen <info@keraweb.nl>
+ * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
- * @version 1.6.1
+ * @since   0.1
+ * @version 1.6.2
+ * @preserve
  */
 
 if ( 'undefined' == typeof VAA_View_Admin_As ) {
@@ -12,6 +14,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		ajaxurl: null,
 		siteurl: '',
 		view_as: false,
+		view_types: [ 'user', 'role', 'caps', 'visitor' ],
 		_debug: false,
 		_vaa_nonce: '',
 		__no_users_found: 'No users found.',
@@ -50,7 +53,6 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.init = function() {
 
 		VAA_View_Admin_As.init_caps();
-		VAA_View_Admin_As.init_roles();
 		VAA_View_Admin_As.init_users();
 		VAA_View_Admin_As.init_settings();
 		VAA_View_Admin_As.init_module_role_defaults();
@@ -63,8 +65,12 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					toggleContent.hide();
 				}
 
-				$(this).on( 'click', function( e ) {
+				$(this).on( 'click touchend', function( e ) {
 					e.preventDefault();
+					e.stopPropagation();
+					if ( true === VAA_View_Admin_As._touchmove ) {
+						return;
+					}
 					if ( $(this).hasClass('active') ) {
 						toggleContent.slideUp('fast');
 						$(this).removeClass('active');
@@ -109,23 +115,39 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				return false;
 			}
 		});
+
+		// @since  1.6.2  Process basic views
+		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
+			$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-'+type+'-item > a.ab-item', function( e ) {
+				if ( true === VAA_View_Admin_As._touchmove ) {
+					return;
+				}
+				e.preventDefault();
+				if ( ! $(this).parent().hasClass('not-a-view') ) {
+					var viewAs = {};
+					viewAs[ type ] = String( $(this).attr('rel') );
+					VAA_View_Admin_As.ajax( viewAs, true );
+					return false;
+				}
+			});
+		} );
 	};
 
 
 	/**
 	 * Apply the selected view
-	 * viewAs format: { VIEWTYPE : VIEWDATA }
+	 * viewAs format: { VIEW_TYPE : VIEW_DATA }
 	 *
-	 * @params  object  viewAs
-	 * @params  boolean reload
+	 * @params  {object}   viewAs
+	 * @params  {boolean}  reload
 	 */
 	VAA_View_Admin_As.ajax = function( viewAs, reload ) {
 
 		var body = $('body');
 
-		$('#wpadminbar .vaa-update').remove();
+		$('.vaa-notice', '#wpadminbar').remove();
 		// @todo dashicon loader?
-		body.append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url(\'' + VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif\') center center no-repeat; background-size: contain;"></span></div>');
+		body.append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url('+VAA_View_Admin_As.siteurl+'/wp-includes/images/spinner-2x.gif) center center no-repeat; background-size: contain;"></span></div>');
 		$('body #vaa-overlay').fadeIn('fast');
 
 		var fullPopup = false;
@@ -137,21 +159,30 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		var data = {
 			'action': 'view_admin_as',
 			'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
-			'view_admin_as': viewAs
+			// @since  1.6.2  Use JSON data
+			'view_admin_as': JSON.stringify( viewAs )
 		};
+
+		var isView = false;
+		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
+			if ( typeof viewAs[ type ] != 'undefined' ) {
+				isView = true;
+				return true;
+			}
+		});
 
 		/**
 		 *  @since  1.5  Check view mode
-		 *  @todo   improve if statement and form creation
+		 *  @todo   Improve form creation
  		 */
-		if ( $(VAA_View_Admin_As.prefix+'#vaa-settings-view-mode-single').is(':checked') && ( typeof viewAs.caps !== 'undefined' || typeof viewAs.role !== 'undefined' || typeof viewAs.user !== 'undefined' ) ) {
+		if ( $(VAA_View_Admin_As.prefix+'#vaa-settings-view-mode-single').is(':checked') && isView ) {
 
 			body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
 			var form = $('#vaa_single_mode_form');
 			form.append('<input type="hidden" name="action" value="' + data.action + '">');
 			form.append('<input type="hidden" name="_vaa_nonce" value="' + data._vaa_nonce + '">');
 			form.append('<input id="data" type="hidden" name="view_admin_as">');
-			form.find('#data').val( JSON.stringify( data.view_admin_as ) );
+			form.find('#data').val( data.view_admin_as );
 			form.submit();
 
 		} else {
@@ -213,10 +244,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	 * @param  {string}  type
 	 */
 	VAA_View_Admin_As.notice = function( notice, type ) {
-		$('#wp-admin-bar-top-secondary').append('<li class="vaa-update vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
-		$('#wpadminbar .vaa-update .remove').click( function() { $(this).parent().remove(); } );
+		var root = '#wpadminbar .vaa-notice';
+		$('#wp-admin-bar-top-secondary').append('<li class="vaa-notice vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
+		$(root+' .remove').click( function() { $(this).parent().remove(); } );
 		// Remove it after 5 seconds
-		setTimeout( function(){ $('#wpadminbar .vaa-update').fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
+		setTimeout( function(){ $(root).fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
 	};
 
 
@@ -340,44 +372,13 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * ROLES
-	**/
-	VAA_View_Admin_As.init_roles = function() {
-
-		// Process role views
-		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-role-item > a.ab-item', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			if ( ! $(this).parent().hasClass('not-a-view') ) {
-				var viewAs = { role : String( $(this).attr('rel') ) };
-				VAA_View_Admin_As.ajax( viewAs, true );
-				return false;
-			}
-		});
-	};
-
-
-	/**
 	 * USERS
+	 * Extra functions for user views
+	 * @since  1.2
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
 		var root = VAA_View_Admin_As.root + '-users';
-
-		// Process user views
-		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-user-item > a.ab-item', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			if ( ! $(this).parent().hasClass('not-a-view') ) {
-				var viewAs = { user : parseInt( $(this).attr('rel') ) };
-				VAA_View_Admin_As.ajax( viewAs, true );
-				return false;
-			}
-		});
 
 		// Search users
 		$(document).on('keyup', VAA_View_Admin_As.prefix+root+' .ab-vaa-search.search-users input', function() {
@@ -483,18 +484,13 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			} else {
 				var selectedRoleElement = $(VAA_View_Admin_As.prefix+root+'-selectrolecaps #vaa-caps-selectrolecaps option[value="' + VAA_View_Admin_As.caps_filter_settings.selectedRole + '"]');
 				VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = JSON.parse( selectedRoleElement.attr('data-caps') );
-				if ( '1' == selectedRoleElement.attr('data-reverse') ) {
-					VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = true;
-				} else {
-					VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = false;
-				}
+				VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = ( '1' == selectedRoleElement.attr('data-reverse') );
 			}
 			VAA_View_Admin_As.filter_capabilities();
 		});
 
 		// Filter capabilities with text input
 		$(document).on('keyup', VAA_View_Admin_As.prefix+root+' .ab-vaa-filter input', function() {
-			//VAA_View_Admin_As.caps_filter_settings;
 			if ( 1 <= $(this).val().length ) {
 				VAA_View_Admin_As.caps_filter_settings.filterString = $(this).val();
 			} else {
@@ -511,7 +507,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 			e.preventDefault();
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item').each( function() {
-				if ( $(this).is(':visible') ){
+				if ( $(this).is(':visible') ) {
 					$('input', this).prop( "checked", true );
 				}
 			});
@@ -524,7 +520,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			}
 			e.preventDefault();
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item').each( function() {
-				if ( $(this).is(':visible') ){
+				if ( $(this).is(':visible') ) {
 					$('input', this).prop( "checked", false );
 				}
 			});
@@ -537,12 +533,12 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			var newCaps = '';
+			var newCaps = {};
 			$(VAA_View_Admin_As.prefix+root+'-quickselect-options .vaa-cap-item input').each( function() {
 				if ( $(this).is(':checked') ) {
-					newCaps += $(this).attr('value') + ':' + 1 + ',';
+					newCaps[ $(this).attr('value') ] = 1;
 				} else {
-					newCaps += $(this).attr('value') + ':' + 0 + ',';
+					newCaps[ $(this).attr('value') ] = 0;
 				}
 			});
 			VAA_View_Admin_As.ajax( { caps : newCaps }, true );
@@ -694,18 +690,22 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-import-roles-input textarea#' + prefix + '-import-roles-input').val();
 			if ( val && '' !== val ) {
-				var viewAs = { role_defaults : { import_role_defaults : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				try {
+					val = JSON.parse( val );
+					var viewAs = { role_defaults : { import_role_defaults : val } };
+					VAA_View_Admin_As.ajax( viewAs, false );
+				} catch ( e ) {
+					// @todo Improve error message
+					alert( e );
+				}
 			}
 			return false;
 		});
 	};
 
-
 	// We require a nonce to use this plugin
 	if ( 'undefined' != typeof VAA_View_Admin_As._vaa_nonce ) {
 		VAA_View_Admin_As.init();
 	}
-
 
 } )( jQuery );

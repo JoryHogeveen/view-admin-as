@@ -2,12 +2,12 @@
 /**
  * View Admin As - Class API
  *
- * API class that stores the VAA data for use
+ * API class that holds general functions
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -23,12 +23,12 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param  int  $user_id
-	 * @return bool
+	 * @param   int  $user_id
+	 * @return  bool
 	 */
 	public static function is_superior_admin( $user_id ) {
 		// Is it a super admin and is it one of the manually configured superior admins?
-		return ( true === is_super_admin( $user_id ) && in_array( $user_id, self::get_superior_admins() ) ) ? true : false;
+		return (bool) ( true === is_super_admin( $user_id ) && in_array( $user_id, self::get_superior_admins() ) );
 	}
 
 	/**
@@ -66,11 +66,11 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   array        $array  The requested array
-	 * @param   string|bool  $key    Return only a key of the requested array (optional)
-	 * @return  array|string
+	 * @param   array   $array  The requested array
+	 * @param   string  $key    Return only a key of the requested array (optional)
+	 * @return  mixed
 	 */
-	final public static function get_array_data( $array, $key = false ) {
+	final public static function get_array_data( $array, $key = null ) {
 		if ( $key ) {
 			if ( isset( $array[ $key ] ) ) {
 				return $array[ $key ];
@@ -89,13 +89,13 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   array        $array   Original array
-	 * @param   mixed        $var     The new value
-	 * @param   string|bool  $key     The array key for the value (optional)
-	 * @param   bool         $append  If the key doesn't exist in the original array, append it (optional)
-	 * @return  array|string
+	 * @param   array   $array   Original array
+	 * @param   mixed   $var     The new value
+	 * @param   string  $key     The array key for the value (optional)
+	 * @param   bool    $append  If the key doesn't exist in the original array, append it (optional)
+	 * @return  mixed
 	 */
-	final public static function set_array_data( $array, $var, $key = false, $append = false ) {
+	final public static function set_array_data( $array, $var, $key = null, $append = false ) {
 		if ( $key ) {
 			if ( true === $append && ! is_array( $array ) ) {
 				$array = array();
@@ -120,6 +120,7 @@ final class VAA_API
 
 	/**
 	 * Is our custom toolbar showing?
+	 * Do not use this before the `init` hook
 	 *
 	 * @since   1.6
 	 * @access  public
@@ -134,6 +135,25 @@ final class VAA_API
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Whether the site is being previewed in the Customizer.
+	 * For WP < 4.0
+	 *
+	 * @since   1.6.2
+	 * @see     https://developer.wordpress.org/reference/functions/is_customize_preview/
+	 * @global  WP_Customize_Manager  $wp_customize
+	 * @return  bool
+	 */
+	public static function is_customize_preview() {
+
+		if ( function_exists('is_customize_preview') ) {
+			return is_customize_preview();
+		}
+
+		global $wp_customize;
+		return ( $wp_customize instanceof WP_Customize_Manager ) && $wp_customize->is_preview();
 	}
 
 	/**

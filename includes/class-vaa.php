@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -171,11 +171,11 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 */
 	public function init() {
-		static $loaded = false;
+		static $done;
 
-		if ( ! $loaded ) {
+		if ( ! $done ) {
 			$this->run();
-			$loaded = true;
+			$done = true;
 		}
 	}
 
@@ -189,92 +189,85 @@ final class VAA_View_Admin_As
 	 */
 	private function run() {
 
-		// Not needed, the delete_user actions already remove all metadata
-		//add_action( 'remove_user_from_blog', array( $this->store, 'delete_user_meta' ) );
-		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
-		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
-
 		// We can't do this check before `plugins_loaded` hook
-		if ( is_user_logged_in() ) {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
 
-			$this->store->set_nonce( 'view-admin-as' );
+		$this->store->set_nonce( 'view-admin-as' );
 
-			// Get the current user
-			$this->store->set_curUser( wp_get_current_user() );
+		// Get the current user
+		$this->store->set_curUser( wp_get_current_user() );
 
-			// Get the current user session
-			if ( function_exists( 'wp_get_session_token' ) ) {
-				// WP 4.0+
-				$this->store->set_curUserSession( (string) wp_get_session_token() );
+		// Get the current user session
+		if ( function_exists( 'wp_get_session_token' ) ) {
+			// WP 4.0+
+			$this->store->set_curUserSession( (string) wp_get_session_token() );
+		} else {
+			$cookie = wp_parse_auth_cookie( '', 'logged_in' );
+			if ( ! empty( $cookie['token'] ) ) {
+				$this->store->set_curUserSession( (string) $cookie['token'] );
 			} else {
-				$cookie = wp_parse_auth_cookie( '', 'logged_in' );
-				if ( ! empty( $cookie['token'] ) ) {
-					$this->store->set_curUserSession( (string) $cookie['token'] );
-				} else {
-					// Fallback. This disables the use of multiple views in different sessions
-					$this->store->set_curUserSession( $this->store->get_curUser()->ID );
-				}
+				// Fallback. This disables the use of multiple views in different sessions
+				$this->store->set_curUserSession( $this->store->get_curUser()->ID );
 			}
+		}
+
+		/**
+		 * Validate if the current user has access to the functionalities
+		 *
+		 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
+		 *                Disable plugin functions for network admin pages
+		 * @since  1.4    Make sure we have a session for the current user
+		 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
+		 *                Note that in network installations the non-admin user also needs the manage_network_users
+		 *                capability (of not the edit_users will return false)
+		 * @since  1.5.3  Enable on network pages for superior admins
+		 */
+		if (   ( is_super_admin( $this->store->get_curUser()->ID )
+				 || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
+			&& ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
+			&& $this->store->get_curUserSession() != ''
+		) {
+			$this->enable = true;
+		}
+
+		// Get database settings
+		$this->store->set_optionData( get_option( $this->store->get_optionKey() ) );
+		// Get database settings of the current user
+		$this->store->set_userMeta( get_user_meta( $this->store->get_curUser()->ID, $this->store->get_userMetaKey(), true ) );
+
+		$this->load_modules();
+
+		// Check if a database update is needed
+		VAA_View_Admin_As_Update::get_instance( $this )->maybe_db_update();
+
+		if ( $this->is_enabled() ) {
+
+			// Fix some compatibility issues, more to come!
+			VAA_View_Admin_As_Compat::get_instance( $this )->init();
+
+			$this->store->store_caps();
+			$this->store->store_roles();
+			$this->store->store_users();
+
+			$this->view->init();
+
+			$this->load_ui();
+
+			// Dúh..
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+			add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 
 			/**
-			 * Validate if the current user has access to the functionalities
-			 *
-			 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
-			 *                Disable plugin functions for network admin pages
-			 * @since  1.4    Make sure we have a session for the current user
-			 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
-			 *                Note that in network installations the non-admin user also needs the manage_network_users capability (of not the edit_users will return false)
-			 * @since  1.5.3  Enable on network pages for superior admins
+			 * Init is finished. Hook is used for other classes related to View Admin As
+			 * @since  1.5
+			 * @param  object  $this  VAA_View_Admin_As
 			 */
-			if (   ( is_super_admin( $this->store->get_curUser()->ID )
-				     || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
-			    && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
-			    && $this->store->get_curUserSession() != ''
-			) {
-				$this->enable = true;
-			}
+			do_action( 'vaa_view_admin_as_init', $this );
 
-			// Get database settings
-			$this->store->set_optionData( get_option( $this->store->get_optionKey() ) );
-			// Get database settings of the current user
-			$this->store->set_userMeta( get_user_meta( $this->store->get_curUser()->ID, $this->store->get_userMetaKey(), true ) );
-
-			$this->load_modules();
-
-			// Check if a database update is needed
-			VAA_View_Admin_As_Update::get_instance( $this )->maybe_db_update();
-
-			if ( $this->is_enabled() ) {
-
-				// Fix some compatibility issues, more to come!
-				VAA_View_Admin_As_Compat::get_instance( $this )->init();
-
-				$this->store->store_caps();
-				$this->store->store_roles();
-				$this->store->store_users();
-
-				$this->view->init();
-
-				$this->load_ui();
-
-				// Dúh..
-				add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-				add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-				add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
-
-				/**
-				 * Init is finished. Hook is used for other classes related to View Admin As
-				 * @since  1.5
-				 * @param  object  $this  VAA_View_Admin_As
-				 */
-				do_action( 'vaa_view_admin_as_init', $this );
-
-			} else {
-				// Extra security check for non-admins who did something naughty or we're demoted to a lesser role
-				// If they have settings etc. we'll keep them in case they get promoted again
-				add_action( 'wp_login', array( $this->view, 'reset_all_views' ), 10, 2 );
-			}
 		}
 	}
 
@@ -336,25 +329,38 @@ final class VAA_View_Admin_As
 	 * Load the modules
 	 *
 	 * @since   1.5
-	 * @since   1.5.1   added notice on class name conflict
+	 * @since   1.5.1   Added notice on class name conflict (removed in 1.6.2)
+	 * @since   1.6.2   Generic loading of modules
 	 * @access  private
 	 * @return  void
 	 */
 	private function load_modules() {
 
-		// The role defaults module (screen settings)
-		if ( ! class_exists('VAA_View_Admin_As_Role_Defaults') ) {
-			require( VIEW_ADMIN_AS_DIR . 'modules/class-role-defaults.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Role_Defaults';
-			$this->modules['role_defaults'] = VAA_View_Admin_As_Role_Defaults::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-role-defaults', array(
-				'type' => 'notice-error',
-				'message' =>'<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
-					. ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Role_Defaults' ) . ')</code>',
-			) );
+		$files = scandir( VIEW_ADMIN_AS_DIR . 'modules' );
+
+		foreach ( $files as $file ) {
+			if ( ! in_array( $file, array( '.', '..', 'index.php' ) ) ) {
+				$file_info = pathinfo( $file );
+
+				// Single file modules
+				if ( ! empty( $file_info['extension'] ) ) {
+					if ( 'php' == $file_info['extension'] && is_file( VIEW_ADMIN_AS_DIR . 'modules/' . $file ) ) {
+						include( VIEW_ADMIN_AS_DIR . 'modules/' . $file );
+					}
+				}
+				// Directory modules
+				elseif ( is_file( VIEW_ADMIN_AS_DIR . 'modules/' . $file . '/' . $file . '.php' ) ) {
+					include( VIEW_ADMIN_AS_DIR . 'modules/' . $file . '/' . $file . '.php' );
+				}
+			}
 		}
+
+		/**
+		 * Modules loaded. Hook is used for other modules related to View Admin As
+		 * @since  1.6.2
+		 * @param  object  $this  VAA_View_Admin_As
+		 */
+		do_action( 'vaa_view_admin_as_modules_loaded', $this );
 	}
 
 	/**
@@ -397,6 +403,18 @@ final class VAA_View_Admin_As
 				'text' => __( 'Reset the view', 'view-admin-as' ),
 				'url' => VAA_API::get_reset_link(),
 			);
+
+			/**
+			 * Add or remove options to the die/error handler pages
+			 *
+			 * @since  1.6.2
+			 * @param  array  $options {
+			 *     @type  string  $text  The text to show
+			 *     @type  string  $url   The link
+			 * }
+			 * @return array
+			 */
+			$options = apply_filters( 'view_admin_as_error_page_options', $options );
 ?>
 <div>
 	<h3><?php _e( 'View Admin As', 'view-admin-as' ) ?>:</h3>
@@ -458,6 +476,23 @@ final class VAA_View_Admin_As
 				'__success'        => esc_html__( 'Success', 'view-admin-as' ),
 				'__confirm'        => esc_html__( 'Are you sure?', 'view-admin-as' )
 			);
+
+			/**
+			 * Add basic view types for automated use in JS
+			 *
+			 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key)
+			 * - Menu items require the rel attribute for the view data to be send (string or numeric)
+			 * - Menu items require the href attribute (the node needs to be an <a> element), I'd set it to '#'
+			 *
+			 * @since  1.6.2
+			 * @param  array
+			 * @return array  An array of strings (view types)
+			 */
+			$script_localization['view_types'] = array_unique( array_merge(
+				array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
+				array( 'user', 'role', 'caps', 'visitor' )
+			) );
+
 			foreach ( $this->get_modules() as $name => $module ) {
 				if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
 					$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
@@ -535,14 +570,14 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Get UI classes
-	 * If a key is provided it will only a single UI object
+	 * If a key is provided it will only return that UI class
 	 *
 	 * @since   1.6.1
 	 * @access  public
 	 * @param   string|bool  $key  (optional) UI class name
 	 * @return  array|object
 	 */
-	public function get_ui( $key ) {
+	public function get_ui( $key = false ) {
 		return VAA_API::get_array_data( $this->ui, $key );
 	}
 
@@ -571,8 +606,10 @@ final class VAA_View_Admin_As
 	 * @return  bool
 	 */
 	public function register_module( $data ) {
-		if ( ! empty( $data['id'] ) && ! empty( $data['instance'] ) && is_object( $data['instance'] ) ) {
-			$this->modules[ (string) $data['id'] ] = $data['instance'];
+		if (    ! empty( $data['id'] )       && is_string( $data['id'] )
+		     && ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		) {
+			$this->modules[ $data['id'] ] = $data['instance'];
 			return true;
 		}
 		return false;
@@ -585,7 +622,11 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 *
 	 * @param   string  $id
-	 * @param   array   $notice  Keys: 'type' and 'message'
+	 * @param   array   $notice {
+	 *     Required array
+	 *     @type  string  $type     The WP notice type class(es)
+	 *     @type  string  $message  The notice message
+	 * }
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
@@ -621,28 +662,20 @@ final class VAA_View_Admin_As
 	 * @since   1.5.1
 	 * @since   1.6    Returns conflict status
 	 * @access  private
+	 * @global  string  $wp_version
 	 * @return  bool
 	 */
 	private function validate_versions() {
 		global $wp_version;
 		$valid = true;
 
-		// Validate PHP
-		/*if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
-			$this->add_notice('php-version', array(
-				'type' => 'notice-error',
-				'message' => __('View Admin As', 'view-admin-as') . ': ' . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'PHP', '5.3' ),
-			) );
-			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
-			$valid = false;
-		}*/
-
 		// Validate WP
 		if ( version_compare( $wp_version, '3.5', '<' ) ) {
 			$this->add_notice('wp-version', array(
 				'type' => 'notice-error',
-				'message' => __('View Admin As', 'view-admin-as') . ': ' . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'WordPress', '3.5' ),
+				'message' => __('View Admin As', 'view-admin-as') . ': '
+				             // Translators, first %s stands for "WordPress", second stands for version 3.5
+				             . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'WordPress', '3.5' ),
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
@@ -657,7 +690,7 @@ final class VAA_View_Admin_As
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *
 	 * @since   1.4.1
-	 * @since   1.6    Restrict access to known classes
+	 * @since   1.6    Restrict direct access to known classes
 	 * @access  public
 	 * @static
 	 * @see     View_Admin_As()
