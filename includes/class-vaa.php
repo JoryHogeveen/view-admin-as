@@ -268,10 +268,6 @@ final class VAA_View_Admin_As
 			 */
 			do_action( 'vaa_view_admin_as_init', $this );
 
-		} else {
-			// Extra security check for non-admins who did something naughty or we're demoted to a lesser role
-			// If they have settings etc. we'll keep them in case they get promoted again
-			add_action( 'wp_login', array( $this->view, 'reset_all_views' ), 10, 2 );
 		}
 	}
 
