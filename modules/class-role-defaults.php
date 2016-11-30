@@ -308,7 +308,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			return false;
 		}
 
-		$success = true;
+		$success = false;
 
 		// Validate super admin
 		if ( is_super_admin( $this->get_curUser()->ID ) ) {
@@ -345,6 +345,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
 			foreach ( $data['apply_defaults_to_users'] as $userData ) {
 				// @todo Send as JSON?
+				// @todo notify of errors in updates
 				$userData = explode( '|', $userData );
 				if ( is_numeric( $userData[0] ) && isset( $userData[1] ) && is_string( $userData[1] ) ) {
 					$success = $this->update_user_with_role_defaults( intval( $userData[0] ), $userData[1] );
@@ -352,6 +353,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			}
 		}
 		if ( isset( $data['apply_defaults_to_users_by_role'] ) && is_string( $data['apply_defaults_to_users_by_role'] ) ) {
+			// @todo notify of errors in updates
 			$success = $this->apply_defaults_to_users_by_role( strip_tags( $data['apply_defaults_to_users_by_role'] ) );
 		}
 		if ( isset( $data['clear_role_defaults'] ) && is_string( $data['clear_role_defaults'] ) ) {
@@ -373,9 +375,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			}
 			die();
 		}
-		if ( isset( $data['import_role_defaults'] ) && is_string( $data['import_role_defaults'] ) ) {
+		if ( isset( $data['import_role_defaults'] ) && is_array( $data['import_role_defaults'] ) ) {
 			// $content format: array( 'text' => **text**, 'errors' => **error array** )
-			$content = $this->import_role_defaults( json_decode( stripslashes( $data['import_role_defaults'] ), true ) );
+			$content = $this->import_role_defaults( $data['import_role_defaults'] );
 			if ( true === $content ) {
 				wp_send_json_success();
 			} else {
@@ -423,6 +425,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					foreach ( $optionData['roles'][ $role ] as $meta_key => $meta_value ) {
 						update_user_meta( $user_id, $meta_key, $meta_value );
 						// Do not return update_user_meta results since it's highly possible to be false (values are often the same)
+						// @todo check other way of validation
 					}
 				}
 			}
@@ -486,6 +489,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				if ( ! empty( $users ) ) {
 					foreach ( $users as $user ) {
 						$success = $this->update_user_with_role_defaults( $user->ID, $role );
+						// @todo notify of errors in updates
 					}
 				}
 			}

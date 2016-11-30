@@ -307,8 +307,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					$module = $this->get_modules( $key );
 					if ( is_callable( array( $module, 'ajax_handler' ) ) ) {
 						$success = $module->ajax_handler( $data );
-						if ( is_string( $success ) && ! empty( $success ) ) {
+						if ( ! is_bool( $success ) && ! empty( $success ) ) {
 							wp_send_json_error( $success );
+						} elseif ( false === $success ) {
+							break; // Default error
 						}
 					}
 				}

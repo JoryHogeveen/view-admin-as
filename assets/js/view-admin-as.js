@@ -690,8 +690,14 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $(VAA_View_Admin_As.prefix+root+'-import-roles-input textarea#' + prefix + '-import-roles-input').val();
 			if ( val && '' !== val ) {
-				var viewAs = { role_defaults : { import_role_defaults : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				try {
+					val = JSON.parse( val );
+					var viewAs = { role_defaults : { import_role_defaults : val } };
+					VAA_View_Admin_As.ajax( viewAs, false );
+				} catch ( e ) {
+					// @todo Improve error message
+					alert( e );
+				}
 			}
 			return false;
 		});
