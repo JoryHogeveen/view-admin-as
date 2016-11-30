@@ -56,7 +56,6 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_users();
 		VAA_View_Admin_As.init_settings();
 		VAA_View_Admin_As.init_module_role_defaults();
-		VAA_View_Admin_As.init_module_groups();
 
 		// Toggle content with title
 		$(window).load(function() {
