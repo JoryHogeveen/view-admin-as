@@ -358,7 +358,9 @@ final class VAA_View_Admin_As_Store
 			}
 
 			// Run query (OBJECT_K to set the user ID as key)
-			if ( $users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K ) ) {
+			$users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K );
+
+			if ( $users_results ) {
 
 				$users = array();
 				// Temp set users
@@ -445,11 +447,11 @@ final class VAA_View_Admin_As_Store
 	 * @hack
 	 * @internal
 	 *
-	 * @see   wp-includes/class-wp-user.php WP_User->_init_caps()
-	 * @see   get_user_metadata filter in get_metadata()
-	 * @link  https://developer.wordpress.org/reference/functions/get_metadata/
-	 *
 	 * @since   1.6.2
+	 * @see     wp-includes/class-wp-user.php WP_User->_init_caps()
+	 * @see     get_user_metadata filter in get_metadata()
+	 * @link    https://developer.wordpress.org/reference/functions/get_metadata/
+	 *
 	 * @global  wpdb    $wpdb
 	 * @param   null    $null
 	 * @param   int     $user_id

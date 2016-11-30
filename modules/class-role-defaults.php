@@ -930,16 +930,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$bulk_users_select_content = '';
 			foreach ( $this->get_users() as $user ) {
 				foreach ( $user->roles as $role ) {
-					if ( $role_data = $this->get_roles( $role ) ) {
+					$role_data = $this->get_roles( $role );
+					if ( $role_data instanceof WP_Role ) {
 						$role_name = translate_user_role( $role_data->name );
 						$bulk_users_select_content .=
 							'<div class="ab-item vaa-item">'
-								. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
-									'name'           => 'role-defaults-bulk-users-select[]',
-									'id'             => $root . '-bulk-users-select-' . $user->ID,
-									'checkbox_value' => $user->ID.'|'.$role,
-									'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>'
-								) )
+							. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+								'name'           => 'role-defaults-bulk-users-select[]',
+								'id'             => $root . '-bulk-users-select-' . $user->ID,
+								'checkbox_value' => $user->ID.'|'.$role,
+								'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>'
+							) )
 							. '</div>';
 					}
 				}

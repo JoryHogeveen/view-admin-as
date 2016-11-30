@@ -171,11 +171,11 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 */
 	public function init() {
-		static $loaded;
+		static $done;
 
-		if ( ! $loaded ) {
+		if ( ! $done ) {
 			$this->run();
-			$loaded = true;
+			$done = true;
 		}
 	}
 
@@ -570,7 +570,7 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Get UI classes
-	 * If a key is provided it will only a single UI object
+	 * If a key is provided it will only return that UI class
 	 *
 	 * @since   1.6.1
 	 * @access  public

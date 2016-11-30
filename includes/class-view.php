@@ -389,7 +389,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @return  bool
 	 */
 	public function update_view( $data ) {
-		if ( $data = $this->validate_view_as_data( $data ) ) {
+		$data = $this->validate_view_as_data( $data );
+		if ( $data ) {
 			$meta = $this->store->get_userMeta('views');
 			// Make sure it is an array (no array means no valid data so we can safely clear it)
 			if ( ! is_array( $meta ) ) {
