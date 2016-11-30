@@ -130,7 +130,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 				),
 				'slack' => array(
 					'title' => __( 'Slack', 'view-admin-as' ),
-					'description' => __( 'Contact me directly on Slack', 'view-admin-as' ),
+					'description' => __( 'Quick help via Slack', 'view-admin-as' ),
 					'icon'  => 'dashicons-format-chat',
 					'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
 				),

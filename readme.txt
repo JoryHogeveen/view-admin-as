@@ -169,6 +169,7 @@ This plugin is also useful to support your clients and/or users. For example; ma
 *	Enhancement: Enable the current view as a capability filter
 *	Enhancement: Highlight the view capabilities in the capability menu
 *	Enhancement: Pass view data as JSON *(enhances compatibility with weird capability identifiers since WP doesn't escape these so it could contain special characters)*
+*	Enhancement/Fix: Compatibility with the `editable_roles` filter for non super admins
 *	Fix: Hide our toolbar in the customizer preview. Switching in the WP Customizer not possible (yet)
 *	Fix: Improve capability view handling
 *	Other minor improvements
