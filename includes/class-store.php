@@ -227,6 +227,8 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Store available roles
 	 *
+	 * @todo  Check function wp_roles() >> WP 4.3+
+	 *
 	 * @since   1.5
 	 * @since   1.5.2  Get role objects instead of arrays
 	 * @since   1.6    Moved to this class from main class
@@ -241,17 +243,22 @@ final class VAA_View_Admin_As_Store
 		$roles = $wp_roles->role_objects; // role_objects for objects, roles for arrays
 		$role_names = $wp_roles->role_names;
 
-		// @see   https://codex.wordpress.org/Plugin_API/Filter_Reference/editable_roles
-		// @todo  Parameter should probably $wp_roles->roles, verify this
-		$roles = apply_filters( 'editable_roles', $roles );
-
 		if ( ! is_super_admin( $this->get_curUser()->ID ) ) {
+
 			// The current user is not a super admin (or regular admin in single installations)
 			unset( $roles['administrator'] );
+
+			// @see   https://codex.wordpress.org/Plugin_API/Filter_Reference/editable_roles
+			$editable_roles = apply_filters( 'editable_roles', $wp_roles->roles );
+
 			// Current user has the view_admin_as capability, otherwise this functions would'nt be called
 			foreach ( $roles as $role_key => $role ) {
+				// Remove roles that this user isn't allowed to edit
+				if ( ! array_key_exists( $role_key, $editable_roles ) ) {
+					unset( $roles[ $role_key ] );
+				}
 				// Remove roles that have the view_admin_as capability
-				if ( is_array( $role->capabilities ) && array_key_exists( 'view_admin_as', $role->capabilities ) ) {
+				elseif ( is_array( $role->capabilities ) && array_key_exists( 'view_admin_as', $role->capabilities ) ) {
 					unset( $roles[ $role_key ] );
 				}
 			}
