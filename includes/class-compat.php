@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -77,9 +77,9 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 			remove_filter( 'show_admin_bar', 'wc_disable_admin_bar', 10 );
 		}*/
 
-		if ( $this->store->get_viewAs('role') ) {
+		if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
 			// Pods 2.x (only needed for the role selector)
-			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 10, 3 );
+			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 99, 2 );
 		}
 	}
 
@@ -129,27 +129,23 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.0.1
 	 * @since   1.6    Moved to this class from main class
+	 * @since   1.6.2  Check for all provided capabilities
 	 * @access  public
 	 * @see     init()
 	 *
 	 * @param   bool     $bool        Boolean provided by the pods_is_admin hook (not used)
-	 * @param   array    $cap         String or Array provided by the pods_is_admin hook
-	 * @param   string   $capability  String provided by the pods_is_admin hook
+	 * @param   array    $caps        String or Array provided by the pods_is_admin hook
 	 * @return  bool
 	 */
-	public function pods_caps_check( $bool, $cap, $capability ) {
+	public function pods_caps_check( $bool, $caps ) {
 
-		// Pods gives arrays most of the time with the to-be-checked capability as the last item
-		if ( is_array( $cap ) ) {
-			$cap = end( $cap );
+		foreach( (array) $caps as $capability ) {
+			if ( $this->vaa->view()->current_view_can( $capability ) ) {
+				return true;
+			}
 		}
 
-		$role_caps = $this->store->get_roles( $this->store->get_viewAs('role') )->capabilities;
-		if ( ! array_key_exists( $cap, $role_caps ) || ( 1 != $role_caps[ $cap ] ) ) {
-			return false;
-		}
-
-		return true;
+		return false;
 	}
 
 	/**
