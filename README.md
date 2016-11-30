@@ -1,5 +1,5 @@
 # [View Admin As](https://viewadminas.wordpress.com/) #
-View the WordPress admin as a different role, switch between users, temporarily change your capabilities, set default screen settings for roles.
+View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
 
 [![WordPress Plugin version](https://img.shields.io/wordpress/plugin/v/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
 [![WordPress Plugin WP tested version](https://img.shields.io/wordpress/v/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
@@ -23,6 +23,7 @@ Through the "Role defaults" module you can set default screen settings for roles
 	*	Edit this user's screen preferences and settings
 *	Switch to a default view of a role
 *	Temporarily change your own capabilities (non-destructively)
+*	View your site as an unregistered visitor
 *	Do this all without loggin out and easily go back to your own (default) user view!
 
 ### Module: Role defaults (screen settings)
@@ -39,8 +40,7 @@ This plugin will work with most other plugins.
 
 Fixed compatibility issues:
 
-*   **WooCommerce** - removes the admin bar for the roles "customer" and "subscriber". This functionality will stay the same, but when you switch to a view in the admin it will override this setting. (You need the admin bar to switch back to default)
-*   **Pods** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine wether to show the Pods menu when you are in an other view.
+*   **Pods** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine whether to show the Pods menu when you are in an other view.
 *   **User Role Editor / Members** - Support for multiple roles per user. (since 1.2.2)
 *   **Genesis Framework** *(and probably other theme frameworks)* - Changed "init" hook to "plugins_loaded" for theme support (since 1.3.3)
 
@@ -69,12 +69,12 @@ Please let me know through the support and add a plugins and themes list! :)
 https://wordpress.org/support/plugin/view-admin-as
 
 ## Security
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).  
-Only if the above requirements are OK will this plugin do anything.  
-Your view is stored separately so your user will keep the normal roles and capabilities.  
+You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
+Only if the above requirements are OK will this plugin do anything.
+Your view is stored separately so your user will keep the normal roles and capabilities.
 All settings, views, capabilities, etc. are checked before applied.
 
-So basically if your admin users are safe, this plugin will be safe.  
+So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
 
 ## Installation
@@ -104,5 +104,6 @@ Also keep in mind that switching to users that have equal roles is disabled. (re
 You can find me here:
 
 *	[Keraweb](http://www.keraweb.nl/ "Keraweb")
+*	[Keraweb @ Slack](https://keraweb.slack.com/ "Keraweb") (User `keraweb`)
 *	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")
 *	[Plugin page](https://viewadminas.wordpress.com/ "Plugin page")
