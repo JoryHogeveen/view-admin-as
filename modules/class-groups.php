@@ -78,6 +78,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	public function init() {
 
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
+		add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
 
 		if ( $this->get_viewAs('groups') && $this->get_groups( $this->get_viewAs('groups') ) ) {
 
@@ -98,6 +99,18 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			 *     class-groups-post-access -> line 419
 			 */
 		}
+	}
+
+	/**
+	 * Add groups view type
+	 *
+	 * @since   1.7
+	 * @param   array  $types
+	 * @return  array
+	 */
+	public function add_view_type( $types ) {
+		$types[] = 'groups';
+		return $types;
 	}
 
 	/**
@@ -230,7 +243,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			// Add the groups
 			foreach ( $this->get_groups() as $group_key => $group ) {
 				$href = '#';
-				$class = 'vaa-group-item';
+				$class = 'vaa-groups-item';
 				$title = $group->name;
 				// Check if this group is the current view
 				if ( $this->get_viewAs('groups') ) {
