@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.1
+ * @version 1.6.2
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -52,7 +52,10 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 
 		// Clear the user views for update to 1.5+
 		if ( version_compare( $current_db_version, '1.5', '<' ) ) {
-			// Reset user meta for all users
+			/**
+			 * Reset user meta for all users
+			 * @since  1.6.2  Use `all` param from delete_user_meta()
+			 */
 			$this->store->delete_user_meta( 'all', false, true ); // true for reset_only
 			// Reset currently loaded data
 			$this->store->set_userMeta( false );
