@@ -493,9 +493,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 */
 	public function admin_bar_menu_caps( $admin_bar ) {
 
-		// Make sure we have the latest added capabilities
+		/**
+		 * Make sure we have the latest added capabilities.
+		 * I can be that a plugin/theme adds a capability after the initial call to store_caps (hook: 'plugins_loaded').
+		 * @see    VAA_View_Admin_As->run()
+		 * @since  1.4.1
+		 */
 		$this->store->store_caps();
-		// Add capabilities group
+
 		if ( $this->get_caps() && 0 < count( $this->get_caps() ) ) {
 
 			$root = self::$root . '-caps';
@@ -711,6 +716,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	public function admin_bar_menu_roles( $admin_bar ) {
+
+		/**
+		 * Make sure we have the latest added roles.
+		 * I can be that a plugin/theme adds a role after the initial call to store_roles (hook: 'plugins_loaded').
+		 * @see    VAA_View_Admin_As->run()
+		 * @since  1.6.x
+		 */
+		$this->store->store_roles();
 
 		if ( $this->get_roles() && 0 < count( $this->get_roles() ) ) {
 
