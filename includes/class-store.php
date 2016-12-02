@@ -237,7 +237,13 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function store_roles() {
-		global $wp_roles;
+
+		// @since  1.6.x  Check for the wp_roles() function in WP 4.3+
+		if ( function_exists('wp_roles') ) {
+			$wp_roles = wp_roles();
+		} else {
+			global $wp_roles;
+		}
 
 		// Store available roles
 		$roles = $wp_roles->role_objects; // role_objects for objects, roles for arrays
