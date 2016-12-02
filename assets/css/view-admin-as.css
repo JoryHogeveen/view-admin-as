@@ -94,7 +94,7 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label *,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label,
-#wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label * {line-height: 18px; vertical-align: text-top;}
+#wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label * {line-height: 18px; vertical-align: text-top; display: inline;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label:hover,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label:hover {cursor: pointer;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox:first-child,
