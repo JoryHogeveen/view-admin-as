@@ -574,10 +574,10 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.1
 	 * @access  public
-	 * @param   string|bool  $key  (optional) UI class name
+	 * @param   string  $key  (optional) UI class name
 	 * @return  array|object
 	 */
-	public function get_ui( $key = false ) {
+	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
 	}
 
@@ -587,10 +587,10 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.5
 	 * @access  public
-	 * @param   string|bool  $key  (optional) The module key
+	 * @param   string  $key  (optional) The module key
 	 * @return  array|object
 	 */
-	public function get_modules( $key = false ) {
+	public function get_modules( $key = null ) {
 		return VAA_API::get_array_data( $this->modules, $key );
 	}
 
