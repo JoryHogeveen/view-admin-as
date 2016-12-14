@@ -180,11 +180,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
 	 * @param   string  $cap      The capability that was requested
-	 * @param   int     $user_id  The ID of the user (not used)
+	 * @param   int     $user_id  The ID of the user
 	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used)
 	 * @return  array   $caps
 	 */
 	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
+
+		if ( $this->store->get_curUser()->ID != $user_id ) {
+			return $caps;
+		}
 
 		$filter_caps = (array) $this->store->get_selectedCaps();
 
