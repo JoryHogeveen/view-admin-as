@@ -126,15 +126,30 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
 
+				// @global  WP_User  $current_user
+				global $current_user;
+
 				// @since  1.6.2  Set the caps for this view
 				if ( $this->store->get_viewAs('role')
 				     && is_object( $this->store->get_roles( $this->store->get_viewAs('role') ) )
 				) {
+					// @since  1.6.x  Set the current user's role to the current view
+					$current_user->caps = array( $this->store->get_viewAs('role') => 1 );
+					// Sets the allcaps property correct
+					$current_user->get_role_caps();
+
 					// Role view
 					$this->store->set_selectedCaps(
 						$this->store->get_roles( $this->store->get_viewAs('role') )->capabilities
 					);
-				} elseif ( $this->store->get_viewAs('caps') ) {
+				}
+				elseif ( $this->store->get_viewAs('caps') ) {
+
+					// @since  1.6.x  Set the current user's caps to the current view
+					$current_user->allcaps = $this->store->get_selectedCaps();
+					// Add the role caps again
+					$current_user = array_merge( (array) $current_user->allcaps, (array) $current_user->caps );
+
 					// Caps view
 					$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
 				}
