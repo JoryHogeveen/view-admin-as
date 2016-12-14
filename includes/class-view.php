@@ -578,6 +578,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			// Check for keys that are not allowed
 			if ( ! in_array( $key, $allowed_keys ) ) {
 				unset( $view_as[ $key ] );
+				continue;
 			}
 			switch ( $key ) {
 
