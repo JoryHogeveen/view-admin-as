@@ -448,13 +448,13 @@ final class VAA_View_Admin_As
 			$version = defined('WP_DEBUG') && WP_DEBUG ? time() : $this->store->get_version();
 
 			wp_enqueue_style(
-				'vaa-view-admin-as',
+				'vaa_view_admin_as_style',
 				VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css',
 				array(),
 				$version
 			);
 			wp_enqueue_script(
-				'vaa-view-admin-as',
+				'vaa_view_admin_as_script',
 				VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js',
 				array( 'jquery' ),
 				$version,
