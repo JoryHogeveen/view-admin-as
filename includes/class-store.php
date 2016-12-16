@@ -756,9 +756,9 @@ final class VAA_View_Admin_As_Store
 	public function get_caps( $key = null )                { return VAA_API::get_array_data( $this->caps, $key ); }
 	public function get_roles( $key = null )               { return VAA_API::get_array_data( $this->roles, $key ); }
 	public function get_users( $key = null )               { return VAA_API::get_array_data( $this->users, $key ); }
+	public function get_userids( $key = null )             { return VAA_API::get_array_data( $this->userids, $key ); }
+	public function get_selectedCaps( $key = null )        { return VAA_API::get_array_data( $this->selectedCaps, $key ); }
 	public function get_selectedUser()                     { return $this->selectedUser; }
-	public function get_selectedCaps()                     { return (array) $this->selectedCaps; }
-	public function get_userids()                          { return (array) $this->userids; }
 	public function get_optionKey()                        { return (string) $this->optionKey; }
 	public function get_optionData( $key = null )          { return VAA_API::get_array_data( $this->optionData, $key ); }
 	public function get_userMetaKey()                      { return (string) $this->userMetaKey; }

@@ -170,9 +170,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	protected function get_caps( $key = null )                { return $this->store->get_caps( $key ); }
 	protected function get_roles( $key = null )               { return $this->store->get_roles( $key ); }
 	protected function get_users( $key = null )               { return $this->store->get_users( $key ); }
-	protected function get_userids()                          { return $this->store->get_userids(); }
+	protected function get_userids( $key = null )             { return $this->store->get_userids( $key ); }
+	protected function get_selectedCaps( $key = null )        { return $this->store->get_selectedCaps( $key ); }
 	protected function get_selectedUser()                     { return $this->store->get_selectedUser(); }
-	protected function get_selectedCaps()                     { return $this->store->get_selectedCaps(); }
 	protected function get_settings( $key = null )            { return $this->store->get_settings( $key ); }
 	protected function get_userSettings( $key = null )        { return $this->store->get_userSettings( $key ); }
 	protected function get_defaultSettings( $key = null )     { return $this->store->get_defaultSettings( $key ); }
