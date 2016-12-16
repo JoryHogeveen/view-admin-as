@@ -116,7 +116,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	public function add_capabilities( $caps = array() ) {
 
 		// Allow VAA modules to add their capabilities
-		$vaa_caps = apply_filters( '_vaa_add_capabilities', array( 'view_admin_as' ) );
+		$vaa_caps = apply_filters( 'view_admin_as_add_capabilities', array( 'view_admin_as' ) );
 		foreach ( $vaa_caps as $cap ) {
 			$caps[ $cap ] = $cap;
 		}

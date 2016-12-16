@@ -94,7 +94,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 * @since 1.6
 		 */
 		$this->capabilities = array( 'view_admin_as_role_defaults' );
-		add_filter( '_vaa_add_capabilities', array( $this, 'add_capabilities' ) );
+		add_filter( 'view_admin_as_add_capabilities', array( $this, 'add_capabilities' ) );
 
 		// Load data
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
