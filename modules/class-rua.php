@@ -103,7 +103,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 */
 	public function do_view() {
 
-		if ( $this->get_viewAs( $this->viewKey ) && $this->get_levels( $this->get_viewAs( $this->viewKey ) ) ) {
+		if ( $this->get_levels( $this->get_viewAs( $this->viewKey ) ) ) {
 
 			$this->selectedLevel = $this->get_viewAs( $this->viewKey );
 
@@ -122,7 +122,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
 			$this->modify_current_user();
-			add_action( 'vaa_view_admin_as_modify_current_user_caps', array( $this, 'modify_current_user' ) );
+			add_action( 'vaa_view_admin_as_modify_current_user_caps', array( $this, 'modify_current_user_caps' ) );
 
 			add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
@@ -132,8 +132,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			}
 
 			// Administrators can see all restricted content in RUA
-			if ( 'administrator' !== $this->get_viewAs('role') ) {
-				// Not an administrator role view == no global access
+			if ( $this->get_viewAs() && ! $this->get_selectedCaps('administrator') ) {
+				// Not a view with administrator capability == no global access
 				add_filter( 'rua/user/global-access', '__return_false' );
 			}
 		}
@@ -145,7 +145,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.7
 	 */
-	public function modify_current_user() {
+	public function modify_current_user_caps() {
 
 		// @global  WP_User  $current_user
 		//global $current_user;
