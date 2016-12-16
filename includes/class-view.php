@@ -156,6 +156,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 				// Change the capabilities (map_meta_cap is better for compatibility with network admins)
 				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
+
+				// @todo maybe also use the user_has_cap filter?
+				//add_filter( 'user_has_cap', array( $this, 'user_has_cap' ), 999999999, 4 );
 			}
 
 			do_action( 'vaa_view_admin_as_view_active' );
@@ -240,6 +243,24 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Overwrite the user's capabilities
+	 *
+	 * @since   1.6.x
+	 * @param   array    $allcaps
+	 * @param   array    $caps
+	 * @param   array    $args
+	 * @param   WP_User  $user     (WP 3.7+)
+	 * @return  array
+	 */
+	public function user_has_cap( $allcaps, $caps, $args, $user = null ) {
+		$user_id = ( $user ) ? $user->ID : $args[1];
+		if ( ! is_numeric( $user_id ) || $user_id != $this->get_curUser()->ID ) {
+			return $allcaps;
+		}
+		return $this->get_selectedCaps();
 	}
 
 	/**
