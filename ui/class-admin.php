@@ -62,21 +62,35 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function filter_user_row_actions( $actions, $user ) {
-		$data = array( 'user' => $user->ID );
 
 		if ( is_network_admin() ) {
 			$link = network_admin_url();
 		} else {
 			$link = admin_url();
 		}
-		$params = array(
-			'action'        => 'view_admin_as',
-			'view_admin_as' => htmlentities( json_encode( $data ) ),
-			'_vaa_nonce'    => $this->store->get_nonce( true )
-		);
-		$link .= '?' . http_build_query( $params );
 
-		$actions['vaa_view'] = '<a href="' . $link . '">' . __( 'View as', 'view-admin-as' ) . '</a>';
+		if ( $user->ID === $this->get_curUser()->ID ) {
+			// Add reset link if it is the current user and a view is selected
+			if ( $this->get_viewAs() ) {
+				$link = VAA_API::get_reset_link( $link );
+			} else {
+				$link = false;
+			}
+		}
+		elseif ( $this->get_userids( $user->ID ) ) {
+			$params = array(
+				'action'        => 'view_admin_as',
+				'view_admin_as' => htmlentities( json_encode( array( 'user' => $user->ID ) ) ),
+				'_vaa_nonce'    => $this->store->get_nonce( true )
+			);
+			$link .= '?' . http_build_query( $params );
+		} else {
+			$link = false;
+		}
+
+		if ( $link ) {
+			$actions['vaa_view'] = '<a href="' . $link . '">' . __( 'View as', 'view-admin-as' ) . '</a>';
+		}
 		return $actions;
 	}
 
