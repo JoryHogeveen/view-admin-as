@@ -107,65 +107,103 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		if ( $this->store->get_viewAs() ) {
 
-			// Change current user object so changes can be made on various screen settings
-			// wp_set_current_user() returns the new user object
-			if ( $this->store->get_viewAs('user') ) {
+			/**
+			 * USER & VISITOR
+			 * Current user object views (switches current user)
+			 *
+			 * @since  0.1    User view
+			 * @since  1.6.2  Visitor view
+			 */
+			if ( $this->store->get_viewAs('user') || $this->store->get_viewAs('visitor') ) {
+
+				/**
+				 * Change current user object so changes can be made on various screen settings
+				 * wp_set_current_user() returns the new user object
+				 *
+				 * If it is a visitor view it will convert the false return from 'user' to 0
+				 */
+				$this->store->set_selectedUser( wp_set_current_user( (int) $this->store->get_viewAs('user') ) );
+
+				// @since  1.6.2  Set the caps for this view
+				if ( isset( $this->store->get_selectedUser()->allcaps ) ) {
+					$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
+				}
 
 				// @since  1.6.1  Force own locale on view
 				if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
 					add_action( 'init', array( $this, 'freeze_locale' ), 0 );
 				}
-
-				$this->store->set_selectedUser( wp_set_current_user( $this->store->get_viewAs('user') ) );
-
-				// @since  1.6.2  Set the caps for this view
-				if ( is_object( $this->store->get_selectedUser() ) ) {
-					$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
-				}
 			}
 
+			/**
+			 * ROLES & CAPS
+			 * Capability based views (modifies current user)
+			 *
+			 * @since  0.1  Role view
+			 * @since  1.3  Caps view
+			 */
 			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
 
-				// @global  WP_User  $current_user
-				global $current_user;
+				add_action( 'vaa_view_admin_as_view_active', array( $this, 'modify_current_user_caps' ), 0 );
 
-				// @since  1.6.2  Set the caps for this view
-				if ( $this->store->get_viewAs('role')
-				     && is_object( $this->store->get_roles( $this->store->get_viewAs('role') ) )
-				) {
-					// @since  1.6.x  Set the current user's role to the current view
-					$current_user->caps = array( $this->store->get_viewAs('role') => 1 );
-					// Sets the allcaps property correct
-					$current_user->get_role_caps();
-
-					// Role view
-					$this->store->set_selectedCaps(
-						$this->store->get_roles( $this->store->get_viewAs('role') )->capabilities
-					);
-				}
-				elseif ( $this->store->get_viewAs('caps') ) {
-
-					// @since  1.6.x  Set the current user's caps to the current view
-					$current_user->allcaps = $this->store->get_selectedCaps();
-					// Add the role caps again
-					$current_user = array_merge( (array) $current_user->allcaps, (array) $current_user->caps );
-
-					// Caps view
-					$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
-				}
+				/**
+				 * Make sure the $current_user view data isn't overwritten again by switch_blog functions
+				 *
+				 * @see  This filter is documented in wp-includes/ms-blogs.php
+				 * @since  1.6.x
+				 */
+				add_action( 'switch_blog', array( $this, 'modify_current_user_caps' ) );
 
 				// Change the capabilities (map_meta_cap is better for compatibility with network admins)
 				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
 			}
 
-			// @since  1.6.2  Check for the visitor view
-			if ( $this->store->get_viewAs('visitor') ) {
-
-				// Set the current user to 0/false if viewing as a site visitor
-				$this->store->set_selectedUser( wp_set_current_user( 0 ) );
-			}
+			do_action( 'vaa_view_admin_as_view_active' );
 		}
 
+	}
+
+	/**
+	 * Update the current user's WP_User instance with the current view capabilities
+	 *
+	 * @since   1.6.x
+	 */
+	public function modify_current_user_caps() {
+
+		// @global  WP_User  $current_user
+		//global $current_user;
+		$current_user = $this->store->get_curUser();
+
+		// @since  1.6.2  Set the caps for this view
+		if ( $this->store->get_viewAs('role')
+		     && is_object( $this->store->get_roles( $this->store->get_viewAs('role') ) )
+		) {
+			// Role view
+			/*$this->store->set_selectedCaps(
+				$this->store->get_roles( $this->store->get_viewAs('role') )->capabilities
+			);*/
+
+			// @since  1.6.x  Set the current user's role to the current view
+			$current_user->caps = array( $this->store->get_viewAs('role') => 1 );
+			// Sets the `allcaps` and `roles` properties correct
+			$current_user->get_role_caps();
+		}
+
+		if ( $this->store->get_viewAs('caps') ) {
+
+			// Caps view
+			//$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
+
+			// @since  1.6.x  Set the current user's caps to the current view
+			$current_user->allcaps = array_merge(
+				(array) array_filter( $this->store->get_viewAs('caps') ),
+				(array) $current_user->caps
+			);
+		}
+
+		$this->store->set_selectedCaps( $current_user->allcaps );
+
+		do_action( 'vaa_view_admin_as_modify_current_user_caps' );
 	}
 
 	/**
