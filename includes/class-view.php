@@ -236,7 +236,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		foreach ( (array) $caps as $actual_cap ) {
 			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
 				// Regular
-				$caps[ $cap ] = '';
+				$caps[ $cap ] = 0;
 				// Network admins
 				$caps[] = 'do_not_allow';
 			}
