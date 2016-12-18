@@ -492,6 +492,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	public function admin_bar_menu_caps( $admin_bar ) {
+		static $done;
+		if ( $done ) return;
 
 		/**
 		 * Make sure we have the latest added capabilities.
@@ -501,209 +503,212 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		$this->store->store_caps();
 
-		if ( $this->get_caps() && 0 < count( $this->get_caps() ) ) {
+		if ( ! $this->get_caps() || ! count( $this->get_caps() ) ) {
+			return;
+		}
 
-			$root = self::$root . '-caps';
+		$root = self::$root . '-caps';
 
-			$admin_bar->add_group( array(
-				'id'     => $root,
-				'parent' => self::$root,
-				'meta'   => array(
-					'class' => 'ab-sub-secondary',
-				),
-			) );
-			$admin_bar->add_node( array(
-				'id'     => $root . '-title',
-				'parent' => $root,
-				'title'  => self::do_icon( 'dashicons-admin-generic' ) . __('Capabilities', 'view-admin-as'),
-				'href'   => false,
-				'meta'   => array(
-					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
-					'tabindex' => '0'
-				),
-			) );
+		$admin_bar->add_group( array(
+			'id'     => $root,
+			'parent' => self::$root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-title',
+			'parent' => $root,
+			'title'  => self::do_icon( 'dashicons-admin-generic' ) . __('Capabilities', 'view-admin-as'),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+				'tabindex' => '0'
+			),
+		) );
 
-			/**
-			 * Add items at the beginning of the caps group
-			 * @since   1.5
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, self::$root );
+		/**
+		 * Add items at the beginning of the caps group
+		 * @since   1.5
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, self::$root );
 
-			$caps_quickselect_class = '';
-			if ( $this->get_viewAs('caps') ) {
-				$caps_quickselect_class .= ' current';
-			}
-			$admin_bar->add_node( array(
-				'id'     => $root . '-quickselect',
-				'parent' => $root,
-				'title'  => __('Select', 'view-admin-as'),
-				'href'   => false,
-				'meta'   => array(
-					'class'    => $caps_quickselect_class,
-					'tabindex' => '0'
-				),
-			) );
+		$caps_quickselect_class = '';
+		if ( $this->get_viewAs('caps') ) {
+			$caps_quickselect_class .= ' current';
+		}
+		$admin_bar->add_node( array(
+			'id'     => $root . '-quickselect',
+			'parent' => $root,
+			'title'  => __('Select', 'view-admin-as'),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => $caps_quickselect_class,
+				'tabindex' => '0'
+			),
+		) );
 
-			// Capabilities submenu
-			$admin_bar->add_node( array(
-				'id'     => $root . '-applycaps',
-				'parent' => $root . '-quickselect',
-				'title'  => self::do_button( array(
-						'name'    => 'apply-caps-view',
-						'label'   => __('Apply', 'view-admin-as'),
-						'classes' => 'button-primary'
-					) ) . self::do_button( array(
-						'name'    => 'close-caps-popup',
-						'label'   => self::do_icon( 'dashicons-editor-contract' ),
-						'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
-						'element' => 'a'
-					) ) . self::do_button( array(
-						'name'    => 'open-caps-popup',
-						'label'   => self::do_icon( 'dashicons-editor-expand' ),
-						'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
-						'element' => 'a'
-					)
-				),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'vaa-button-container',
-				),
-			) );
+		// Capabilities submenu
+		$admin_bar->add_node( array(
+			'id'     => $root . '-applycaps',
+			'parent' => $root . '-quickselect',
+			'title'  => self::do_button( array(
+					'name'    => 'apply-caps-view',
+					'label'   => __('Apply', 'view-admin-as'),
+					'classes' => 'button-primary'
+				) ) . self::do_button( array(
+					'name'    => 'close-caps-popup',
+					'label'   => self::do_icon( 'dashicons-editor-contract' ),
+					'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
+					'element' => 'a'
+				) ) . self::do_button( array(
+					'name'    => 'open-caps-popup',
+					'label'   => self::do_icon( 'dashicons-editor-expand' ),
+					'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
+					'element' => 'a'
+				)
+			),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'vaa-button-container',
+			),
+		) );
 
-			$admin_bar->add_node( array(
-				'id'     => $root . '-filtercaps',
-				'parent' => $root . '-quickselect',
-				'title'  => self::do_input( array(
-					'name'        => $root . '-filtercaps',
-					'placeholder' => esc_attr__('Filter', 'view-admin-as')
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
-				),
-			) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-filtercaps',
+			'parent' => $root . '-quickselect',
+			'title'  => self::do_input( array(
+				'name'        => $root . '-filtercaps',
+				'placeholder' => esc_attr__('Filter', 'view-admin-as')
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
+			),
+		) );
 
-			$role_select_options = array(
-				array(
-					'value' => 'default',
-					'label' => __('Default', 'view-admin-as')
+		$role_select_options = array(
+			array(
+				'value' => 'default',
+				'label' => __('Default', 'view-admin-as')
+			)
+		);
+		if ( $this->store->get_viewAs() ) {
+			$role_select_options[] = array(
+				'compare' => 'vaa',
+				'label'   => '= ' . __( 'Current view', 'view-admin-as' ),
+				'attr'    => array(
+					'data-caps' => json_encode( $this->store->get_selectedCaps() ),
 				)
 			);
-			if ( $this->store->get_viewAs() ) {
-				$role_select_options[] = array(
-					'compare' => 'vaa',
-					'label'   => '= ' . __( 'Current view', 'view-admin-as' ),
-					'attr'    => array(
-						'data-caps' => json_encode( $this->store->get_selectedCaps() ),
-					)
-				);
-				$role_select_options[] = array(
-					'compare' => 'reversed-vaa',
-					'label'   => '≠ ' . __( 'Current view', 'view-admin-as' ),
-					'attr'    => array(
-						'data-caps'    => json_encode( $this->store->get_selectedCaps() ),
-						'data-reverse' => '1'
-					)
-				);
-			}
-			foreach ( $this->get_roles() as $role_key => $role ) {
-				$role_select_options[] = array(
-					'compare' => esc_attr( $role_key ),
-					'label'   => '= ' . translate_user_role( $role->name ),
-					'attr'    => array(
-						'data-caps' => json_encode( $role->capabilities ),
-					)
-				);
-				$role_select_options[] = array(
-					'compare' => 'reversed-' . esc_attr( $role_key ),
-					'label'   => '≠ ' . translate_user_role( $role->name ),
-					'attr'    => array(
-						'data-caps'    => json_encode( $role->capabilities ),
-						'data-reverse' => '1'
-					)
-				);
-			}
-			$admin_bar->add_node( array(
-				'id'     => $root . '-selectrolecaps',
-				'parent' => $root . '-quickselect',
-				'title'  => self::do_select( array(
-					'name'   => $root . '-selectrolecaps',
-					'values' => $role_select_options
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
-					'html'  => '',
-				),
-			) );
+			$role_select_options[] = array(
+				'compare' => 'reversed-vaa',
+				'label'   => '≠ ' . __( 'Current view', 'view-admin-as' ),
+				'attr'    => array(
+					'data-caps'    => json_encode( $this->store->get_selectedCaps() ),
+					'data-reverse' => '1'
+				)
+			);
+		}
+		foreach ( $this->get_roles() as $role_key => $role ) {
+			$role_select_options[] = array(
+				'compare' => esc_attr( $role_key ),
+				'label'   => '= ' . translate_user_role( $role->name ),
+				'attr'    => array(
+					'data-caps' => json_encode( $role->capabilities ),
+				)
+			);
+			$role_select_options[] = array(
+				'compare' => 'reversed-' . esc_attr( $role_key ),
+				'label'   => '≠ ' . translate_user_role( $role->name ),
+				'attr'    => array(
+					'data-caps'    => json_encode( $role->capabilities ),
+					'data-reverse' => '1'
+				)
+			);
+		}
+		$admin_bar->add_node( array(
+			'id'     => $root . '-selectrolecaps',
+			'parent' => $root . '-quickselect',
+			'title'  => self::do_select( array(
+				'name'   => $root . '-selectrolecaps',
+				'values' => $role_select_options
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-select select-role-caps vaa-column-one-half vaa-column-last',
+				'html'  => '',
+			),
+		) );
 
-			$admin_bar->add_node( array(
-				'id'     => $root . '-bulkselectcaps',
-				'parent' => $root . '-quickselect',
-				'title'  => self::do_button( array(
-					'name'    => 'select-all-caps',
-					'label'   => __('Select', 'view-admin-as'),
-					'classes' => 'button-secondary'
-				) ) . ' ' . self::do_button( array(
-					'name'    => 'deselect-all-caps',
-					'label'   => __('Deselect', 'view-admin-as'),
-					'classes' => 'button-secondary'
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'vaa-button-container vaa-clear-float',
-				),
-			) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-bulkselectcaps',
+			'parent' => $root . '-quickselect',
+			'title'  => self::do_button( array(
+				'name'    => 'select-all-caps',
+				'label'   => __('Select', 'view-admin-as'),
+				'classes' => 'button-secondary'
+			) ) . ' ' . self::do_button( array(
+				'name'    => 'deselect-all-caps',
+				'label'   => __('Deselect', 'view-admin-as'),
+				'classes' => 'button-secondary'
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'vaa-button-container vaa-clear-float',
+			),
+		) );
 
-			$caps_quickselect_content = '';
-			foreach ( $this->get_caps() as $cap_name => $cap_val ) {
-				$class = 'vaa-cap-item';
-				$checked = false;
-				// check if we've selected a capability view and we've changed some capabilities
-				$selected_caps = $this->get_viewAs('caps');
-				if ( isset( $selected_caps[ $cap_name ] ) ) {
-					if ( 1 == $selected_caps[ $cap_name ] ) {
-						$checked = true;
-					}
-				} elseif ( 1 == $cap_val ) {
+		$caps_quickselect_content = '';
+		foreach ( $this->get_caps() as $cap_name => $cap_val ) {
+			$class = 'vaa-cap-item';
+			$checked = false;
+			// check if we've selected a capability view and we've changed some capabilities
+			$selected_caps = $this->get_viewAs('caps');
+			if ( isset( $selected_caps[ $cap_name ] ) ) {
+				if ( 1 == $selected_caps[ $cap_name ] ) {
 					$checked = true;
 				}
-				// Check for this capability in any view set
-				if ( $this->vaa->view()->current_view_can( $cap_name ) ) {
-					$class .= ' current';
-				}
-				// The list of capabilities
-				$caps_quickselect_content .=
-					'<div class="ab-item '.$class.'">'
-						. self::do_checkbox( array(
-							'name'           => 'vaa_cap_' . esc_attr( $cap_name ),
-							'value'          => $checked,
-							'compare'        => true,
-							'checkbox_value' => esc_attr( $cap_name ),
-							'label'          => $cap_name
-						) )
-					. '</div>';
+			} elseif ( 1 == $cap_val ) {
+				$checked = true;
 			}
-			$admin_bar->add_node( array(
-				'id'     => $root . '-quickselect-options',
-				'parent' => $root . '-quickselect',
-				'title'  => $caps_quickselect_content,
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'ab-vaa-multipleselect auto-height',
-				),
-			) );
-
-			/**
-			 * Add items at the end of the caps group
-			 * @since   1.5
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_caps_after', $admin_bar, $root, self::$root );
+			// Check for this capability in any view set
+			if ( $this->vaa->view()->current_view_can( $cap_name ) ) {
+				$class .= ' current';
+			}
+			// The list of capabilities
+			$caps_quickselect_content .=
+				'<div class="ab-item '.$class.'">'
+					. self::do_checkbox( array(
+						'name'           => 'vaa_cap_' . esc_attr( $cap_name ),
+						'value'          => $checked,
+						'compare'        => true,
+						'checkbox_value' => esc_attr( $cap_name ),
+						'label'          => $cap_name
+					) )
+				. '</div>';
 		}
+		$admin_bar->add_node( array(
+			'id'     => $root . '-quickselect-options',
+			'parent' => $root . '-quickselect',
+			'title'  => $caps_quickselect_content,
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-multipleselect auto-height',
+			),
+		) );
+
+		/**
+		 * Add items at the end of the caps group
+		 * @since   1.5
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_caps_after', $admin_bar, $root, self::$root );
+
+		$done = true;
 	}
 
 	/**
@@ -716,6 +721,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	public function admin_bar_menu_roles( $admin_bar ) {
+		static $done;
+		if ( $done ) return;
 
 		/**
 		 * Make sure we have the latest added roles.
@@ -725,87 +732,92 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		$this->store->store_roles();
 
-		if ( $this->get_roles() && 0 < count( $this->get_roles() ) ) {
+		if ( ! $this->get_roles() || ! count( $this->get_roles() ) ) {
+			return;
+		}
 
-			$root = self::$root . '-roles';
+		$root = self::$root . '-roles';
 
-			$admin_bar->add_group( array(
-				'id'     => $root,
-				'parent' => self::$root,
-				'meta'   => array(
-					'class' => 'ab-sub-secondary',
-				),
-			) );
-			$admin_bar->add_node( array(
-				'id'     => $root . '-title',
-				'parent' => $root,
-				'title'  => self::do_icon( 'dashicons-groups' ) . __('Roles', 'view-admin-as'),
-				'href'   => false,
-				'meta'   => array(
-					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
-					'tabindex' => '0'
-				),
-			) );
+		$admin_bar->add_group( array(
+			'id'     => $root,
+			'parent' => self::$root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-title',
+			'parent' => $root,
+			'title'  => self::do_icon( 'dashicons-groups' ) . __('Roles', 'view-admin-as'),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+				'tabindex' => '0'
+			),
+		) );
 
-			/**
-			 * Add items at the beginning of the roles group
-			 * @since   1.5
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_roles_before', $admin_bar, self::$root );
+		/**
+		 * Add items at the beginning of the roles group
+		 * @since   1.5
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_roles_before', $admin_bar, self::$root );
 
-			// Add the roles
-			foreach ( $this->get_roles() as $role_key => $role ) {
-				$parent = $root;
-				$href   = '#';
-				$class  = 'vaa-role-item';
-				$title  = translate_user_role( $role->name );
-				// Check if the users need to be grouped under their roles
-				if ( true === $this->groupUserRoles ) {
-					$class .= ' vaa-menupop'; // make sure items are aligned properly when some roles don't have users
-					// Check if the current view is a user with this role
-					if ( $this->get_viewAs('user') && $this->get_selectedUser() && in_array( $role_key, $this->get_selectedUser()->roles ) ) {
-						$class .= ' current-parent';
-					}
-					// If there are users with this role, add a counter
-					$user_count = 0;
-					foreach ( $this->get_users() as $user ) {
-						if ( in_array( $role_key, $user->roles ) ) {
-							$user_count++;
-						}
-					}
-					if ( 0 < $user_count ) {
-						$title = $title . ' <span class="user-count">(' . $user_count . ')</span>';
+		// Add the roles
+		foreach ( $this->get_roles() as $role_key => $role ) {
+			$parent = $root;
+			$href   = '#';
+			$class  = 'vaa-role-item';
+			$title  = translate_user_role( $role->name );
+			// Check if the users need to be grouped under their roles
+			if ( true === $this->groupUserRoles ) {
+				$class .= ' vaa-menupop'; // make sure items are aligned properly when some roles don't have users
+				// Check if the current view is a user with this role
+				if ( $this->get_viewAs('user') && $this->get_selectedUser() && in_array( $role_key, $this->get_selectedUser()->roles ) ) {
+					$class .= ' current-parent';
+				}
+				// If there are users with this role, add a counter
+				$user_count = 0;
+				foreach ( $this->get_users() as $user ) {
+					if ( in_array( $role_key, $user->roles ) ) {
+						$user_count++;
 					}
 				}
-				// Check if this role is the current view
-				if ( $this->get_viewAs('role') && $this->get_viewAs('role') == strtolower( $role->name ) ) {
-					$class .= ' current';
+				if ( 0 < $user_count ) {
+					$title = $title . ' <span class="user-count">(' . $user_count . ')</span>';
+				}
+			}
+			// Check if this role is the current view
+			if ( $this->get_viewAs('role') && $this->get_viewAs('role') == strtolower( $role->name ) ) {
+				$class .= ' current';
+				if ( 1 === count( $this->get_viewAs() ) ) {
 					$href = false;
 				}
-				$admin_bar->add_node( array(
-					'id'     => $root . '-role-' . $role_key,
-					'parent' => $parent,
-					'title'  => $title,
-					'href'   => $href,
-					'meta'   => array(
-						// Translators: %s stands for the translated role name
-						'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), translate_user_role( $role->name ) ),
-						'class' => $class,
-						'rel'   => $role_key
-					),
-				) );
 			}
-
-			/**
-			 * Add items at the end of the roles group
-			 * @since   1.5
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_roles_after', $admin_bar, $root, self::$root );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-role-' . $role_key,
+				'parent' => $parent,
+				'title'  => $title,
+				'href'   => $href,
+				'meta'   => array(
+					// Translators: %s stands for the translated role name
+					'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), translate_user_role( $role->name ) ),
+					'class' => $class,
+					'rel'   => $role_key
+				),
+			) );
 		}
+
+		/**
+		 * Add items at the end of the roles group
+		 * @since   1.5
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_roles_after', $admin_bar, $root, self::$root );
+
+		$done = true;
 	}
 
 	/**
@@ -818,91 +830,76 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	public function admin_bar_menu_users( $admin_bar ) {
+		static $done;
+		if ( $done ) return;
 
-		if ( $this->get_users() && 0 < count( $this->get_users() ) ) {
+		if ( ! $this->get_users() || ! count( $this->get_users() ) ) {
+			return;
+		}
 
-			$root = self::$root . '-users';
+		$root = self::$root . '-users';
 
-			$admin_bar->add_group( array(
-				'id'     => $root,
-				'parent' => self::$root,
-				'meta'   => array(
-					'class' => 'ab-sub-secondary',
-				),
-			) );
+		$admin_bar->add_group( array(
+			'id'     => $root,
+			'parent' => self::$root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-title',
+			'parent' => $root,
+			'title'  => self::do_icon( 'dashicons-admin-users' ) . __('Users', 'view-admin-as'),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+				'tabindex' => '0'
+			),
+		) );
+
+		/**
+		 * Add items at the beginning of the users group
+		 * @since   1.5
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, self::$root );
+
+		if ( true === $this->searchUsers ) {
 			$admin_bar->add_node( array(
-				'id'     => $root . '-title',
+				'id'     => $root . '-searchusers',
 				'parent' => $root,
-				'title'  => self::do_icon( 'dashicons-admin-users' ) . __('Users', 'view-admin-as'),
+				'title'  => self::do_input( array(
+					'name' => $root . '-searchusers',
+					'placeholder' => esc_attr__('Search', 'view-admin-as') . ' (' . strtolower( __('Username', 'view-admin-as') ) . ')'
+				) ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
-					'tabindex' => '0'
+					'class' => 'ab-vaa-search search-users',
+					'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu"></ul>',
 				),
 			) );
+		}
 
-			/**
-			 * Add items at the beginning of the users group
-			 * @since   1.5
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, self::$root );
-
-			if ( true === $this->searchUsers ) {
-				$admin_bar->add_node( array(
-					'id'     => $root . '-searchusers',
-					'parent' => $root,
-					'title'  => self::do_input( array(
-						'name' => $root . '-searchusers',
-						'placeholder' => esc_attr__('Search', 'view-admin-as') . ' (' . strtolower( __('Username', 'view-admin-as') ) . ')'
-					) ),
-					'href'   => false,
-					'meta'   => array(
-						'class' => 'ab-vaa-search search-users',
-						'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu"></ul>',
-					),
-				) );
-			}
-			// Add the users
-			foreach ( $this->get_users() as $user_key => $user ) {
-				$parent = $root;
-				$href   = '#';
-				$class  = 'vaa-user-item';
-				$title  = $user->data->display_name;
-				// Check if this user is the current view
-				if ( $this->get_viewAs('user') && $this->get_viewAs('user') == $user->data->ID ) {
-					$class .= ' current';
+		// Add the users
+		foreach ( $this->get_users() as $user_key => $user ) {
+			$parent = $root;
+			$href   = '#';
+			$class  = 'vaa-user-item';
+			$title  = $user->data->display_name;
+			// Check if this user is the current view
+			if ( $this->get_viewAs('user') && $this->get_viewAs('user') == $user->data->ID ) {
+				$class .= ' current';
+				if ( 1 === count( $this->get_viewAs() ) ) {
 					$href = false;
 				}
-				if ( true === $this->groupUserRoles ) {
-					// Users grouped under roles
-					foreach ( $user->roles as $role ) {
-						$parent = self::$root . '-roles-role-' . $role;
-						$admin_bar->add_node( array(
-							'id'     => $root . '-user-' . $user->data->ID . '-' . $role,
-							'parent' => $parent,
-							'title'  => $title,
-							'href'   => $href,
-							'meta'   => array(
-								// Translators: %s stands for the user display name
-								'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), $user->data->display_name ),
-								'class' => $class,
-								'rel'   => $user->data->ID,
-							),
-						) );
-					}
-				} else {
-					// Users displayed as normal
-					$all_roles = $this->get_roles();
-					$user_roles = array();
-					// Add the roles of this user in the name
-					foreach ( $user->roles as $role ) {
-						$user_roles[] = translate_user_role( $all_roles[ $role ]->name );
-					}
-					$title = $title.' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
+			}
+			if ( true === $this->groupUserRoles ) {
+				// Users grouped under roles
+				foreach ( $user->roles as $role ) {
+					$parent = self::$root . '-roles-role-' . $role;
 					$admin_bar->add_node( array(
-						'id'     => $root . '-user-' . $user->data->ID,
+						'id'     => $root . '-user-' . $user->data->ID . '-' . $role,
 						'parent' => $parent,
 						'title'  => $title,
 						'href'   => $href,
@@ -914,16 +911,39 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 						),
 					) );
 				}
+			} else {
+				// Users displayed as normal
+				$all_roles = $this->get_roles();
+				$user_roles = array();
+				// Add the roles of this user in the name
+				foreach ( $user->roles as $role ) {
+					$user_roles[] = translate_user_role( $all_roles[ $role ]->name );
+				}
+				$title = $title.' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
+				$admin_bar->add_node( array(
+					'id'     => $root . '-user-' . $user->data->ID,
+					'parent' => $parent,
+					'title'  => $title,
+					'href'   => $href,
+					'meta'   => array(
+						// Translators: %s stands for the user display name
+						'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), $user->data->display_name ),
+						'class' => $class,
+						'rel'   => $user->data->ID,
+					),
+				) );
 			}
-
-			/**
-			 * Add items at the end of the users group
-			 * @since   1.5
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, self::$root );
 		}
+
+		/**
+		 * Add items at the end of the users group
+		 * @since   1.5
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, self::$root );
+
+		$done = true;
 	}
 
 	/**

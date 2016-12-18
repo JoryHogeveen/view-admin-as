@@ -376,45 +376,48 @@ final class VAA_View_Admin_As
 	 */
 	public function die_handler( $function_name ) {
 
-		if ( false != $this->store->get_viewAs() ) {
+		// only do something if a view is selected
+		if ( ! $this->store->get_viewAs() ) {
+			return $function_name;
+		}
 
-			$options = array();
+		$options = array();
 
-			if ( is_network_admin() ) {
-				$dashboard_url = network_admin_url();
-				$options[] = array(
-					'text' => __( 'Go to network dashboard', 'view-admin-as' ),
-					'url' => $dashboard_url
-				);
-			} else {
-				$dashboard_url = admin_url();
-				$options[] = array(
-					'text' => __( 'Go to dashboard', 'view-admin-as' ),
-					'url' => $dashboard_url
-				);
-				$options[] = array(
-					'text' => __( 'Go to homepage', 'view-admin-as' ),
-					'url' => get_bloginfo( 'url' )
-				);
-			}
-
-			// Reset url
+		if ( is_network_admin() ) {
+			$dashboard_url = network_admin_url();
 			$options[] = array(
-				'text' => __( 'Reset the view', 'view-admin-as' ),
-				'url' => VAA_API::get_reset_link(),
+				'text' => __( 'Go to network dashboard', 'view-admin-as' ),
+				'url' => $dashboard_url
 			);
+		} else {
+			$dashboard_url = admin_url();
+			$options[] = array(
+				'text' => __( 'Go to dashboard', 'view-admin-as' ),
+				'url' => $dashboard_url
+			);
+			$options[] = array(
+				'text' => __( 'Go to homepage', 'view-admin-as' ),
+				'url' => get_bloginfo( 'url' )
+			);
+		}
 
-			/**
-			 * Add or remove options to the die/error handler pages
-			 *
-			 * @since  1.6.2
-			 * @param  array  $options {
-			 *     @type  string  $text  The text to show
-			 *     @type  string  $url   The link
-			 * }
-			 * @return array
-			 */
-			$options = apply_filters( 'view_admin_as_error_page_options', $options );
+		// Reset url
+		$options[] = array(
+			'text' => __( 'Reset the view', 'view-admin-as' ),
+			'url' => VAA_API::get_reset_link(),
+		);
+
+		/**
+		 * Add or remove options to the die/error handler pages
+		 *
+		 * @since  1.6.2
+		 * @param  array  $options {
+		 *     @type  string  $text  The text to show
+		 *     @type  string  $url   The link
+		 * }
+		 * @return array
+		 */
+		$options = apply_filters( 'view_admin_as_error_page_options', $options );
 ?>
 <div>
 	<h3><?php _e( 'View Admin As', 'view-admin-as' ) ?>:</h3>
@@ -427,7 +430,6 @@ final class VAA_View_Admin_As
 </div>
 <hr>
 <?php
-		}
 		return $function_name;
 	}
 
