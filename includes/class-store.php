@@ -227,8 +227,6 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Store available roles
 	 *
-	 * @todo  Check function wp_roles() >> WP 4.3+
-	 *
 	 * @since   1.5
 	 * @since   1.5.2  Get role objects instead of arrays
 	 * @since   1.6    Moved to this class from main class
@@ -264,13 +262,13 @@ final class VAA_View_Admin_As_Store
 					unset( $roles[ $role_key ] );
 				}
 				// Remove roles that have the view_admin_as capability
-				elseif ( is_array( $role->capabilities ) && array_key_exists( 'view_admin_as', $role->capabilities ) ) {
+				elseif ( $role instanceof WP_Role && $role->has_cap('view_admin_as') ) {
 					unset( $roles[ $role_key ] );
 				}
 			}
 		}
 
-		// @since  1.5.2.1  Merge role names with the role objects
+		// @since  1.5.2.1  Merge role names with the role objects (for i18n)
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $role_names[ $role_key ] ) ) {
 				$roles[ $role_key ]->name = $role_names[ $role_key ];
