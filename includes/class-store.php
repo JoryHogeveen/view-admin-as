@@ -377,6 +377,20 @@ final class VAA_View_Admin_As_Store
 				$user_query['where'] .= " AND usermeta.meta_value NOT LIKE '%administrator%'";
 			}
 
+			/**
+			 * Do not get super admins for network installs (values are usernames)
+			 * These we're filtered after query in previous versions
+			 *
+			 * @since  1.6.x
+			 */
+			if ( is_multisite() && ! $is_superior_admin ) {
+				$super_admins = get_super_admins();
+				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
+					$exclude_siblings = implode( ',', $super_admins );
+					$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
+				}
+			}
+
 			// Run query (OBJECT_K to set the user ID as key)
 			$users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K );
 
