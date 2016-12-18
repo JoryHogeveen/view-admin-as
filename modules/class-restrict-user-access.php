@@ -273,109 +273,114 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   mixed         $role_obj
 	 */
 	public function admin_bar_menu( $admin_bar, $root, $role = false, $role_obj = null ) {
+		static $done;
+		if ( $done ) return;
 		$this->levelPostType = get_post_type_object( RUA_App::TYPE_RESTRICT );
 
-		if ( $this->get_levels() && 0 < count( $this->get_levels() ) ) {
-
-			if ( ! $role ) {
-
-				$admin_bar->add_group(
-					array(
-						'id'     => $root . '-rua-levels',
-						'parent' => $root,
-						'meta'   => array(
-							'class' => 'ab-sub-secondary',
-						),
-					)
-				);
-
-				$root = $root . '-rua-levels';
-
-				$admin_bar->add_node(
-					array(
-						'id'     => $root . '-title',
-						'parent' => $root,
-						'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) .
-						            $this->levelPostType->labels->name,
-						'href'   => false,
-						'meta'   => array(
-							'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
-							'tabindex' => '0'
-						),
-					)
-				);
-
-			} else {
-
-				$admin_bar->add_node(
-					array(
-						'id'     => $root . '-rua-levels',
-						'parent' => $root,
-						'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) .
-						            $this->levelPostType->labels->name,
-						'href'   => false,
-						'meta'   => array(
-							'class'    => 'vaa-has-icon',
-							'tabindex' => '0'
-						),
-					)
-				);
-
-				$root = $root . '-rua-levels';
-
-			}
-
-			/**
-			 * Add items at the beginning of the rua group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar );
-
-			// Add the levels
-			foreach ( $this->get_levels() as $level_key => $level ) {
-				$href = '#';
-				$class = 'vaa-' . $this->viewKey . '-item';
-				$title = $level->post_title;
-				// Check if this level is the current view
-				if ( $this->get_viewAs( $this->viewKey ) ) {
-					if ( $this->get_viewAs( $this->viewKey ) == $level->ID ) {
-						$class .= ' current';
-						if ( 1 === count( $this->get_viewAs() ) ) {
-							$href = false;
-						}
-					}
-					elseif ( $current_parent = $this->get_levels( $this->selectedLevel ) ) {
-						if ( $current_parent->post_parent == $level->ID ) {
-							$class .= ' current-parent';
-						}
-					}
-				}
-				$parent = $root;
-				if ( ! empty( $level->post_parent ) ) {
-					$parent = $root .'-' . $this->viewKey . '-' . $level->post_parent;
-				}
-				$admin_bar->add_node( array(
-					'id'        => $root . '-' . $this->viewKey . '-' . $level->ID,
-					'parent'    => $parent,
-					'title'     => $title,
-					'href'      => $href,
-					'meta'      => array(
-						'title'     => sprintf( esc_attr__('View as %s', 'view-admin-as'), $level->post_title )
-						               . ( ( $role ) ? ' (' . translate_user_role( $role_obj->name ) . ')' : '' ),
-						'class'     => $class,
-						'rel'       => $level->ID . ( ( $role ) ? '|' . $role : '' ),
-					),
-				) );
-			}
-
-			/**
-			 * Add items at the end of the rua group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar );
+		if ( ! $this->get_levels() || ! count( $this->get_levels() ) ) {
+			return;
 		}
+
+		if ( ! $role ) {
+
+			$admin_bar->add_group(
+				array(
+					'id'     => $root . '-rua-levels',
+					'parent' => $root,
+					'meta'   => array(
+						'class' => 'ab-sub-secondary',
+					),
+				)
+			);
+
+			$root = $root . '-rua-levels';
+
+			$admin_bar->add_node(
+				array(
+					'id'     => $root . '-title',
+					'parent' => $root,
+					'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) .
+					            $this->levelPostType->labels->name,
+					'href'   => false,
+					'meta'   => array(
+						'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+						'tabindex' => '0'
+					),
+				)
+			);
+
+		} else {
+
+			$admin_bar->add_node(
+				array(
+					'id'     => $root . '-rua-levels',
+					'parent' => $root,
+					'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) .
+					            $this->levelPostType->labels->name,
+					'href'   => false,
+					'meta'   => array(
+						'class'    => 'vaa-has-icon',
+						'tabindex' => '0'
+					),
+				)
+			);
+
+			$root = $root . '-rua-levels';
+
+		}
+
+		/**
+		 * Add items at the beginning of the rua group
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar );
+
+		// Add the levels
+		foreach ( $this->get_levels() as $level_key => $level ) {
+			$href = '#';
+			$class = 'vaa-' . $this->viewKey . '-item';
+			$title = $level->post_title;
+			// Check if this level is the current view
+			if ( $this->get_viewAs( $this->viewKey ) ) {
+				if ( $this->get_viewAs( $this->viewKey ) == $level->ID ) {
+					$class .= ' current';
+					if ( 1 === count( $this->get_viewAs() ) ) {
+						$href = false;
+					}
+				}
+				elseif ( $current_parent = $this->get_levels( $this->selectedLevel ) ) {
+					if ( $current_parent->post_parent == $level->ID ) {
+						$class .= ' current-parent';
+					}
+				}
+			}
+			$parent = $root;
+			if ( ! empty( $level->post_parent ) ) {
+				$parent = $root .'-' . $this->viewKey . '-' . $level->post_parent;
+			}
+			$admin_bar->add_node( array(
+				'id'        => $root . '-' . $this->viewKey . '-' . $level->ID,
+				'parent'    => $parent,
+				'title'     => $title,
+				'href'      => $href,
+				'meta'      => array(
+					'title'     => sprintf( esc_attr__('View as %s', 'view-admin-as'), $level->post_title )
+					               . ( ( $role ) ? ' (' . translate_user_role( $role_obj->name ) . ')' : '' ),
+					'class'     => $class,
+					'rel'       => $level->ID . ( ( $role ) ? '|' . $role : '' ),
+				),
+			) );
+		}
+
+		/**
+		 * Add items at the end of the rua group
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar );
+
+		$done = true;
 	}
 
 	public function admin_bar_roles_after( $admin_bar, $root ) {
