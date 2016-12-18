@@ -575,20 +575,25 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Get defaults of a role
-	 * @todo  Make use of the API
-	 * @todo  Enable getting all role defaults or all defaults of a role instead of just one key
 	 *
 	 * @since   1.4
+	 * @since   1.6.x  Multiple get methods (parameters are now optional)
 	 * @access  private
 	 *
 	 * @param   string  $role
 	 * @param   string  $meta_key
 	 * @return  mixed
 	 */
-	private function get_role_defaults( $role, $meta_key ) {
-		$role_defaults = $this->get_optionData( 'roles' );
-		if ( isset( $role_defaults[ $role ][ $meta_key ] ) ) {
-			return $role_defaults[ $role ][ $meta_key ];
+	private function get_role_defaults( $role = null, $meta_key = null ) {
+		$defaults = $this->get_optionData( 'roles' );
+		if ( $role && $meta_key && isset( $defaults[ $role ][ $meta_key ] ) ) {
+			return $defaults[ $role ][ $meta_key ];
+		}
+		elseif ( $role && null === $meta_key && isset( $defaults[ $role ] ) ) {
+			return $defaults[ $role ];
+		}
+		elseif ( null === $role && null === $meta_key ) {
+			return $defaults;
 		}
 		return false;
 	}
@@ -605,7 +610,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  bool
 	 */
 	private function update_role_defaults( $role, $meta_key, $meta_value ) {
-		$role_defaults = $this->get_optionData( 'roles' );
+		$role_defaults = $this->get_role_defaults();
 		if ( ! isset( $role_defaults[ $role ] ) ) {
 			$role_defaults[ $role ] = array();
 		}
@@ -622,7 +627,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  bool
 	 */
 	private function clear_role_defaults( $role ) {
-		$role_defaults = $this->get_optionData( 'roles' );
+		$role_defaults = $this->get_role_defaults();
 		if ( ! is_array( $role ) ) {
 			if ( isset( $role_defaults ) && $role == 'all' ) {
 				$role_defaults = array();
@@ -640,7 +645,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				}
 			}
 		}
-		if ( $this->get_optionData( 'roles' ) !== $role_defaults ) {
+		if ( $this->get_role_defaults() !== $role_defaults ) {
 			return $this->update_optionData( $role_defaults, 'roles' );
 		}
 		return true; // No changes needed
@@ -655,7 +660,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  mixed
 	 */
 	private function export_role_defaults( $role = 'all' ) {
-		$role_defaults = $this->get_optionData( 'roles' );
+		$role_defaults = $this->get_role_defaults();
 		if ( 'all' != $role && isset( $role_defaults[ $role ] ) ) {
 			$data = $role_defaults[ $role ];
 			$data = array( $role => $data );
@@ -700,7 +705,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			}
 		}
 		if ( ! empty( $new_defaults ) ) {
-			$role_defaults = $this->get_optionData( 'roles' );
+			$role_defaults = $this->get_role_defaults();
 			foreach ( $new_defaults as $role => $role_data ) {
 				// Overwrite role defaults for each supplied role
 				$role_defaults[ $role ] = $role_data;
@@ -1122,7 +1127,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					'label' => ' - ' . __('All roles', 'view-admin-as') . ' - '
 				)
 			);
-			foreach ( $this->get_optionData( 'roles' ) as $role_key => $role ) {
+			foreach ( $this->get_role_defaults() as $role_key => $role ) {
 				if ( ! empty( $role_key ) ) {
 					$role_name = $role_key;
 					if ( $this->store->get_roles( $role_key ) ) {
