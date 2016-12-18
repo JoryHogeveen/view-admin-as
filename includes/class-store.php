@@ -318,6 +318,15 @@ final class VAA_View_Admin_As_Store
 
 		if ( is_network_admin() ) {
 
+			/**
+			 * Super admins are only available for superior admins
+			 * (short circuit return for performance)
+			 * @since  1.6.x
+			 */
+			if ( ! $is_superior_admin ) {
+				return;
+			}
+
 			// Get super admins (returns login's)
 			$users = get_super_admins();
 			// Remove current user
