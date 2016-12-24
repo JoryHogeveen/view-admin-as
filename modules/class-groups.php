@@ -3,7 +3,6 @@
  * View Admin As - Groups plugin
  *
  * Compatibility class for the Groups plugin
- * Loaded from VAA_View_Admin_As_Compat->init() (includes/class-compat.php)
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
@@ -43,6 +42,12 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	private $selectedGroup;
 
 	/**
+	 * @since  1.7
+	 * @var    string
+	 */
+	private $viewKey = 'groups';
+
+	/**
 	 * Populate the instance and validate Groups plugin
 	 *
 	 * @since   1.7
@@ -60,7 +65,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		) {
 
 			$this->vaa->register_module( array(
-				'id'       => 'groups',
+				'id'       => $this->viewKey,
 				'instance' => self::$_instance
 			) );
 
@@ -80,9 +85,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
 		add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
 
-		if ( $this->get_viewAs('groups') && $this->get_groups( $this->get_viewAs('groups') ) ) {
+		if ( $this->get_groups( $this->get_viewAs( $this->viewKey ) ) ) {
 
-			$this->selectedGroup = new Groups_Group( $this->get_viewAs('groups') );
+			$this->selectedGroup = new Groups_Group( $this->get_viewAs( $this->viewKey ) );
 
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
@@ -109,7 +114,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function add_view_type( $types ) {
-		$types[] = 'groups';
+		$types[] = $this->viewKey;
 		return $types;
 	}
 
@@ -131,7 +136,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		}
 
 		if ( is_numeric( $data ) && $this->get_groups( (int) $data ) ) {
-			$this->vaa->view()->update_view( array( 'groups' => (int) $data ) );
+			$this->vaa->view()->update_view( array( $this->viewKey => (int) $data ) );
 			return true;
 		}
 		return false;
@@ -195,8 +200,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @return  string
 	 */
 	public function vaa_viewing_as_title( $title ) {
-		if ( $this->get_viewAs('groups') && $this->get_groups( $this->get_viewAs('groups') ) ) {
-			$title = __( 'Viewing as group', 'view-admin-as' ) . ': ' . $this->get_groups( $this->get_viewAs('groups') )->name;
+		if ( $this->get_groups( $this->get_viewAs( $this->viewKey ) ) ) {
+			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), __( 'Group', GROUPS_PLUGIN_DOMAIN ) ) . ': '
+			         . $this->get_groups( $this->get_viewAs( $this->viewKey ) )->name;
 		}
 		return $title;
 	}
@@ -210,77 +216,79 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 */
 	public function admin_bar_menu( $admin_bar, $root ) {
 
-		if ( $this->get_groups() && 0 < count( $this->get_groups() ) ) {
-
-			$admin_bar->add_group( array(
-				'id'        => $root . '-groups',
-				'parent'    => $root,
-				'meta'      => array(
-					'class'     => 'ab-sub-secondary',
-				),
-			) );
-
-			$root = $root . '-groups';
-
-			$admin_bar->add_node( array(
-				'id'        => $root . '-title',
-				'parent'    => $root,
-				'title'     => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' ) . __('Groups', 'groups'),
-				'href'      => false,
-				'meta'      => array(
-					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
-					'tabindex' => '0'
-				),
-			) );
-
-			/**
-			 * Add items at the beginning of the groups group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_groups_before', $admin_bar );
-
-			// Add the groups
-			foreach ( $this->get_groups() as $group_key => $group ) {
-				$href = '#';
-				$class = 'vaa-groups-item';
-				$title = $group->name;
-				// Check if this group is the current view
-				if ( $this->get_viewAs('groups') ) {
-					if ( $this->get_viewAs('groups') == $group->group_id ) {
-						$class .= ' current';
-						$href = false;
-					}
-					elseif ( $current_parent = $this->get_groups( $this->get_viewAs('groups') ) ) {
-						if ( $current_parent->parent_id == $group->group_id ) {
-							$class .= ' current-parent';
-						}
-					}
-				}
-				$parent = $root;
-				if ( ! empty( $group->parent_id ) ) {
-					$parent = $root .'-group-' . $group->parent_id;
-				}
-				$admin_bar->add_node( array(
-					'id'        => $root . '-group-' . $group->group_id,
-					'parent'    => $parent,
-					'title'     => $title,
-					'href'      => $href,
-					'meta'      => array(
-						'title'     => esc_attr__('View as', 'view-admin-as') . ' ' . $group->name,
-						'class'     => $class,
-						'rel'       => $group->group_id,
-					),
-				) );
-			}
-
-			/**
-			 * Add items at the end of the groups group
-			 * @see     'admin_bar_menu' action
-			 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-			 */
-			do_action( 'vaa_admin_bar_groups_after', $admin_bar );
+		if ( ! $this->get_groups() || ! count( $this->get_groups() ) ) {
+			return;
 		}
+
+		$admin_bar->add_group( array(
+			'id'        => $root . '-groups',
+			'parent'    => $root,
+			'meta'      => array(
+				'class'     => 'ab-sub-secondary',
+			),
+		) );
+
+		$root = $root . '-groups';
+
+		$admin_bar->add_node( array(
+			'id'        => $root . '-title',
+			'parent'    => $root,
+			'title'     => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' )
+			               . __( 'Groups', GROUPS_PLUGIN_DOMAIN ),
+			'href'      => false,
+			'meta'      => array(
+				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+				'tabindex' => '0'
+			),
+		) );
+
+		/**
+		 * Add items at the beginning of the groups group
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_groups_before', $admin_bar );
+
+		// Add the groups
+		foreach ( $this->get_groups() as $group_key => $group ) {
+			$href = '#';
+			$class = 'vaa-' . $this->viewKey . '-item';
+			$title = $group->name;
+			// Check if this group is the current view
+			if ( $this->get_viewAs( $this->viewKey ) ) {
+				if ( $this->get_viewAs( $this->viewKey ) == $group->group_id ) {
+					$class .= ' current';
+					$href = false;
+				}
+				elseif ( $current_parent = $this->get_groups( $this->get_viewAs( $this->viewKey ) ) ) {
+					if ( $current_parent->parent_id == $group->group_id ) {
+						$class .= ' current-parent';
+					}
+				}
+			}
+			$parent = $root;
+			if ( ! empty( $group->parent_id ) ) {
+				$parent = $root .'-' . $this->viewKey . '-' . $group->parent_id;
+			}
+			$admin_bar->add_node( array(
+				'id'        => $root . '-' . $this->viewKey . '-' . $group->group_id,
+				'parent'    => $parent,
+				'title'     => $title,
+				'href'      => $href,
+				'meta'      => array(
+					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $group->name ),
+					'class'     => $class,
+					'rel'       => $group->group_id,
+				),
+			) );
+		}
+
+		/**
+		 * Add items at the end of the groups group
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 */
+		do_action( 'vaa_admin_bar_groups_after', $admin_bar );
 	}
 
 	/**
@@ -306,9 +314,12 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @param   string  $key
 	 * @return  mixed
 	 */
-	public function get_groups( $key = '' ) {
-		if ( empty( $key ) ) {
-			$key = false;
+	public function get_groups( $key = '-1' ) {
+		if ( ! is_numeric( $key ) ) {
+			return false;
+		}
+		if ( '-1' === $key ) {
+			$key = null;
 		}
 		return VAA_API::get_array_data( $this->groups, $key );
 	}
