@@ -322,9 +322,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$view_as = $this->validate_view_as_data( json_decode( stripslashes( $_POST['view_admin_as'] ), true ) );
 
 		// Stop selecting the same view! :)
-		if (   ( isset( $view_as['role'] ) && ( $this->store->get_viewAs('role') && $this->store->get_viewAs('role') == $view_as['role'] ) )
-		    || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs('user') && $this->store->get_viewAs('user') == $view_as['user'] ) )
-		    || ( isset( $view_as['visitor'] ) && ( $this->store->get_viewAs('visitor') ) )
+		if ( 1 === count( $this->get_viewAs() )
+		    && (
+		       ( isset( $view_as['role'] ) && ( $this->get_viewAs('role') && $this->get_viewAs('role') == $view_as['role'] ) )
+		    || ( isset( $view_as['user'] ) && ( $this->get_viewAs('user') && $this->get_viewAs('user') == $view_as['user'] ) )
+		    || ( isset( $view_as['visitor'] ) && ( $this->get_viewAs('visitor') ) )
+		    )
 		) {
 			wp_send_json_error( array(
 				'type' => 'error',
