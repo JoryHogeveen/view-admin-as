@@ -339,7 +339,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		elseif ( isset( $view_as['caps'] ) ) {
 			$db_view = $this->get_view();
 			// Check if the selected caps are equal to the default caps
-			if ( array_filter( $this->store->get_caps() ) == array_filter( $view_as['caps'] ) ) {
+			if ( array_filter( $this->store->get_curUser()->allcaps ) == array_filter( $view_as['caps'] ) ) {
 				// The selected caps are equal to the current user default caps so we can reset the view
 				$this->reset_view();
 				if ( isset( $db_view['caps'] ) ) {
@@ -353,6 +353,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					) );
 				}
 			} else {
+				// Reset the stored caps
+				$this->store->set_caps( array() );
 				// Store the selected caps
 				foreach ( $view_as['caps'] as $key => $value ) {
 					$this->store->set_caps( (int) $value, (string) $key, true );
