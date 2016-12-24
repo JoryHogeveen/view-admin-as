@@ -240,11 +240,13 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		$this->levelPostType = get_post_type_object( RUA_App::TYPE_RESTRICT );
 
 		if ( $this->get_levels( $this->selectedLevel ) ) {
-			$title = sprintf( __( 'Viewing as %s', 'view-admin-as' ), $this->levelPostType->labels->singular_name ) . ': ';
+			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->levelPostType->labels->singular_name ) . ': ';
 			$title .= $this->get_levels( $this->selectedLevel )->post_title;
 			// Is there also a role selected?
 			if ( $this->get_viewAs('role') && $this->get_roles( $this->get_viewAs('role') ) ) {
-				$title .= ' ('. translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name ) .')';
+				$title .= ' <span class="user-role">('
+				          . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name )
+				          . ')</span>';
 			}
 		}
 		return $title;
@@ -350,7 +352,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				'title'     => $title,
 				'href'      => $href,
 				'meta'      => array(
-					'title'     => sprintf( esc_attr__('View as %s', 'view-admin-as'), $level->post_title )
+					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
 					               . ( ( $role ) ? ' (' . translate_user_role( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
 					'rel'       => $level->ID . ( ( $role ) ? '|' . $role : '' ),
