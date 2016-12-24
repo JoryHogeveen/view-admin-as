@@ -282,46 +282,36 @@ final class VAA_View_Admin_As
 	 */
 	private function load_ui() {
 
-		// WP admin modifications
-		if ( ! class_exists('VAA_View_Admin_As_Admin') ) {
-			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin';
-			$this->ui['admin'] = VAA_View_Admin_As_Admin::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-admin', array(
-				'type' => 'notice-error',
-				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-				             . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-				             . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), 'VAA_View_Admin_As_Admin' ) . ')</code>',
-			) );
-		}
+		$include = array(
+			'admin' => array(
+				'file'  => 'class-admin.php',
+				'class' => 'VAA_View_Admin_As_Admin'
+			),
+			'admin-bar' => array(
+				'file'  => 'class-admin-bar.php',
+				'class' => 'VAA_View_Admin_As_Admin_Bar'
+			),
+			'toolbar' => array(
+				'file'  => 'class-toolbar.php',
+				'class' => 'VAA_View_Admin_As_Toolbar'
+			),
+		);
 
-		// The default admin bar ui
-		if ( ! class_exists('VAA_View_Admin_As_Admin_Bar') ) {
-			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin-bar.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin_Bar';
-			$this->ui['admin_bar'] = VAA_View_Admin_As_Admin_Bar::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-admin-bar', array(
-				'type' => 'notice-error',
-				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-					. __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-					. ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), 'VAA_View_Admin_As_Admin_Bar' ) . ')</code>',
-			) );
-		}
-
-		// Custom toolbar (front-end)
-		if ( ! class_exists('VAA_View_Admin_As_Toolbar') ) {
-			require( VIEW_ADMIN_AS_DIR . 'ui/class-toolbar.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Toolbar';
-			$this->ui['toolbar'] = VAA_View_Admin_As_Toolbar::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-toolbar', array(
-				'type' => 'notice-error',
-				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-				    . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-				    . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), 'VAA_View_Admin_As_Toolbar' ) . ')</code>',
-			) );
+		foreach( $include as $key => $inc ) {
+			if ( empty( $inc['class']) || ! class_exists( $inc['class'] ) ) {
+				require( VIEW_ADMIN_AS_DIR . 'ui/' . $inc['file'] );
+				if ( !empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
+					self::$vaa_class_names[] = $inc['class'];
+					$this->ui[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
+				}
+			} else {
+				$this->add_notice('class-error-' . $key, array(
+					'type' => 'notice-error',
+					'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+					    . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+					    . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
+				) );
+			}
 		}
 	}
 
@@ -683,6 +673,7 @@ final class VAA_View_Admin_As
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
 			$valid = false;
 		}
+
 		return $valid;
 	}
 
