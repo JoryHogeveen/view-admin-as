@@ -119,9 +119,9 @@ final class VAA_View_Admin_As
 
 			$this->add_notice('class-error-core', array(
 				'type' => 'notice-error',
-				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-					. __('Plugin not loaded because of a conflict with an other plugin or theme', 'view-admin-as')
-					. ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Class_Base' ) . ')</code>',
+				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+					. __( 'Plugin not loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+					. ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), 'VAA_View_Admin_As_Class_Base' ) . ')</code>',
 			) );
 
 		}
@@ -282,46 +282,36 @@ final class VAA_View_Admin_As
 	 */
 	private function load_ui() {
 
-		// WP admin modifications
-		if ( ! class_exists('VAA_View_Admin_As_Admin') ) {
-			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin';
-			$this->ui['admin'] = VAA_View_Admin_As_Admin::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-admin', array(
-				'type' => 'notice-error',
-				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-				             . __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
-				             . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin' ) . ')</code>',
-			) );
-		}
+		$include = array(
+			'admin' => array(
+				'file'  => 'class-admin.php',
+				'class' => 'VAA_View_Admin_As_Admin'
+			),
+			'admin-bar' => array(
+				'file'  => 'class-admin-bar.php',
+				'class' => 'VAA_View_Admin_As_Admin_Bar'
+			),
+			'toolbar' => array(
+				'file'  => 'class-toolbar.php',
+				'class' => 'VAA_View_Admin_As_Toolbar'
+			),
+		);
 
-		// The default admin bar ui
-		if ( ! class_exists('VAA_View_Admin_As_Admin_Bar') ) {
-			require( VIEW_ADMIN_AS_DIR . 'ui/class-admin-bar.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Admin_Bar';
-			$this->ui['admin_bar'] = VAA_View_Admin_As_Admin_Bar::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-admin-bar', array(
-				'type' => 'notice-error',
-				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-					. __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
-					. ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Admin_Bar' ) . ')</code>',
-			) );
-		}
-
-		// Custom toolbar (front-end)
-		if ( ! class_exists('VAA_View_Admin_As_Toolbar') ) {
-			require( VIEW_ADMIN_AS_DIR . 'ui/class-toolbar.php' );
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Toolbar';
-			$this->ui['toolbar'] = VAA_View_Admin_As_Toolbar::get_instance( $this );
-		} else {
-			$this->add_notice('class-error-toolbar', array(
-				'type' => 'notice-error',
-				'message' => '<strong>' . __('View Admin As', 'view-admin-as') . ':</strong> '
-				    . __('Plugin not fully loaded because of a conflict with an other plugin or theme', 'view-admin-as')
-				    . ' <code>(' . sprintf( __('Class %s already exists', 'view-admin-as'), 'VAA_View_Admin_As_Toolbar' ) . ')</code>',
-			) );
+		foreach( $include as $key => $inc ) {
+			if ( empty( $inc['class']) || ! class_exists( $inc['class'] ) ) {
+				require( VIEW_ADMIN_AS_DIR . 'ui/' . $inc['file'] );
+				if ( !empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
+					self::$vaa_class_names[] = $inc['class'];
+					$this->ui[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
+				}
+			} else {
+				$this->add_notice('class-error-' . $key, array(
+					'type' => 'notice-error',
+					'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+					    . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+					    . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
+				) );
+			}
 		}
 	}
 
@@ -376,49 +366,52 @@ final class VAA_View_Admin_As
 	 */
 	public function die_handler( $function_name ) {
 
-		if ( false != $this->store->get_viewAs() ) {
+		// only do something if a view is selected
+		if ( ! $this->store->get_viewAs() ) {
+			return $function_name;
+		}
 
-			$options = array();
+		$options = array();
 
-			if ( is_network_admin() ) {
-				$dashboard_url = network_admin_url();
-				$options[] = array(
-					'text' => __( 'Go to network dashboard', 'view-admin-as' ),
-					'url' => $dashboard_url
-				);
-			} else {
-				$dashboard_url = admin_url();
-				$options[] = array(
-					'text' => __( 'Go to dashboard', 'view-admin-as' ),
-					'url' => $dashboard_url
-				);
-				$options[] = array(
-					'text' => __( 'Go to homepage', 'view-admin-as' ),
-					'url' => get_bloginfo( 'url' )
-				);
-			}
-
-			// Reset url
+		if ( is_network_admin() ) {
+			$dashboard_url = network_admin_url();
 			$options[] = array(
-				'text' => __( 'Reset the view', 'view-admin-as' ),
-				'url' => VAA_API::get_reset_link(),
+				'text' => __( 'Go to network dashboard', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => $dashboard_url
 			);
+		} else {
+			$dashboard_url = admin_url();
+			$options[] = array(
+				'text' => __( 'Go to dashboard', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => $dashboard_url
+			);
+			$options[] = array(
+				'text' => __( 'Go to homepage', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => get_bloginfo( 'url' )
+			);
+		}
 
-			/**
-			 * Add or remove options to the die/error handler pages
-			 *
-			 * @since  1.6.2
-			 * @param  array  $options {
-			 *     @type  string  $text  The text to show
-			 *     @type  string  $url   The link
-			 * }
-			 * @return array
-			 */
-			$options = apply_filters( 'view_admin_as_error_page_options', $options );
+		// Reset url
+		$options[] = array(
+			'text' => __( 'Reset the view', VIEW_ADMIN_AS_DOMAIN ),
+			'url' => VAA_API::get_reset_link(),
+		);
+
+		/**
+		 * Add or remove options to the die/error handler pages
+		 *
+		 * @since  1.6.2
+		 * @param  array  $options {
+		 *     @type  string  $text  The text to show
+		 *     @type  string  $url   The link
+		 * }
+		 * @return array
+		 */
+		$options = apply_filters( 'view_admin_as_error_page_options', $options );
 ?>
 <div>
-	<h3><?php _e( 'View Admin As', 'view-admin-as' ) ?>:</h3>
-	<?php _e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', 'view-admin-as' ) ?>
+	<h3><?php _e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) ?>:</h3>
+	<?php _e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ) ?>
 	<ul>
 		<?php foreach ( $options as $option ) { ?>
 		<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
@@ -427,7 +420,6 @@ final class VAA_View_Admin_As
 </div>
 <hr>
 <?php
-		}
 		return $function_name;
 	}
 
@@ -472,9 +464,9 @@ final class VAA_View_Admin_As
 				'_debug'     => ( defined('WP_DEBUG') && WP_DEBUG ) ? (bool) WP_DEBUG : false,
 				'_vaa_nonce' => $this->store->get_nonce( true ),
 				// i18n
-				'__no_users_found' => esc_html__( 'No users found.', 'view-admin-as' ),
-				'__success'        => esc_html__( 'Success', 'view-admin-as' ),
-				'__confirm'        => esc_html__( 'Are you sure?', 'view-admin-as' )
+				'__no_users_found' => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
+				'__success'        => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
+				'__confirm'        => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN )
 			);
 
 			/**
@@ -574,10 +566,10 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.1
 	 * @access  public
-	 * @param   string|bool  $key  (optional) UI class name
+	 * @param   string  $key  (optional) UI class name
 	 * @return  array|object
 	 */
-	public function get_ui( $key = false ) {
+	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
 	}
 
@@ -587,10 +579,10 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.5
 	 * @access  public
-	 * @param   string|bool  $key  (optional) The module key
+	 * @param   string  $key  (optional) The module key
 	 * @return  array|object
 	 */
-	public function get_modules( $key = false ) {
+	public function get_modules( $key = null ) {
 		return VAA_API::get_array_data( $this->modules, $key );
 	}
 
@@ -673,14 +665,15 @@ final class VAA_View_Admin_As
 		if ( version_compare( $wp_version, '3.5', '<' ) ) {
 			$this->add_notice('wp-version', array(
 				'type' => 'notice-error',
-				'message' => __('View Admin As', 'view-admin-as') . ': '
+				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
 				             // Translators, first %s stands for "WordPress", second stands for version 3.5
-				             . sprintf( __('Plugin deactivated, %s version %s or higher is required', 'view-admin-as'), 'WordPress', '3.5' ),
+				             . sprintf( __( 'Plugin deactivated, %s version %s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
 			$valid = false;
 		}
+
 		return $valid;
 	}
 
@@ -740,7 +733,7 @@ final class VAA_View_Admin_As
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -755,7 +748,7 @@ final class VAA_View_Admin_As
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -772,7 +765,7 @@ final class VAA_View_Admin_As
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
 			get_class( $this ) . "::{$method}",
-			esc_html__( 'Method does not exist.', 'view-admin-as' ),
+			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 		unset( $method, $args );

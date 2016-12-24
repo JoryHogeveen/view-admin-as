@@ -227,8 +227,6 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Store available roles
 	 *
-	 * @todo  Check function wp_roles() >> WP 4.3+
-	 *
 	 * @since   1.5
 	 * @since   1.5.2  Get role objects instead of arrays
 	 * @since   1.6    Moved to this class from main class
@@ -237,7 +235,13 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function store_roles() {
-		global $wp_roles;
+
+		// @since  1.6.x  Check for the wp_roles() function in WP 4.3+
+		if ( function_exists('wp_roles') ) {
+			$wp_roles = wp_roles();
+		} else {
+			global $wp_roles;
+		}
 
 		// Store available roles
 		$roles = $wp_roles->role_objects; // role_objects for objects, roles for arrays
@@ -258,13 +262,13 @@ final class VAA_View_Admin_As_Store
 					unset( $roles[ $role_key ] );
 				}
 				// Remove roles that have the view_admin_as capability
-				elseif ( is_array( $role->capabilities ) && array_key_exists( 'view_admin_as', $role->capabilities ) ) {
+				elseif ( $role instanceof WP_Role && $role->has_cap('view_admin_as') ) {
 					unset( $roles[ $role_key ] );
 				}
 			}
 		}
 
-		// @since  1.5.2.1  Merge role names with the role objects
+		// @since  1.5.2.1  Merge role names with the role objects (for i18n)
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $role_names[ $role_key ] ) ) {
 				$roles[ $role_key ]->name = $role_names[ $role_key ];
@@ -314,6 +318,15 @@ final class VAA_View_Admin_As_Store
 
 		if ( is_network_admin() ) {
 
+			/**
+			 * Super admins are only available for superior admins
+			 * (short circuit return for performance)
+			 * @since  1.6.x
+			 */
+			if ( ! $is_superior_admin ) {
+				return;
+			}
+
 			// Get super admins (returns login's)
 			$users = get_super_admins();
 			// Remove current user
@@ -362,6 +375,20 @@ final class VAA_View_Admin_As_Store
 			 */
 			if ( ! is_multisite() && ! $is_superior_admin ) {
 				$user_query['where'] .= " AND usermeta.meta_value NOT LIKE '%administrator%'";
+			}
+
+			/**
+			 * Do not get super admins for network installs (values are usernames)
+			 * These we're filtered after query in previous versions
+			 *
+			 * @since  1.6.x
+			 */
+			if ( is_multisite() && ! $is_superior_admin ) {
+				$super_admins = get_super_admins();
+				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
+					$exclude_siblings = implode( ',', $super_admins );
+					$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
+				}
 			}
 
 			// Run query (OBJECT_K to set the user ID as key)
@@ -744,32 +771,32 @@ final class VAA_View_Admin_As_Store
 	/*
 	 * Getters
 	 */
-	public function get_curUser()                           { return $this->curUser; }
-	public function get_curUserSession()                    { return (string) $this->curUserSession; }
-	public function get_viewAs( $key = false )              { return VAA_API::get_array_data( $this->viewAs, $key ); }
-	public function get_caps( $key = false )                { return VAA_API::get_array_data( $this->caps, $key ); }
-	public function get_roles( $key = false )               { return VAA_API::get_array_data( $this->roles, $key ); }
-	public function get_users( $key = false )               { return VAA_API::get_array_data( $this->users, $key ); }
-	public function get_selectedUser()                      { return $this->selectedUser; }
-	public function get_selectedCaps()                      { return (array) $this->selectedCaps; }
-	public function get_userids()                           { return (array) $this->userids; }
-	public function get_optionKey()                         { return (string) $this->optionKey; }
-	public function get_optionData( $key = false )          { return VAA_API::get_array_data( $this->optionData, $key ); }
-	public function get_userMetaKey()                       { return (string) $this->userMetaKey; }
-	public function get_userMeta( $key = false )            { return VAA_API::get_array_data( $this->userMeta, $key ); }
-	public function get_defaultSettings( $key = false )     { return VAA_API::get_array_data( $this->defaultSettings, $key ); }
-	public function get_defaultUserSettings( $key = false ) { return VAA_API::get_array_data( $this->defaultUserSettings, $key ); }
-	public function get_allowedSettings( $key = false )     { return (array) VAA_API::get_array_data( $this->allowedSettings, $key ); }
-	public function get_allowedUserSettings( $key = false ) { return (array) VAA_API::get_array_data( $this->allowedUserSettings, $key ); }
+	public function get_curUser()                          { return $this->curUser; }
+	public function get_curUserSession()                   { return (string) $this->curUserSession; }
+	public function get_viewAs( $key = null )              { return VAA_API::get_array_data( $this->viewAs, $key ); }
+	public function get_caps( $key = null )                { return VAA_API::get_array_data( $this->caps, $key ); }
+	public function get_roles( $key = null )               { return VAA_API::get_array_data( $this->roles, $key ); }
+	public function get_users( $key = null )               { return VAA_API::get_array_data( $this->users, $key ); }
+	public function get_userids( $key = null )             { return VAA_API::get_array_data( $this->userids, $key ); }
+	public function get_selectedCaps( $key = null )        { return VAA_API::get_array_data( $this->selectedCaps, $key ); }
+	public function get_selectedUser()                     { return $this->selectedUser; }
+	public function get_optionKey()                        { return (string) $this->optionKey; }
+	public function get_optionData( $key = null )          { return VAA_API::get_array_data( $this->optionData, $key ); }
+	public function get_userMetaKey()                      { return (string) $this->userMetaKey; }
+	public function get_userMeta( $key = null )            { return VAA_API::get_array_data( $this->userMeta, $key ); }
+	public function get_defaultSettings( $key = null )     { return VAA_API::get_array_data( $this->defaultSettings, $key ); }
+	public function get_defaultUserSettings( $key = null ) { return VAA_API::get_array_data( $this->defaultUserSettings, $key ); }
+	public function get_allowedSettings( $key = null )     { return (array) VAA_API::get_array_data( $this->allowedSettings, $key ); }
+	public function get_allowedUserSettings( $key = null ) { return (array) VAA_API::get_array_data( $this->allowedUserSettings, $key ); }
 
 	public function get_nonce( $parsed = false ) {
 		return ( $parsed ) ? $this->nonce_parsed : $this->nonce;
 	}
 
-	public function get_settings( $key = false ) {
+	public function get_settings( $key = null ) {
 		return VAA_API::get_array_data( $this->validate_settings( $this->get_optionData( 'settings' ), 'global' ), $key );
 	}
-	public function get_userSettings( $key = false ) {
+	public function get_userSettings( $key = null ) {
 		return VAA_API::get_array_data( $this->validate_settings( $this->get_userMeta( 'settings' ), 'user' ), $key );
 	}
 
@@ -779,30 +806,30 @@ final class VAA_View_Admin_As_Store
 	/*
 	 * Setters
 	 */
-	public function set_viewAs( $var, $key = false, $append = false ) { $this->viewAs = VAA_API::set_array_data( $this->viewAs, $var, $key, $append ); }
-	public function set_caps( $var, $key = false, $append = false )   { $this->caps   = VAA_API::set_array_data( $this->caps, $var, $key, $append ); }
-	public function set_roles( $var, $key = false, $append = false )  { $this->roles  = VAA_API::set_array_data( $this->roles, $var, $key, $append ); }
-	public function set_users( $var, $key = false, $append = false )  { $this->users  = VAA_API::set_array_data( $this->users, $var, $key, $append ); }
-	public function set_userids( $var )                               { $this->userids = array_map( 'strval', (array) $var ); }
-	public function set_curUser( $var )                               { $this->curUser = $var; }
-	public function set_curUserSession( $var )                        { $this->curUserSession = (string) $var; }
-	public function set_selectedUser( $var )                          { $this->selectedUser = $var; }
-	public function set_selectedCaps( $var )                          { $this->selectedCaps = array_filter( (array) $var ); }
-	public function set_defaultSettings( $var )                       { $this->defaultSettings = array_map( 'strval', (array) $var ); }
-	public function set_defaultUserSettings( $var )                   { $this->defaultUserSettings = array_map( 'strval', (array) $var ); }
+	public function set_viewAs( $var, $key = null, $append = false ) { $this->viewAs = VAA_API::set_array_data( $this->viewAs, $var, $key, $append ); }
+	public function set_caps( $var, $key = null, $append = false )   { $this->caps   = VAA_API::set_array_data( $this->caps, $var, $key, $append ); }
+	public function set_roles( $var, $key = null, $append = false )  { $this->roles  = VAA_API::set_array_data( $this->roles, $var, $key, $append ); }
+	public function set_users( $var, $key = null, $append = false )  { $this->users  = VAA_API::set_array_data( $this->users, $var, $key, $append ); }
+	public function set_userids( $var )                              { $this->userids = array_map( 'strval', (array) $var ); }
+	public function set_curUser( $var )                              { $this->curUser = $var; }
+	public function set_curUserSession( $var )                       { $this->curUserSession = (string) $var; }
+	public function set_selectedUser( $var )                         { $this->selectedUser = $var; }
+	public function set_selectedCaps( $var )                         { $this->selectedCaps = array_filter( (array) $var ); }
+	public function set_defaultSettings( $var )                      { $this->defaultSettings = array_map( 'strval', (array) $var ); }
+	public function set_defaultUserSettings( $var )                  { $this->defaultUserSettings = array_map( 'strval', (array) $var ); }
 
 	public function set_nonce( $var ) {
 		$this->nonce = (string) $var;
 		$this->nonce_parsed = wp_create_nonce( (string) $var );
 	}
 
-	public function set_allowedSettings( $var, $key = false, $append = false ) {
+	public function set_allowedSettings( $var, $key = null, $append = false ) {
 		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $var, $key, $append );
 	}
-	public function set_allowedUserSettings( $var, $key = false, $append = false ) {
+	public function set_allowedUserSettings( $var, $key = null, $append = false ) {
 		$this->allowedUserSettings = VAA_API::set_array_data( $this->allowedUserSettings, $var, $key, $append );
 	}
-	public function set_settings( $var, $key = false, $append = false ) {
+	public function set_settings( $var, $key = null, $append = false ) {
 		$this->set_optionData(
 			$this->validate_settings(
 				VAA_API::set_array_data( $this->get_settings(), $var, $key, $append ),
@@ -812,7 +839,7 @@ final class VAA_View_Admin_As_Store
 			true
 		);
 	}
-	public function set_userSettings( $var, $key = false, $append = false ) {
+	public function set_userSettings( $var, $key = null, $append = false ) {
 		$this->set_userMeta(
 			$this->validate_settings(
 				VAA_API::set_array_data( $this->get_userSettings(), $var, $key, $append ),
@@ -822,21 +849,21 @@ final class VAA_View_Admin_As_Store
 			true
 		);
 	}
-	public function set_optionData( $var, $key = false, $append = false ) {
+	public function set_optionData( $var, $key = null, $append = false ) {
 		$this->optionData = VAA_API::set_array_data( $this->optionData, $var, $key, $append );
 	}
-	public function set_userMeta( $var, $key = false, $append = false ) {
+	public function set_userMeta( $var, $key = null, $append = false ) {
 		$this->userMeta = VAA_API::set_array_data( $this->userMeta, $var, $key, $append );
 	}
 
 	/*
 	 * Update
 	 */
-	public function update_optionData( $var, $key = false, $append = false ) {
+	public function update_optionData( $var, $key = null, $append = false ) {
 		$this->set_optionData( $var, $key, $append );
 		return update_option( $this->get_optionKey(), $this->get_optionData() );
 	}
-	public function update_userMeta( $var, $key = false, $append = false ) {
+	public function update_userMeta( $var, $key = null, $append = false ) {
 		$this->set_userMeta( $var, $key, $append );
 		return update_user_meta( $this->get_curUser()->ID, $this->get_userMetaKey(), $this->get_userMeta() );
 	}
@@ -883,7 +910,7 @@ final class VAA_View_Admin_As_Store
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -898,7 +925,7 @@ final class VAA_View_Admin_As_Store
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -915,7 +942,7 @@ final class VAA_View_Admin_As_Store
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
 			get_class( $this ) . "::{$method}",
-			esc_html__( 'Method does not exist.', 'view-admin-as' ),
+			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 		unset( $method, $args );

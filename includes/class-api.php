@@ -71,7 +71,7 @@ final class VAA_API
 	 * @return  mixed
 	 */
 	final public static function get_array_data( $array, $key = null ) {
-		if ( $key ) {
+		if ( null !== $key ) {
 			if ( isset( $array[ $key ] ) ) {
 				return $array[ $key ];
 			}
@@ -96,7 +96,7 @@ final class VAA_API
 	 * @return  mixed
 	 */
 	final public static function set_array_data( $array, $var, $key = null, $append = false ) {
-		if ( $key ) {
+		if ( null !== $key ) {
 			if ( true === $append && ! is_array( $array ) ) {
 				$array = array();
 			}

@@ -129,7 +129,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @since   1.6.2  Make database update optional
 	 * @access  protected
 	 * @param   bool
-	 * @param   bool  $update  Do database update?
+	 * @param   bool  $update  Do database update? (default true)
 	 * @return  bool
 	 */
 	protected function set_enable( $bool = false, $update = true ) {
@@ -162,53 +162,54 @@ abstract class VAA_View_Admin_As_Class_Base
 	/*
 	 * VAA Store Getters
 	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
+	 * @todo Magic method __call()?
 	 */
-	protected function get_curUser()                           { return $this->store->get_curUser(); }
-	protected function get_curUserSession()                    { return $this->store->get_curUserSession(); }
-	protected function get_viewAs( $key = false )              { return $this->store->get_viewAs( $key ); }
-	protected function get_caps( $key = false )                { return $this->store->get_caps( $key ); }
-	protected function get_roles( $key = false )               { return $this->store->get_roles( $key ); }
-	protected function get_users( $key = false )               { return $this->store->get_users( $key ); }
-	protected function get_userids()                           { return $this->store->get_userids(); }
-	protected function get_selectedUser()                      { return $this->store->get_selectedUser(); }
-	protected function get_selectedCaps()                      { return $this->store->get_selectedCaps(); }
-	protected function get_settings( $key = false )            { return $this->store->get_settings( $key ); }
-	protected function get_userSettings( $key = false )        { return $this->store->get_userSettings( $key ); }
-	protected function get_defaultSettings( $key = false )     { return $this->store->get_defaultSettings( $key ); }
-	protected function get_allowedSettings( $key = false )     { return $this->store->get_allowedSettings( $key ); }
-	protected function get_defaultUserSettings( $key = false ) { return $this->store->get_defaultUserSettings( $key ); }
-	protected function get_allowedUserSettings( $key = false ) { return $this->store->get_allowedUserSettings( $key ); }
-	protected function get_version()                           { return $this->store->get_version(); }
-	protected function get_dbVersion()                         { return $this->store->get_dbVersion(); }
+	protected function get_curUser()                          { return $this->store->get_curUser(); }
+	protected function get_curUserSession()                   { return $this->store->get_curUserSession(); }
+	protected function get_viewAs( $key = null )              { return $this->store->get_viewAs( $key ); }
+	protected function get_caps( $key = null )                { return $this->store->get_caps( $key ); }
+	protected function get_roles( $key = null )               { return $this->store->get_roles( $key ); }
+	protected function get_users( $key = null )               { return $this->store->get_users( $key ); }
+	protected function get_userids( $key = null )             { return $this->store->get_userids( $key ); }
+	protected function get_selectedCaps( $key = null )        { return $this->store->get_selectedCaps( $key ); }
+	protected function get_selectedUser()                     { return $this->store->get_selectedUser(); }
+	protected function get_settings( $key = null )            { return $this->store->get_settings( $key ); }
+	protected function get_userSettings( $key = null )        { return $this->store->get_userSettings( $key ); }
+	protected function get_defaultSettings( $key = null )     { return $this->store->get_defaultSettings( $key ); }
+	protected function get_allowedSettings( $key = null )     { return $this->store->get_allowedSettings( $key ); }
+	protected function get_defaultUserSettings( $key = null ) { return $this->store->get_defaultUserSettings( $key ); }
+	protected function get_allowedUserSettings( $key = null ) { return $this->store->get_allowedUserSettings( $key ); }
+	protected function get_version()                          { return $this->store->get_version(); }
+	protected function get_dbVersion()                        { return $this->store->get_dbVersion(); }
 
 	/*
 	 * VAA Getters
 	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
 	 */
-	protected function get_modules( $key = false ) { return $this->vaa->get_modules( $key ); }
+	protected function get_modules( $key = null ) { return $this->vaa->get_modules( $key ); }
 
 	/*
 	 * Native Getters
 	 */
-	public function get_optionKey()                        { return (string) $this->optionKey; }
-	public function get_optionData( $key = false )         { return VAA_API::get_array_data( $this->optionData, $key ); }
-	public function get_scriptLocalization( $key = false ) { return VAA_API::get_array_data( $this->scriptLocalization, $key ); }
+	public function get_optionKey()                       { return (string) $this->optionKey; }
+	public function get_optionData( $key = null )         { return VAA_API::get_array_data( $this->optionData, $key ); }
+	public function get_scriptLocalization( $key = null ) { return VAA_API::get_array_data( $this->scriptLocalization, $key ); }
 
 	/*
 	 * Native Setters
 	 */
 	protected function set_optionKey( $var ) { $this->optionKey = (string) $var; }
-	protected function set_optionData( $var, $key = false, $append = false ) {
+	protected function set_optionData( $var, $key = null, $append = false ) {
 		$this->optionData = VAA_API::set_array_data( $this->optionData, $var, $key, $append );
 	}
-	protected function set_scriptLocalization( $var, $key = false, $append = false ) {
+	protected function set_scriptLocalization( $var, $key = null, $append = false ) {
 		$this->scriptLocalization = VAA_API::set_array_data( $this->scriptLocalization, $var, $key, $append );
 	}
 
 	/*
 	 * Native Update
 	 */
-	protected function update_optionData( $var, $key = false, $append = false ) {
+	protected function update_optionData( $var, $key = null, $append = false ) {
 		$this->set_optionData( $var, $key, $append );
 		return update_option( $this->get_optionKey(), $this->optionData );
 	}
@@ -234,7 +235,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -249,7 +250,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -266,7 +267,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
 			get_class( $this ) . "::{$method}",
-			esc_html__( 'Method does not exist.', 'view-admin-as' ),
+			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 		unset( $method, $args );
