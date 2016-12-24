@@ -91,7 +91,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
 			add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_roles_after' ), 10, 2 );
 
-			add_action( 'vaa_view_admin_as_view_active', array( $this, 'do_view' ) );
+			add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 		}
 	}
 
@@ -109,15 +109,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
-			$this->modify_current_user();
+			$this->vaa->view()->init_current_user_modifications();
 			add_action( 'vaa_view_admin_as_modify_current_user_caps', array( $this, 'modify_current_user_caps' ) );
 
 			add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
-
-			// This view also requires meta cap mapping just like roles and caps views
-			if ( 1 === count( $this->get_viewAs() ) ) {
-				add_filter( 'map_meta_cap', array( $this->vaa->view(), 'map_meta_cap' ), 999999999, 4 );
-			}
 
 			// Administrators can see all restricted content in RUA
 			if ( $this->get_viewAs() && ! $this->get_selectedCaps('administrator') ) {
@@ -131,12 +126,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * Update the current user's WP_User instance with the current view data
 	 *
 	 * @since   1.7
+	 * @param   WP_User  $current_user
 	 */
-	public function modify_current_user_caps() {
-
-		// @global  WP_User  $current_user
-		//global $current_user;
-		$current_user = $this->store->get_curUser();
+	public function modify_current_user_caps( &$current_user ) {
 
 		$caps = (array) $this->selectedLevelCaps;
 
