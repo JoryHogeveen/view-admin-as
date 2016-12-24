@@ -235,7 +235,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -250,7 +250,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -267,7 +267,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
 			get_class( $this ) . "::{$method}",
-			esc_html__( 'Method does not exist.', 'view-admin-as' ),
+			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 		unset( $method, $args );

@@ -312,7 +312,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		    || ! isset( $_POST['_vaa_nonce'] )
 		    || ! wp_verify_nonce( $_POST['_vaa_nonce'], $this->store->get_nonce() )
 		) {
-			wp_send_json_error( __('Cheatin uh?', 'view-admin-as') );
+			wp_send_json_error( __( 'Cheatin uh?', VIEW_ADMIN_AS_DOMAIN ) );
 			die();
 		}
 
@@ -328,7 +328,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		) {
 			wp_send_json_error( array(
 				'type' => 'error',
-				'content' => esc_html__('This view is already selected!', 'view-admin-as')
+				'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN )
 			) );
 		}
 
@@ -349,7 +349,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					// The user was in his default view, notify the user
 					wp_send_json_error( array(
 						'type' => 'error',
-						'content' => esc_html__('These are your default capabilities!', 'view-admin-as')
+						'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN )
 					) );
 				}
 			} else {
@@ -362,7 +362,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				) {
 					wp_send_json_error( array(
 						'type' => 'error',
-						'content' => esc_html__('This view is already selected!', 'view-admin-as')
+						'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN )
 					) );
 				} else {
 					$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
@@ -401,7 +401,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		} else {
 			wp_send_json_error( array(
 				'type' => 'error',
-				'content' => esc_html__('Something went wrong, please try again.', 'view-admin-as')
+				'content' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN )
 			) );
 		}
 

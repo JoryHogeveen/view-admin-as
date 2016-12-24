@@ -141,17 +141,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public function admin_bar_menu( $admin_bar, $root = '' ) {
 
 		$icon = 'dashicons-hidden';
-		$title = __('Default view (Off)', 'view-admin-as');
+		$title = __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
 
 		if ( $this->get_viewAs() ) {
 			$icon = 'dashicons-visibility';
 		}
 
 		if ( $this->get_viewAs('caps') ) {
-			$title = __('Modified view', 'view-admin-as');
+			$title = __( 'Modified view', VIEW_ADMIN_AS_DOMAIN );
 		}
 		if ( $this->get_viewAs('role') ) {
-			$title = __('Viewing as role', 'view-admin-as') . ': '
+			$title = __( 'Viewing as role', VIEW_ADMIN_AS_DOMAIN ) . ': '
 			         . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name );
 		}
 		if ( $this->get_viewAs('user') ) {
@@ -159,12 +159,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			foreach ( $this->get_selectedUser()->roles as $role ) {
 				$selected_user_roles[] = translate_user_role( $this->get_roles( $role )->name );
 			}
-			$title = __('Viewing as user', 'view-admin-as') . ': '
+			$title = __( 'Viewing as user', VIEW_ADMIN_AS_DOMAIN ) . ': '
 			         . $this->get_selectedUser()->data->display_name
 			         . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 		}
 		if ( $this->get_viewAs('visitor') ) {
-			$title = __('Viewing as site visitor', 'view-admin-as');
+			$title = __( 'Viewing as site visitor', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		/**
@@ -193,7 +193,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'title'  => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
 			'href'   => false,
 			'meta'   => array(
-				'title'    => __('View Admin As', 'view-admin-as'),
+				'title'    => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 				'tabindex' => '0'
 			),
 		) );
@@ -219,12 +219,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'parent' => self::$root,
 				'title'  => self::do_button( array(
 					'name'    => self::$root . '-' . $name,
-					'label'   => __('Reset to default', 'view-admin-as'),
+					'label'   => __( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'classes' => 'button-secondary'
 				) ),
 				'href'   => false,
 				'meta'   => array(
-					'title' => esc_attr__('Reset to default', 'view-admin-as'),
+					'title' => esc_attr__( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'vaa-reset-item vaa-button-container',
 					'rel'   => $rel
 				),
@@ -257,7 +257,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => $root,
 			'parent' => self::$root,
-			'title'  => self::do_icon( 'dashicons-info' ) . __('Info', 'view-admin-as'),
+			'title'  => self::do_icon( 'dashicons-info' ) . __( 'Info', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -277,7 +277,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			array(
 				'parent' => $root . '-about',
 				'id'     => $root . '-about-version',
-				'title'  => __( 'Version', 'view-admin-as' ) . ': ' . VIEW_ADMIN_AS_VERSION,
+				'title'  => __( 'Version', VIEW_ADMIN_AS_DOMAIN ) . ': ' . VIEW_ADMIN_AS_VERSION,
 				'href'   => false,
 			)
 		);
@@ -345,7 +345,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => $root,
 			'parent' => self::$root,
-			'title'  => self::do_icon( 'dashicons-admin-settings' ) . __('Settings', 'view-admin-as'),
+			'title'  => self::do_icon( 'dashicons-admin-settings' ) . __( 'Settings', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -367,16 +367,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'title'  => self::do_select( array(
 				'name'        => $root . '-admin-menu-location',
 				'value'       => $this->get_userSettings('admin_menu_location'),
-				'label'       => __('Location', 'view-admin-as') . ': &nbsp; ',
-				'description' => __('Change the location of this menu node', 'view-admin-as'),
+				'label'       => __( 'Location', VIEW_ADMIN_AS_DOMAIN ) . ': &nbsp; ',
+				'description' => __( 'Change the location of this menu node', VIEW_ADMIN_AS_DOMAIN ),
 				'values'      => array(
 					array(
 						'compare' => 'top-secondary',
-						'label' => __( 'Default', 'view-admin-as' )
+						'label' => __( 'Default', VIEW_ADMIN_AS_DOMAIN )
 					),
 					array(
 						'compare' => 'my-account',
-						'label' => __( 'My account', 'view-admin-as' )
+						'label' => __( 'My account', VIEW_ADMIN_AS_DOMAIN )
 					)
 				)
 			) ),
@@ -395,13 +395,13 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'values'   => array(
 					array(
 						'compare'     => 'browse',
-						'label'       => __('Browse mode', 'view-admin-as'),
-						'description' => __('Store view and use WordPress with this view', 'view-admin-as')
+						'label'       => __( 'Browse mode', VIEW_ADMIN_AS_DOMAIN ),
+						'description' => __( 'Store view and use WordPress with this view', VIEW_ADMIN_AS_DOMAIN )
 					),
 					array(
 						'compare'     => 'single',
-						'label'       => __('Single switch mode', 'view-admin-as'),
-						'description' => __('Choose view on every pageload. This setting doesn\'t store views', 'view-admin-as')
+						'label'       => __( 'Single switch mode', VIEW_ADMIN_AS_DOMAIN ),
+						'description' => __( 'Choose view on every pageload. This setting doesn\'t store views', VIEW_ADMIN_AS_DOMAIN )
 					)
 				)
 			) ),
@@ -418,8 +418,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'name'        => $root . '-hide-front',
 				'value'       => $this->get_userSettings('hide_front'),
 				'compare'     => 'yes',
-				'label'       => __('Hide on frontend', 'view-admin-as'),
-				'description' => __('Hide on frontend when no view is selected and the admin bar is not shown', 'view-admin-as')
+				'label'       => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN )
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -440,8 +440,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'name'        => $root . '-freeze-locale',
 					'value'       => $this->get_userSettings('freeze_locale'),
 					'compare'     => 'yes',
-					'label'       => __('Freeze locale', 'view-admin-as'),
-					'description' => __('Force your own locale setting to the current view', 'view-admin-as')
+					'label'       => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN )
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -462,8 +462,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'name'        => $root . '-force-group-users',
 					'value'       => $this->get_userSettings('force_group_users'),
 					'compare'     => 'yes',
-					'label'       => __('Group users', 'view-admin-as'),
-					'description' => __('Group users under their assigned roles', 'view-admin-as')
+					'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN )
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -519,7 +519,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-admin-generic' ) . __('Capabilities', 'view-admin-as'),
+			'title'  => self::do_icon( 'dashicons-admin-generic' ) . __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -542,7 +542,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-quickselect',
 			'parent' => $root,
-			'title'  => __('Select', 'view-admin-as'),
+			'title'  => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => $caps_quickselect_class,
@@ -556,7 +556,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'parent' => $root . '-quickselect',
 			'title'  => self::do_button( array(
 					'name'    => 'apply-caps-view',
-					'label'   => __('Apply', 'view-admin-as'),
+					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 					'classes' => 'button-primary'
 				) ) . self::do_button( array(
 					'name'    => 'close-caps-popup',
@@ -581,7 +581,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'parent' => $root . '-quickselect',
 			'title'  => self::do_input( array(
 				'name'        => $root . '-filtercaps',
-				'placeholder' => esc_attr__('Filter', 'view-admin-as')
+				'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN )
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -592,20 +592,20 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$role_select_options = array(
 			array(
 				'value' => 'default',
-				'label' => __('Default', 'view-admin-as')
+				'label' => __( 'Default', VIEW_ADMIN_AS_DOMAIN )
 			)
 		);
 		if ( $this->store->get_viewAs() ) {
 			$role_select_options[] = array(
 				'compare' => 'vaa',
-				'label'   => '= ' . __( 'Current view', 'view-admin-as' ),
+				'label'   => '= ' . __( 'Current view', VIEW_ADMIN_AS_DOMAIN ),
 				'attr'    => array(
 					'data-caps' => json_encode( $this->store->get_selectedCaps() ),
 				)
 			);
 			$role_select_options[] = array(
 				'compare' => 'reversed-vaa',
-				'label'   => '≠ ' . __( 'Current view', 'view-admin-as' ),
+				'label'   => '≠ ' . __( 'Current view', VIEW_ADMIN_AS_DOMAIN ),
 				'attr'    => array(
 					'data-caps'    => json_encode( $this->store->get_selectedCaps() ),
 					'data-reverse' => '1'
@@ -648,11 +648,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'parent' => $root . '-quickselect',
 			'title'  => self::do_button( array(
 				'name'    => 'select-all-caps',
-				'label'   => __('Select', 'view-admin-as'),
+				'label'   => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
 				'classes' => 'button-secondary'
 			) ) . ' ' . self::do_button( array(
 				'name'    => 'deselect-all-caps',
-				'label'   => __('Deselect', 'view-admin-as'),
+				'label'   => __( 'Deselect', VIEW_ADMIN_AS_DOMAIN ),
 				'classes' => 'button-secondary'
 			) ),
 			'href'   => false,
@@ -748,7 +748,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-groups' ) . __('Roles', 'view-admin-as'),
+			'title'  => self::do_icon( 'dashicons-groups' ) . __( 'Roles', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -802,7 +802,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'href'   => $href,
 				'meta'   => array(
 					// Translators: %s stands for the translated role name
-					'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), translate_user_role( $role->name ) ),
+					'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), translate_user_role( $role->name ) ),
 					'class' => $class,
 					'rel'   => $role_key
 				),
@@ -849,7 +849,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-admin-users' ) . __('Users', 'view-admin-as'),
+			'title'  => self::do_icon( 'dashicons-admin-users' ) . __( 'Users', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -871,7 +871,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'parent' => $root,
 				'title'  => self::do_input( array(
 					'name' => $root . '-searchusers',
-					'placeholder' => esc_attr__('Search', 'view-admin-as') . ' (' . strtolower( __('Username', 'view-admin-as') ) . ')'
+					'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')'
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -905,7 +905,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 						'href'   => $href,
 						'meta'   => array(
 							// Translators: %s stands for the user display name
-							'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), $user->data->display_name ),
+							'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->data->display_name ),
 							'class' => $class,
 							'rel'   => $user->data->ID,
 						),
@@ -927,7 +927,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'href'   => $href,
 					'meta'   => array(
 						// Translators: %s stands for the user display name
-						'title' => sprintf( esc_attr__('View as %s', 'view-admin-as'), $user->data->display_name ),
+						'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->data->display_name ),
 						'class' => $class,
 						'rel'   => $user->data->ID,
 					),
@@ -981,10 +981,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => self::$root . '-visitor-view',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-universal-access' ) . __( 'Site visitor', 'view-admin-as' ),
+			'title'  => self::do_icon( 'dashicons-universal-access' ) . __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => '#',
 			'meta'   => array(
-				'title' => esc_attr__('View as site visitor', 'view-admin-as'),
+				'title' => esc_attr__( 'View as site visitor', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => $class,
 				'rel'   => true
 			)

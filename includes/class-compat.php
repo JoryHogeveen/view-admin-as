@@ -161,7 +161,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 			// Register the vaa group.
 			members_register_cap_group( 'view_admin_as',
 				array(
-					'label'      => esc_html__( 'View Admin As', 'view-admin-as' ),
+					'label'      => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 					'caps'       => $this->add_capabilities(),
 					'icon'       => 'dashicons-visibility',
 					'diff_added' => true
