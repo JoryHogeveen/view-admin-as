@@ -45,6 +45,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
 	define( 'VIEW_ADMIN_AS_DIR',        plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
 	define( 'VIEW_ADMIN_AS_URL',        plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
+	define( 'VIEW_ADMIN_AS_DOMAIN',     'view-admin-as' );
 
 	// Include main init class file
 	require_once( VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php' );

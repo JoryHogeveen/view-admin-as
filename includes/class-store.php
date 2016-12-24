@@ -227,8 +227,6 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Store available roles
 	 *
-	 * @todo  Check function wp_roles() >> WP 4.3+
-	 *
 	 * @since   1.5
 	 * @since   1.5.2  Get role objects instead of arrays
 	 * @since   1.6    Moved to this class from main class
@@ -264,13 +262,13 @@ final class VAA_View_Admin_As_Store
 					unset( $roles[ $role_key ] );
 				}
 				// Remove roles that have the view_admin_as capability
-				elseif ( is_array( $role->capabilities ) && array_key_exists( 'view_admin_as', $role->capabilities ) ) {
+				elseif ( $role instanceof WP_Role && $role->has_cap('view_admin_as') ) {
 					unset( $roles[ $role_key ] );
 				}
 			}
 		}
 
-		// @since  1.5.2.1  Merge role names with the role objects
+		// @since  1.5.2.1  Merge role names with the role objects (for i18n)
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $role_names[ $role_key ] ) ) {
 				$roles[ $role_key ]->name = $role_names[ $role_key ];
@@ -320,6 +318,15 @@ final class VAA_View_Admin_As_Store
 
 		if ( is_network_admin() ) {
 
+			/**
+			 * Super admins are only available for superior admins
+			 * (short circuit return for performance)
+			 * @since  1.6.x
+			 */
+			if ( ! $is_superior_admin ) {
+				return;
+			}
+
 			// Get super admins (returns login's)
 			$users = get_super_admins();
 			// Remove current user
@@ -368,6 +375,20 @@ final class VAA_View_Admin_As_Store
 			 */
 			if ( ! is_multisite() && ! $is_superior_admin ) {
 				$user_query['where'] .= " AND usermeta.meta_value NOT LIKE '%administrator%'";
+			}
+
+			/**
+			 * Do not get super admins for network installs (values are usernames)
+			 * These we're filtered after query in previous versions
+			 *
+			 * @since  1.6.x
+			 */
+			if ( is_multisite() && ! $is_superior_admin ) {
+				$super_admins = get_super_admins();
+				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
+					$exclude_siblings = implode( ',', $super_admins );
+					$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
+				}
 			}
 
 			// Run query (OBJECT_K to set the user ID as key)
@@ -889,7 +910,7 @@ final class VAA_View_Admin_As_Store
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -904,7 +925,7 @@ final class VAA_View_Admin_As_Store
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', 'view-admin-as' ),
+			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 	}
@@ -921,7 +942,7 @@ final class VAA_View_Admin_As_Store
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
 			get_class( $this ) . "::{$method}",
-			esc_html__( 'Method does not exist.', 'view-admin-as' ),
+			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
 		unset( $method, $args );
