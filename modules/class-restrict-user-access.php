@@ -76,7 +76,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		$access_cap = ( defined( RUA_App::CAPABILITY ) ) ? RUA_App::CAPABILITY : 'edit_users';
 
-		// @todo Better access checks (maybe central function in VAA?)
 		if ( $vaa->is_enabled() && current_user_can( $access_cap ) && ! is_network_admin() ) {
 			parent::__construct( $vaa );
 
@@ -105,19 +104,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		if ( $this->get_levels( $this->get_viewAs( $this->viewKey ) ) ) {
 
-			$this->selectedLevel = $this->get_viewAs( $this->viewKey );
-
-			if ( function_exists('rua_get_level_caps') ) {
-				// @todo See https://github.com/intoxstudio/restrict-user-access/pull/8
-				$this->selectedLevelCaps = (array) rua_get_level_caps( $this->selectedLevel, true );
-			} else {
-				// Unclean way, also not hierarchical
-				$this->selectedLevelCaps =
-					(array) RUA_App::instance()
-						->level_manager
-						->metadata()->get("caps")
-						->get_data( $this->selectedLevel );
-			}
+			$this->selectedLevel     = $this->get_viewAs( $this->viewKey );
+			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
 
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
@@ -141,7 +129,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Update the current user's WP_User instance with the current view data
-	 * @todo better function name...
 	 *
 	 * @since   1.7
 	 */
@@ -273,8 +260,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   mixed         $role_obj
 	 */
 	public function admin_bar_menu( $admin_bar, $root, $role = false, $role_obj = null ) {
-		static $done;
-		if ( $done ) return;
 		$this->levelPostType = get_post_type_object( RUA_App::TYPE_RESTRICT );
 
 		if ( ! $this->get_levels() || ! count( $this->get_levels() ) ) {
@@ -379,8 +364,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 */
 		do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar );
-
-		$done = true;
 	}
 
 	public function admin_bar_roles_after( $admin_bar, $root ) {
@@ -435,6 +418,41 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			$key = null;
 		}
 		return VAA_API::get_array_data( $this->levels, $key );
+	}
+
+	/**
+	 * Get all caps of a level
+	 * Also able to get all caps based on level hierarchy (default)
+	 *
+	 * @since   1.7
+	 * @param   int   $level_id
+	 * @param   bool  $hierarchical
+	 * @return  array
+	 */
+	public function get_level_caps( $level_id, $hierarchical = true ) {
+
+		// @todo See https://github.com/intoxstudio/restrict-user-access/pull/8
+		if ( function_exists('rua_get_level_caps') ) {
+			return (array) rua_get_level_caps( $level_id, $hierarchical );
+		}
+
+		$levels = array( $level_id );
+		if ( $hierarchical ) {
+			$levels = array_merge( $levels, get_post_ancestors( (int) $level_id ) );
+			$levels = array_reverse( (array) $levels );
+		}
+
+		$caps = array();
+		foreach ( $levels as $level ) {
+			$level_caps = RUA_App::instance()->level_manager->metadata()->get("caps")->get_data( $level );
+			if( ! empty( $level_caps ) && is_array( $level_caps ) ) {
+				foreach ( $level_caps as $key => $level_cap ) {
+					$caps[$key] = !!$level_cap;
+				}
+			}
+		}
+
+		return $caps;
 	}
 
 	/**
