@@ -196,25 +196,8 @@ final class VAA_View_Admin_As
 
 		$this->store->init();
 
-		/**
-		 * Validate if the current user has access to the functionalities
-		 *
-		 * @since  0.1    Check if the current user had administrator rights (is_super_admin)
-		 *                Disable plugin functions for network admin pages
-		 * @since  1.4    Make sure we have a session for the current user
-		 * @since  1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
-		 *                Note that in network installations the non-admin user also needs the manage_network_users
-		 *                capability (of not the edit_users will return false)
-		 * @since  1.5.3  Enable on network pages for superior admins
-		 */
-		if (   ( is_super_admin( $this->store->get_curUser()->ID )
-				 || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
-			&& ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
-			&& $this->store->get_curUserSession() != ''
-		) {
-			$this->enable = true;
-		}
-
+		// Sets enabled
+		$this->validate_user();
 
 		$this->load_modules();
 
@@ -247,6 +230,30 @@ final class VAA_View_Admin_As
 			 */
 			do_action( 'vaa_view_admin_as_init', $this );
 
+		}
+	}
+
+	/**
+	 * Validate if the current user has access to the functionalities
+	 * Sets enabled if user passes validation
+	 *
+	 * @since   0.1    Check if the current user had administrator rights (is_super_admin)
+	 *                 Disable plugin functions for network admin pages
+	 * @since   1.4    Make sure we have a session for the current user
+	 * @since   1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care
+	 *                 Note that in network installations the non-admin user also needs the manage_network_users
+	 *                 capability (of not the edit_users will return false)
+	 * @since   1.5.3  Enable on network pages for superior admins
+	 * @since   1.6.x  Created this function
+	 * @access  private
+	 */
+	private function validate_user() {
+		if ( ( is_super_admin( $this->store->get_curUser()->ID )
+		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
+		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
+		     && $this->store->get_curUserSession() != ''
+		) {
+			$this->enable = true;
 		}
 	}
 
