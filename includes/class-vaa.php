@@ -194,24 +194,7 @@ final class VAA_View_Admin_As
 			return;
 		}
 
-		$this->store->set_nonce( 'view-admin-as' );
-
-		// Get the current user
-		$this->store->set_curUser( wp_get_current_user() );
-
-		// Get the current user session
-		if ( function_exists( 'wp_get_session_token' ) ) {
-			// WP 4.0+
-			$this->store->set_curUserSession( (string) wp_get_session_token() );
-		} else {
-			$cookie = wp_parse_auth_cookie( '', 'logged_in' );
-			if ( ! empty( $cookie['token'] ) ) {
-				$this->store->set_curUserSession( (string) $cookie['token'] );
-			} else {
-				// Fallback. This disables the use of multiple views in different sessions
-				$this->store->set_curUserSession( $this->store->get_curUser()->ID );
-			}
-		}
+		$this->store->init();
 
 		/**
 		 * Validate if the current user has access to the functionalities
@@ -232,10 +215,6 @@ final class VAA_View_Admin_As
 			$this->enable = true;
 		}
 
-		// Get database settings
-		$this->store->set_optionData( get_option( $this->store->get_optionKey() ) );
-		// Get database settings of the current user
-		$this->store->set_userMeta( get_user_meta( $this->store->get_curUser()->ID, $this->store->get_userMetaKey(), true ) );
 
 		$this->load_modules();
 
