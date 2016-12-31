@@ -376,8 +376,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			die();
 		}
 		if ( isset( $data['import_role_defaults'] ) && is_array( $data['import_role_defaults'] ) ) {
+			$method = ( ! empty( $data['import_role_defaults_method'] ) ) ? (string) $data['import_role_defaults_method'] : '';
 			// $content format: array( 'text' => **text**, 'errors' => **error array** )
-			$content = $this->import_role_defaults( $data['import_role_defaults'] );
+			$content = $this->import_role_defaults( $data['import_role_defaults'], $method );
 			if ( true === $content ) {
 				wp_send_json_success();
 			} else {
@@ -678,9 +679,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5
 	 * @access  private
 	 * @param   array   $data
+	 * @param   string  $method
 	 * @return  mixed
 	 */
-	private function import_role_defaults( $data ) {
+	private function import_role_defaults( $data, $method = 'import' ) {
 		$new_defaults = array();
 		$error_list   = array();
 		if ( empty( $data ) || ! is_array( $data ) ) {
@@ -707,8 +709,25 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( ! empty( $new_defaults ) ) {
 			$role_defaults = $this->get_role_defaults();
 			foreach ( $new_defaults as $role => $role_data ) {
-				// Overwrite role defaults for each supplied role
-				$role_defaults[ $role ] = $role_data;
+				if ( empty( $role_defaults[ $role ] ) ) {
+					$role_defaults[ $role ] = array();
+				}
+				// @since  1.6.2  Multiple import methods
+				switch ( $method ) {
+					case 'overwrite':
+						// Overwrite the existing data, keep data that don't exist in the import
+						$role_defaults[ $role ] = array_merge( $role_defaults[ $role ], $role_data );
+					break;
+					case 'append':
+						// Append new data without overwriting the existing data
+						$role_defaults[ $role ] = array_merge( $role_data, $role_defaults[ $role ] );
+					break;
+					case 'import':
+					default:
+						// Fully Overwrite data for each supplied role
+						$role_defaults[ $role ] = $role_data;
+					break;
+				}
 			}
 			$this->update_optionData( $role_defaults, 'roles', true );
 			if ( ! empty( $error_list ) ) {
@@ -1103,8 +1122,42 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
 					'name'    => $root . '-import-roles-import',
 					'label'   => __( 'Import', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary'
-				) ),
+					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
+					'attr'    => array(
+						'data-method' => 'import',
+						'data-showhide' => 'p.vaa-import-role-defaults-desc'
+					)
+				) ) . ' '
+				. VAA_View_Admin_As_Admin_Bar::do_button( array(
+					'name'    => $root . '-import-roles-import-overwrite',
+					'label'   => __( 'Overwrite', VIEW_ADMIN_AS_DOMAIN ),
+					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
+					'attr'    => array(
+						'data-method' => 'overwrite',
+						'data-showhide' => 'p.vaa-import-role-defaults-overwrite-desc'
+					)
+				) ) . ' '
+				. VAA_View_Admin_As_Admin_Bar::do_button( array(
+					'name'    => $root . '-import-roles-import-append',
+					'label'   => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
+					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
+					'attr'    => array(
+						'data-method' => 'append',
+						'data-showhide' => 'p.vaa-import-role-defaults-append-desc'
+					)
+				) )
+				. VAA_View_Admin_As_Admin_Bar::do_description(
+					__( 'Fully Overwrite data for each supplied role', VIEW_ADMIN_AS_DOMAIN ),
+					array( 'class' => 'vaa-import-role-defaults-desc' )
+				)
+				. VAA_View_Admin_As_Admin_Bar::do_description(
+					__( 'Overwrite and keep existing data that is not overwritten', VIEW_ADMIN_AS_DOMAIN ),
+					array( 'class' => 'vaa-import-role-defaults-overwrite-desc' )
+				)
+				. VAA_View_Admin_As_Admin_Bar::do_description(
+					__( 'Append without overwriting the existing data', VIEW_ADMIN_AS_DOMAIN ),
+					array( 'class' => 'vaa-import-role-defaults-append-desc' )
+				),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'vaa-button-container',
