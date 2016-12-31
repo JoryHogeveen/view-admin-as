@@ -102,6 +102,16 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			});
 		});
 
+		// Toggle items on hover
+		$(VAA_View_Admin_As.prefix+'.ab-vaa-showhide[data-showhide]').each( function() {
+			$( $(this).attr('data-showhide') ).hide();
+			$(this).on('mouseenter', function() {
+				$( $(this).attr('data-showhide') ).slideDown('fast');
+			}).on('mouseleave', function() {
+				$( $(this).attr('data-showhide') ).slideUp('fast');
+			});
+		});
+
 		// Process reset
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
 			e.preventDefault();
@@ -683,7 +693,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		});
 
 		// @since  1.5  Import role defaults
-		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-import-roles-import button#' + prefix + '-import-roles-import', function( e ) {
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-import-roles-import button.vaa-import-role-defaults', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -693,6 +703,9 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				try {
 					val = JSON.parse( val );
 					var viewAs = { role_defaults : { import_role_defaults : val } };
+					if ( $(this).attr('data-method') ) {
+						viewAs.role_defaults.import_role_defaults_method = String( $(this).attr('data-method') );
+					}
 					VAA_View_Admin_As.ajax( viewAs, false );
 				} catch ( e ) {
 					// @todo Improve error message

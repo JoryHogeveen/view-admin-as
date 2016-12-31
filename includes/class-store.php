@@ -225,6 +225,44 @@ final class VAA_View_Admin_As_Store
 	}
 
 	/**
+	 * Store the current user and other user related data
+	 *
+	 * @since   1.6.x  Moved to this class
+	 * @access  public
+	 * @param   bool  $redo  (optional) Force re-init?
+	 */
+	public function init( $redo = false ) {
+		static $done = false;
+		if ( ( $done && ! $redo ) ) return;
+
+		$this->set_nonce( 'view-admin-as' );
+
+		// Get the current user
+		$this->set_curUser( wp_get_current_user() );
+
+		// Get the current user session
+		if ( function_exists( 'wp_get_session_token' ) ) {
+			// WP 4.0+
+			$this->set_curUserSession( (string) wp_get_session_token() );
+		} else {
+			$cookie = wp_parse_auth_cookie( '', 'logged_in' );
+			if ( ! empty( $cookie['token'] ) ) {
+				$this->set_curUserSession( (string) $cookie['token'] );
+			} else {
+				// Fallback. This disables the use of multiple views in different sessions
+				$this->set_curUserSession( $this->get_curUser()->ID );
+			}
+		}
+
+		// Get database settings
+		$this->set_optionData( get_option( $this->get_optionKey() ) );
+		// Get database settings of the current user
+		$this->set_userMeta( get_user_meta( $this->get_curUser()->ID, $this->get_userMetaKey(), true ) );
+
+		$done = true;
+	}
+
+	/**
 	 * Store available roles
 	 *
 	 * @since   1.5
