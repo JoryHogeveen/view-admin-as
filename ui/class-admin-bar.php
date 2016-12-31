@@ -1031,6 +1031,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate text input HTML for node
 	 *
 	 * @since   1.6.1
+	 * @since   1.6.x  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
@@ -1044,6 +1045,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $description  Optional
 	 *     @type  string  $classes      Optional
 	 *     @type  array   $attr         Optional
+	 *     @type  bool    $auto_showhide_desc  Optional
 	 * }
 	 * @return  string
 	 */
@@ -1066,12 +1068,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$attr = self::parse_attr_to_html( $args['attr'] );
 
+		$label_attr = array();
+		$desc_attr = array();
+		if ( ! empty( $args[ 'auto_showhide_desc' ] ) ) {
+			$showhide = $id . '-desc';
+			$label_attr = array(
+				'class' => 'ab-vaa-showhide',
+				'data-showhide' => '.' . $showhide
+			);
+			$desc_attr = array( 'class' => $showhide );
+		}
+
 		if ( ! empty( $args['label'] ) ) {
-			$html .= self::do_label( $args['label'], $id );
+			$html .= self::do_label( $args['label'], $id, $label_attr );
 		}
 		$html .= '<input ' . $attr . '/>';
 		if ( ! empty( $args['description'] ) ) {
-			$html .= self::do_description( $args['description'] );
+			$html .= self::do_description( $args['description'], $desc_attr );
 		}
 		return $html;
 	}
@@ -1080,6 +1093,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate checkbox HTML for node
 	 *
 	 * @since   1.6.1
+	 * @since   1.6.x  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
@@ -1093,6 +1107,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $description     Optional
 	 *     @type  string  $classes         Optional
 	 *     @type  array   $attr            Optional
+	 *     @type  bool    $auto_showhide_desc   Optional
 	 * }
 	 * @return  string
 	 */
@@ -1120,12 +1135,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$attr = self::parse_attr_to_html( $args['attr'] );
 
+		$label_attr = array();
+		$desc_attr = array();
+		if ( ! empty( $args[ 'auto_showhide_desc' ] ) ) {
+			$showhide = $id . '-desc';
+			$label_attr = array(
+				'class' => 'ab-vaa-showhide',
+				'data-showhide' => '.' . $showhide
+			);
+			$desc_attr = array( 'class' => $showhide );
+		}
+
 		$html .= '<input ' . $attr . ' ' . $checked . '/>';
 		if ( ! empty( $args['label'] ) ) {
-			$html .= self::do_label( $args['label'], $id );
+			$html .= self::do_label( $args['label'], $id, $label_attr );
 		}
 		if ( ! empty( $args['description'] ) ) {
-			$html .= self::do_description( $args['description'] );
+			$html .= self::do_description( $args['description'], $desc_attr );
 		}
 		return $html;
 	}
@@ -1134,6 +1160,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate radio HTML for node
 	 *
 	 * @since   1.6.1
+	 * @since   1.6.x  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $data {
@@ -1142,6 +1169,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $id           Optional (Will be generated from $name if empty)
 	 *     @type  string  $value        Optional
 	 *     @type  string  $description  Optional
+	 *     @type  bool    $auto_showhide_desc   Optional
 	 *     @type  array   $values {
 	 *         @type  array  $args {
 	 *             @type  string  $compare      Required
@@ -1149,6 +1177,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *             @type  string  $description  Optional
 	 *             @type  string  $classes      Optional
 	 *             @type  array   $attr         Optional
+	 *             @type  bool    $auto_showhide_desc   Optional  (overwrite $data)
 	 *         }
 	 *     }
 	 * }
@@ -1179,12 +1208,26 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 				$attr = self::parse_attr_to_html( $args['attr'] );
 
+				$label_attr = array();
+				$desc_attr = array();
+				if (   ( ! empty( $args['auto_showhide_desc'] ) )
+					|| ( ! isset( $args['auto_showhide_desc'] ) && ! empty( $data['auto_showhide_desc'] ) )
+				) {
+					$showhide = $id . '-desc';
+					$label_attr = array(
+						'class' => 'ab-vaa-showhide',
+						'data-showhide' => '.' . $showhide
+					);
+					$desc_attr = array( 'class' => $showhide );
+				}
+
 				$html .= '<input ' . $attr . ' ' . $checked . '/>';
 				if ( ! empty( $args['label'] ) ) {
-					$html .= self::do_label( $args['label'], $id );
+					$html .= self::do_label( $args['label'], $id, $label_attr );
 				}
+				$html .= '<br>';
 				if ( ! empty( $args['description'] ) ) {
-					$html .= self::do_description( $args['description'] );
+					$html .= self::do_description( $args['description'], $desc_attr );
 				}
 			}
 			if ( ! empty( $data['description'] ) ) {
@@ -1198,6 +1241,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate selectbox HTML for node
 	 *
 	 * @since   1.6.1
+	 * @since   1.6.x  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $data {
@@ -1209,6 +1253,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $description  Optional
 	 *     @type  string  $classes      Optional
 	 *     @type  array   $attr         Optional
+	 *     @type  bool    $auto_showhide_desc   Optional
 	 *     @type  array   $values {
 	 *         Arrays of selectbox value data
 	 *         @type  array  $args {
@@ -1230,8 +1275,19 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$id = esc_attr( ( ! empty( $data['id'] ) ) ? $data['id'] : $data['name'] );
 			$name = str_replace( '-', '_', esc_attr( $data['name'] ) );
 
+			$label_attr = array();
+			$desc_attr = array();
+			if ( ! empty( $data[ 'auto_showhide_desc' ] ) ) {
+				$showhide = $id . '-desc';
+				$label_attr = array(
+					'class' => 'ab-vaa-showhide',
+					'data-showhide' => '.' . $showhide
+				);
+				$desc_attr = array( 'class' => $showhide );
+			}
+
 			if ( ! empty( $data['label'] ) ) {
-				$html .= self::do_label( $data['label'], $id );
+				$html .= self::do_label( $data['label'], $id, $label_attr );
 			}
 
 			if ( empty( $data['value'] ) ) {
@@ -1264,7 +1320,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$html .= '</select>';
 
 			if ( ! empty( $data['description'] ) ) {
-				$html .= self::do_description( $data['description'] );
+				$html .= self::do_description( $data['description'], $desc_attr );
 			}
 		}
 		return $html;
@@ -1284,14 +1340,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns label html for WP admin bar
 	 * @since   1.6.1
+	 * @since   1.6.x   Added third $attr parameter
 	 * @static
 	 * @param   string  $label
-	 * @param   string  $for
+	 * @param   string  $for    (optional) Add for attribute
+	 * @param   array   $attr
 	 * @return  string
 	 */
-	public static function do_label( $label, $for = '' ) {
-		$for = ( ! empty( $for ) ) ? ' for="' . $for . '"' : '';
-		return '<label' . $for . '>' . $label . '</label>';
+	public static function do_label( $label, $for = '', $attr = array() ) {
+		$attr['for'] = $for;
+		$attr = self::parse_attr_to_html( $attr );
+		return '<label' . $attr . '>' . $label . '</label>';
 	}
 
 	/**

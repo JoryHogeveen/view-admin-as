@@ -100,6 +100,7 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox:first-child,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio:first-child {margin: 0 5px 0 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio {border-radius:  100%;}
+#wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label + br {line-height: 0;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
 
