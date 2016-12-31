@@ -1297,12 +1297,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns description html for WP admin bar
 	 * @since   1.6.1
+	 * @since   1.6.x   Added second $attr parameter
 	 * @static
 	 * @param   string  $text
+	 * @param   array   $attr
 	 * @return  string
 	 */
-	public static function do_description( $text ) {
-		return '<p class="description ab-item">' . $text . '</p>';
+	public static function do_description( $text, $attr = array() ) {
+		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
+		$attr = self::parse_attr_to_html( $attr );
+		return '<p ' . $attr . '>' . $text . '</p>';
 	}
 
 	/**
