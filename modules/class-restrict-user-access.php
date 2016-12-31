@@ -61,6 +61,24 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	private $viewKey = 'rua_level';
 
 	/**
+	 * @since  1.7
+	 * @var    RUA_App
+	 */
+	private $ruaApp;
+
+	/**
+	 * @since  1.7
+	 * @var    string
+	 */
+	private $ruaMetaPrefix;
+
+	/**
+	 * @since  1.7
+	 * @var    string
+	 */
+	private $ruaTypeRestrict;
+
+	/**
 	 * Populate the instance and validate RUA plugin is active
 	 *
 	 * @since   1.7
@@ -68,13 +86,17 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   VAA_View_Admin_As  $vaa
 	 */
 	protected function __construct( $vaa ) {
-		self::$_instance = $this;
 
-		if ( ! class_exists( 'RUA_App' ) ) {
+		if ( ! is_callable( array( 'RUA_App', 'instance' ) ) ) {
 			return;
 		}
 
+		self::$_instance = $this;
+		$this->ruaApp = RUA_App::instance();
+
 		$access_cap = ( defined( RUA_App::CAPABILITY ) ) ? RUA_App::CAPABILITY : 'edit_users';
+		$this->ruaMetaPrefix = ( defined( RUA_App::META_PREFIX ) ) ? RUA_App::META_PREFIX : '_ca_';
+		$this->ruaTypeRestrict = ( defined( RUA_App::TYPE_RESTRICT ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
 
 		if ( $vaa->is_enabled() && current_user_can( $access_cap ) && ! is_network_admin() ) {
 			parent::__construct( $vaa );
@@ -215,10 +237,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		if ( $user_id == $this->get_curUser()->ID
 		     && $this->get_levels( $this->selectedLevel )
 		) {
-			if ( $meta_key == RUA_App::META_PREFIX . 'level' ) {
+			if ( $meta_key == $this->ruaMetaPrefix . 'level' ) {
 				return array( $this->selectedLevel );
 			}
-			if ( $meta_key == RUA_App::META_PREFIX . 'level_' . $this->selectedLevel ) {
+			if ( $meta_key == $this->ruaMetaPrefix . 'level_' . $this->selectedLevel ) {
 				// Return current time + 120 seconds to make sure this level won't be set as expired
 				return array( time() + 120 );
 			}
@@ -234,7 +256,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @return  string
 	 */
 	public function vaa_viewing_as_title( $title ) {
-		$this->levelPostType = get_post_type_object( RUA_App::TYPE_RESTRICT );
+		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
 
 		if ( $this->get_levels( $this->selectedLevel ) ) {
 			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->levelPostType->labels->singular_name ) . ': ';
@@ -259,7 +281,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   mixed         $role_obj
 	 */
 	public function admin_bar_menu( $admin_bar, $root, $role = false, $role_obj = null ) {
-		$this->levelPostType = get_post_type_object( RUA_App::TYPE_RESTRICT );
+		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
 
 		if ( ! $this->get_levels() || ! count( $this->get_levels() ) ) {
 			return;
@@ -392,7 +414,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @access  private
 	 */
 	private function store_levels() {
-		$levels = RUA_App::instance()->get_levels();
+		if ( ! is_callable( array( $this->ruaApp, 'get_levels' ) ) ) {
+			return;
+		}
+		$levels = $this->ruaApp->get_levels();
 
 		if ( ! empty( $levels ) ) {
 			foreach ( $levels as $level ) {
@@ -443,7 +468,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		$caps = array();
 		foreach ( $levels as $level ) {
-			$level_caps = RUA_App::instance()->level_manager->metadata()->get("caps")->get_data( $level );
+			// @todo Make error proof (try > catch?) + add notice on problems
+			$level_caps = $this->ruaApp->level_manager->metadata()->get("caps")->get_data( $level );
 			if( ! empty( $level_caps ) && is_array( $level_caps ) ) {
 				foreach ( $level_caps as $key => $level_cap ) {
 					$caps[$key] = !!$level_cap;
