@@ -102,6 +102,16 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			});
 		});
 
+		// Toggle items on hover
+		$(VAA_View_Admin_As.prefix+'.ab-vaa-showhide[data-showhide]').each( function() {
+			$( $(this).attr('data-showhide') ).hide();
+			$(this).on('mouseenter', function() {
+				$( $(this).attr('data-showhide') ).slideDown('fast');
+			}).on('mouseleave', function() {
+				$( $(this).attr('data-showhide') ).slideUp('fast');
+			});
+		});
+
 		// Process reset
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
 			e.preventDefault();
