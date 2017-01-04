@@ -33,14 +33,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public static $root = 'vaa';
 
 	/**
-	 * Database option key
-	 *
-	 * @since  1.5
-	 * @var    string
-	 */
-	protected $optionKey = 'vaa_view_admin_as';
-
-	/**
 	 * Group the users under their roles?
 	 *
 	 * @since  1.5
@@ -72,9 +64,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		if ( $this->is_vaa_enabled() ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
-
-		// Load data
-		//$this->set_optionData( get_option( $this->get_optionKey() ) );
 	}
 
 	/**
