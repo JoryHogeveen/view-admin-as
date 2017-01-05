@@ -388,8 +388,11 @@ final class VAA_View_Admin_As
 		 *
 		 * @since  1.6.2
 		 * @param  array  $options {
-		 *     @type  string  $text  The text to show
-		 *     @type  string  $url   The link
+		 *     Required array of arrays
+		 *     @type  array {
+		 *         @type  string  $text  The text to show
+		 *         @type  string  $url   The link
+		 *     }
 		 * }
 		 * @return array
 		 */
