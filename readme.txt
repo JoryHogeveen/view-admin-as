@@ -101,7 +101,7 @@ If the amount of users is more than 10 you can find them under their roles or yo
 Only the capabilities that are allowed for your user are shown.
 You can deselect the capabilities by clicking on them. When you would like to see the results just click the apply button on the upper left.
 
-*Please note that as an administrator you don't have all capabilities listed by default. This is because WP overrules some capability checks for super admins. **This does not happen when you are in a view!***
+*Please note that as an administrator you don't have all capabilities marked as enabled by default. This is because WP overrules some capability checks for super admins. **This does not happen when you are in a view!***
 
 You can also filter the roles by name or select/deselect all capabilities.
 Note: When you select/deselect capabilities while you've filtered them only the capabilities shown by your filter are affected!
@@ -161,6 +161,14 @@ This plugin is also useful to support your clients and/or users. For example; ma
 
 == Changelog ==
 
+= 1.6.3 =
+
+*	Feature: Multiple import methods for the role defaults module [#27](https://github.com/JoryHogeveen/view-admin-as/issues/27)
+*	Enhancement: Also update the current user object's capabilities and roles to improve support for other plugins [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
+*	Other minor improvements
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/29)
+
 = 1.6.2 =
 
 *	Feature: A new view! You can now see your site as an unregistered visitor (no need to switch browsers) [#14](https://github.com/JoryHogeveen/view-admin-as/issues/14)
@@ -190,7 +198,7 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 *	Feature: Lock meta boxes [#9](https://github.com/JoryHogeveen/view-admin-as/issues/9)
 *	Feature: View as links in user management page [#12](https://github.com/JoryHogeveen/view-admin-as/issues/12)
 *	Enhancement: Better admin bar handling when set to hidden by user [#4](https://github.com/JoryHogeveen/view-admin-as/issues/4)
-	*	Also adds an option to hide/show our toolbar when now view is selected and the admin bar is not shown.
+	*	Also adds an option to hide/show our toolbar when no view is selected and the admin bar is not shown.
 *	Enhancement: Better handling for permission errors [#10](https://github.com/JoryHogeveen/view-admin-as/issues/10)
 *	Compatibility: Show our custom capabilities on role manage plugins like Members
 *	Compatibility: PHP 5.2 (WP minimum)
