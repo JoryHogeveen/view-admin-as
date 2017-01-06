@@ -116,14 +116,14 @@ And if even that doesn't work just add "?reset-view" in the address bar and you'
 Example: http://www.your.domain/wp-admin/?reset-view
 
 = 4. What data is stored for role defaults and how can I change this? =
-Please see the `view_admin_as_role_defaults_meta` filter at [Actions & Filters](https://viewadminas.wordpress.com/documentation/actions-filters/)!
+Please see the `view_admin_as_role_defaults_meta` filter at [Actions & Filters](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)!
 
 = 5. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins?
 If so, these are filtered. Viewing Admins can only be done when you are a Super Admin within a network installation.
 
 Why? To protect your fellow admin! You have no power over equal users..
-*Unless you are a superior admin... [Read more](https://viewadminas.wordpress.com/documentation/actions-filters/#view_admin_as_superior_admins "Read more")*
+*Unless you are a superior admin... [Read more](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters#view_admin_as_superior_admins)*
 
 If this is not the case, please make sure you aren't overlooking something.
 If that is not the case, please contact me! See next item.
@@ -209,16 +209,15 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 
 = Older versions =
 
-Complete changelog: [viewadminas.wordpress.com/changelog/](https://viewadminas.wordpress.com/changelog/ "viewadminas.wordpress.com/changelog/")
+[Complete changelog](https://github.com/JoryHogeveen/view-admin-as/wiki/Changelog)
 
 == Other Notes ==
 
 You can find me here:
 
-*	[Keraweb](http://www.keraweb.nl/ "Keraweb")
-*	[GitHub](https://github.com/JoryHogeveen/view-admin-as/ "GitHub")
-*	[Plugin page](https://viewadminas.wordpress.com/ "Plugin page")
-*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")
+*	[Keraweb](http://www.keraweb.nl/)
+*	[GitHub](https://github.com/JoryHogeveen/view-admin-as/)
+*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen)
 
 = Translations =
 
@@ -226,11 +225,11 @@ Please help translating this plugin on [translate.wordpress.org](https://transla
 
 = Actions and Filters =
 
-[Click here for documentation](https://viewadminas.wordpress.com/documentation/actions-filters/ "Click here for documentation")
+[Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)
 
 = Plugin capabilities =
 
-[Click here for documentation](https://viewadminas.wordpress.com/documentation/capabilities/ "Click here for documentation")
+[Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Custom-capabilities)
 
 = Ideas? =
 
