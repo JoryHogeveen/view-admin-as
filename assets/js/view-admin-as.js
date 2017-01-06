@@ -112,6 +112,15 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			});
 		});
 
+		// Removable items
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.ab-item > .remove', function( e ) {
+			e.preventDefault();
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			$(this).parent('.ab-item').slideUp('fast', function() { $(this).remove(); });
+		});
+
 		// Process reset
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
 			e.preventDefault();

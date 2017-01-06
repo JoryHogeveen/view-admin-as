@@ -1097,6 +1097,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $classes         Optional
 	 *     @type  array   $attr            Optional
 	 *     @type  bool    $auto_showhide_desc   Optional
+	 *     @type  bool    $removable       Optional
 	 * }
 	 * @return  string
 	 */
@@ -1138,6 +1139,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$html .= '<input ' . $attr . ' ' . $checked . '/>';
 		if ( ! empty( $args['label'] ) ) {
 			$html .= self::do_label( $args['label'], $id, $label_attr );
+		}
+		if ( ! empty( $args['removable'] ) ) {
+			$html .= self::do_icon( 'dashicons-dismiss remove', array( 'title' => __( 'Remove', VIEW_ADMIN_AS_DOMAIN ) ) );
 		}
 		if ( ! empty( $args['description'] ) ) {
 			$html .= self::do_description( $args['description'], $desc_attr );
