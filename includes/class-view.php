@@ -185,6 +185,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 */
 		add_action( 'switch_blog', array( $this, 'modify_current_user' ) );
 
+		/**
+		 * Prevent some meta updates for the current user while in modification to the current user are active
+		 *
+		 * @since  1.6.3
+		 */
+		add_filter( 'update_user_metadata' , array( $this, 'prevent_update_user_metadata' ), 10, 3 );
+
 		// Change the capabilities (map_meta_cap is better for compatibility with network admins)
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
 
@@ -263,6 +270,48 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @param  bool     $accessible    Are the needed WP_User properties and methods accessible?
 		 */
 		do_action( 'vaa_view_admin_as_modify_current_user', $current_user, $accessible );
+	}
+
+	/**
+	 * Prevent some updates to the current user like roles and capabilities
+	 * to prevent problems when making changes within a view
+	 *
+	 * IMPORTANT! This filter should ONLY be used when a view is selected!
+	 *
+	 * @since   1.6.3
+	 * @access  public
+	 * @see     init_current_user_modifications()
+	 *
+	 * @see     'update_user_metadata' filter
+	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
+	 * @link    http://hookr.io/filters/update_user_metadata/
+	 *
+	 * @param   null    $null
+	 * @param   int     $object_id
+	 * @param   string  $meta_key
+	 * @return  mixed
+	 */
+	public function prevent_update_user_metadata( $null, $object_id, $meta_key ) {
+		global $wpdb;
+		$current_user = $this->store->get_curUser();
+
+		// Check if the object being updated is the current user
+		if ( $current_user->ID == $object_id ) {
+
+			// Capabilities meta key check
+			if ( empty( $current_user->cap_key ) ) {
+				$current_user->cap_key = $wpdb->get_blog_prefix() . 'capabilities';
+			}
+
+			// Do not update the current user capabilities or user level while in a view
+			if ( in_array( $meta_key, array(
+				$current_user->cap_key,
+				$wpdb->get_blog_prefix() . 'user_level'
+			) ) ) {
+				return false;
+			}
+		}
+		return $null;
 	}
 
 	/**
