@@ -159,7 +159,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		/**
 		 * View data is set, apply the view
 		 * This hook can be used by other modules to enable a view
-		 * Capability changes to the current user are set on priority 5
+		 *
+		 * Temporary modifications to the current user are set on priority 99
+		 * This functionality has a separate action: `vaa_view_admin_as_modify_current_user`
 		 *
 		 * @since  1.6.3
 		 * @param  array
