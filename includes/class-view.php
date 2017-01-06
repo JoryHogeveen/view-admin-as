@@ -181,7 +181,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Make sure the $current_user view data isn't overwritten again by switch_blog functions
-		 *
 		 * @see  This filter is documented in wp-includes/ms-blogs.php
 		 * @since  1.6.3
 		 */
@@ -189,16 +188,18 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Prevent some meta updates for the current user while in modification to the current user are active
-		 *
 		 * @since  1.6.3
 		 */
 		add_filter( 'update_user_metadata' , array( $this, 'prevent_update_user_metadata' ), 10, 3 );
 
-		// Change the capabilities (map_meta_cap is better for compatibility with network admins)
-		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
+		/**
+		 * Change the capabilities (map_meta_cap is better for compatibility with network admins)
+		 * @since  0.1
+		 */
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
 
 		// @todo maybe also use the user_has_cap filter?
-		//add_filter( 'user_has_cap', array( $this, 'user_has_cap' ), 999999999, 4 );
+		//add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
 
 		$done = true;
 	}
@@ -324,6 +325,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5     Changed function name to map_meta_cap (was change_caps)
 	 * @since   1.6     Moved to this class from main class
 	 * @since   1.6.2   Use logic from current_view_can()
+	 * @since   1.6.3   Prefix function name with filter_
 	 * @access  public
 	 *
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
@@ -332,7 +334,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used)
 	 * @return  array   $caps
 	 */
-	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
+	public function filter_map_meta_cap( $caps, $cap, $user_id, $args ) {
 
 		if ( $this->store->get_curUser()->ID != $user_id ) {
 			return $caps;
@@ -362,7 +364,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @param   WP_User  $user     (WP 3.7+)
 	 * @return  array
 	 */
-	public function user_has_cap( $allcaps, $caps, $args, $user = null ) {
+	public function filter_user_has_cap( $allcaps, $caps, $args, $user = null ) {
 		$user_id = ( $user ) ? $user->ID : $args[1];
 		if ( ! is_numeric( $user_id ) || $user_id != $this->get_curUser()->ID ) {
 			return $allcaps;
