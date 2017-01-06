@@ -175,7 +175,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		static $done;
 		if ( $done ) return;
 
-		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_current_user_caps' ), 99 );
+		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_current_user' ), 99 );
 
 		/**
 		 * Make sure the $current_user view data isn't overwritten again by switch_blog functions
@@ -183,7 +183,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @see  This filter is documented in wp-includes/ms-blogs.php
 		 * @since  1.6.3
 		 */
-		add_action( 'switch_blog', array( $this, 'modify_current_user_caps' ) );
+		add_action( 'switch_blog', array( $this, 'modify_current_user' ) );
 
 		// Change the capabilities (map_meta_cap is better for compatibility with network admins)
 		add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
@@ -199,7 +199,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.6.3
 	 */
-	public function modify_current_user_caps() {
+	public function modify_current_user() {
 
 		// Can be the current or selected WP_User object (depending on the user view)
 		$current_user = wp_get_current_user();
@@ -262,7 +262,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @param  WP_User  $current_user  The current user object
 		 * @param  bool     $accessible    Are the needed WP_User properties and methods accessible?
 		 */
-		do_action( 'vaa_view_admin_as_modify_current_user_caps', $current_user, $accessible );
+		do_action( 'vaa_view_admin_as_modify_current_user', $current_user, $accessible );
 	}
 
 	/**
