@@ -48,10 +48,10 @@ Fixed compatibility issues:
 Please help translating this plugin on https://translate.wordpress.org/projects/wp-plugins/view-admin-as!
 
 ## Actions and Filters
-[Click here for documentation](https://viewadminas.wordpress.com/documentation/actions-filters/ "Click here for documentation")
+[Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)
 
 ### Plugin capabilities
-[Click here for documentation](https://viewadminas.wordpress.com/documentation/capabilities/ "Click here for documentation")
+[Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Custom-capabilities)
 
 ## Ideas?
 Please let me know through the support page!
