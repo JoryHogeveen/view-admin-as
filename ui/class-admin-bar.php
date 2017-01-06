@@ -991,12 +991,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @static
 	 * @param   array  $args {
 	 *     Required. An array of field arguments
-	 *     @type  string  $name         Required
-	 *     @type  string  $id           Optional (Will be generated from $name if empty)
-	 *     @type  string  $label        Optional
-	 *     @type  string  $classes      Optional
-	 *     @type  string  $element      Optional
-	 *     @type  array   $attr         Optional
+	 *     @type  string  $name     Required
+	 *     @type  string  $id       Optional (Will be generated from $name if empty)
+	 *     @type  string  $label    Optional
+	 *     @type  string  $classes  Optional
+	 *     @type  string  $element  Optional
+	 *     @type  array   $attr     Optional
 	 * }
 	 * @return  string
 	 */
@@ -1004,7 +1004,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
 		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
-		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['value'];
+		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : '';
 		$classes = ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' );
 
 		$args['attr']['id'] = $id;
