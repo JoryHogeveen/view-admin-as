@@ -983,7 +983,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
 				'name'           => 'role-defaults-meta-select[]',
 				'id'             => $root . '-meta-select-vaa_new_item',
-				'value'          => false,
+				'value'          => true,
 				'compare'        => true,
 				'checkbox_value' => 'vaa_new_item',
 				'label'          => 'vaa_new_item',
