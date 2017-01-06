@@ -638,11 +638,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = {};
 			$(VAA_View_Admin_As.prefix+root+'-meta-select .ab-item.vaa-item input').each( function() {
-				if ( $(this).is(':checked') ) {
-					val[ $(this).val() ] = true;
-				} else {
-					val[ $(this).val() ] = false
-				}
+				val[ $(this).val() ] = ( $(this).is(':checked') );
 			});
 			if ( val ) {
 				var viewAs = { role_defaults : { update_meta : val } };
