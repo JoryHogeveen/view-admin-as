@@ -952,6 +952,32 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'tabindex' => '0'
 			),
 		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-add',
+			'parent' => $root . '-meta',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
+				'name'        => $root . '-meta-new',
+				'placeholder' => esc_attr__( 'Add meta key', VIEW_ADMIN_AS_DOMAIN )
+			) ) . VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'name'        => $root . '-meta-add',
+				'label'       => __( 'Add', VIEW_ADMIN_AS_DOMAIN ),
+				'classes'     => 'button-primary input-overlay'
+			) )
+			. '<div id="' . $root . '-meta-template' . '" style="display: none;"><div class="ab-item vaa-item">'
+			. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+				'name'           => 'role-defaults-meta-select[]',
+				'id'             => $root . '-meta-select-vaa_new_item',
+				'value'          => false,
+				'compare'        => true,
+				'checkbox_value' => 'vaa_new_item',
+				'label'          => 'vaa_new_item',
+				'removable'      => true
+			) ) . '</div></div>',
+			'href'   => false,
+			'meta'   => array(
+			  'class' => 'ab-vaa-input',
+			),
+		) );
 		$meta_select_content = '';
 		foreach ( $this->get_meta() as $metakey => $value ) {
 			$meta_select_content .=

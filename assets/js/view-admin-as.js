@@ -618,6 +618,18 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		});
 
+		// @since  1.6.x  Add new meta
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-meta-add button#' + prefix + '-meta-add', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var val = $(VAA_View_Admin_As.prefix+root+'-meta-add input#' + prefix + '-meta-new').val();
+			var item = $(VAA_View_Admin_As.prefix+root+'-meta-add #' + prefix + '-meta-template').html().toString();
+			item = item.replace( /vaa_new_item/g, val.replace( / /g, '_' ) );
+			$(VAA_View_Admin_As.prefix+root+'-meta-select > .ab-item').prepend( item );
+		});
+
 		// @since  1.6.x  Update meta
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-meta-apply button#' + prefix + '-meta-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
