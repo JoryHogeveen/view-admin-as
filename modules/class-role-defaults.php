@@ -34,22 +34,31 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	protected $optionKey = 'vaa_role_defaults';
 
 	/**
-	 * Array of default meta strings that influence the screen settings
+	 * Array of meta strings that influence the screen settings
+	 *
+	 * @since  1.4
+	 * @see    $meta_default
+	 * @var    array
+	 */
+	private $meta = array();
+
+	/**
+	 * Array of default meta strings
 	 * %% stands for a wildcard and can be anything
 	 *
 	 * @since  1.4
 	 * @since  1.5.2  Set both values and keys to fix problem with unsetting a key through the filter
 	 * @var    array
 	 */
-	private $meta = array(
-		'admin_color'            => 'admin_color',            // The admin color
-		'rich_editing'           => 'rich_editing',           // Enable/Disable rich editing
-		'metaboxhidden_%%'       => 'metaboxhidden_%%',       // Hidden metaboxes
-		'meta-box-order_%%'      => 'meta-box-order_%%',      // Metabox order and locations
-		'closedpostboxes_%%'     => 'closedpostboxes_%%',     // Hidden post boxes
-		'edit_%%_per_page'       => 'edit_%%_per_page',       // Amount of items per page in edit pages (overview)
-		'manage%%columnshidden'  => 'manage%%columnshidden',  // Hidden columns in overview pages
-		'screen_layout_%%'       => 'screen_layout_%%',       // Screen layout (num of columns)
+	private $meta_default = array(
+		'admin_color'            => true,  // The admin color
+		'rich_editing'           => true,  // Enable/Disable rich editing
+		'metaboxhidden_%%'       => true,  // Hidden metaboxes
+		'meta-box-order_%%'      => true,  // Metabox order and locations
+		'closedpostboxes_%%'     => true,  // Hidden post boxes
+		'edit_%%_per_page'       => true,  // Amount of items per page in edit pages (overview)
+		'manage%%columnshidden'  => true,  // Hidden columns in overview pages
+		'screen_layout_%%'       => true,  // Screen layout (num of columns)
 	);
 
 	/**
@@ -145,21 +154,19 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->prefix, $meta_key );
 			}
 		}
-
 		/**
-		 * Get metakeys optiondata
-		 * @since  1.6.x
-		 */
-		if ( $this->get_optionData('meta') ) {
-			$this->set_meta( $this->get_optionData('meta') );
-		}
-		/**
-		 * Allow users to overwrite the meta keys
+		 * Allow users to overwrite the default meta keys
 		 * @since   1.4
 		 * @param   array  $meta  Default metadata
 		 * @return  array  $meta
 		 */
-		$this->set_meta( apply_filters( 'view_admin_as_role_defaults_meta', $this->get_meta() ) );
+		$this->meta_default = $this->validate_meta( apply_filters( 'view_admin_as_role_defaults_meta', $this->meta_default ) );
+
+		/**
+		 * Get metakeys optionData, this merges with the default meta
+		 * @since  1.6.x
+		 */
+		$this->set_meta( $this->get_optionData('meta') );
 
 		// Setting: Automatically apply defaults to new users
 		if ( true == $this->get_optionData('apply_defaults_on_register') ) {
@@ -270,7 +277,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 */
 	private function set_meta( $var ) {
 		if ( is_array( $var ) ) {
-			$this->meta = $this->validate_meta( $var );
+			$this->meta = array_merge( $this->meta_default, $this->validate_meta( $var ) );
 		}
 	}
 
@@ -945,16 +952,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 		$meta_select_content = '';
-		foreach ( $this->get_meta() as $metakey => $metavalue ) {
+		foreach ( $this->get_meta() as $metakey => $value ) {
 			$meta_select_content .=
 				'<div class="ab-item vaa-item">'
 				. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
 					'name'           => 'role-defaults-meta-select[]',
 					'id'             => $root . '-meta-select-' . $metakey,
-					'value'          => $metavalue,
+					'value'          => $value,
 					'compare'        => true,
 					'checkbox_value' => $metakey,
-					'label'          => $metakey . '<span class="remove ab-icon dashicon dashicon-remove"></span>'
+					'label'          => $metakey,
+					'removable'      => ( array_key_exists( $metakey, $this->meta_default ) ) ? false : true
 				) )
 				. '</div>';
 		}
