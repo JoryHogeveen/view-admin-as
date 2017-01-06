@@ -278,6 +278,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	private function set_meta( $var ) {
 		if ( is_array( $var ) ) {
 			$this->meta = array_merge( $this->meta_default, $this->validate_meta( $var ) );
+			ksort( $this->meta );
 		}
 	}
 
