@@ -66,15 +66,19 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item .user-count {font-style: italic; line-height: 26px; font-weight: normal;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-item,
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-input .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item {height: auto; clear: both;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-input .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {display: inline-block; background: #fff; color: #555; padding: 3px; border: 0; line-height: normal; height: auto; margin: 5px 0; width: 100%; box-sizing: border-box;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {padding: 2px 3px;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item {height: auto; line-height: normal;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item textarea {width: 100%; padding: 5px; margin-top: 5px; box-sizing: border-box; line-height: normal;}
+
+#wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {position: absolute; right: 10px; margin: 5px 0;}
 
 /*#wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {border: 0; margin-top: 6px;}*/
 
