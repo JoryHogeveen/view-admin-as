@@ -609,6 +609,27 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		});
 
+		// @since  1.6.x  Update meta
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-meta-apply button#' + prefix + '-meta-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var val = {};
+			$(VAA_View_Admin_As.prefix+root+'-meta-select .ab-item.vaa-item input').each( function() {
+				if ( $(this).is(':checked') ) {
+					val[ $(this).val() ] = true;
+				} else {
+					val[ $(this).val() ] = false
+				}
+			});
+			if ( val ) {
+				var viewAs = { role_defaults : { update_meta : val } };
+				VAA_View_Admin_As.ajax( viewAs, false );
+			}
+			return false;
+		});
+
 		// @since  1.4  Filter users
 		$(document).on('keyup', VAA_View_Admin_As.prefix+root+'-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
 			e.preventDefault();

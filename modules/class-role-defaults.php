@@ -147,6 +147,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 
 		/**
+		 * Get metakeys optiondata
+		 * @since  1.6.x
+		 */
+		if ( $this->get_optionData('meta') ) {
+			$this->set_meta( $this->get_optionData('meta') );
+		}
+		/**
 		 * Allow users to overwrite the meta keys
 		 * @since   1.4
 		 * @param   array  $meta  Default metadata
@@ -277,14 +284,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 */
 	private function validate_meta( $metas ) {
 		if ( is_array( $metas ) ) {
-			foreach ( $metas as $key => $meta_key ) {
+			foreach ( $metas as $meta_key => $meta_value ) {
 				// Remove forbidden or invalid meta keys
 				if (   in_array( $meta_key, $this->meta_forbidden )
 					|| strpos( $meta_key, ' ' ) !== false
 					|| ! is_string( $meta_key )
 				) {
-					unset( $metas[ $key ] );
+					unset( $metas[ $meta_key ] );
+					continue;
 				}
+				// Validate meta value
+				$metas[ $meta_key ] = (bool) $meta_value;
 			}
 			return $metas;
 		}
@@ -341,6 +351,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( isset( $data['lock_meta_boxes'] ) ) {
 			$value = (bool) $data['lock_meta_boxes'];
 			$success = $this->update_optionData( $value, 'lock_meta_boxes', true );
+		}
+		// @since  1.6.x  Update metakeys
+		if ( isset( $data['update_meta'] ) ) {
+			$value = $this->validate_meta( $data['update_meta'] );
+			if ( ! empty( $value ) ) {
+				$success = $this->update_optionData( $value, 'meta', true );
+			} else {
+				$success = false; // @todo Notify for invalid data
+			}
 		}
 		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
 			foreach ( $data['apply_defaults_to_users'] as $userData ) {
@@ -758,8 +777,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	private function compare_metakey( $meta_key_compare ) {
 		$meta_keys = $this->get_meta();
 		if ( is_array( $meta_keys ) ) {
-			foreach ( $meta_keys as $key => $meta_key ) {
-				if ( empty( $meta_key ) || ! is_string( $meta_key ) ) {
+			foreach ( $meta_keys as $meta_key => $meta_value ) {
+				if ( empty( $meta_value ) || ! is_string( $meta_key ) ) {
 					continue;
 				} else {
 					$meta_key_parts = explode( '%%', $meta_key );
@@ -901,6 +920,64 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'auto-height',
+			),
+		) );
+
+		/**
+		 * Manage metakeys
+		 * @since  1.6.x
+		 */
+		$admin_bar->add_group( array(
+		   'id'     => $root . '-meta',
+		   'parent' => $root,
+		   'meta'   => array(
+			   'class' => 'ab-sub-secondary',
+		   ),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-title',
+			'parent' => $root . '-meta',
+			'title'  => __( 'Manage meta sync', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-bold ab-vaa-toggle',
+				'tabindex' => '0'
+			),
+		) );
+		$meta_select_content = '';
+		foreach ( $this->get_meta() as $metakey => $metavalue ) {
+			$meta_select_content .=
+				'<div class="ab-item vaa-item">'
+				. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+					'name'           => 'role-defaults-meta-select[]',
+					'id'             => $root . '-meta-select-' . $metakey,
+					'value'          => $metavalue,
+					'compare'        => true,
+					'checkbox_value' => $metakey,
+					'label'          => $metakey . '<span class="remove ab-icon dashicon dashicon-remove"></span>'
+				) )
+				. '</div>';
+		}
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-select',
+			'parent' => $root . '-meta',
+			'title'  => $meta_select_content,
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-multipleselect max-height',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-apply',
+			'parent' => $root . '-meta',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'name'    => $root . '-meta-apply',
+				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'classes' => 'button-primary'
+			) ),
+			'href'   => false,
+			'meta'   => array(
+			  'class' => 'vaa-button-container',
 			),
 		) );
 
