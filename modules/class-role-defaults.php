@@ -953,6 +953,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-docs',
+			'parent' => $root . '-meta',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon('dashicons-info') . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/FAQ#4-what-data-is-stored-for-role-defaults-and-how-can-i-change-this',
+			'meta'   => array(
+				'class'  => 'auto-height vaa-has-icon',
+				'target' => '_blank'
+			),
+		) );
+		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-add',
 			'parent' => $root . '-meta',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
