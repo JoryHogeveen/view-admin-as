@@ -118,6 +118,12 @@ Example: http://www.your.domain/wp-admin/?reset-view
 = 4. What data is stored for role defaults and how can I change this? =
 Please see the `view_admin_as_role_defaults_meta` filter at [Actions & Filters](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)!
 
+The meta manager (since 1.6.3) provides a UI to edit the meta keys.
+Please follow these guidelines:
+- `%%` stands for a wildcard which could be anything.
+- Avoid special characters. Spaces, quotes etc. are forbidden.
+- Default meta keys cannot be removed, only disabled.
+
 = 5. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins?
 If so, these are filtered. Viewing Admins can only be done when you are a Super Admin within a network installation.
@@ -163,6 +169,7 @@ This plugin is also useful to support your clients and/or users. For example; ma
 
 = 1.6.3 =
 
+*	Feature: Meta sync manager UI for the role defaults module [#28](https://github.com/JoryHogeveen/view-admin-as/issues/28)
 *	Feature: Multiple import methods for the role defaults module [#27](https://github.com/JoryHogeveen/view-admin-as/issues/27)
 *	Enhancement: Also update the current user object's capabilities and roles to improve support for other plugins [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
 *	Other minor improvements
