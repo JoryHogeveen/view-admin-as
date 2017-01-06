@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -244,7 +244,7 @@ final class VAA_View_Admin_As
 	 *                 Note that in network installations the non-admin user also needs the manage_network_users
 	 *                 capability (of not the edit_users will return false)
 	 * @since   1.5.3  Enable on network pages for superior admins
-	 * @since   1.6.x  Created this function
+	 * @since   1.6.3  Created this function
 	 * @access  private
 	 */
 	private function validate_user() {

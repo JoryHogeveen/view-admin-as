@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -56,6 +56,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * Filter function to add view-as links on user rows in users.php
 	 *
 	 * @since   1.6
+	 * @since   1.6.3   Check whether to place link + reset link for current user
 	 * @access  public
 	 * @param   array   $actions
 	 * @param   object  $user  WP_User

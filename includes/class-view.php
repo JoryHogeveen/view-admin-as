@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -113,7 +113,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Apply view data
 	 *
-	 * @since  1.6.x  Put logic in it's own function
+	 * @since  1.6.3  Put logic in it's own function
 	 */
 	private function do_view() {
 
@@ -161,7 +161,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * This hook can be used by other modules to enable a view
 		 * Capability changes to the current user are set on priority 5
 		 *
-		 * @since  1.6.x
+		 * @since  1.6.3
 		 * @param  array
 		 */
 		do_action( 'vaa_view_admin_as_do_view', $this->store->get_viewAs() );
@@ -169,7 +169,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Adds the actions and filters to modify the current user object
-	 * @since  1.6.x
+	 * @since  1.6.3
 	 */
 	public function init_current_user_modifications() {
 		static $done;
@@ -181,7 +181,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * Make sure the $current_user view data isn't overwritten again by switch_blog functions
 		 *
 		 * @see  This filter is documented in wp-includes/ms-blogs.php
-		 * @since  1.6.x
+		 * @since  1.6.3
 		 */
 		add_action( 'switch_blog', array( $this, 'modify_current_user_caps' ) );
 
@@ -197,7 +197,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Update the current user's WP_User instance with the current view capabilities
 	 *
-	 * @since   1.6.x
+	 * @since   1.6.3
 	 */
 	public function modify_current_user_caps() {
 
@@ -207,7 +207,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Validate if the WP_User properties are still accessible
 		 * Currently everything is public but this could possibly change
-		 * @since  1.6.x
+		 * @since  1.6.3
 		 */
 		$accessible = false;
 		$public_props = get_object_vars( $current_user );
@@ -229,7 +229,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					$this->store->get_roles( $this->store->get_viewAs('role') )->capabilities
 				);
 			} else {
-				// @since  1.6.x  Set the current user's role to the current view
+				// @since  1.6.3  Set the current user's role to the current view
 				$current_user->caps = array( $this->store->get_viewAs('role') => 1 );
 				// Sets the `allcaps` and `roles` properties correct
 				$current_user->get_role_caps();
@@ -244,7 +244,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			if ( ! $accessible ) {
 				$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
 			} else {
-				// @since  1.6.x  Set the current user's caps (roles) to the current view
+				// @since  1.6.3  Set the current user's caps (roles) to the current view
 				$current_user->allcaps = array_merge(
 					(array) array_filter( $this->store->get_viewAs('caps') ),
 					(array) $current_user->caps // Contains the current user roles
@@ -258,7 +258,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Allow other modules to hook after the initial changes to the current user
-		 * @since  1.6.x
+		 * @since  1.6.3
 		 * @param  WP_User  $current_user  The current user object
 		 * @param  bool     $accessible    Are the needed WP_User properties and methods accessible?
 		 */
@@ -304,7 +304,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Overwrite the user's capabilities
 	 *
-	 * @since   1.6.x
+	 * @since   1.6.3
 	 * @param   array    $allcaps
 	 * @param   array    $caps
 	 * @param   array    $args

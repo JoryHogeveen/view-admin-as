@@ -717,7 +717,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 * Make sure we have the latest added roles.
 		 * I can be that a plugin/theme adds a role after the initial call to store_roles (hook: 'plugins_loaded').
 		 * @see    VAA_View_Admin_As->run()
-		 * @since  1.6.x
+		 * @since  1.6.3
 		 */
 		$this->store->store_roles();
 
@@ -1020,7 +1020,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate text input HTML for node
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x  Automatic show/hide description option
+	 * @since   1.6.3  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
@@ -1082,7 +1082,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate checkbox HTML for node
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x  Automatic show/hide description option
+	 * @since   1.6.3  Automatic show/hide description option + removable option
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
@@ -1153,7 +1153,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate radio HTML for node
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x  Automatic show/hide description option
+	 * @since   1.6.3  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $data {
@@ -1234,7 +1234,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate selectbox HTML for node
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x  Automatic show/hide description option
+	 * @since   1.6.3  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $data {
@@ -1322,7 +1322,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns icon html for WP admin bar
 	 * @since   1.6.1
-	 * @since   1.6.x   Added second $attr parameter
+	 * @since   1.6.3   Added second $attr parameter
 	 * @static
 	 * @param   string  $icon
 	 * @param   array   $attr
@@ -1338,7 +1338,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns label html for WP admin bar
 	 * @since   1.6.1
-	 * @since   1.6.x   Added third $attr parameter
+	 * @since   1.6.3   Added third $attr parameter
 	 * @static
 	 * @param   string  $label
 	 * @param   string  $for    (optional) Add for attribute
@@ -1354,7 +1354,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns description html for WP admin bar
 	 * @since   1.6.1
-	 * @since   1.6.x   Added second $attr parameter
+	 * @since   1.6.3   Added second $attr parameter
 	 * @static
 	 * @param   string  $text
 	 * @param   array   $attr

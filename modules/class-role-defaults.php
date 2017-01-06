@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.4
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -164,7 +164,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Get metakeys optionData, this merges with the default meta
-		 * @since  1.6.x
+		 * @since  1.6.3
 		 */
 		$this->set_meta( $this->get_optionData('meta') );
 
@@ -360,7 +360,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$value = (bool) $data['lock_meta_boxes'];
 			$success = $this->update_optionData( $value, 'lock_meta_boxes', true );
 		}
-		// @since  1.6.x  Update metakeys
+		// @since  1.6.3  Update metakeys
 		if ( isset( $data['update_meta'] ) ) {
 			$value = $this->validate_meta( $data['update_meta'] );
 			if ( ! empty( $value ) ) {
@@ -610,7 +610,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * Get defaults of a role
 	 *
 	 * @since   1.4
-	 * @since   1.6.x  Multiple get methods (parameters are now optional)
+	 * @since   1.6.3  Multiple get methods (parameters are now optional)
 	 * @access  private
 	 *
 	 * @param   string  $role
@@ -938,7 +938,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Manage metakeys
-		 * @since  1.6.x
+		 * @since  1.6.3
 		 */
 		$admin_bar->add_group( array(
 		   'id'     => $root . '-meta',

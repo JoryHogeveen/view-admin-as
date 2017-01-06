@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6.2
+ * @version 1.6.3
  * @preserve
  */
 
@@ -80,7 +80,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					}
 				});
 
-				// @since  1.6.1  Keyboard A11y
+				// @since  1.6.1  Keyboard a11y
 				$(this).on( 'keyup', function( e ) {
 					e.preventDefault();
 					/**
@@ -112,15 +112,6 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			});
 		});
 
-		// Removable items
-		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.ab-item > .remove', function( e ) {
-			e.preventDefault();
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			$(this).parent('.ab-item').slideUp('fast', function() { $(this).remove(); });
-		});
-
 		// Process reset
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
 			e.preventDefault();
@@ -150,6 +141,15 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				}
 			});
 		} );
+
+		// @since  1.6.3  Removable items
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.ab-item > .remove', function( e ) {
+			e.preventDefault();
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			$(this).parent('.ab-item').slideUp('fast', function() { $(this).remove(); });
+		});
 	};
 
 
@@ -618,7 +618,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		});
 
-		// @since  1.6.x  Add new meta
+		// @since  1.6.3  Add new meta
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-meta-add button#' + prefix + '-meta-add', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -630,7 +630,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			$(VAA_View_Admin_As.prefix+root+'-meta-select > .ab-item').prepend( item );
 		});
 
-		// @since  1.6.x  Update meta
+		// @since  1.6.3  Update meta
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-meta-apply button#' + prefix + '-meta-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;

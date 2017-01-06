@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -227,7 +227,7 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Store the current user and other user related data
 	 *
-	 * @since   1.6.x  Moved to this class
+	 * @since   1.6.3  Moved to this class
 	 * @access  public
 	 * @param   bool  $redo  (optional) Force re-init?
 	 */
@@ -274,7 +274,7 @@ final class VAA_View_Admin_As_Store
 	 */
 	public function store_roles() {
 
-		// @since  1.6.x  Check for the wp_roles() function in WP 4.3+
+		// @since  1.6.3  Check for the wp_roles() function in WP 4.3+
 		if ( function_exists('wp_roles') ) {
 			$wp_roles = wp_roles();
 		} else {
@@ -359,7 +359,7 @@ final class VAA_View_Admin_As_Store
 			/**
 			 * Super admins are only available for superior admins
 			 * (short circuit return for performance)
-			 * @since  1.6.x
+			 * @since  1.6.3
 			 */
 			if ( ! $is_superior_admin ) {
 				return;
@@ -419,7 +419,7 @@ final class VAA_View_Admin_As_Store
 			 * Do not get super admins for network installs (values are usernames)
 			 * These we're filtered after query in previous versions
 			 *
-			 * @since  1.6.x
+			 * @since  1.6.3
 			 */
 			if ( is_multisite() && ! $is_superior_admin ) {
 				$super_admins = get_super_admins();
