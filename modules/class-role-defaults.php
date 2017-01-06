@@ -950,10 +950,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-title',
 			'parent' => $root . '-meta',
-			'title'  => __( 'Manage meta sync', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-tools' )
+						. __( 'Manage meta sync', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'ab-bold ab-vaa-toggle',
+				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 				'tabindex' => '0'
 			),
 		) );
@@ -1063,10 +1064,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-title',
 				'parent' => $root . '-bulk-users',
-				'title'  => __( 'Apply defaults to users', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-users' )
+							. __( 'Apply defaults to users', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
@@ -1136,10 +1138,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-roles-title',
 				'parent' => $root . '-bulk-roles',
-				'title'  => __( 'Apply defaults to users by role', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-groups' )
+							. __( 'Apply defaults to users by role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
@@ -1183,10 +1186,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-export-roles',
 				'parent' => $root . '-export',
-				'title'  => __( 'Export defaults for role', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-upload' )
+							. __( 'Export defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
@@ -1227,10 +1231,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-import-roles',
 				'parent' => $root . '-import',
-				'title'  => __( 'Import defaults for role', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-download' )
+							. __( 'Import defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
@@ -1331,10 +1336,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-clear-roles',
 				'parent' => $root . '-clear',
-				'title'  => __( 'Remove defaults for role', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-trash' )
+							. __( 'Remove defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
