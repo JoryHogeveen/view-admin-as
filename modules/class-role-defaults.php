@@ -163,10 +163,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		$this->meta_default = $this->validate_meta( apply_filters( 'view_admin_as_role_defaults_meta', $this->meta_default ) );
 
 		/**
-		 * Get metakeys optionData, this merges with the default meta
+		 * Get metakeys optionData and merge it with the default meta
 		 * @since  1.6.3
 		 */
-		$this->set_meta( $this->get_optionData('meta') );
+		$this->set_meta( array_merge(
+			$this->meta_default,
+			( $this->get_optionData('meta') ) ? (array) $this->get_optionData('meta') : array()
+		) );
 
 		// Setting: Automatically apply defaults to new users
 		if ( true == $this->get_optionData('apply_defaults_on_register') ) {
@@ -1279,7 +1282,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					)
 				) )
 				. VAA_View_Admin_As_Admin_Bar::do_description(
-					__( 'Fully Overwrite data for each supplied role', VIEW_ADMIN_AS_DOMAIN ),
+					__( 'Fully overwrite data for each supplied role', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-import-role-defaults-desc' )
 				)
 				. VAA_View_Admin_As_Admin_Bar::do_description(
