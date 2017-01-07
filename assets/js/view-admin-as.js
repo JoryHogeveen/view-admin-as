@@ -57,8 +57,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_settings();
 		VAA_View_Admin_As.init_module_role_defaults();
 
-		// Toggle content with title
-		$(window).load(function() {
+		// Functionality that require the document to be fully loaded
+		$(window).on("load", function() {
+
+			// Toggle content with title
 			$(VAA_View_Admin_As.prefix+'.ab-vaa-toggle').each( function() {
 				var toggleContent = $(this).parent().children().not('.ab-vaa-toggle');
 				if ( ! $(this).hasClass('active') ) {
@@ -100,17 +102,19 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					}
 				});
 			});
-		});
 
-		// Toggle items on hover
-		$(VAA_View_Admin_As.prefix+'.ab-vaa-showhide[data-showhide]').each( function() {
-			$( $(this).attr('data-showhide') ).hide();
-			$(this).on('mouseenter', function() {
-				$( $(this).attr('data-showhide') ).slideDown('fast');
-			}).on('mouseleave', function() {
-				$( $(this).attr('data-showhide') ).slideUp('fast');
+			// @since  1.6.3  Toggle items on hover
+			$(VAA_View_Admin_As.prefix+'.ab-vaa-showhide[data-showhide]').each( function() {
+				console.log( $(this) );
+				$( $(this).attr('data-showhide') ).hide();
+				$(this).on('mouseenter', function() {
+					$( $(this).attr('data-showhide') ).slideDown('fast');
+				}).on('mouseleave', function() {
+					$( $(this).attr('data-showhide') ).slideUp('fast');
+				});
 			});
-		});
+
+		}); // End window.load
 
 		// Process reset
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
