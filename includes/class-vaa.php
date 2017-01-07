@@ -248,7 +248,7 @@ final class VAA_View_Admin_As
 	 * @access  private
 	 */
 	private function validate_user() {
-		if ( ( is_super_admin( $this->store->get_curUser()->ID )
+		if ( ( VAA_View_Admin_As_Store::is_super_admin()
 		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
 		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
 		     && $this->store->get_curUserSession() != ''

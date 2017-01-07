@@ -189,6 +189,23 @@ final class VAA_View_Admin_As_Store
 	private $curUserSession = '';
 
 	/**
+	 * Current user data
+	 * Will contain all properties of the original current user object
+	 *
+	 * @since  1.6.3
+	 * @var    array
+	 */
+	private $curUserData = array();
+
+	/**
+	 * Is the original current user a super admin?
+	 *
+	 * @since  1.6.3
+	 * @var    bool
+	 */
+	private static $isCurUserSuperAdmin = false;
+
+	/**
 	 * Selected view mode
 	 *
 	 * Format: array( VIEW_TYPE => VIEW_DATA )
@@ -254,6 +271,12 @@ final class VAA_View_Admin_As_Store
 			}
 		}
 
+		if ( is_super_admin( $this->get_curUser()->ID ) ) {
+			self::$isCurUserSuperAdmin = true;
+		}
+
+		$this->curUserData = get_object_vars( $this->get_curUser() );
+
 		// Get database settings
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
 		// Get database settings of the current user
@@ -285,7 +308,7 @@ final class VAA_View_Admin_As_Store
 		$roles = $wp_roles->role_objects; // role_objects for objects, roles for arrays
 		$role_names = $wp_roles->role_names;
 
-		if ( ! is_super_admin( $this->get_curUser()->ID ) ) {
+		if ( ! self::is_super_admin() ) {
 
 			// The current user is not a super admin (or regular admin in single installations)
 			unset( $roles['administrator'] );
@@ -333,7 +356,7 @@ final class VAA_View_Admin_As_Store
 		$superior_admins = VAA_API::get_superior_admins();
 
 		// Is the current user a super admin?
-		$is_super_admin = is_super_admin( $this->get_curUser()->ID );
+		$is_super_admin = self::is_super_admin();
 		// Is it also one of the manually configured superior admins?
 		$is_superior_admin = VAA_API::is_superior_admin( $this->get_curUser()->ID );
 
@@ -595,7 +618,7 @@ final class VAA_View_Admin_As_Store
 		$caps = $this->get_curUser()->allcaps;
 
 		// Only allow to add capabilities for an admin (or super admin)
-		if ( is_super_admin( $this->get_curUser()->ID ) ) {
+		if ( self::is_super_admin() ) {
 
 			// Store available capabilities
 			$all_caps = array();
@@ -809,8 +832,10 @@ final class VAA_View_Admin_As_Store
 	/*
 	 * Getters
 	 */
+	public static function is_super_admin() { return self::$isCurUserSuperAdmin; }
 	public function get_curUser()                          { return $this->curUser; }
 	public function get_curUserSession()                   { return (string) $this->curUserSession; }
+	public function get_curUserData( $key = null )         { return VAA_API::get_array_data( $this->curUserData, $key ); }
 	public function get_viewAs( $key = null )              { return VAA_API::get_array_data( $this->viewAs, $key ); }
 	public function get_caps( $key = null )                { return VAA_API::get_array_data( $this->caps, $key ); }
 	public function get_roles( $key = null )               { return VAA_API::get_array_data( $this->roles, $key ); }
