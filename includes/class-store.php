@@ -528,7 +528,7 @@ final class VAA_View_Admin_As_Store
 			}
 
 			// Add users who can't access this plugin to the users list
-			$userids[ $user->data->ID ] = $user->data->display_name;
+			$userids[ $user->ID ] = $user->display_name;
 		}
 
 		$this->set_users( $users );
@@ -615,7 +615,11 @@ final class VAA_View_Admin_As_Store
 		global $wp_roles;
 
 		// Get current user capabilities
-		$caps = $this->get_curUser()->allcaps;
+		$caps = self::get_originalUserData( 'allcaps' );
+		if ( empty( $caps ) ) {
+			// Fallback
+			$caps = $this->get_curUser()->allcaps;
+		}
 
 		// Only allow to add capabilities for an admin (or super admin)
 		if ( self::is_super_admin() ) {
@@ -837,7 +841,7 @@ final class VAA_View_Admin_As_Store
 	 * @since   1.6.3
 	 * @access  public
 	 * @static
-	 * @param   integer  $user_id
+	 * @param   int  $user_id
 	 * @return  bool
 	 */
 	public static function is_super_admin( $user_id = null ) {
