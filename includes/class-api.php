@@ -15,20 +15,47 @@
 final class VAA_API
 {
 	/**
-	 * Check if the user is a superior admin
+	 * Check if the original current user is a super admin
 	 *
-	 * @since   1.5.3
-	 * @since   1.6    Moved to this class from main class
+	 * @since   1.6.3
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   int  $user_id
+	 * @param   int  $user_id  (optional) Default: current user
 	 * @return  bool
 	 */
-	public static function is_superior_admin( $user_id ) {
+	public static function is_super_admin( $user_id = null ) {
+		return VAA_View_Admin_As_Store::is_super_admin( $user_id );
+	}
+
+	/**
+	 * Check if the user is a superior admin
+	 *
+	 * @since   1.5.3
+	 * @since   1.6    Moved to this class from main class
+	 * @since   1.6.3  Improve is_super_admin() check
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   int  $user_id  (optional) Default: current user
+	 * @return  bool
+	 */
+	public static function is_superior_admin( $user_id = null ) {
+
+		// If it's the current user of null, don't pass the user ID so make sure we check the original user status
+		if ( null === $user_id || get_current_user_id() == $user_id ) {
+			$is_super_admin = self::is_super_admin();
+			if ( null == $user_id ) {
+				$user_id = get_current_user_id();
+			}
+		} else {
+			$is_super_admin = self::is_super_admin( $user_id );
+		}
+
 		// Is it a super admin and is it one of the manually configured superior admins?
-		return (bool) ( true === is_super_admin( $user_id ) && in_array( $user_id, self::get_superior_admins() ) );
+		return (bool) ( true === $is_super_admin && in_array( $user_id, self::get_superior_admins() ) );
 	}
 
 	/**

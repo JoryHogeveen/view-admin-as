@@ -128,7 +128,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 */
 		if (   $this->is_vaa_enabled()
 			&& ! is_network_admin()
-			&& ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') )
+			&& ( VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') )
 		) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
@@ -182,7 +182,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		// Setting: Hide the screen options for all users who can't access role defaults
 		if ( true == $this->get_optionData('disable_user_screen_options')
-			&& ! ( $this->is_vaa_enabled() && ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) )
+			&& ! ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') ) )
 		) {
 			add_filter( 'screen_options_show_screen', '__return_false', 100 );
 		}
@@ -207,7 +207,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	public function vaa_init() {
 
 		// Enabling this module can only be done by a super admin
-		if ( is_super_admin( $this->get_curUser()->ID ) ) {
+		if ( VAA_API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section
 			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ), 10, 2 );
@@ -238,7 +238,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 * @since  1.6.2  Improved conditions + check if sortable is enqueued and active
 		 */
 		if ( true == $this->get_optionData('lock_meta_boxes')
-		     && ! ( $this->is_vaa_enabled() || is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') )
+		     && ! ( $this->is_vaa_enabled() || VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') )
 		     && wp_script_is( 'jquery-ui-sortable', 'enqueued' )
 		) {
 			?>
@@ -332,7 +332,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		$success = false;
 
 		// Validate super admin
-		if ( is_super_admin( $this->get_curUser()->ID ) ) {
+		if ( VAA_API::is_super_admin() ) {
 
 			if ( isset( $data['enable'] ) ) {
 				if ( true == $data['enable'] ) {

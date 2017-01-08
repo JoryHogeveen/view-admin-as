@@ -358,7 +358,7 @@ final class VAA_View_Admin_As_Store
 		// Is the current user a super admin?
 		$is_super_admin = self::is_super_admin();
 		// Is it also one of the manually configured superior admins?
-		$is_superior_admin = VAA_API::is_superior_admin( $this->get_curUser()->ID );
+		$is_superior_admin = VAA_API::is_superior_admin();
 
 		/**
 		 * Base user query
@@ -829,10 +829,24 @@ final class VAA_View_Admin_As_Store
 		return true;
 	}
 
+	/**
+	 * Helper function for is_super_admin()
+	 * Will validate the original user if it is the current user or no user ID is passed
+	 * This can prevent invalid checks after a view is applied
+	 *
+	 * @param   integer  $user_id
+	 * @return  bool
+	 */
+	public static function is_super_admin( $user_id = null ) {
+		if ( null === $user_id || get_current_user_id() == $user_id ) {
+			return self::$isCurUserSuperAdmin;
+		}
+		return is_super_admin( $user_id );
+	}
+
 	/*
 	 * Getters
 	 */
-	public static function is_super_admin() { return self::$isCurUserSuperAdmin; }
 	public function get_curUser()                          { return $this->curUser; }
 	public function get_curUserSession()                   { return (string) $this->curUserSession; }
 	public function get_curUserData( $key = null )         { return VAA_API::get_array_data( $this->curUserData, $key ); }
