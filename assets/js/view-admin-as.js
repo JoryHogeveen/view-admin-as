@@ -105,7 +105,6 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 			// @since  1.6.3  Toggle items on hover
 			$(VAA_View_Admin_As.prefix+'.ab-vaa-showhide[data-showhide]').each( function() {
-				console.log( $(this) );
 				$( $(this).attr('data-showhide') ).hide();
 				$(this).on('mouseenter', function() {
 					$( $(this).attr('data-showhide') ).slideDown('fast');
