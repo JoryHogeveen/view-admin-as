@@ -1031,7 +1031,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			) ),
 			'href'   => false,
 			'meta'   => array(
-			  'class' => 'vaa-button-container',
+				'class' => 'vaa-button-container',
 			),
 		) );
 
@@ -1315,7 +1315,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - '
 				)
 			);
-			foreach ( $this->get_role_defaults() as $role_key => $role ) {
+			foreach ( (array) $this->get_role_defaults() as $role_key => $role ) {
 				if ( ! empty( $role_key ) ) {
 					$role_name = $role_key;
 					if ( $this->store->get_roles( $role_key ) ) {
