@@ -195,7 +195,7 @@ final class VAA_View_Admin_As_Store
 	 * @since  1.6.3
 	 * @var    array
 	 */
-	private $curUserData = array();
+	private static $curUserData = array();
 
 	/**
 	 * Is the original current user a super admin?
@@ -275,7 +275,7 @@ final class VAA_View_Admin_As_Store
 			self::$isCurUserSuperAdmin = true;
 		}
 
-		$this->curUserData = get_object_vars( $this->get_curUser() );
+		self::$curUserData = get_object_vars( $this->get_curUser() );
 
 		// Get database settings
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
@@ -834,6 +834,9 @@ final class VAA_View_Admin_As_Store
 	 * Will validate the original user if it is the current user or no user ID is passed
 	 * This can prevent invalid checks after a view is applied
 	 *
+	 * @since   1.6.3
+	 * @access  public
+	 * @static
 	 * @param   integer  $user_id
 	 * @return  bool
 	 */
@@ -844,12 +847,26 @@ final class VAA_View_Admin_As_Store
 		return is_super_admin( $user_id );
 	}
 
+	/**
+	 * Get data from the current user, similar to the WP_User object
+	 * Unlike the current user object this data isn't modified after in a view
+	 * This has all public WP_User properties stored as an array
+	 *
+	 * @since   1.6.3
+	 * @access  public
+	 * @static
+	 * @param   string  $key
+	 * @return  mixed
+	 */
+	public static function get_originalUserData( $key = null ) {
+		return VAA_API::get_array_data( self::$curUserData, $key );
+	}
+
 	/*
 	 * Getters
 	 */
 	public function get_curUser()                          { return $this->curUser; }
 	public function get_curUserSession()                   { return (string) $this->curUserSession; }
-	public function get_curUserData( $key = null )         { return VAA_API::get_array_data( $this->curUserData, $key ); }
 	public function get_viewAs( $key = null )              { return VAA_API::get_array_data( $this->viewAs, $key ); }
 	public function get_caps( $key = null )                { return VAA_API::get_array_data( $this->caps, $key ); }
 	public function get_roles( $key = null )               { return VAA_API::get_array_data( $this->roles, $key ); }
