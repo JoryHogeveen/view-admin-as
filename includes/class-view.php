@@ -97,7 +97,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$this->store->set_viewAs( $this->get_view() );
 
 		// Short circuit needed for visitor view (BEFORE the current user is set)
-		if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
+		if ( defined('DOING_AJAX') && DOING_AJAX && ! empty( $_POST['action'] ) && 'view_admin_as' == $_POST['action'] ) {
 			$this->ajax_view_admin_as();
 		}
 
