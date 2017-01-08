@@ -58,67 +58,6 @@ final class VAA_API
 	}
 
 	/**
-	 * Get full array or array key
-	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class
-	 * @access  public
-	 * @static
-	 * @api
-	 *
-	 * @param   array   $array  The requested array
-	 * @param   string  $key    Return only a key of the requested array (optional)
-	 * @return  mixed
-	 */
-	final public static function get_array_data( $array, $key = null ) {
-		if ( null !== $key ) {
-			if ( isset( $array[ $key ] ) ) {
-				return $array[ $key ];
-			}
-			return false; // return false if key is not found
-		}
-		return $array;
-	}
-
-	/**
-	 * Set full array or array key
-	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class
-	 * @access  public
-	 * @static
-	 * @api
-	 *
-	 * @param   array   $array   Original array
-	 * @param   mixed   $var     The new value
-	 * @param   string  $key     The array key for the value (optional)
-	 * @param   bool    $append  If the key doesn't exist in the original array, append it (optional)
-	 * @return  mixed
-	 */
-	final public static function set_array_data( $array, $var, $key = null, $append = false ) {
-		if ( null !== $key ) {
-			if ( true === $append && ! is_array( $array ) ) {
-				$array = array();
-			}
-			if ( true === $append || isset( $array[ $key ] ) ) {
-				$array[ $key ] = $var;
-				return $array;
-			}
-
-			// Notify user if in debug mode
-			if ( defined('WP_DEBUG') && true === WP_DEBUG ) {
-				trigger_error('View Admin As: Key does not exist', E_USER_NOTICE);
-				if ( ! defined('WP_DEBUG_DISPLAY') || ( defined('WP_DEBUG_DISPLAY') && true === WP_DEBUG_DISPLAY ) ) {
-					debug_print_backtrace();
-				}
-			}
-
-			return $array; // return no changes if key is not found or appending is not allowed
-		}
-		return $var;
-	}
-
-	/**
 	 * Is our custom toolbar showing?
 	 * Do not use this before the `init` hook
 	 *
@@ -224,6 +163,67 @@ final class VAA_API
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Get full array or array key
+	 *
+	 * @since   1.5
+	 * @since   1.6    Moved to this class from main class
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array   $array  The requested array
+	 * @param   string  $key    Return only a key of the requested array (optional)
+	 * @return  mixed
+	 */
+	final public static function get_array_data( $array, $key = null ) {
+		if ( null !== $key ) {
+			if ( isset( $array[ $key ] ) ) {
+				return $array[ $key ];
+			}
+			return false; // return false if key is not found
+		}
+		return $array;
+	}
+
+	/**
+	 * Set full array or array key
+	 *
+	 * @since   1.5
+	 * @since   1.6    Moved to this class from main class
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array   $array   Original array
+	 * @param   mixed   $var     The new value
+	 * @param   string  $key     The array key for the value (optional)
+	 * @param   bool    $append  If the key doesn't exist in the original array, append it (optional)
+	 * @return  mixed
+	 */
+	final public static function set_array_data( $array, $var, $key = null, $append = false ) {
+		if ( null !== $key ) {
+			if ( true === $append && ! is_array( $array ) ) {
+				$array = array();
+			}
+			if ( true === $append || isset( $array[ $key ] ) ) {
+				$array[ $key ] = $var;
+				return $array;
+			}
+
+			// Notify user if in debug mode
+			if ( defined('WP_DEBUG') && true === WP_DEBUG ) {
+				trigger_error('View Admin As: Key does not exist', E_USER_NOTICE);
+				if ( ! defined('WP_DEBUG_DISPLAY') || ( defined('WP_DEBUG_DISPLAY') && true === WP_DEBUG_DISPLAY ) ) {
+					debug_print_backtrace();
+				}
+			}
+
+			return $array; // return no changes if key is not found or appending is not allowed
+		}
+		return $var;
 	}
 
 } // end class
