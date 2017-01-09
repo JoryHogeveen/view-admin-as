@@ -447,7 +447,7 @@ final class VAA_View_Admin_As_Store
 			if ( is_multisite() && ! $is_superior_admin ) {
 				$super_admins = get_super_admins();
 				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
-					$exclude_siblings = implode( ',', $super_admins );
+					$exclude_siblings = "'" . implode( "','", $super_admins ) . "'";
 					$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
 				}
 			}
