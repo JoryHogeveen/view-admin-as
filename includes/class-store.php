@@ -447,6 +447,12 @@ final class VAA_View_Admin_As_Store
 			if ( is_multisite() && ! $is_superior_admin ) {
 				$super_admins = get_super_admins();
 				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
+
+					// Escape usernames just to be sure
+					$super_admins = array_filter( $super_admins, 'validate_username' );
+					// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4
+					$super_admins = array_filter( $super_admins );
+
 					$exclude_siblings = "'" . implode( "','", $super_admins ) . "'";
 					$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
 				}
