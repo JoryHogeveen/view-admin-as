@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.4
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -34,22 +34,31 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	protected $optionKey = 'vaa_role_defaults';
 
 	/**
-	 * Array of default meta strings that influence the screen settings
+	 * Array of meta strings that influence the screen settings
+	 *
+	 * @since  1.4
+	 * @see    $meta_default
+	 * @var    array
+	 */
+	private $meta = array();
+
+	/**
+	 * Array of default meta strings
 	 * %% stands for a wildcard and can be anything
 	 *
 	 * @since  1.4
 	 * @since  1.5.2  Set both values and keys to fix problem with unsetting a key through the filter
 	 * @var    array
 	 */
-	private $meta = array(
-		'admin_color'            => 'admin_color',            // The admin color
-		'rich_editing'           => 'rich_editing',           // Enable/Disable rich editing
-		'metaboxhidden_%%'       => 'metaboxhidden_%%',       // Hidden metaboxes
-		'meta-box-order_%%'      => 'meta-box-order_%%',      // Metabox order and locations
-		'closedpostboxes_%%'     => 'closedpostboxes_%%',     // Hidden post boxes
-		'edit_%%_per_page'       => 'edit_%%_per_page',       // Amount of items per page in edit pages (overview)
-		'manage%%columnshidden'  => 'manage%%columnshidden',  // Hidden columns in overview pages
-		'screen_layout_%%'       => 'screen_layout_%%',       // Screen layout (num of columns)
+	private $meta_default = array(
+		'admin_color'            => true,  // The admin color
+		'rich_editing'           => true,  // Enable/Disable rich editing
+		'metaboxhidden_%%'       => true,  // Hidden metaboxes
+		'meta-box-order_%%'      => true,  // Metabox order and locations
+		'closedpostboxes_%%'     => true,  // Hidden post boxes
+		'edit_%%_per_page'       => true,  // Amount of items per page in edit pages (overview)
+		'manage%%columnshidden'  => true,  // Hidden columns in overview pages
+		'screen_layout_%%'       => true,  // Screen layout (num of columns)
 	);
 
 	/**
@@ -119,7 +128,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 */
 		if (   $this->is_vaa_enabled()
 			&& ! is_network_admin()
-			&& ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') )
+			&& ( VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') )
 		) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
@@ -145,14 +154,22 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->prefix, $meta_key );
 			}
 		}
-
 		/**
-		 * Allow users to overwrite the meta keys
+		 * Allow users to overwrite the default meta keys
 		 * @since   1.4
 		 * @param   array  $meta  Default metadata
 		 * @return  array  $meta
 		 */
-		$this->set_meta( apply_filters( 'view_admin_as_role_defaults_meta', $this->get_meta() ) );
+		$this->meta_default = $this->validate_meta( apply_filters( 'view_admin_as_role_defaults_meta', $this->meta_default ) );
+
+		/**
+		 * Get metakeys optionData and merge it with the default meta
+		 * @since  1.6.3
+		 */
+		$this->set_meta( array_merge(
+			$this->meta_default,
+			( $this->get_optionData('meta') ) ? (array) $this->get_optionData('meta') : array()
+		) );
 
 		// Setting: Automatically apply defaults to new users
 		if ( true == $this->get_optionData('apply_defaults_on_register') ) {
@@ -165,7 +182,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		// Setting: Hide the screen options for all users who can't access role defaults
 		if ( true == $this->get_optionData('disable_user_screen_options')
-			&& ! ( $this->is_vaa_enabled() && ( is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') ) )
+			&& ! ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') ) )
 		) {
 			add_filter( 'screen_options_show_screen', '__return_false', 100 );
 		}
@@ -190,7 +207,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	public function vaa_init() {
 
 		// Enabling this module can only be done by a super admin
-		if ( is_super_admin( $this->get_curUser()->ID ) ) {
+		if ( VAA_API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section
 			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ), 10, 2 );
@@ -221,7 +238,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		 * @since  1.6.2  Improved conditions + check if sortable is enqueued and active
 		 */
 		if ( true == $this->get_optionData('lock_meta_boxes')
-		     && ! ( $this->is_vaa_enabled() || is_super_admin( $this->get_curUser()->ID ) || current_user_can('view_admin_as_role_defaults') )
+		     && ! ( $this->is_vaa_enabled() || VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') )
 		     && wp_script_is( 'jquery-ui-sortable', 'enqueued' )
 		) {
 			?>
@@ -263,7 +280,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 */
 	private function set_meta( $var ) {
 		if ( is_array( $var ) ) {
-			$this->meta = $this->validate_meta( $var );
+			$this->meta = array_merge( $this->meta_default, $this->validate_meta( $var ) );
+			ksort( $this->meta );
 		}
 	}
 
@@ -277,14 +295,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 */
 	private function validate_meta( $metas ) {
 		if ( is_array( $metas ) ) {
-			foreach ( $metas as $key => $meta_key ) {
+			foreach ( $metas as $meta_key => $meta_value ) {
 				// Remove forbidden or invalid meta keys
 				if (   in_array( $meta_key, $this->meta_forbidden )
 					|| strpos( $meta_key, ' ' ) !== false
 					|| ! is_string( $meta_key )
 				) {
-					unset( $metas[ $key ] );
+					unset( $metas[ $meta_key ] );
+					continue;
 				}
+				// Validate meta value
+				$metas[ $meta_key ] = (bool) $meta_value;
 			}
 			return $metas;
 		}
@@ -311,7 +332,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		$success = false;
 
 		// Validate super admin
-		if ( is_super_admin( $this->get_curUser()->ID ) ) {
+		if ( VAA_API::is_super_admin() ) {
 
 			if ( isset( $data['enable'] ) ) {
 				if ( true == $data['enable'] ) {
@@ -341,6 +362,20 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( isset( $data['lock_meta_boxes'] ) ) {
 			$value = (bool) $data['lock_meta_boxes'];
 			$success = $this->update_optionData( $value, 'lock_meta_boxes', true );
+		}
+		// @since  1.6.3  Update metakeys
+		if ( isset( $data['update_meta'] ) ) {
+			$value = $this->validate_meta( $data['update_meta'] );
+			if ( ! empty( $value ) ) {
+				if ( $value === $this->get_optionData('meta') ) {
+					// Data is the same, no changes needed
+					$success = true;
+				} else {
+					$success = $this->update_optionData( $value, 'meta', true );
+				}
+			} else {
+				$success = false; // @todo Notify for invalid data
+			}
 		}
 		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
 			foreach ( $data['apply_defaults_to_users'] as $userData ) {
@@ -578,7 +613,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * Get defaults of a role
 	 *
 	 * @since   1.4
-	 * @since   1.6.x  Multiple get methods (parameters are now optional)
+	 * @since   1.6.3  Multiple get methods (parameters are now optional)
 	 * @access  private
 	 *
 	 * @param   string  $role
@@ -758,8 +793,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	private function compare_metakey( $meta_key_compare ) {
 		$meta_keys = $this->get_meta();
 		if ( is_array( $meta_keys ) ) {
-			foreach ( $meta_keys as $key => $meta_key ) {
-				if ( empty( $meta_key ) || ! is_string( $meta_key ) ) {
+			foreach ( $meta_keys as $meta_key => $meta_value ) {
+				if ( empty( $meta_value ) || ! is_string( $meta_key ) ) {
 					continue;
 				} else {
 					$meta_key_parts = explode( '%%', $meta_key );
@@ -905,6 +940,102 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		) );
 
 		/**
+		 * Manage metakeys
+		 * @since  1.6.3
+		 */
+		$admin_bar->add_group( array(
+		   'id'     => $root . '-meta',
+		   'parent' => $root,
+		   'meta'   => array(
+			   'class' => 'ab-sub-secondary',
+		   ),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-title',
+			'parent' => $root . '-meta',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-tools' )
+						. __( 'Manage meta sync', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
+				'tabindex' => '0'
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-docs',
+			'parent' => $root . '-meta',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon('dashicons-info') . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/FAQ#4-what-data-is-stored-for-role-defaults-and-how-can-i-change-this',
+			'meta'   => array(
+				'class'  => 'auto-height vaa-has-icon',
+				'target' => '_blank'
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-add',
+			'parent' => $root . '-meta',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
+				'name'        => $root . '-meta-new',
+				'placeholder' => esc_attr__( 'Add meta key', VIEW_ADMIN_AS_DOMAIN )
+			) ) . VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'name'        => $root . '-meta-add',
+				'label'       => __( 'Add', VIEW_ADMIN_AS_DOMAIN ),
+				'classes'     => 'button-primary input-overlay'
+			) )
+			. '<div id="' . $root . '-meta-template' . '" style="display: none;"><div class="ab-item vaa-item">'
+			. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+				'name'           => 'role-defaults-meta-select[]',
+				'id'             => $root . '-meta-select-vaa_new_item',
+				'value'          => true,
+				'compare'        => true,
+				'checkbox_value' => 'vaa_new_item',
+				'label'          => 'vaa_new_item',
+				'removable'      => true
+			) ) . '</div></div>',
+			'href'   => false,
+			'meta'   => array(
+			  'class' => 'ab-vaa-input',
+			),
+		) );
+		$meta_select_content = '';
+		foreach ( $this->get_meta() as $metakey => $value ) {
+			$meta_select_content .=
+				'<div class="ab-item vaa-item">'
+				. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+					'name'           => 'role-defaults-meta-select[]',
+					'id'             => $root . '-meta-select-' . $metakey,
+					'value'          => $value,
+					'compare'        => true,
+					'checkbox_value' => $metakey,
+					'label'          => $metakey,
+					'removable'      => ( array_key_exists( $metakey, $this->meta_default ) ) ? false : true
+				) )
+				. '</div>';
+		}
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-select',
+			'parent' => $root . '-meta',
+			'title'  => $meta_select_content,
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-multipleselect max-height',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-meta-apply',
+			'parent' => $root . '-meta',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'name'    => $root . '-meta-apply',
+				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'classes' => 'button-primary'
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'vaa-button-container',
+			),
+		) );
+
+		/**
 		 * Bulk actions
 		 */
 
@@ -936,10 +1067,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-title',
 				'parent' => $root . '-bulk-users',
-				'title'  => __( 'Apply defaults to users', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-users' )
+							. __( 'Apply defaults to users', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
@@ -1009,10 +1141,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-roles-title',
 				'parent' => $root . '-bulk-roles',
-				'title'  => __( 'Apply defaults to users by role', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-groups' )
+							. __( 'Apply defaults to users by role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
@@ -1056,10 +1189,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-export-roles',
 				'parent' => $root . '-export',
-				'title'  => __( 'Export defaults for role', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-upload' )
+							. __( 'Export defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
@@ -1100,10 +1234,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-import-roles',
 				'parent' => $root . '-import',
-				'title'  => __( 'Import defaults for role', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-download' )
+							. __( 'Import defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );
@@ -1147,7 +1282,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					)
 				) )
 				. VAA_View_Admin_As_Admin_Bar::do_description(
-					__( 'Fully Overwrite data for each supplied role', VIEW_ADMIN_AS_DOMAIN ),
+					__( 'Fully overwrite data for each supplied role', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-import-role-defaults-desc' )
 				)
 				. VAA_View_Admin_As_Admin_Bar::do_description(
@@ -1180,7 +1315,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - '
 				)
 			);
-			foreach ( $this->get_role_defaults() as $role_key => $role ) {
+			foreach ( (array) $this->get_role_defaults() as $role_key => $role ) {
 				if ( ! empty( $role_key ) ) {
 					$role_name = $role_key;
 					if ( $this->store->get_roles( $role_key ) ) {
@@ -1204,10 +1339,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-clear-roles',
 				'parent' => $root . '-clear',
-				'title'  => __( 'Remove defaults for role', VIEW_ADMIN_AS_DOMAIN ),
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-trash' )
+							. __( 'Remove defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-bold ab-vaa-toggle',
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
 					'tabindex' => '0'
 				),
 			) );

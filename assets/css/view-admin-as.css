@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.1
- * @version 1.6.2
+ * @version 1.6.3
  * @preserve
  */
 
@@ -39,6 +39,7 @@
 #wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {top: 1px;}
 
 #wpadminbar #wp-admin-bar-vaa > div > ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
+#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary + ul.ab-sub-secondary {padding-top: 0;}
 
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
@@ -66,15 +67,19 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item .user-count {font-style: italic; line-height: 26px; font-weight: normal;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-item,
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-input .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item {height: auto; clear: both;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-input .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {display: inline-block; background: #fff; color: #555; padding: 3px; border: 0; line-height: normal; height: auto; margin: 5px 0; width: 100%; box-sizing: border-box;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {padding: 2px 3px;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item {height: auto; line-height: normal;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item textarea {width: 100%; padding: 5px; margin-top: 5px; box-sizing: border-box; line-height: normal;}
+
+#wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {position: absolute; right: 10px; margin: 5px 0;}
 
 /*#wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {border: 0; margin-top: 6px;}*/
 
@@ -101,6 +106,8 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio:first-child {margin: 0 5px 0 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio {border-radius:  100%;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label + br {line-height: 0;}
+
+#wpadminbar #wp-admin-bar-vaa .ab-item > .remove {float: right; font-size: 16px; cursor: pointer;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
 

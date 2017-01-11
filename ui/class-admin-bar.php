@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.5
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -31,14 +31,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @var    string
 	 */
 	public static $root = 'vaa';
-
-	/**
-	 * Database option key
-	 *
-	 * @since  1.5
-	 * @var    string
-	 */
-	protected $optionKey = 'vaa_view_admin_as';
 
 	/**
 	 * Group the users under their roles?
@@ -72,9 +64,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		if ( $this->is_vaa_enabled() ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
-
-		// Load data
-		//$this->set_optionData( get_option( $this->get_optionKey() ) );
 	}
 
 	/**
@@ -728,7 +717,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 * Make sure we have the latest added roles.
 		 * I can be that a plugin/theme adds a role after the initial call to store_roles (hook: 'plugins_loaded').
 		 * @see    VAA_View_Admin_As->run()
-		 * @since  1.6.x
+		 * @since  1.6.3
 		 */
 		$this->store->store_roles();
 
@@ -1002,12 +991,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @static
 	 * @param   array  $args {
 	 *     Required. An array of field arguments
-	 *     @type  string  $name         Required
-	 *     @type  string  $id           Optional (Will be generated from $name if empty)
-	 *     @type  string  $label        Optional
-	 *     @type  string  $classes      Optional
-	 *     @type  string  $element      Optional
-	 *     @type  array   $attr         Optional
+	 *     @type  string  $name     Required
+	 *     @type  string  $id       Optional (Will be generated from $name if empty)
+	 *     @type  string  $label    Optional
+	 *     @type  string  $classes  Optional
+	 *     @type  string  $element  Optional
+	 *     @type  array   $attr     Optional
 	 * }
 	 * @return  string
 	 */
@@ -1015,7 +1004,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
 		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
-		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['value'];
+		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : '';
 		$classes = ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' );
 
 		$args['attr']['id'] = $id;
@@ -1031,7 +1020,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate text input HTML for node
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x  Automatic show/hide description option
+	 * @since   1.6.3  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
@@ -1093,7 +1082,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate checkbox HTML for node
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x  Automatic show/hide description option
+	 * @since   1.6.3  Automatic show/hide description option + removable option
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
@@ -1108,6 +1097,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $classes         Optional
 	 *     @type  array   $attr            Optional
 	 *     @type  bool    $auto_showhide_desc   Optional
+	 *     @type  bool    $removable       Optional
 	 * }
 	 * @return  string
 	 */
@@ -1150,6 +1140,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		if ( ! empty( $args['label'] ) ) {
 			$html .= self::do_label( $args['label'], $id, $label_attr );
 		}
+		if ( ! empty( $args['removable'] ) ) {
+			$html .= self::do_icon( 'dashicons-dismiss remove', array( 'title' => __( 'Remove', VIEW_ADMIN_AS_DOMAIN ) ) );
+		}
 		if ( ! empty( $args['description'] ) ) {
 			$html .= self::do_description( $args['description'], $desc_attr );
 		}
@@ -1160,7 +1153,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate radio HTML for node
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x  Automatic show/hide description option
+	 * @since   1.6.3  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $data {
@@ -1241,7 +1234,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Generate selectbox HTML for node
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x  Automatic show/hide description option
+	 * @since   1.6.3  Automatic show/hide description option
 	 * @access  public
 	 * @static
 	 * @param   array  $data {
@@ -1329,18 +1322,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns icon html for WP admin bar
 	 * @since   1.6.1
+	 * @since   1.6.3   Added second $attr parameter
 	 * @static
 	 * @param   string  $icon
+	 * @param   array   $attr
 	 * @return  string
 	 */
-	public static function do_icon( $icon ) {
-		return '<span class="ab-icon dashicons ' . $icon . '" aria-hidden="true"></span>';
+	public static function do_icon( $icon, $attr = array() ) {
+		$attr['class'] = 'ab-icon dashicons ' . $icon;
+		$attr['aria-hidden'] = 'true';
+		$attr = self::parse_attr_to_html( $attr );
+		return '<span' . $attr . '></span>';
 	}
 
 	/**
 	 * Returns label html for WP admin bar
 	 * @since   1.6.1
-	 * @since   1.6.x   Added third $attr parameter
+	 * @since   1.6.3   Added third $attr parameter
 	 * @static
 	 * @param   string  $label
 	 * @param   string  $for    (optional) Add for attribute
@@ -1356,7 +1354,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Returns description html for WP admin bar
 	 * @since   1.6.1
-	 * @since   1.6.x   Added second $attr parameter
+	 * @since   1.6.3   Added second $attr parameter
 	 * @static
 	 * @param   string  $text
 	 * @param   array   $attr
@@ -1365,7 +1363,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public static function do_description( $text, $attr = array() ) {
 		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
 		$attr = self::parse_attr_to_html( $attr );
-		return '<p ' . $attr . '>' . $text . '</p>';
+		return '<p' . $attr . '>' . $text . '</p>';
 	}
 
 	/**

@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -244,11 +244,11 @@ final class VAA_View_Admin_As
 	 *                 Note that in network installations the non-admin user also needs the manage_network_users
 	 *                 capability (of not the edit_users will return false)
 	 * @since   1.5.3  Enable on network pages for superior admins
-	 * @since   1.6.x  Created this function
+	 * @since   1.6.3  Created this function
 	 * @access  private
 	 */
 	private function validate_user() {
-		if ( ( is_super_admin( $this->store->get_curUser()->ID )
+		if ( ( VAA_API::is_super_admin()
 		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
 		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
 		     && $this->store->get_curUserSession() != ''
@@ -388,8 +388,11 @@ final class VAA_View_Admin_As
 		 *
 		 * @since  1.6.2
 		 * @param  array  $options {
-		 *     @type  string  $text  The text to show
-		 *     @type  string  $url   The link
+		 *     Required array of arrays
+		 *     @type  array {
+		 *         @type  string  $text  The text to show
+		 *         @type  string  $url   The link
+		 *     }
 		 * }
 		 * @return array
 		 */

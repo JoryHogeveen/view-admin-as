@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6.2
+ * @version 1.6.3
  * @preserve
  */
 
@@ -57,8 +57,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_settings();
 		VAA_View_Admin_As.init_module_role_defaults();
 
-		// Toggle content with title
-		$(window).load(function() {
+		// Functionality that require the document to be fully loaded
+		$(window).on("load", function() {
+
+			// Toggle content with title
 			$(VAA_View_Admin_As.prefix+'.ab-vaa-toggle').each( function() {
 				var toggleContent = $(this).parent().children().not('.ab-vaa-toggle');
 				if ( ! $(this).hasClass('active') ) {
@@ -80,7 +82,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					}
 				});
 
-				// @since  1.6.1  Keyboard A11y
+				// @since  1.6.1  Keyboard a11y
 				$(this).on( 'keyup', function( e ) {
 					e.preventDefault();
 					/**
@@ -100,17 +102,18 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					}
 				});
 			});
-		});
 
-		// Toggle items on hover
-		$(VAA_View_Admin_As.prefix+'.ab-vaa-showhide[data-showhide]').each( function() {
-			$( $(this).attr('data-showhide') ).hide();
-			$(this).on('mouseenter', function() {
-				$( $(this).attr('data-showhide') ).slideDown('fast');
-			}).on('mouseleave', function() {
-				$( $(this).attr('data-showhide') ).slideUp('fast');
+			// @since  1.6.3  Toggle items on hover
+			$(VAA_View_Admin_As.prefix+'.ab-vaa-showhide[data-showhide]').each( function() {
+				$( $(this).attr('data-showhide') ).hide();
+				$(this).on('mouseenter', function() {
+					$( $(this).attr('data-showhide') ).slideDown('fast');
+				}).on('mouseleave', function() {
+					$( $(this).attr('data-showhide') ).slideUp('fast');
+				});
 			});
-		});
+
+		}); // End window.load
 
 		// Process reset
 		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.vaa-reset-item > .ab-item', function( e ) {
@@ -141,6 +144,15 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				}
 			});
 		} );
+
+		// @since  1.6.3  Removable items
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+'.ab-item > .remove', function( e ) {
+			e.preventDefault();
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			$(this).parent('.ab-item').slideUp('fast', function() { $(this).remove(); });
+		});
 	};
 
 
@@ -607,6 +619,35 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				viewAs = { role_defaults : { lock_meta_boxes : true } };
 			}
 			VAA_View_Admin_As.ajax( viewAs, false );
+		});
+
+		// @since  1.6.3  Add new meta
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-meta-add button#' + prefix + '-meta-add', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var val = $(VAA_View_Admin_As.prefix+root+'-meta-add input#' + prefix + '-meta-new').val();
+			var item = $(VAA_View_Admin_As.prefix+root+'-meta-add #' + prefix + '-meta-template').html().toString();
+			item = item.replace( /vaa_new_item/g, val.replace( / /g, '_' ) );
+			$(VAA_View_Admin_As.prefix+root+'-meta-select > .ab-item').prepend( item );
+		});
+
+		// @since  1.6.3  Update meta
+		$(document).on('click touchend', VAA_View_Admin_As.prefix+root+'-meta-apply button#' + prefix + '-meta-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var val = {};
+			$(VAA_View_Admin_As.prefix+root+'-meta-select .ab-item.vaa-item input').each( function() {
+				val[ $(this).val() ] = ( $(this).is(':checked') );
+			});
+			if ( val ) {
+				var viewAs = { role_defaults : { update_meta : val } };
+				VAA_View_Admin_As.ajax( viewAs, false );
+			}
+			return false;
 		});
 
 		// @since  1.4  Filter users
