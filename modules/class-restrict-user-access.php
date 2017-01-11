@@ -414,10 +414,15 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @access  private
 	 */
 	private function store_levels() {
-		if ( ! is_callable( array( $this->ruaApp, 'get_levels' ) ) ) {
-			return;
+		if ( is_callable( array( $this->ruaApp, 'get_levels' ) ) ) {
+			$levels = $this->ruaApp->get_levels();
+		} else {
+			$levels = get_posts( array(
+				'numberposts' => -1,
+				'post_type'   => $this->ruaTypeRestrict,
+				'post_status' => array( 'publish', 'private', 'future' )
+			) );
 		}
-		$levels = $this->ruaApp->get_levels();
 
 		if ( ! empty( $levels ) ) {
 			foreach ( $levels as $level ) {
