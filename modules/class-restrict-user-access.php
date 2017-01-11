@@ -132,7 +132,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
 			$this->vaa->view()->init_current_user_modifications();
-			add_action( 'vaa_view_admin_as_modify_current_user_caps', array( $this, 'modify_current_user_caps' ), 10, 2 );
+			add_action( 'vaa_view_admin_as_modify_current_user', array( $this, 'modify_current_user' ), 10, 2 );
 
 			add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
@@ -151,7 +151,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   WP_User  $current_user
 	 * @param   bool     $accessible
 	 */
-	public function modify_current_user_caps( $current_user, $accessible ) {
+	public function modify_current_user( $current_user, $accessible ) {
 
 		$caps = (array) $this->selectedLevelCaps;
 
