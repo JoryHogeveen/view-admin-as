@@ -94,8 +94,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		self::$_instance = $this;
 		$this->ruaApp = RUA_App::instance();
 
-		$access_cap = ( defined( RUA_App::CAPABILITY ) ) ? RUA_App::CAPABILITY : 'edit_users';
-		$this->ruaMetaPrefix = ( defined( RUA_App::META_PREFIX ) ) ? RUA_App::META_PREFIX : '_ca_';
+		$access_cap            = ( defined( RUA_App::CAPABILITY ) ) ? RUA_App::CAPABILITY : 'edit_users';
+		$this->ruaMetaPrefix   = ( defined( RUA_App::META_PREFIX ) ) ? RUA_App::META_PREFIX : '_ca_';
 		$this->ruaTypeRestrict = ( defined( RUA_App::TYPE_RESTRICT ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
 
 		if ( $vaa->is_enabled() && current_user_can( $access_cap ) && ! is_network_admin() ) {
@@ -119,6 +119,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Initialize the RUA module
+	 *
 	 * @since   1.7
 	 * @access  public
 	 */
@@ -170,6 +171,30 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			$current_user->allcaps = array_merge( $current_user->caps, $caps );
 		}
 
+	}
+
+	/**
+	 * Filter the return metadata for the RUA levels
+	 *
+	 * @since   1.7
+	 * @param   null    $null
+	 * @param   int     $user_id
+	 * @param   string  $meta_key
+	 * @return  array
+	 */
+	public function get_user_metadata( $null, $user_id, $meta_key ) {
+		if ( $user_id == $this->get_curUser()->ID
+		     && $this->get_levels( $this->selectedLevel )
+		) {
+			if ( $meta_key == $this->ruaMetaPrefix . 'level' ) {
+				return array( $this->selectedLevel );
+			}
+			if ( $meta_key == $this->ruaMetaPrefix . 'level_' . $this->selectedLevel ) {
+				// Return current time + 120 seconds to make sure this level won't be set as expired
+				return array( time() + 120 );
+			}
+		}
+		return $null;
 	}
 
 	/**
@@ -225,31 +250,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Filter the return metadata for the RUA levels
-	 *
-	 * @since   1.7
-	 * @param   null    $null
-	 * @param   int     $user_id
-	 * @param   string  $meta_key
-	 * @return  array
-	 */
-	public function get_user_metadata( $null, $user_id, $meta_key ) {
-		if ( $user_id == $this->get_curUser()->ID
-		     && $this->get_levels( $this->selectedLevel )
-		) {
-			if ( $meta_key == $this->ruaMetaPrefix . 'level' ) {
-				return array( $this->selectedLevel );
-			}
-			if ( $meta_key == $this->ruaMetaPrefix . 'level_' . $this->selectedLevel ) {
-				// Return current time + 120 seconds to make sure this level won't be set as expired
-				return array( time() + 120 );
-			}
-		}
-		return $null;
-	}
-
-	/**
 	 * Change the VAA admin bar menu title
+	 *
 	 * @since   1.7
 	 * @access  public
 	 * @param   string  $title
@@ -273,6 +275,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Add the RUA admin bar items
+	 *
 	 * @since   1.7
 	 * @access  public
 	 * @param   WP_Admin_Bar  $admin_bar
@@ -387,6 +390,14 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar );
 	}
 
+	/**
+	 * Add levels under roles
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   $admin_bar
+	 * @param   $root
+	 */
 	public function admin_bar_roles_after( $admin_bar, $root ) {
 
 		if ( ! $this->store->get_roles() ) {
@@ -410,6 +421,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Store the available groups
+	 *
 	 * @since   1.7
 	 * @access  private
 	 */
