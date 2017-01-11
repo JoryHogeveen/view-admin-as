@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -56,27 +56,42 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * Filter function to add view-as links on user rows in users.php
 	 *
 	 * @since   1.6
+	 * @since   1.6.3   Check whether to place link + reset link for current user
 	 * @access  public
 	 * @param   array   $actions
 	 * @param   object  $user  WP_User
 	 * @return  array
 	 */
 	public function filter_user_row_actions( $actions, $user ) {
-		$data = array( 'user' => $user->ID );
 
 		if ( is_network_admin() ) {
 			$link = network_admin_url();
 		} else {
 			$link = admin_url();
 		}
-		$params = array(
-			'action'        => 'view_admin_as',
-			'view_admin_as' => htmlentities( json_encode( $data ) ),
-			'_vaa_nonce'    => $this->store->get_nonce( true )
-		);
-		$link .= '?' . http_build_query( $params );
 
-		$actions['vaa_view'] = '<a href="' . $link . '">' . __( 'View as', 'view-admin-as' ) . '</a>';
+		if ( $user->ID === $this->get_curUser()->ID ) {
+			// Add reset link if it is the current user and a view is selected
+			if ( $this->get_viewAs() ) {
+				$link = VAA_API::get_reset_link( $link );
+			} else {
+				$link = false;
+			}
+		}
+		elseif ( $this->get_userids( $user->ID ) ) {
+			$params = array(
+				'action'        => 'view_admin_as',
+				'view_admin_as' => htmlentities( json_encode( array( 'user' => $user->ID ) ) ),
+				'_vaa_nonce'    => $this->store->get_nonce( true )
+			);
+			$link .= '?' . http_build_query( $params );
+		} else {
+			$link = false;
+		}
+
+		if ( $link ) {
+			$actions['vaa_view'] = '<a href="' . $link . '">' . __( 'View as', VIEW_ADMIN_AS_DOMAIN ) . '</a>';
+		}
 		return $actions;
 	}
 
@@ -89,7 +104,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	public function action_wp_meta() {
 
 		if ( ! is_admin_bar_showing() && $this->store->get_viewAs() ) {
-			$link = __( 'View Admin As', 'view-admin-as' ) . ': ' . __( 'Reset view', 'view-admin-as' );
+			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
 			$url = VAA_API::get_reset_link();
 			echo '<li id="vaa_reset_view"><a href="' . esc_url( $url ) . '">' . esc_html( $link ) . '</a></li>';
 		}
@@ -123,50 +138,50 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 		if ( empty( $this->links ) ) {
 			$this->links = array(
 				'support' => array(
-					'title' => __( 'Support', 'view-admin-as' ),
-					'description' => __( 'Need support?', 'view-admin-as' ),
+					'title' => __( 'Support', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Need support?', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-testimonial',
 					'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
 				),
 				'slack' => array(
-					'title' => __( 'Slack', 'view-admin-as' ),
-					'description' => __( 'Quick help via Slack', 'view-admin-as' ),
+					'title' => __( 'Slack', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Quick help via Slack', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-format-chat',
 					'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
 				),
 				'review' => array(
-					'title' => __( 'Review', 'view-admin-as' ),
-					'description' => __( 'Give 5 stars on WordPress.org!', 'view-admin-as' ),
+					'title' => __( 'Review', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Give 5 stars on WordPress.org!', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-star-filled',
 					'url'   => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
 				),
 				'translate' => array(
-					'title' => __( 'Translate', 'view-admin-as' ),
-					'description' => __( 'Help translating this plugin!', 'view-admin-as' ),
+					'title' => __( 'Translate', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Help translating this plugin!', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-translation',
 					'url'   => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
 				),
 				'issue' => array(
-					'title' => __( 'Report issue', 'view-admin-as' ),
-					'description' => __( 'Have ideas or a bug report?', 'view-admin-as' ),
+					'title' => __( 'Report issue', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Have ideas or a bug report?', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-lightbulb',
 					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/issues',
 				),
 				'docs' => array(
-					'title' => __( 'Documentation', 'view-admin-as' ),
-					'description' => __( 'Documentation', 'view-admin-as' ),
+					'title' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-book-alt',
 					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
 				),
 				'github' => array(
-					'title' => __( 'GitHub', 'view-admin-as' ),
-					'description' => __( 'Follow development on GitHub', 'view-admin-as' ),
+					'title' => __( 'GitHub', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Follow development on GitHub', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-editor-code',
 					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
 				),
 				'donate' => array(
-					'title' => __( 'Donate', 'view-admin-as' ),
-					'description' => __( 'Buy me a coffee!', 'view-admin-as' ),
+					'title' => __( 'Donate', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Buy me a coffee!', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-smiley',
 					'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
 				)

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 3.5
 Tested up to: 4.7
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -101,7 +101,7 @@ If the amount of users is more than 10 you can find them under their roles or yo
 Only the capabilities that are allowed for your user are shown.
 You can deselect the capabilities by clicking on them. When you would like to see the results just click the apply button on the upper left.
 
-*Please note that as an administrator you don't have all capabilities listed by default. This is because WP overrules some capability checks for super admins. **This does not happen when you are in a view!***
+*Please note that as an administrator you don't have all capabilities marked as enabled by default. This is because WP overrules some capability checks for super admins. **This does not happen when you are in a view!***
 
 You can also filter the roles by name or select/deselect all capabilities.
 Note: When you select/deselect capabilities while you've filtered them only the capabilities shown by your filter are affected!
@@ -116,14 +116,20 @@ And if even that doesn't work just add "?reset-view" in the address bar and you'
 Example: http://www.your.domain/wp-admin/?reset-view
 
 = 4. What data is stored for role defaults and how can I change this? =
-Please see the `view_admin_as_role_defaults_meta` filter at [Actions & Filters](https://viewadminas.wordpress.com/documentation/actions-filters/)!
+Please see the `view_admin_as_role_defaults_meta` filter at [Actions & Filters](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)!
+
+The meta manager (since 1.6.3) provides a UI to edit the meta keys.
+Please follow these guidelines:
+- `%%` stands for a wildcard which could be anything.
+- Avoid special characters. Spaces, quotes etc. are forbidden.
+- Default meta keys cannot be removed, only disabled.
 
 = 5. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins?
 If so, these are filtered. Viewing Admins can only be done when you are a Super Admin within a network installation.
 
 Why? To protect your fellow admin! You have no power over equal users..
-*Unless you are a superior admin... [Read more](https://viewadminas.wordpress.com/documentation/actions-filters/#view_admin_as_superior_admins "Read more")*
+*Unless you are a superior admin... [Read more](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters#view_admin_as_superior_admins)*
 
 If this is not the case, please make sure you aren't overlooking something.
 If that is not the case, please contact me! See next item.
@@ -161,6 +167,15 @@ This plugin is also useful to support your clients and/or users. For example; ma
 
 == Changelog ==
 
+= 1.6.3 =
+
+*	Feature: Meta sync manager UI for the role defaults module [#28](https://github.com/JoryHogeveen/view-admin-as/issues/28)
+*	Feature: Multiple import methods for the role defaults module [#27](https://github.com/JoryHogeveen/view-admin-as/issues/27)
+*	Enhancement: Also update the current user object's capabilities and roles to improve support for other plugins [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
+*	Other minor improvements
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/29)
+
 = 1.6.2 =
 
 *	Feature: A new view! You can now see your site as an unregistered visitor (no need to switch browsers) [#14](https://github.com/JoryHogeveen/view-admin-as/issues/14)
@@ -190,7 +205,7 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 *	Feature: Lock meta boxes [#9](https://github.com/JoryHogeveen/view-admin-as/issues/9)
 *	Feature: View as links in user management page [#12](https://github.com/JoryHogeveen/view-admin-as/issues/12)
 *	Enhancement: Better admin bar handling when set to hidden by user [#4](https://github.com/JoryHogeveen/view-admin-as/issues/4)
-	*	Also adds an option to hide/show our toolbar when now view is selected and the admin bar is not shown.
+	*	Also adds an option to hide/show our toolbar when no view is selected and the admin bar is not shown.
 *	Enhancement: Better handling for permission errors [#10](https://github.com/JoryHogeveen/view-admin-as/issues/10)
 *	Compatibility: Show our custom capabilities on role manage plugins like Members
 *	Compatibility: PHP 5.2 (WP minimum)
@@ -201,16 +216,15 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 
 = Older versions =
 
-Complete changelog: [viewadminas.wordpress.com/changelog/](https://viewadminas.wordpress.com/changelog/ "viewadminas.wordpress.com/changelog/")
+[Complete changelog](https://github.com/JoryHogeveen/view-admin-as/wiki/Changelog)
 
 == Other Notes ==
 
 You can find me here:
 
-*	[Keraweb](http://www.keraweb.nl/ "Keraweb")
-*	[GitHub](https://github.com/JoryHogeveen/view-admin-as/ "GitHub")
-*	[Plugin page](https://viewadminas.wordpress.com/ "Plugin page")
-*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")
+*	[Keraweb](http://www.keraweb.nl/)
+*	[GitHub](https://github.com/JoryHogeveen/view-admin-as/)
+*	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen)
 
 = Translations =
 
@@ -218,11 +232,11 @@ Please help translating this plugin on [translate.wordpress.org](https://transla
 
 = Actions and Filters =
 
-[Click here for documentation](https://viewadminas.wordpress.com/documentation/actions-filters/ "Click here for documentation")
+[Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)
 
 = Plugin capabilities =
 
-[Click here for documentation](https://viewadminas.wordpress.com/documentation/capabilities/ "Click here for documentation")
+[Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Custom-capabilities)
 
 = Ideas? =
 

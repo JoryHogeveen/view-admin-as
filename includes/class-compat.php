@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -116,7 +116,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	public function add_capabilities( $caps = array() ) {
 
 		// Allow VAA modules to add their capabilities
-		$vaa_caps = apply_filters( '_vaa_add_capabilities', array( 'view_admin_as' ) );
+		$vaa_caps = apply_filters( 'view_admin_as_add_capabilities', array( 'view_admin_as' ) );
 		foreach ( $vaa_caps as $cap ) {
 			$caps[ $cap ] = $cap;
 		}
@@ -161,7 +161,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 			// Register the vaa group.
 			members_register_cap_group( 'view_admin_as',
 				array(
-					'label'      => esc_html__( 'View Admin As', 'view-admin-as' ),
+					'label'      => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 					'caps'       => $this->add_capabilities(),
 					'icon'       => 'dashicons-visibility',
 					'diff_added' => true

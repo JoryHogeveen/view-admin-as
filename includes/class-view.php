@@ -7,7 +7,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.6
- * @version 1.6.2
+ * @version 1.6.3
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -97,7 +97,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$this->store->set_viewAs( $this->get_view() );
 
 		// Short circuit needed for visitor view (BEFORE the current user is set)
-		if ( defined('DOING_AJAX') && DOING_AJAX && 'view_admin_as' == $_POST['action'] ) {
+		if ( defined('DOING_AJAX') && DOING_AJAX && ! empty( $_POST['action'] ) && 'view_admin_as' == $_POST['action'] ) {
 			$this->ajax_view_admin_as();
 		}
 
@@ -106,51 +106,215 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 
 		if ( $this->store->get_viewAs() ) {
+			$this->do_view();
+		}
+	}
 
-			// Change current user object so changes can be made on various screen settings
-			// wp_set_current_user() returns the new user object
-			if ( $this->store->get_viewAs('user') ) {
+	/**
+	 * Apply view data
+	 *
+	 * @since  1.6.3  Put logic in it's own function
+	 */
+	private function do_view() {
 
-				// @since  1.6.1  Force own locale on view
-				if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
-					add_action( 'init', array( $this, 'freeze_locale' ), 0 );
-				}
+		/**
+		 * USER & VISITOR
+		 * Current user object views (switches current user)
+		 *
+		 * @since  0.1    User view
+		 * @since  1.6.2  Visitor view
+		 */
+		if ( $this->store->get_viewAs('user') || $this->store->get_viewAs('visitor') ) {
 
-				$this->store->set_selectedUser( wp_set_current_user( $this->store->get_viewAs('user') ) );
+			/**
+			 * Change current user object so changes can be made on various screen settings
+			 * wp_set_current_user() returns the new user object
+			 *
+			 * If it is a visitor view it will convert the false return from 'user' to 0
+			 */
+			$this->store->set_selectedUser( wp_set_current_user( (int) $this->store->get_viewAs('user') ) );
 
-				// @since  1.6.2  Set the caps for this view
-				if ( is_object( $this->store->get_selectedUser() ) ) {
-					$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
-				}
+			// @since  1.6.2  Set the caps for this view (user view)
+			if ( isset( $this->store->get_selectedUser()->allcaps ) ) {
+				$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
 			}
 
-			if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
-
-				// @since  1.6.2  Set the caps for this view
-				if ( $this->store->get_viewAs('role')
-				     && is_object( $this->store->get_roles( $this->store->get_viewAs('role') ) )
-				) {
-					// Role view
-					$this->store->set_selectedCaps(
-						$this->store->get_roles( $this->store->get_viewAs('role') )->capabilities
-					);
-				} elseif ( $this->store->get_viewAs('caps') ) {
-					// Caps view
-					$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
-				}
-
-				// Change the capabilities (map_meta_cap is better for compatibility with network admins)
-				add_filter( 'map_meta_cap', array( $this, 'map_meta_cap' ), 999999999, 4 );
-			}
-
-			// @since  1.6.2  Check for the visitor view
-			if ( $this->store->get_viewAs('visitor') ) {
-
-				// Set the current user to 0/false if viewing as a site visitor
-				$this->store->set_selectedUser( wp_set_current_user( 0 ) );
+			// @since  1.6.1  Force own locale on view
+			if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
+				add_action( 'init', array( $this, 'freeze_locale' ), 0 );
 			}
 		}
 
+		/**
+		 * ROLES & CAPS
+		 * Capability based views (modifies current user)
+		 *
+		 * @since  0.1  Role view
+		 * @since  1.3  Caps view
+		 */
+		if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
+			$this->init_current_user_modifications();
+		}
+
+		/**
+		 * View data is set, apply the view
+		 * This hook can be used by other modules to enable a view
+		 *
+		 * Temporary modifications to the current user are set on priority 99
+		 * This functionality has a separate action: `vaa_view_admin_as_modify_current_user`
+		 *
+		 * @since  1.6.3
+		 * @param  array
+		 */
+		do_action( 'vaa_view_admin_as_do_view', $this->store->get_viewAs() );
+	}
+
+	/**
+	 * Adds the actions and filters to modify the current user object
+	 * @since  1.6.3
+	 */
+	public function init_current_user_modifications() {
+		static $done;
+		if ( $done ) return;
+
+		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_current_user' ), 99 );
+
+		/**
+		 * Make sure the $current_user view data isn't overwritten again by switch_blog functions
+		 * @see  This filter is documented in wp-includes/ms-blogs.php
+		 * @since  1.6.3
+		 */
+		add_action( 'switch_blog', array( $this, 'modify_current_user' ) );
+
+		/**
+		 * Prevent some meta updates for the current user while in modification to the current user are active
+		 * @since  1.6.3
+		 */
+		add_filter( 'update_user_metadata' , array( $this, 'prevent_update_user_metadata' ), 10, 3 );
+
+		/**
+		 * Change the capabilities (map_meta_cap is better for compatibility with network admins)
+		 * @since  0.1
+		 */
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
+
+		// @todo maybe also use the user_has_cap filter?
+		//add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
+
+		$done = true;
+	}
+
+	/**
+	 * Update the current user's WP_User instance with the current view capabilities
+	 *
+	 * @since   1.6.3
+	 */
+	public function modify_current_user() {
+
+		// Can be the current or selected WP_User object (depending on the user view)
+		$current_user = wp_get_current_user();
+
+		/**
+		 * Validate if the WP_User properties are still accessible
+		 * Currently everything is public but this could possibly change
+		 * @since  1.6.3
+		 */
+		$accessible = false;
+		$public_props = get_object_vars( $current_user );
+		if (    array_key_exists( 'caps', $public_props )
+		     && array_key_exists( 'allcaps', $public_props )
+			 && is_callable( array( $current_user, 'get_role_caps' ) )
+		) {
+			$accessible = true;
+		}
+
+		/**
+		 * Role view
+		 * @since  0.1
+		 */
+		if ( $this->store->get_roles( $this->store->get_viewAs('role') ) instanceof WP_Role ) {
+			if ( ! $accessible ) {
+				// @since  1.6.2  Set the caps for this view here instead of in the mapper function
+				$this->store->set_selectedCaps(
+					$this->store->get_roles( $this->store->get_viewAs('role') )->capabilities
+				);
+			} else {
+				// @since  1.6.3  Set the current user's role to the current view
+				$current_user->caps = array( $this->store->get_viewAs('role') => 1 );
+				// Sets the `allcaps` and `roles` properties correct
+				$current_user->get_role_caps();
+			}
+		}
+
+		/**
+		 * Caps view
+		 * @since  1.3
+		 */
+		if ( is_array( $this->store->get_viewAs('caps') ) ) {
+			if ( ! $accessible ) {
+				$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
+			} else {
+				// @since  1.6.3  Set the current user's caps (roles) to the current view
+				$current_user->allcaps = array_merge(
+					(array) array_filter( $this->store->get_viewAs('caps') ),
+					(array) $current_user->caps // Contains the current user roles
+				);
+			}
+		}
+
+		if ( $accessible ) {
+			$this->store->set_selectedCaps( $current_user->allcaps );
+		}
+
+		/**
+		 * Allow other modules to hook after the initial changes to the current user
+		 * @since  1.6.3
+		 * @param  WP_User  $current_user  The current user object
+		 * @param  bool     $accessible    Are the needed WP_User properties and methods accessible?
+		 */
+		do_action( 'vaa_view_admin_as_modify_current_user', $current_user, $accessible );
+	}
+
+	/**
+	 * Prevent some updates to the current user like roles and capabilities
+	 * to prevent problems when making changes within a view
+	 *
+	 * IMPORTANT! This filter should ONLY be used when a view is selected!
+	 *
+	 * @since   1.6.3
+	 * @access  public
+	 * @see     init_current_user_modifications()
+	 *
+	 * @see     'update_user_metadata' filter
+	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
+	 * @link    http://hookr.io/filters/update_user_metadata/
+	 *
+	 * @param   null    $null
+	 * @param   int     $object_id
+	 * @param   string  $meta_key
+	 * @return  mixed
+	 */
+	public function prevent_update_user_metadata( $null, $object_id, $meta_key ) {
+		global $wpdb;
+		$current_user = $this->store->get_curUser();
+
+		// Check if the object being updated is the current user
+		if ( $current_user->ID == $object_id ) {
+
+			// Capabilities meta key check
+			if ( empty( $current_user->cap_key ) ) {
+				$current_user->cap_key = $wpdb->get_blog_prefix() . 'capabilities';
+			}
+
+			// Do not update the current user capabilities or user level while in a view
+			if ( in_array( $meta_key, array(
+				$current_user->cap_key,
+				$wpdb->get_blog_prefix() . 'user_level'
+			) ) ) {
+				return false;
+			}
+		}
+		return $null;
 	}
 
 	/**
@@ -161,28 +325,51 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5     Changed function name to map_meta_cap (was change_caps)
 	 * @since   1.6     Moved to this class from main class
 	 * @since   1.6.2   Use logic from current_view_can()
+	 * @since   1.6.3   Prefix function name with filter_
 	 * @access  public
 	 *
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
 	 * @param   string  $cap      The capability that was requested
-	 * @param   int     $user_id  The ID of the user (not used)
+	 * @param   int     $user_id  The ID of the user
 	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used)
 	 * @return  array   $caps
 	 */
-	public function map_meta_cap( $caps, $cap, $user_id, $args ) {
+	public function filter_map_meta_cap( $caps, $cap, $user_id, $args ) {
+
+		if ( $this->store->get_curUser()->ID != $user_id ) {
+			return $caps;
+		}
 
 		$filter_caps = (array) $this->store->get_selectedCaps();
 
 		foreach ( (array) $caps as $actual_cap ) {
 			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
 				// Regular
-				$caps[ $cap ] = '';
+				$caps[ $cap ] = 0;
 				// Network admins
 				$caps[] = 'do_not_allow';
 			}
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Overwrite the user's capabilities
+	 *
+	 * @since   1.6.3
+	 * @param   array    $allcaps
+	 * @param   array    $caps
+	 * @param   array    $args
+	 * @param   WP_User  $user     (WP 3.7+)
+	 * @return  array
+	 */
+	public function filter_user_has_cap( $allcaps, $caps, $args, $user = null ) {
+		$user_id = ( $user ) ? $user->ID : $args[1];
+		if ( ! is_numeric( $user_id ) || $user_id != $this->get_curUser()->ID ) {
+			return $allcaps;
+		}
+		return $this->get_selectedCaps();
 	}
 
 	/**
@@ -234,7 +421,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		    || ! isset( $_POST['_vaa_nonce'] )
 		    || ! wp_verify_nonce( $_POST['_vaa_nonce'], $this->store->get_nonce() )
 		) {
-			wp_send_json_error( __('Cheatin uh?', 'view-admin-as') );
+			wp_send_json_error( __( 'Cheatin uh?', VIEW_ADMIN_AS_DOMAIN ) );
 			die();
 		}
 
@@ -244,13 +431,16 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$view_as = $this->validate_view_as_data( json_decode( stripslashes( $_POST['view_admin_as'] ), true ) );
 
 		// Stop selecting the same view! :)
-		if (   ( isset( $view_as['role'] ) && ( $this->store->get_viewAs('role') && $this->store->get_viewAs('role') == $view_as['role'] ) )
-		    || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs('user') && $this->store->get_viewAs('user') == $view_as['user'] ) )
-		    || ( isset( $view_as['visitor'] ) && ( $this->store->get_viewAs('visitor') ) )
+		if ( 1 === count( $this->get_viewAs() )
+		    && (
+		       ( isset( $view_as['role'] ) && ( $this->get_viewAs('role') && $this->get_viewAs('role') == $view_as['role'] ) )
+		    || ( isset( $view_as['user'] ) && ( $this->get_viewAs('user') && $this->get_viewAs('user') == $view_as['user'] ) )
+		    || ( isset( $view_as['visitor'] ) && ( $this->get_viewAs('visitor') ) )
+		    )
 		) {
 			wp_send_json_error( array(
 				'type' => 'error',
-				'content' => esc_html__('This view is already selected!', 'view-admin-as')
+				'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN )
 			) );
 		}
 
@@ -261,7 +451,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		elseif ( isset( $view_as['caps'] ) ) {
 			$db_view = $this->get_view();
 			// Check if the selected caps are equal to the default caps
-			if ( array_filter( $this->store->get_caps() ) == array_filter( $view_as['caps'] ) ) {
+			if ( array_filter( $this->store->get_curUser()->allcaps ) == array_filter( $view_as['caps'] ) ) {
 				// The selected caps are equal to the current user default caps so we can reset the view
 				$this->reset_view();
 				if ( isset( $db_view['caps'] ) ) {
@@ -271,10 +461,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					// The user was in his default view, notify the user
 					wp_send_json_error( array(
 						'type' => 'error',
-						'content' => esc_html__('These are your default capabilities!', 'view-admin-as')
+						'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN )
 					) );
 				}
 			} else {
+				// Reset the stored caps
+				$this->store->set_caps( array() );
 				// Store the selected caps
 				foreach ( $view_as['caps'] as $key => $value ) {
 					$this->store->set_caps( (int) $value, (string) $key, true );
@@ -284,7 +476,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				) {
 					wp_send_json_error( array(
 						'type' => 'error',
-						'content' => esc_html__('This view is already selected!', 'view-admin-as')
+						'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN )
 					) );
 				} else {
 					$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
@@ -323,7 +515,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		} else {
 			wp_send_json_error( array(
 				'type' => 'error',
-				'content' => esc_html__('Something went wrong, please try again.', 'view-admin-as')
+				'content' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN )
 			) );
 		}
 
@@ -559,6 +751,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			// Check for keys that are not allowed
 			if ( ! in_array( $key, $allowed_keys ) ) {
 				unset( $view_as[ $key ] );
+				continue;
 			}
 			switch ( $key ) {
 
