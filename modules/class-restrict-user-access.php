@@ -473,8 +473,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		$caps = array();
 		foreach ( $levels as $level ) {
-			// @todo Make error proof (try > catch?) + add notice on problems
-			$level_caps = $this->ruaApp->level_manager->metadata()->get("caps")->get_data( $level );
+			// Just use the regular get_post_meta to prevent any errors in future or old versions of RUA
+			// $level_caps = $this->ruaApp->level_manager->metadata()->get( "caps" )->get_data( $level );
+			$level_caps = get_post_meta( $level, $this->ruaMetaPrefix . 'caps', true );
 			if( ! empty( $level_caps ) && is_array( $level_caps ) ) {
 				foreach ( $level_caps as $key => $level_cap ) {
 					$caps[$key] = !!$level_cap;
