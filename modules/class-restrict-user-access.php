@@ -172,7 +172,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			// Merge the caps with the current user caps, overwrite existing
 			$current_user->allcaps = array_merge( $current_user->caps, $caps );
 		}
-
 	}
 
 	/**
@@ -260,10 +259,16 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @return  string
 	 */
 	public function vaa_viewing_as_title( $title ) {
+		$view_label = 'Access Level';
 		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
+		if ( ! empty( $this->levelPostType->labels->singular_name ) ) {
+			$view_label = $this->levelPostType->labels->singular_name;
+		} elseif ( isset( $this->levelPostType->labels->name ) ) {
+			$view_label = $this->levelPostType->labels->name;
+		}
 
 		if ( $this->get_levels( $this->selectedLevel ) ) {
-			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->levelPostType->labels->singular_name ) . ': ';
+			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $view_label ) . ': ';
 			$title .= $this->get_levels( $this->selectedLevel )->post_title;
 			// Is there also a role selected?
 			if ( $this->get_viewAs('role') && $this->get_roles( $this->get_viewAs('role') ) ) {
@@ -286,7 +291,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   mixed         $role_obj
 	 */
 	public function admin_bar_menu( $admin_bar, $root, $role = false, $role_obj = null ) {
+		$view_name = 'Access Levels';
 		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
+		if ( isset( $this->levelPostType->labels->name ) ) {
+			$view_name = $this->levelPostType->labels->name;
+		}
 
 		if ( ! $this->get_levels() || ! count( $this->get_levels() ) ) {
 			return;
@@ -294,47 +303,39 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		if ( ! $role ) {
 
-			$admin_bar->add_group(
-				array(
-					'id'     => $root . '-rua-levels',
-					'parent' => $root,
-					'meta'   => array(
-						'class' => 'ab-sub-secondary',
-					),
-				)
-			);
+			$admin_bar->add_group( array(
+				'id'     => $root . '-rua-levels',
+				'parent' => $root,
+				'meta'   => array(
+					'class' => 'ab-sub-secondary',
+				),
+			) );
 
 			$root = $root . '-rua-levels';
 
-			$admin_bar->add_node(
-				array(
-					'id'     => $root . '-title',
-					'parent' => $root,
-					'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) .
-					            $this->levelPostType->labels->name,
-					'href'   => false,
-					'meta'   => array(
-						'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
-						'tabindex' => '0'
-					),
-				)
-			);
+			$admin_bar->add_node( array(
+				'id'     => $root . '-title',
+				'parent' => $root,
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) . $view_name,
+				'href'   => false,
+				'meta'   => array(
+					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+					'tabindex' => '0'
+				),
+			) );
 
 		} else {
 
-			$admin_bar->add_node(
-				array(
-					'id'     => $root . '-rua-levels',
-					'parent' => $root,
-					'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) .
-					            $this->levelPostType->labels->name,
-					'href'   => false,
-					'meta'   => array(
-						'class'    => 'vaa-has-icon',
-						'tabindex' => '0'
-					),
-				)
-			);
+			$admin_bar->add_node( array(
+				'id'     => $root . '-rua-levels',
+				'parent' => $root,
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) . $view_name,
+				'href'   => false,
+				'meta'   => array(
+					'class'    => 'vaa-has-icon',
+					'tabindex' => '0'
+				),
+			) );
 
 			$root = $root . '-rua-levels';
 
@@ -418,7 +419,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			$this->admin_bar_menu( $admin_bar, $role_root, $role_key, $role );
 
 		}
-
 	}
 
 	/**
