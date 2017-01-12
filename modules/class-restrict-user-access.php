@@ -14,6 +14,8 @@
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
+if ( ! class_exists( 'VAA_View_Admin_As_RUA' ) ) {
+
 add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_RUA', 'get_instance' ) );
 
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
@@ -520,3 +522,5 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 } // end class
+
+} // end if class_exists
