@@ -187,6 +187,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		if ( $user_id == $this->get_curUser()->ID
 		     && $this->get_levels( $this->selectedLevel )
 		) {
+			// @todo Check for future API updates in RUA plugin
 			if ( $meta_key == $this->ruaMetaPrefix . 'level' ) {
 				return array( $this->selectedLevel );
 			}
@@ -431,6 +432,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		if ( is_callable( array( $this->ruaApp, 'get_levels' ) ) ) {
 			$levels = $this->ruaApp->get_levels();
 		} else {
+			// Fallback @todo Keep this updated on changes in RUA plugin
 			$levels = get_posts( array(
 				'numberposts' => -1,
 				'post_type'   => $this->ruaTypeRestrict,
@@ -474,7 +476,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 */
 	public function get_level_caps( $level_id, $hierarchical = true ) {
 
-		// @todo See https://github.com/intoxstudio/restrict-user-access/pull/8
+		// @see https://github.com/intoxstudio/restrict-user-access/pull/8
 		if ( function_exists('rua_get_level_caps') ) {
 			return (array) rua_get_level_caps( $level_id, $hierarchical );
 		}
@@ -488,6 +490,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		$caps = array();
 		foreach ( $levels as $level ) {
 			// Just use the regular get_post_meta to prevent any errors in future or old versions of RUA
+			// @todo Check for future API updates in RUA plugin
 			// $level_caps = $this->ruaApp->level_manager->metadata()->get( "caps" )->get_data( $level );
 			$level_caps = get_post_meta( $level, $this->ruaMetaPrefix . 'caps', true );
 			if( ! empty( $level_caps ) && is_array( $level_caps ) ) {
