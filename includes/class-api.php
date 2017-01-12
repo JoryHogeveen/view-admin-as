@@ -242,7 +242,7 @@ final class VAA_API
 
 			// Notify user if in debug mode
 			if ( defined('WP_DEBUG') && true === WP_DEBUG ) {
-				trigger_error('View Admin As: Key does not exist', E_USER_NOTICE);
+				trigger_error( 'View Admin As: Key ' . (string) $key . ' does not exist', E_USER_NOTICE );
 				if ( ! defined('WP_DEBUG_DISPLAY') || ( defined('WP_DEBUG_DISPLAY') && true === WP_DEBUG_DISPLAY ) ) {
 					debug_print_backtrace();
 				}
