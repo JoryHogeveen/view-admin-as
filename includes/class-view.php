@@ -113,7 +113,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Apply view data
 	 *
-	 * @since  1.6.3  Put logic in it's own function
+	 * @since   1.6.3    Put logic in it's own function
+	 * @access  private
+	 * @return  void
 	 */
 	private function do_view() {
 
@@ -171,7 +173,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Adds the actions and filters to modify the current user object
-	 * @since  1.6.3
+	 * Can only be run once
+	 *
+	 * @since   1.6.3
+	 * @access  public
+	 * @return  void
 	 */
 	public function init_current_user_modifications() {
 		static $done;
@@ -190,19 +196,19 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * Prevent some meta updates for the current user while in modification to the current user are active
 		 * @since  1.6.3
 		 */
-		add_filter( 'update_user_metadata' , array( $this, 'prevent_update_user_metadata' ), 10, 3 );
+		add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 10, 3 );
 
 		/**
 		 * Get capabilities and user level from current user view object instead of database
 		 * @since  1.6.x
 		 */
-		add_filter( 'get_user_metadata' , array( $this, 'overrule_get_user_metadata' ), 10, 3 );
+		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 10, 3 );
 
 		/**
 		 * Change the capabilities (map_meta_cap is better for compatibility with network admins)
 		 * @since  0.1
 		 */
-		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 3 ); //4
 
 		// @todo maybe also use the user_has_cap filter?
 		//add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
@@ -214,6 +220,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * Update the current user's WP_User instance with the current view capabilities
 	 *
 	 * @since   1.6.3
+	 * @access  public
+	 * @return  void
 	 */
 	public function modify_current_user() {
 
@@ -301,7 +309,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @param   string  $meta_key
 	 * @return  mixed
 	 */
-	public function prevent_update_user_metadata( $null, $object_id, $meta_key ) {
+	public function filter_prevent_update_user_metadata( $null, $object_id, $meta_key ) {
 		global $wpdb;
 		$current_user = $this->store->get_curUser();
 
@@ -343,7 +351,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @param   string  $meta_key
 	 * @return  mixed
 	 */
-	public function overrule_get_user_metadata( $null, $object_id, $meta_key ) {
+	public function filter_overrule_get_user_metadata( $null, $object_id, $meta_key ) {
 		global $wpdb;
 		$current_user = $this->store->get_curUser();
 
@@ -382,10 +390,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
 	 * @param   string  $cap      The capability that was requested
 	 * @param   int     $user_id  The ID of the user
-	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used)
+	 * param   array   $args     Adds the context to the cap. Typically the object ID (not used)
 	 * @return  array   $caps
 	 */
-	public function filter_map_meta_cap( $caps, $cap, $user_id, $args ) {
+	public function filter_map_meta_cap( $caps, $cap, $user_id ) {
 
 		if ( $this->store->get_curUser()->ID != $user_id ) {
 			return $caps;
@@ -410,7 +418,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.6.3
 	 * @param   array    $allcaps
-	 * @param   array    $caps
+	 * @param   array    $caps     (not used)
 	 * @param   array    $args
 	 * @param   WP_User  $user     (WP 3.7+)
 	 * @return  array
