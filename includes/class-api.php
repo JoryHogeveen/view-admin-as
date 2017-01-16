@@ -150,7 +150,7 @@ final class VAA_API
 			$reset = 'reset-all-views';
 		}
 
-		return $url . ( ( isset ( $url_comp['query'] ) ) ? '&' : '?' ) . $reset;
+		return esc_url( $url . ( ( isset ( $url_comp['query'] ) ) ? '&' : '?' ) . $reset, array( 'http', 'https' ) );
 	}
 
 	/**
@@ -189,7 +189,7 @@ final class VAA_API
 			$url = implode( '?', $url );
 		}
 
-		return $url;
+		return esc_url( $url, array( 'http', 'https' ) );
 	}
 
 	/**
