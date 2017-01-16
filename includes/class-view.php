@@ -193,6 +193,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		add_filter( 'update_user_metadata' , array( $this, 'prevent_update_user_metadata' ), 10, 3 );
 
 		/**
+		 * Get capabilities and user level from current user view object instead of database
+		 * @since  1.6.x
+		 */
+		add_filter( 'get_user_metadata' , array( $this, 'overrule_get_user_metadata' ), 10, 3 );
+
+		/**
 		 * Change the capabilities (map_meta_cap is better for compatibility with network admins)
 		 * @since  0.1
 		 */
@@ -289,6 +295,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
 	 * @link    http://hookr.io/filters/update_user_metadata/
 	 *
+	 * @global  wpdb    $wpdb
 	 * @param   null    $null
 	 * @param   int     $object_id
 	 * @param   string  $meta_key
@@ -312,6 +319,49 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				$wpdb->get_blog_prefix() . 'user_level'
 			) ) ) {
 				return false;
+			}
+		}
+		return $null;
+	}
+
+	/**
+	 * Return view roles when getting the current user data
+	 * to prevent reloading current user data within a view
+	 *
+	 * IMPORTANT! This filter should ONLY be used when a view is selected!
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @see     init_current_user_modifications()
+	 *
+	 * @see     'get_user_metadata' filter
+	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
+	 *
+	 * @global  wpdb    $wpdb
+	 * @param   null    $null
+	 * @param   int     $object_id
+	 * @param   string  $meta_key
+	 * @return  mixed
+	 */
+	public function overrule_get_user_metadata( $null, $object_id, $meta_key ) {
+		global $wpdb;
+		$current_user = $this->store->get_curUser();
+
+		// Check if the object being updated is the current user
+		if ( $current_user->ID == $object_id ) {
+
+			// Capabilities meta key check
+			if ( empty( $current_user->cap_key ) ) {
+				$current_user->cap_key = $wpdb->get_blog_prefix() . 'capabilities';
+			}
+
+			// Return the current user capabilities or user level while in a view
+			// Allways return an array to fix $single usage
+			if ( $meta_key == $current_user->cap_key ) {
+				return array( $current_user->caps );
+			}
+			if ( $meta_key == $wpdb->get_blog_prefix() . 'user_level' ) {
+				return array( $current_user->user_level );
 			}
 		}
 		return $null;
