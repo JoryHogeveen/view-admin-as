@@ -351,10 +351,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( $current_user->ID == $object_id ) {
 
 			// Return the current user capabilities or user level while in a view
-			// Allways return an array to fix $single usage
+			// Always return an array to fix $single usage
 
 			// Current user cap key should be equal to the meta_key for capabilities
-			if ( ! empty( empty( $current_user->cap_key ) ) && $meta_key == $current_user->cap_key ) {
+			if ( ! empty( $current_user->cap_key ) && $meta_key == $current_user->cap_key ) {
 				return array( $current_user->caps );
 			}
 			// Fallback if cap_key doesn't exists
