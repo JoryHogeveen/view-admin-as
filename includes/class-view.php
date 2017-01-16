@@ -350,14 +350,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		// Check if the object being updated is the current user
 		if ( $current_user->ID == $object_id ) {
 
-			// Capabilities meta key check
-			if ( empty( $current_user->cap_key ) ) {
-				$current_user->cap_key = $wpdb->get_blog_prefix() . 'capabilities';
-			}
-
 			// Return the current user capabilities or user level while in a view
 			// Allways return an array to fix $single usage
-			if ( $meta_key == $current_user->cap_key ) {
+
+			// Current user cap key should be equal to the meta_key for capabilities
+			if ( ! empty( empty( $current_user->cap_key ) ) && $meta_key == $current_user->cap_key ) {
+				return array( $current_user->caps );
+			}
+			// Fallback if cap_key doesn't exists
+			if ( $meta_key == $wpdb->get_blog_prefix() . 'capabilities' ) {
 				return array( $current_user->caps );
 			}
 			if ( $meta_key == $wpdb->get_blog_prefix() . 'user_level' ) {
