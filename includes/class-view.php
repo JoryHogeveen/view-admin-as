@@ -196,13 +196,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * Prevent some meta updates for the current user while in modification to the current user are active
 		 * @since  1.6.3
 		 */
-		add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 10, 3 );
+		add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
 
 		/**
 		 * Get capabilities and user level from current user view object instead of database
 		 * @since  1.6.x
 		 */
-		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 10, 3 );
+		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
 		/**
 		 * Change the capabilities (map_meta_cap is better for compatibility with network admins)
@@ -324,6 +324,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			// Do not update the current user capabilities or user level while in a view
 			if ( in_array( $meta_key, array(
 				$current_user->cap_key,
+				$wpdb->get_blog_prefix() . 'capabilities',
 				$wpdb->get_blog_prefix() . 'user_level'
 			) ) ) {
 				return false;
