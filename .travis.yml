@@ -51,3 +51,7 @@ before_script:
 script:
   - phpunit
 #  - cd tests/spec && bundle exec rspec test.rb
+
+addons:
+    code_climate:
+        repo_token: 55c7f1f296456bc6f916457b8c4adf7049bf2bafd96635a2d2c9cac50c76f73a

@@ -113,9 +113,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Apply view data
 	 *
-	 * @since  1.6.3  Put logic in it's own function
+	 * @since   1.6.3    Put logic in it's own function
+	 * @access  private
+	 * @return  void
 	 */
 	private function do_view() {
+
+		// @since  1.6.x  Set the current user as the selected user by default
+		$this->store->set_selectedUser( $this->store->get_curUser() );
 
 		/**
 		 * USER & VISITOR
@@ -153,7 +158,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @since  1.3  Caps view
 		 */
 		if ( $this->store->get_viewAs('role') || $this->store->get_viewAs('caps') ) {
-			$this->init_current_user_modifications();
+			$this->init_user_modifications();
 		}
 
 		/**
@@ -171,32 +176,42 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Adds the actions and filters to modify the current user object
-	 * @since  1.6.3
+	 * Can only be run once
+	 *
+	 * @since   1.6.3
+	 * @access  public
+	 * @return  void
 	 */
-	public function init_current_user_modifications() {
+	public function init_user_modifications() {
 		static $done;
 		if ( $done ) return;
 
-		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_current_user' ), 99 );
+		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_user' ), 99 );
 
 		/**
 		 * Make sure the $current_user view data isn't overwritten again by switch_blog functions
 		 * @see  This filter is documented in wp-includes/ms-blogs.php
 		 * @since  1.6.3
 		 */
-		add_action( 'switch_blog', array( $this, 'modify_current_user' ) );
+		add_action( 'switch_blog', array( $this, 'modify_user' ) );
 
 		/**
 		 * Prevent some meta updates for the current user while in modification to the current user are active
 		 * @since  1.6.3
 		 */
-		add_filter( 'update_user_metadata' , array( $this, 'prevent_update_user_metadata' ), 10, 3 );
+		add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
+
+		/**
+		 * Get capabilities and user level from current user view object instead of database
+		 * @since  1.6.x
+		 */
+		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
 		/**
 		 * Change the capabilities (map_meta_cap is better for compatibility with network admins)
 		 * @since  0.1
 		 */
-		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 3 ); //4
 
 		// @todo maybe also use the user_has_cap filter?
 		//add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
@@ -208,11 +223,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * Update the current user's WP_User instance with the current view capabilities
 	 *
 	 * @since   1.6.3
+	 * @access  public
+	 * @return  void
 	 */
-	public function modify_current_user() {
+	public function modify_user() {
 
 		// Can be the current or selected WP_User object (depending on the user view)
-		$current_user = wp_get_current_user();
+		$user = $this->store->get_selectedUser();
 
 		/**
 		 * Validate if the WP_User properties are still accessible
@@ -220,10 +237,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @since  1.6.3
 		 */
 		$accessible = false;
-		$public_props = get_object_vars( $current_user );
+		$public_props = get_object_vars( $user );
 		if (    array_key_exists( 'caps', $public_props )
 		     && array_key_exists( 'allcaps', $public_props )
-			 && is_callable( array( $current_user, 'get_role_caps' ) )
+			 && is_callable( array( $user, 'get_role_caps' ) )
 		) {
 			$accessible = true;
 		}
@@ -240,9 +257,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				);
 			} else {
 				// @since  1.6.3  Set the current user's role to the current view
-				$current_user->caps = array( $this->store->get_viewAs('role') => 1 );
+				$user->caps = array( $this->store->get_viewAs('role') => 1 );
 				// Sets the `allcaps` and `roles` properties correct
-				$current_user->get_role_caps();
+				$user->get_role_caps();
 			}
 		}
 
@@ -255,24 +272,25 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				$this->store->set_selectedCaps( $this->store->get_viewAs('caps') );
 			} else {
 				// @since  1.6.3  Set the current user's caps (roles) to the current view
-				$current_user->allcaps = array_merge(
+				$user->allcaps = array_merge(
 					(array) array_filter( $this->store->get_viewAs('caps') ),
-					(array) $current_user->caps // Contains the current user roles
+					(array) $user->caps // Contains the current user roles
 				);
 			}
 		}
 
 		if ( $accessible ) {
-			$this->store->set_selectedCaps( $current_user->allcaps );
+			$this->store->set_selectedCaps( $user->allcaps );
 		}
 
 		/**
 		 * Allow other modules to hook after the initial changes to the current user
 		 * @since  1.6.3
-		 * @param  WP_User  $current_user  The current user object
+		 * @since  1.6.x    Changed name (was: `vaa_view_admin_as_modify_current_user`)
+		 * @param  WP_User  $user          The modified user object
 		 * @param  bool     $accessible    Are the needed WP_User properties and methods accessible?
 		 */
-		do_action( 'vaa_view_admin_as_modify_current_user', $current_user, $accessible );
+		do_action( 'vaa_view_admin_as_modify_user', $user, $accessible );
 	}
 
 	/**
@@ -289,29 +307,75 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
 	 * @link    http://hookr.io/filters/update_user_metadata/
 	 *
+	 * @global  wpdb    $wpdb
 	 * @param   null    $null
 	 * @param   int     $object_id
 	 * @param   string  $meta_key
 	 * @return  mixed
 	 */
-	public function prevent_update_user_metadata( $null, $object_id, $meta_key ) {
+	public function filter_prevent_update_user_metadata( $null, $object_id, $meta_key ) {
 		global $wpdb;
-		$current_user = $this->store->get_curUser();
+		$user = $this->store->get_selectedUser();
 
 		// Check if the object being updated is the current user
-		if ( $current_user->ID == $object_id ) {
+		if ( $user->ID == $object_id ) {
 
 			// Capabilities meta key check
-			if ( empty( $current_user->cap_key ) ) {
-				$current_user->cap_key = $wpdb->get_blog_prefix() . 'capabilities';
+			if ( empty( $user->cap_key ) ) {
+				$user->cap_key = $wpdb->get_blog_prefix() . 'capabilities';
 			}
 
 			// Do not update the current user capabilities or user level while in a view
 			if ( in_array( $meta_key, array(
-				$current_user->cap_key,
+				$user->cap_key,
+				$wpdb->get_blog_prefix() . 'capabilities',
 				$wpdb->get_blog_prefix() . 'user_level'
 			) ) ) {
 				return false;
+			}
+		}
+		return $null;
+	}
+
+	/**
+	 * Return view roles when getting the current user data
+	 * to prevent reloading current user data within a view
+	 *
+	 * IMPORTANT! This filter should ONLY be used when a view is selected!
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @see     init_current_user_modifications()
+	 *
+	 * @see     'get_user_metadata' filter
+	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
+	 *
+	 * @global  wpdb    $wpdb
+	 * @param   null    $null
+	 * @param   int     $object_id
+	 * @param   string  $meta_key
+	 * @return  mixed
+	 */
+	public function filter_overrule_get_user_metadata( $null, $object_id, $meta_key ) {
+		global $wpdb;
+		$user = $this->store->get_selectedUser();
+
+		// Check if the object being updated is the current user
+		if ( $user->ID == $object_id ) {
+
+			// Return the current user capabilities or user level while in a view
+			// Always return an array to fix $single usage
+
+			// Current user cap key should be equal to the meta_key for capabilities
+			if ( ! empty( $user->cap_key ) && $meta_key == $user->cap_key ) {
+				return array( $user->caps );
+			}
+			// Fallback if cap_key doesn't exists
+			if ( $meta_key == $wpdb->get_blog_prefix() . 'capabilities' ) {
+				return array( $user->caps );
+			}
+			if ( $meta_key == $wpdb->get_blog_prefix() . 'user_level' ) {
+				return array( $user->user_level );
 			}
 		}
 		return $null;
@@ -331,12 +395,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap
 	 * @param   string  $cap      The capability that was requested
 	 * @param   int     $user_id  The ID of the user
-	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used)
+	 * param   array   $args     Adds the context to the cap. Typically the object ID (not used)
 	 * @return  array   $caps
 	 */
-	public function filter_map_meta_cap( $caps, $cap, $user_id, $args ) {
+	public function filter_map_meta_cap( $caps, $cap, $user_id ) {
 
-		if ( $this->store->get_curUser()->ID != $user_id ) {
+		if ( $this->store->get_selectedUser()->ID != $user_id ) {
 			return $caps;
 		}
 
@@ -359,14 +423,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.6.3
 	 * @param   array    $allcaps
-	 * @param   array    $caps
+	 * @param   array    $caps     (not used)
 	 * @param   array    $args
 	 * @param   WP_User  $user     (WP 3.7+)
 	 * @return  array
 	 */
 	public function filter_user_has_cap( $allcaps, $caps, $args, $user = null ) {
 		$user_id = ( $user ) ? $user->ID : $args[1];
-		if ( ! is_numeric( $user_id ) || $user_id != $this->get_curUser()->ID ) {
+		if ( ! is_numeric( $user_id ) || $user_id != $this->store->get_selectedUser()->ID ) {
 			return $allcaps;
 		}
 		return $this->get_selectedCaps();
@@ -537,7 +601,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( ( ! defined('DOING_AJAX') || ! DOING_AJAX )
 		     && isset( $_GET['view_admin_as'] )
 		     && $this->store->get_userSettings('view_mode') == 'browse'
-		     && isset( $this->store->get_curUser()->ID )
 		     && isset( $_GET['_vaa_nonce'] )
 		     && wp_verify_nonce( (string) $_GET['_vaa_nonce'], $this->store->get_nonce() )
 		) {
@@ -554,7 +617,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( ( ! defined('DOING_AJAX') || ! DOING_AJAX )
 		     && isset( $_POST['view_admin_as'] )
 		     && $this->store->get_userSettings('view_mode') == 'single'
-		     && isset( $this->store->get_curUser()->ID )
 		     && isset( $_POST['_vaa_nonce'] )
 		     && wp_verify_nonce( (string) $_POST['_vaa_nonce'], $this->store->get_nonce() )
 		) {
