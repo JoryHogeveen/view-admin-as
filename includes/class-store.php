@@ -217,7 +217,8 @@ final class VAA_View_Admin_As_Store
 	private $viewAs = array();
 
 	/**
-	 * The selected user object (if the user view is selected)
+	 * The selected user object (if a view is selected)
+	 * Can be the same as $curUser depending on the selected view
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class
