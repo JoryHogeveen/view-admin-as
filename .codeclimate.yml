@@ -12,8 +12,11 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    #config:
+  phpcodesniffer:
+    enabled: true
     config:
-      rulesets: "phpmd.xml"
+      standard: "Wordpress"
 ratings:
   paths:
   - "**.css"
