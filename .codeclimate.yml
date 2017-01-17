@@ -13,10 +13,33 @@ engines:
   phpmd:
     enabled: true
     #config:
+    checks:
+      # Disable: The class "" is not named in CamelCase
+      Controversial/CamelCaseClassName:
+        enabled: false
   phpcodesniffer:
     enabled: true
     config:
       standard: "Wordpress"
+    checks:
+      # Disable: Member variable "" is not in valid snake_case format
+      WordPress NamingConventions ValidVariableName MemberNotSnakeCase:
+        enabled: false
+      # Disable: Object property "" is not in valid snake_case format
+      WordPress NamingConventions ValidVariableName NotSnakeCaseMemberVar:
+        enabled: false
+      # Disable: Method name "" in class "" is not in snake case format, try ""
+      WordPress NamingConventions ValidFunctionName MethodNameInvalid:
+        enabled: false
+      # Disable: Opening brace should be on the same line as the declaration for class 
+      WordPress Classes ClassOpeningStatement BraceOnNewLine:
+        enabled: false
+      # Disable: Inline comments must end in full-stops, exclamation marks, or question marks
+      Squiz Commenting InlineComment InvalidEndChar:
+        enabled: false
+      # Disable: Expected # spaces after parameter type; # found
+      Squiz Commenting FunctionComment SpacingAfterParamType:
+        enabled: false
 ratings:
   paths:
   - "**.css"
