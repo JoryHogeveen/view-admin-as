@@ -134,8 +134,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
-			$this->vaa->view()->init_current_user_modifications();
-			add_action( 'vaa_view_admin_as_modify_current_user', array( $this, 'modify_current_user' ), 10, 2 );
+			$this->vaa->view()->init_user_modifications();
+			add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
 
 			add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
@@ -151,10 +151,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * Update the current user's WP_User instance with the current view data
 	 *
 	 * @since   1.7
-	 * @param   WP_User  $current_user
+	 * @param   WP_User  $user
 	 * @param   bool     $accessible
 	 */
-	public function modify_current_user( $current_user, $accessible ) {
+	public function modify_user( $user, $accessible ) {
 
 		$caps = (array) $this->selectedLevelCaps;
 
@@ -163,14 +163,14 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			// Also do the same when WP_User parameters aren't accessible
 			$caps = array_merge( $this->store->get_selectedCaps(), $caps );
 		} else {
-			$caps = array_merge( $current_user->allcaps, $caps );
+			$caps = array_merge( $user->allcaps, $caps );
 		}
 
 		$this->store->set_selectedCaps( $caps );
 
 		if ( $accessible ) {
 			// Merge the caps with the current user caps, overwrite existing
-			$current_user->allcaps = array_merge( $current_user->caps, $caps );
+			$user->allcaps = array_merge( $user->caps, $caps );
 		}
 	}
 
