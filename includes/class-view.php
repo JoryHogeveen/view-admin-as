@@ -143,11 +143,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			if ( isset( $this->store->get_selectedUser()->allcaps ) ) {
 				$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
 			}
-
-			// @since  1.6.1  Force own locale on view
-			if ( 'yes' == $this->store->get_userSettings('freeze_locale') ) {
-				add_action( 'init', array( $this, 'freeze_locale' ), 0 );
-			}
 		}
 
 		/**
@@ -172,6 +167,16 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @param  array
 		 */
 		do_action( 'vaa_view_admin_as_do_view', $this->store->get_viewAs() );
+
+		/**
+		 * Force own locale on view
+		 * @since  1.6.1
+		 */
+		if ( 'yes' == $this->store->get_userSettings('freeze_locale')
+			&& $this->store->get_curUser()->ID != $this->store->get_selectedUser()->ID
+		) {
+			add_action( 'init', array( $this, 'freeze_locale' ), 0 );
+		}
 	}
 
 	/**
