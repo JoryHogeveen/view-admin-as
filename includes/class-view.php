@@ -597,7 +597,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( ( ! defined('DOING_AJAX') || ! DOING_AJAX )
 		     && isset( $_GET['view_admin_as'] )
 		     && $this->store->get_userSettings('view_mode') == 'browse'
-		     && isset( $this->store->get_curUser()->ID )
 		     && isset( $_GET['_vaa_nonce'] )
 		     && wp_verify_nonce( (string) $_GET['_vaa_nonce'], $this->store->get_nonce() )
 		) {
@@ -614,7 +613,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( ( ! defined('DOING_AJAX') || ! DOING_AJAX )
 		     && isset( $_POST['view_admin_as'] )
 		     && $this->store->get_userSettings('view_mode') == 'single'
-		     && isset( $this->store->get_curUser()->ID )
 		     && isset( $_POST['_vaa_nonce'] )
 		     && wp_verify_nonce( (string) $_POST['_vaa_nonce'], $this->store->get_nonce() )
 		) {
