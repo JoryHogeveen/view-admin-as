@@ -87,7 +87,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 			$params = array(
 				'action'        => 'view_admin_as',
 				'view_admin_as' => htmlentities( json_encode( array( 'user' => $user->ID ) ) ),
-				'_vaa_nonce'    => $this->store->get_nonce( true )
+				'_vaa_nonce'    => $this->store->get_nonce( true ),
 			);
 			$link .= '?' . http_build_query( $params );
 		} else {
@@ -107,7 +107,6 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 */
 	public function action_wp_meta() {
-
 		if ( ! is_admin_bar_showing() && $this->store->get_viewAs() ) {
 			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
 			$url = VAA_API::get_reset_link();
@@ -124,7 +123,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function action_plugin_row_meta( $links, $file ) {
-		if ( $file == VIEW_ADMIN_AS_BASENAME ) {
+		if ( $file === VIEW_ADMIN_AS_BASENAME ) {
 			foreach ( $this->get_links() as $id => $link ) {
 				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . esc_html( $link['title'] ) . '</a>';
 			}
@@ -189,7 +188,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 					'description' => __( 'Buy me a coffee!', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-smiley',
 					'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
-				)
+				),
 			);
 		}
 

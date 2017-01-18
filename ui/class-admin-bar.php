@@ -583,21 +583,22 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'id'     => $root . '-applycaps',
 			'parent' => $root . '-quickselect',
 			'title'  => self::do_button( array(
-					'name'    => 'apply-caps-view',
-					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-primary',
-				) ) . self::do_button( array(
-					'name'    => 'close-caps-popup',
-					'label'   => self::do_icon( 'dashicons-editor-contract' ),
-					'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
-					'element' => 'a',
-				) ) . self::do_button( array(
-					'name'    => 'open-caps-popup',
-					'label'   => self::do_icon( 'dashicons-editor-expand' ),
-					'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
-					'element' => 'a',
-				)
-			),
+				'name'    => 'apply-caps-view',
+				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'classes' => 'button-primary',
+			) )
+			. self::do_button( array(
+				'name'    => 'close-caps-popup',
+				'label'   => self::do_icon( 'dashicons-editor-contract' ),
+				'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
+				'element' => 'a',
+			) )
+			. self::do_button( array(
+				'name'    => 'open-caps-popup',
+				'label'   => self::do_icon( 'dashicons-editor-expand' ),
+				'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
+				'element' => 'a',
+			) ),
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'vaa-button-container',
@@ -937,9 +938,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$parent = $root;
 			$href   = '#';
 			$class  = 'vaa-user-item';
-			$title  = $user->data->display_name;
+			$title  = $user->display_name;
 			// Check if this user is the current view.
-			if ( $this->store->get_viewAs( 'user' ) && $this->store->get_viewAs( 'user' ) == $user->data->ID ) {
+			if ( $this->store->get_viewAs( 'user' ) && (int) $this->store->get_viewAs( 'user' ) === (int) $user->ID ) {
 				$class .= ' current';
 				if ( 1 === count( $this->store->get_viewAs() ) ) {
 					$href = false;
@@ -950,15 +951,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				foreach ( $user->roles as $role ) {
 					$parent = self::$root . '-roles-role-' . $role;
 					$admin_bar->add_node( array(
-						'id'     => $root . '-user-' . $user->data->ID . '-' . $role,
+						'id'     => $root . '-user-' . $user->ID . '-' . $role,
 						'parent' => $parent,
 						'title'  => $title,
 						'href'   => $href,
 						'meta'   => array(
 							// Translators: %s stands for the user display name.
-							'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->data->display_name ),
+							'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
 							'class' => $class,
-							'rel'   => $user->data->ID,
+							'rel'   => $user->ID,
 						),
 					) );
 				}
@@ -972,15 +973,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				}
 				$title = $title . ' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
 				$admin_bar->add_node( array(
-					'id'     => $root . '-user-' . $user->data->ID,
+					'id'     => $root . '-user-' . $user->ID,
 					'parent' => $parent,
 					'title'  => $title,
 					'href'   => $href,
 					'meta'   => array(
 						// Translators: %s stands for the user display name.
-						'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->data->display_name ),
+						'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
 						'class' => $class,
-						'rel'   => $user->data->ID,
+						'rel'   => $user->ID,
 					),
 				) );
 			}
