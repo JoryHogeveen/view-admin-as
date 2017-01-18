@@ -49,9 +49,9 @@ final class VAA_API
 	public static function is_superior_admin( $user_id = null ) {
 
 		// If it's the current user of null, don't pass the user ID so make sure we check the original user status.
-		if ( null === $user_id || get_current_user_id() == $user_id ) {
+		if ( null === $user_id || (int) get_current_user_id() === (int) $user_id ) {
 			$is_super_admin = self::is_super_admin();
-			if ( null == $user_id ) {
+			if ( null === $user_id ) {
 				$user_id = get_current_user_id();
 			}
 		} else {
@@ -59,7 +59,7 @@ final class VAA_API
 		}
 
 		// Is it a super admin and is it one of the manually configured superior admins?
-		return (bool) ( true === $is_super_admin && in_array( $user_id, self::get_superior_admins() ) );
+		return (bool) ( true === $is_super_admin && in_array( (int) $user_id, self::get_superior_admins(), true ) );
 	}
 
 	/**
@@ -154,7 +154,7 @@ final class VAA_API
 			$reset = 'reset-all-views';
 		}
 
-		return esc_url( $url . ( ( isset ( $url_comp['query'] ) ) ? '&' : '?' ) . $reset, array( 'http', 'https' ) );
+		return esc_url( $url . ( ( isset( $url_comp['query'] ) ) ? '&' : '?' ) . $reset, array( 'http', 'https' ) );
 	}
 
 	/**
@@ -183,7 +183,7 @@ final class VAA_API
 
 				$url[1] = explode( '&', $url[1] );
 				foreach ( $url[1] as $key => $val ) {
-					if ( in_array( $val, array( 'reset-view', 'reset-all-views' ) ) ) {
+					if ( in_array( $val, array( 'reset-view', 'reset-all-views' ), true ) ) {
 						unset( $url[1][ $key ] );
 					}
 				}
@@ -209,7 +209,7 @@ final class VAA_API
 	 * @param   string  $key    (optional) Return only a key of the requested array.
 	 * @return  mixed
 	 */
-	final public static function get_array_data( $array, $key = null ) {
+	public static function get_array_data( $array, $key = null ) {
 		if ( null !== $key ) {
 			if ( isset( $array[ $key ] ) ) {
 				return $array[ $key ];
@@ -234,7 +234,7 @@ final class VAA_API
 	 * @param   bool    $append  (optional) If the key doesn't exist in the original array, append it.
 	 * @return  mixed
 	 */
-	final public static function set_array_data( $array, $var, $key = null, $append = false ) {
+	public static function set_array_data( $array, $var, $key = null, $append = false ) {
 		if ( null !== $key ) {
 			if ( true === $append && ! is_array( $array ) ) {
 				$array = array();

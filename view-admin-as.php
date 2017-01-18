@@ -61,7 +61,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	 * @param   object  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As
 	 */
-	function View_Admin_As( $caller ) {
+	function view_admin_as( $caller ) {
 		return VAA_View_Admin_As::get_instance( $caller );
 	}
 
@@ -74,9 +74,9 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	// @since  1.5.1  added notice on class name conflict.
 	add_action( 'admin_notices', 'view_admin_as_conflict_admin_notice' );
 	function view_admin_as_conflict_admin_notice() {
-		echo '<div class="notice-error notice is-dismissible"><p><strong>' . __( 'View Admin As', 'view-admin-as' ) . ':</strong> '
-			. __('Plugin not activated because of a conflict with an other plugin or theme', 'view-admin-as')
-			. ' <code>(' . sprintf( __( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')' . '</code></p></div>';
+		echo '<div class="notice-error notice is-dismissible"><p><strong>' . esc_html__( 'View Admin As', 'view-admin-as' ) . ':</strong> '
+			. esc_html__('Plugin not activated because of a conflict with an other plugin or theme', 'view-admin-as')
+			. ' <code>(' . sprintf( esc_html__( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')</code></p></div>';
 	}
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	deactivate_plugins( plugin_basename( __FILE__ ) );

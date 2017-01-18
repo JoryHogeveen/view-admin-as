@@ -181,7 +181,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @since  1.6.1
 		 */
 		if ( 'yes' === $this->store->get_userSettings( 'freeze_locale' )
-			&& $this->store->get_curUser()->ID != $this->store->get_selectedUser()->ID
+			&& (int) $this->store->get_curUser()->ID !== (int) $this->store->get_selectedUser()->ID
 		) {
 			add_action( 'init', array( $this, 'freeze_locale' ), 0 );
 		}
@@ -339,7 +339,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$user = $this->store->get_selectedUser();
 
 		// Check if the object being updated is the current user.
-		if ( $user->ID == $object_id ) {
+		if ( (int) $user->ID === (int) $object_id ) {
 
 			// Capabilities meta key check.
 			if ( empty( $user->cap_key ) ) {
@@ -350,8 +350,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			if ( in_array( $meta_key, array(
 				$user->cap_key,
 				$wpdb->get_blog_prefix() . 'capabilities',
-				$wpdb->get_blog_prefix() . 'user_level'
-			) ) ) {
+				$wpdb->get_blog_prefix() . 'user_level',
+			), true ) ) {
 				return false;
 			}
 		}
@@ -381,7 +381,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$user = $this->store->get_selectedUser();
 
 		// Check if the object being updated is the current user.
-		if ( $user->ID == $object_id ) {
+		if ( (int) $user->ID === (int) $object_id ) {
 
 			// Return the current user capabilities or user level while in a view.
 			// Always return an array to fix $single usage.
@@ -420,7 +420,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function filter_map_meta_cap( $caps, $cap, $user_id ) {
 
-		if ( $this->store->get_selectedUser()->ID != $user_id ) {
+		if ( (int) $this->store->get_selectedUser()->ID !== (int) $user_id ) {
 			return $caps;
 		}
 
@@ -452,7 +452,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function filter_user_has_cap( $allcaps, $caps, $args, $user = null ) {
 		$user_id = ( $user ) ? $user->ID : $args[1];
-		if ( ! is_numeric( $user_id ) || $user_id != $this->store->get_selectedUser()->ID ) {
+		if ( ! is_numeric( $user_id ) || (int) $user_id !== (int) $this->store->get_selectedUser()->ID ) {
 			return $allcaps;
 		}
 		return $this->store->get_selectedCaps();
@@ -475,7 +475,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		if ( is_array( $caps )
 		    && array_key_exists( $cap, $caps )
-		    && 1 == (int) $caps[ $cap ]
+		    && 1 === (int) $caps[ $cap ]
 		    && 'do_not_allow' !== $caps[ $cap ]
 		) {
 			return true;
@@ -527,7 +527,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		) {
 			wp_send_json_error( array(
 				'type' => 'error',
-				'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN )
+				'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
 			) );
 		}
 
@@ -537,8 +537,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 		elseif ( isset( $view_as['caps'] ) ) {
 			$db_view = $this->get_view();
+			// === comparison nor working due to key order.
+			$difference = array_diff(
+				array_filter( $this->store->get_curUser()->allcaps ),
+				array_filter( $view_as['caps'] )
+			);
 			// Check if the selected caps are equal to the default caps.
-			if ( array_filter( $this->store->get_curUser()->allcaps ) == array_filter( $view_as['caps'] ) ) {
+			if ( ! $difference ) {
 				// The selected caps are equal to the current user default caps so we can reset the view.
 				$this->reset_view();
 				if ( isset( $db_view['caps'] ) ) {
@@ -548,7 +553,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					// The user was in his default view, notify the user.
 					wp_send_json_error( array(
 						'type' => 'error',
-						'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN )
+						'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
 					) );
 				}
 			} else {
@@ -558,12 +563,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				foreach ( $view_as['caps'] as $key => $value ) {
 					$this->store->set_caps( (int) $value, (string) $key, true );
 				}
-				if ( isset( $db_view['caps'] )
-				     && array_filter( (array) $db_view['caps'] ) == array_filter( $this->store->get_caps() )
-				) {
+				// === comparison nor working due to key order.
+				if ( isset( $db_view['caps'] ) && ! array_diff(
+					array_filter( (array) $db_view['caps'] ),
+					array_filter( $this->store->get_caps() )
+				) ) {
 					wp_send_json_error( array(
 						'type' => 'error',
-						'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN )
+						'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
 					) );
 				} else {
 					$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
@@ -602,7 +609,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		} else {
 			wp_send_json_error( array(
 				'type' => 'error',
-				'content' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN )
+				'content' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN ),
 			) );
 		}
 
@@ -712,7 +719,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				// Remove metadata from this session.
 				unset( $meta['views'][ $this->store->get_curUserSession() ] );
 				// Update current metadata if it is the current user.
-				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure).
@@ -756,7 +763,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					}
 				}
 				// Update current metadata if it is the current user.
-				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure).
@@ -791,7 +798,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			if ( isset( $meta['views'] ) ) {
 				$meta['views'] = array();
 				// Update current metadata if it is the current user.
-				if ( $this->store->get_curUser() && $this->store->get_curUser()->ID == $user->ID ){
+				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure).
@@ -834,7 +841,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		// We only want allowed keys and data, otherwise it's not added through this plugin.
 		foreach ( $view_as as $key => $value ) {
 			// Check for keys that are not allowed.
-			if ( ! in_array( $key, $allowed_keys ) ) {
+			if ( ! in_array( $key, $allowed_keys, true ) ) {
 				unset( $view_as[ $key ] );
 				continue;
 			}
@@ -899,7 +906,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	public function freeze_locale() {
 		if ( function_exists( 'get_user_locale' ) && function_exists( 'switch_to_locale' ) ) {
 			$locale = get_user_locale( $this->store->get_curUser()->ID );
-			if ( $locale !== get_locale() ) {
+			if ( get_locale() !== $locale ) {
 				switch_to_locale( $locale );
 			}
 			return true;

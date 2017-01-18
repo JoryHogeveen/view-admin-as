@@ -141,7 +141,7 @@ final class VAA_View_Admin_As
 	private function load() {
 
 		if (    ! class_exists( 'VAA_API' )
-		     && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
+			 && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
 		     && ! class_exists( 'VAA_View_Admin_As_Store' )
 		     && ! class_exists( 'VAA_View_Admin_As_View' )
 		     && ! class_exists( 'VAA_View_Admin_As_Update' )
@@ -256,7 +256,7 @@ final class VAA_View_Admin_As
 		if ( ( VAA_API::is_super_admin()
 		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
 		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
-		     && $this->store->get_curUserSession() != ''
+		     && $this->store->get_curUserSession()
 		) {
 			$this->enable = true;
 		}
@@ -276,22 +276,22 @@ final class VAA_View_Admin_As
 		$include = array(
 			'admin' => array(
 				'file'  => 'class-admin.php',
-				'class' => 'VAA_View_Admin_As_Admin'
+				'class' => 'VAA_View_Admin_As_Admin',
 			),
 			'admin-bar' => array(
 				'file'  => 'class-admin-bar.php',
-				'class' => 'VAA_View_Admin_As_Admin_Bar'
+				'class' => 'VAA_View_Admin_As_Admin_Bar',
 			),
 			'toolbar' => array(
 				'file'  => 'class-toolbar.php',
-				'class' => 'VAA_View_Admin_As_Toolbar'
+				'class' => 'VAA_View_Admin_As_Toolbar',
 			),
 		);
 
-		foreach( $include as $key => $inc ) {
+		foreach ( $include as $key => $inc ) {
 			if ( empty( $inc['class'] ) || ! class_exists( $inc['class'] ) ) {
 				require( VIEW_ADMIN_AS_DIR . 'ui/' . $inc['file'] );
-				if ( !empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
+				if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
 					self::$vaa_class_names[] = $inc['class'];
 					$this->ui[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
 				}
@@ -320,7 +320,7 @@ final class VAA_View_Admin_As
 		$files = scandir( VIEW_ADMIN_AS_DIR . 'modules' );
 
 		foreach ( $files as $file ) {
-			if ( ! in_array( $file, array( '.', '..', 'index.php' ) ) ) {
+			if ( ! in_array( $file, array( '.', '..', 'index.php' ), true ) ) {
 				$file_info = pathinfo( $file );
 
 				// Single file modules.
@@ -405,8 +405,8 @@ final class VAA_View_Admin_As
 		$options = apply_filters( 'view_admin_as_error_page_options', $options );
 ?>
 <div>
-	<h3><?php _e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) ?>:</h3>
-	<?php _e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ) ?>
+	<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) ?>:</h3>
+	<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ) ?>
 	<ul>
 		<?php foreach ( $options as $option ) { ?>
 		<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
@@ -661,8 +661,8 @@ final class VAA_View_Admin_As
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
-				             // Translators, first %s stands for "WordPress", second stands for version 3.5
-				             . sprintf( __( 'Plugin deactivated, %s version %s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
+				             // Translators, %1$s stands for "WordPress", %2$s stands for version 3.5
+				             . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
 			) );
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
@@ -686,7 +686,7 @@ final class VAA_View_Admin_As
 	 * @return  VAA_View_Admin_As
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && in_array( get_class( $caller ), self::$vaa_class_names ) ) {
+		if ( is_object( $caller ) && in_array( get_class( $caller ), self::$vaa_class_names, true ) ) {
 			return self::$_instance;
 		}
 		return null;
@@ -728,7 +728,7 @@ final class VAA_View_Admin_As
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
+			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ) ),
 			null
 		);
 	}
@@ -743,7 +743,7 @@ final class VAA_View_Admin_As
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
+			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ) ),
 			null
 		);
 	}
@@ -759,7 +759,7 @@ final class VAA_View_Admin_As
 	 */
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
-			get_class( $this ) . "::{$method}",
+			esc_html( get_class( $this ) . "::{$method}" ),
 			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);

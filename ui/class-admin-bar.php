@@ -174,7 +174,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		if ( empty( $root ) ) {
 			$root = 'top-secondary';
 			if ( $this->store->get_userSettings( 'admin_menu_location' )
-			     && in_array( $this->store->get_userSettings( 'admin_menu_location' ), $this->store->get_allowedUserSettings( 'admin_menu_location' ) )
+			     && in_array( $this->store->get_userSettings( 'admin_menu_location' ), $this->store->get_allowedUserSettings( 'admin_menu_location' ), true )
 			) {
 				$root = $this->store->get_userSettings( 'admin_menu_location' );
 			}
@@ -217,7 +217,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'title'  => self::do_button( array(
 					'name'    => self::$root . '-' . $name,
 					'label'   => __( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary'
+					'classes' => 'button-secondary',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -270,7 +270,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'parent' => $root,
 			'meta'   => array(
 				'class' => 'ab-sub-secondary',
-			)
+			),
 		) );
 
 		$admin_bar->add_node(
@@ -621,38 +621,40 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			array(
 				'value' => 'default',
 				'label' => __( 'Default', VIEW_ADMIN_AS_DOMAIN ),
-			)
+			),
 		);
 		if ( $this->store->get_viewAs() ) {
+			$data_caps = json_encode( $this->store->get_selectedCaps() );
 			$role_select_options[] = array(
 				'compare' => 'vaa',
 				'label'   => '= ' . __( 'Current view', VIEW_ADMIN_AS_DOMAIN ),
 				'attr'    => array(
-					'data-caps' => json_encode( $this->store->get_selectedCaps() ),
+					'data-caps' => $data_caps,
 				),
 			);
 			$role_select_options[] = array(
 				'compare' => 'reversed-vaa',
 				'label'   => '≠ ' . __( 'Current view', VIEW_ADMIN_AS_DOMAIN ),
 				'attr'    => array(
-					'data-caps'    => json_encode( $this->store->get_selectedCaps() ),
+					'data-caps'    => $data_caps,
 					'data-reverse' => '1',
 				),
 			);
 		}
 		foreach ( $this->store->get_roles() as $role_key => $role ) {
+			$data_caps = json_encode( $role->capabilities );
 			$role_select_options[] = array(
 				'compare' => esc_attr( $role_key ),
 				'label'   => '= ' . translate_user_role( $role->name ),
 				'attr'    => array(
-					'data-caps' => json_encode( $role->capabilities ),
+					'data-caps' => $data_caps,
 				),
 			);
 			$role_select_options[] = array(
 				'compare' => 'reversed-' . esc_attr( $role_key ),
 				'label'   => '≠ ' . translate_user_role( $role->name ),
 				'attr'    => array(
-					'data-caps'    => json_encode( $role->capabilities ),
+					'data-caps'    => $data_caps,
 					'data-reverse' => '1',
 				),
 			);
@@ -696,10 +698,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			// check if we've selected a capability view and we've changed some capabilities.
 			$selected_caps = $this->store->get_viewAs( 'caps' );
 			if ( isset( $selected_caps[ $cap_name ] ) ) {
-				if ( 1 == $selected_caps[ $cap_name ] ) {
+				if ( 1 === (int) $selected_caps[ $cap_name ] ) {
 					$checked = true;
 				}
-			} elseif ( 1 == $cap_val ) {
+			} elseif ( 1 === (int) $cap_val ) {
 				$checked = true;
 			}
 			// Check for this capability in any view set.
@@ -708,7 +710,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			}
 			// The list of capabilities.
 			$caps_quickselect_content .=
-				'<div class="ab-item '.$class.'">'
+				'<div class="ab-item ' . $class . '">'
 					. self::do_checkbox( array(
 						'name'           => 'vaa_cap_' . esc_attr( $cap_name ),
 						'value'          => $checked,
@@ -812,13 +814,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				// make sure items are aligned properly when some roles don't have users.
 				$class .= ' vaa-menupop';
 				// Check if the current view is a user with this role.
-				if ( $this->store->get_viewAs( 'user' ) && $this->store->get_selectedUser() && in_array( $role_key, $this->store->get_selectedUser()->roles ) ) {
+				if ( $this->store->get_viewAs( 'user' )
+				     && $this->store->get_selectedUser()
+				     && in_array( $role_key, $this->store->get_selectedUser()->roles, true )
+				) {
 					$class .= ' current-parent';
 				}
 				// If there are users with this role, add a counter.
 				$user_count = 0;
 				foreach ( $this->store->get_users() as $user ) {
-					if ( in_array( $role_key, $user->roles ) ) {
+					if ( in_array( $role_key, $user->roles, true ) ) {
 						$user_count++;
 					}
 				}
@@ -827,7 +832,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				}
 			}
 			// Check if this role is the current view.
-			if ( $this->store->get_viewAs( 'role' ) && $this->store->get_viewAs( 'role' ) == strtolower( $role->name ) ) {
+			if ( $this->store->get_viewAs( 'role' ) === $role_key ) {
 				$class .= ' current';
 				if ( 1 === count( $this->store->get_viewAs() ) ) {
 					$href = false;
@@ -965,7 +970,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				foreach ( $user->roles as $role ) {
 					$user_roles[] = translate_user_role( $all_roles[ $role ]->name );
 				}
-				$title = $title.' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
+				$title = $title . ' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
 				$admin_bar->add_node( array(
 					'id'     => $root . '-user-' . $user->data->ID,
 					'parent' => $parent,
@@ -1012,7 +1017,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$class = 'vaa-visitor-item vaa-has-icon';
 
-		if ( empty( $root ) || $root == self::$root ) {
+		if ( empty( $root ) || $root === self::$root ) {
 
 			$admin_bar->add_group( array(
 				'id'     => self::$root . '-visitor',
@@ -1120,7 +1125,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$label_attr = array();
 		$desc_attr = array();
-		if ( ! empty( $args[ 'auto_showhide_desc' ] ) ) {
+		if ( ! empty( $args['auto_showhide_desc'] ) ) {
 			$showhide = $id . '-desc';
 			$label_attr = array(
 				'class' => 'ab-vaa-showhide',
@@ -1188,7 +1193,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$label_attr = array();
 		$desc_attr = array();
-		if ( ! empty( $args[ 'auto_showhide_desc' ] ) ) {
+		if ( ! empty( $args['auto_showhide_desc'] ) ) {
 			$showhide = $id . '-desc';
 			$label_attr = array(
 				'class' => 'ab-vaa-showhide',
@@ -1332,7 +1337,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 			$label_attr = array();
 			$desc_attr = array();
-			if ( ! empty( $data[ 'auto_showhide_desc' ] ) ) {
+			if ( ! empty( $data['auto_showhide_desc'] ) ) {
 				$showhide = $id . '-desc';
 				$label_attr = array(
 					'class' => 'ab-vaa-showhide',

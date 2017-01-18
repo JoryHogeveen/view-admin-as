@@ -14,6 +14,9 @@ engines:
     enabled: true
     #config:
     checks:
+      # Disable: "" accesses the super-global variable.
+      Controversial/Superglobals:
+        enabled: false
       # Disable: The class "" is not named in CamelCase
       Controversial/CamelCaseClassName:
         enabled: false
@@ -22,6 +25,9 @@ engines:
         enabled: false
       # Disable: The parameter "" is not named in CamelCase
       Controversial/CamelCaseParameterName:
+        enabled: false
+      # Disable: The variable "" is not named in CamelCase
+      Controversial/CamelCaseVariableName:
         enabled: false
       # Disable: The method init uses an else expression. Else is never necessary and you can simplify the code to work without else.
       CleanCode/ElseExpression:
@@ -52,8 +58,20 @@ engines:
       # Disable: Overriding WordPress globals is prohibited
       WordPress Variables GlobalVariables OverrideProhibited:
         enabled: false
+      # Disable: Expected # space before "!"; # found
+      WordPress WhiteSpace OperatorSpacing SpacingBefore:
+        enabled: false
+      # Disable: Blank line found after control structure
+      WordPress WhiteSpace ControlStructureSpacing BlankLineAfterEnd:
+        enabled: false
       # Disable: The $domain arg should be single a string literal, not "".
       WordPress WP I18n NonSingularStringLiteralDomain:
+        enabled: false
+      # Disable: Expected next thing to be an escaping function (see Codex for 'Data Validation'), not ''
+      WordPress XSS EscapeOutput OutputNotEscaped:
+        enabled: false
+      # Disable: The use of function "" is discouraged
+      WordPress PHP DiscouragedFunctions Discouraged:
         enabled: false
       # Disable: Expected # spaces after parameter type; # found
       Squiz Commenting FunctionComment SpacingAfterParamType:
@@ -64,11 +82,17 @@ engines:
       # Disable: String "" does not require double quotes; use single quotes instead
       Squiz Strings DoubleQuoteUsage NotRequired:
         enabled: false
+      # Disable: Expected 1 space after closing brace; newline found
+      Squiz ControlStructures ControlSignature SpaceAfterCloseBrace:
+        enabled: false
       # Disable: There must be exactly one blank line before the tags in a doc comment
       Generic Commenting DocComment SpacingBeforeTags:
         enabled: false
       # Disable: Inline control structures are not allowed
       Generic ControlStructures InlineControlStructure NotAllowed:
+        enabled: false
+      # Disable: Line indented incorrectly; expected at least # tabs, found #
+      Generic WhiteSpace ScopeIndent Incorrect:
         enabled: false
 ratings:
   paths:

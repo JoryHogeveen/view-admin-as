@@ -115,7 +115,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @return  bool
 	 */
-	final public function is_vaa_enabled() { return (bool) $this->vaa->is_enabled(); }
+	final public function is_vaa_enabled() {
+		return (bool) $this->vaa->is_enabled();
+	}
 
 	/**
 	 * Is enabled?
@@ -124,7 +126,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @return  bool
 	 */
-	public function is_enabled() { return (bool) $this->enable; }
+	public function is_enabled() {
+		return (bool) $this->enable;
+	}
 
 	/**
 	 * Set plugin enabled true/false.
@@ -173,16 +177,16 @@ abstract class VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Get the class option data.
-	 * @param   string  $key     (optional) Data key.
+	 * @param   string  $key  (optional) Data key.
 	 * @return  mixed
 	 */
-	public function get_optionData( $key = null )         {
+	public function get_optionData( $key = null ) {
 		return VAA_API::get_array_data( $this->optionData, $key );
 	}
 
 	/**
 	 * Get the class localisation strings
-	 * @param   string  $key     (optional) Data key.
+	 * @param   string  $key  (optional) Data key.
 	 * @return  mixed
 	 */
 	public function get_scriptLocalization( $key = null ) {
@@ -191,9 +195,12 @@ abstract class VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Set the option key as used in the options table.
+	 * @param   string  $val  Option key.
 	 * @return  string
 	 */
-	protected function set_optionKey( $val ) { $this->optionKey = (string) $val; }
+	protected function set_optionKey( $val ) {
+		$this->optionKey = (string) $val;
+	}
 
 	/**
 	 * Set the class option data.
@@ -250,7 +257,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
+			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ) ),
 			null
 		);
 	}
@@ -265,7 +272,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
+			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ) ),
 			null
 		);
 	}
@@ -281,7 +288,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 */
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
-			get_class( $this ) . "::{$method}",
+			esc_html( get_class( $this ) . "::{$method}" ),
 			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);

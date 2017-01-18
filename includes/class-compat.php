@@ -147,7 +147,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function pods_caps_check( $bool, $caps ) {
 
-		foreach( (array) $caps as $capability ) {
+		foreach ( (array) $caps as $capability ) {
 			if ( $this->vaa->view()->current_view_can( $capability ) ) {
 				return true;
 			}

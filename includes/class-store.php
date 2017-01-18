@@ -263,7 +263,7 @@ final class VAA_View_Admin_As_Store
 
 		// Get the current user session.
 		if ( function_exists( 'wp_get_session_token' ) ) {
-			// WP 4.0+
+			// WP 4.0+.
 			$this->set_curUserSession( (string) wp_get_session_token() );
 		} else {
 			$cookie = wp_parse_auth_cookie( '', 'logged_in' );
@@ -322,12 +322,12 @@ final class VAA_View_Admin_As_Store
 
 			// Current user has the view_admin_as capability, otherwise this functions would'nt be called.
 			foreach ( $roles as $role_key => $role ) {
-				// Remove roles that this user isn't allowed to edit.
 				if ( ! array_key_exists( $role_key, $editable_roles ) ) {
+					// Remove roles that this user isn't allowed to edit.
 					unset( $roles[ $role_key ] );
 				}
-				// Remove roles that have the view_admin_as capability.
 				elseif ( $role instanceof WP_Role && $role->has_cap( 'view_admin_as' ) ) {
+					// Remove roles that have the view_admin_as capability.
 					unset( $roles[ $role_key ] );
 				}
 			}
@@ -356,6 +356,7 @@ final class VAA_View_Admin_As_Store
 	public function store_users() {
 		global $wpdb;
 
+		$super_admins = get_super_admins();
 		// Load the superior admins.
 		$superior_admins = VAA_API::get_superior_admins();
 
@@ -393,17 +394,17 @@ final class VAA_View_Admin_As_Store
 			}
 
 			// Get super admins (returns login's).
-			$users = get_super_admins();
+			$users = $super_admins;
 			// Remove current user.
-			if ( in_array( $this->get_curUser()->user_login, $users ) ) {
-				unset( $users[ array_search( $this->get_curUser()->user_login, $users ) ] );
+			if ( in_array( $this->get_curUser()->user_login, $users, true ) ) {
+				unset( $users[ array_search( $this->get_curUser()->user_login, $users, true ) ] );
 			}
 
 			// Convert login to WP_User objects and filter them for superior admins.
 			foreach ( $users as $key => $user_login ) {
 				$user = get_user_by( 'login', $user_login );
 				// Compare user ID with superior admins array.
-				if ( $user && ! in_array( $user->ID, $superior_admins ) ) {
+				if ( $user && ! in_array( (int) $user->ID, $superior_admins, true ) ) {
 					$users[ $key ] = $user;
 				} else {
 					unset( $users[ $key ] );
@@ -452,7 +453,6 @@ final class VAA_View_Admin_As_Store
 			 * @since  1.6.3
 			 */
 			if ( is_multisite() && ! $is_superior_admin ) {
-				$super_admins = get_super_admins();
 				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
 
 					// Escape usernames just to be sure.
@@ -524,7 +524,7 @@ final class VAA_View_Admin_As_Store
 				 * @See    wp-includes/capabilities.php >> is_super_admin()
 				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
 				 */
-				if ( is_multisite() && in_array( $user->user_login, (array) get_super_admins() ) ) {
+				if ( is_multisite() && in_array( $user->user_login, (array) $super_admins, true ) ) {
 					// Remove super admins for multisites.
 					unset( $users[ $user_key ] );
 					continue;
@@ -726,11 +726,11 @@ final class VAA_View_Admin_As_Store
 		}
 		foreach ( $settings as $setting => $value ) {
 			// Only allow the settings when it exists in the defaults and the value exists in the allowed settings.
-			if ( array_key_exists( $setting, $defaults ) && in_array( $value, $allowed[ $setting ] ) ) {
+			if ( array_key_exists( $setting, $defaults ) && in_array( $value, $allowed[ $setting ], true ) ) {
 				$current[ $setting ] = $value;
 				// Some settings need a reset.
-				if ( in_array( $setting, array( 'view_mode' ) ) ) {
-					View_Admin_As( $this )->view()->reset_view();
+				if ( in_array( $setting, array( 'view_mode' ), true ) ) {
+					view_admin_as( $this )->view()->reset_view();
 				}
 			}
 		}
@@ -771,7 +771,7 @@ final class VAA_View_Admin_As_Store
 			if ( ! array_key_exists( $setting, $defaults ) ) {
 				// We don't have such a setting.
 				unset( $settings[ $setting ] );
-			} elseif ( ! in_array( $value, $allowed[ $setting ] ) ) {
+			} elseif ( ! in_array( $value, $allowed[ $setting ], true ) ) {
 				// Set it to default.
 				$settings[ $setting ] = $defaults[ $setting ];
 			}
@@ -1350,7 +1350,7 @@ final class VAA_View_Admin_As_Store
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
+			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ) ),
 			null
 		);
 	}
@@ -1365,7 +1365,7 @@ final class VAA_View_Admin_As_Store
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
+			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ) ),
 			null
 		);
 	}
@@ -1381,7 +1381,7 @@ final class VAA_View_Admin_As_Store
 	 */
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
-			get_class( $this ) . "::{$method}",
+			esc_html( get_class( $this ) . "::{$method}" ),
 			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);

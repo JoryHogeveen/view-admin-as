@@ -94,7 +94,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		if ( ! is_admin_bar_showing()
 		     // @since  1.6.2  Check for customizer preview.
 		     && ! VAA_API::is_customize_preview()
-		     && ( 'no' == $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_viewAs() )
+		     && ( 'no' === $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_viewAs() )
 		) {
 
 			self::$showing = true;
@@ -126,7 +126,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		do_action( 'vaa_toolbar_menu', $this, 'top-secondary' );
 
 		$toolbar_classes = array_map( 'esc_attr', apply_filters( 'vaa_toolbar_classes', array() ) );
-		echo '<div id="vaa_toolbar" class="' . implode( ' ', $toolbar_classes ) . '">';
+		echo '<div id="vaa_toolbar" class="' . esc_attr( implode( ' ', $toolbar_classes ) ) . '">';
 
 		$this->render();
 
