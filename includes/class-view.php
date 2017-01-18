@@ -455,7 +455,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		if ( ! is_numeric( $user_id ) || $user_id != $this->store->get_selectedUser()->ID ) {
 			return $allcaps;
 		}
-		return $this->get_selectedCaps();
+		return $this->store->get_selectedCaps();
 	}
 
 	/**
@@ -518,11 +518,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$view_as = $this->validate_view_as_data( json_decode( stripslashes( $_POST['view_admin_as'] ), true ) );
 
 		// Stop selecting the same view!
-		if ( 1 === count( $this->get_viewAs() )
+		if ( 1 === count( $this->store->get_viewAs() )
 		    && (
-		       ( isset( $view_as['role'] ) && ( $this->get_viewAs( 'role' ) && $this->get_viewAs( 'role' ) == $view_as['role'] ) )
-		    || ( isset( $view_as['user'] ) && ( $this->get_viewAs( 'user' ) && $this->get_viewAs( 'user' ) == $view_as['user'] ) )
-		    || ( isset( $view_as['visitor'] ) && ( $this->get_viewAs( 'visitor' ) ) )
+		       ( isset( $view_as['role'] ) && ( $this->store->get_viewAs( 'role' ) && $this->store->get_viewAs( 'role' ) == $view_as['role'] ) )
+		    || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs( 'user' ) && $this->store->get_viewAs( 'user' ) == $view_as['user'] ) )
+		    || ( isset( $view_as['visitor'] ) && ( $this->store->get_viewAs( 'visitor' ) ) )
 		    )
 		) {
 			wp_send_json_error( array(
@@ -582,8 +582,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		else {
 			// Maybe a module?
 			foreach ( $view_as as $key => $data ) {
-				if ( array_key_exists( $key, $this->get_modules() ) ) {
-					$module = $this->get_modules( $key );
+				if ( array_key_exists( $key, $this->vaa->get_modules() ) ) {
+					$module = $this->vaa->get_modules( $key );
 					if ( is_callable( array( $module, 'ajax_handler' ) ) ) {
 						$success = $module->ajax_handler( $data );
 						if ( ! is_bool( $success ) && ! empty( $success ) ) {
@@ -821,7 +821,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$allowed_keys = array( 'setting', 'user_setting', 'reset', 'caps', 'role', 'user', 'visitor' );
 
 		// Add module keys to the allowed keys.
-		foreach ( $this->get_modules() as $key => $val ) {
+		foreach ( $this->vaa->get_modules() as $key => $val ) {
 			$allowed_keys[] = $key;
 		}
 

@@ -82,8 +82,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public function vaa_init() {
 
 		// If the amount of items (roles and users combined) is more than 15 users, group them under their roles.
-		if ( "yes" === $this->get_userSettings( 'force_group_users' )
-			 || 15 < ( count( $this->get_users() ) + count( $this->get_roles() ) ) ) {
+		if ( "yes" === $this->store->get_userSettings( 'force_group_users' )
+			 || 15 < ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) ) ) {
 			$this->groupUserRoles = true;
 			$this->searchUsers = true;
 		}
@@ -137,27 +137,27 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$icon = 'dashicons-hidden';
 		$title = __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
 
-		if ( $this->get_viewAs() ) {
+		if ( $this->store->get_viewAs() ) {
 			$icon = 'dashicons-visibility';
 		}
 
-		if ( $this->get_viewAs( 'caps' ) ) {
+		if ( $this->store->get_viewAs( 'caps' ) ) {
 			$title = __( 'Modified view', VIEW_ADMIN_AS_DOMAIN );
 		}
-		if ( $this->get_viewAs( 'role' ) ) {
+		if ( $this->store->get_viewAs( 'role' ) ) {
 			$title = __( 'Viewing as role', VIEW_ADMIN_AS_DOMAIN ) . ': '
-			         . translate_user_role( $this->get_roles( $this->get_viewAs( 'role' ) )->name );
+			         . translate_user_role( $this->store->get_roles( $this->store->get_viewAs( 'role' ) )->name );
 		}
-		if ( $this->get_viewAs( 'user' ) ) {
+		if ( $this->store->get_viewAs( 'user' ) ) {
 			$selected_user_roles = array();
-			foreach ( $this->get_selectedUser()->roles as $role ) {
-				$selected_user_roles[] = translate_user_role( $this->get_roles( $role )->name );
+			foreach ( $this->store->get_selectedUser()->roles as $role ) {
+				$selected_user_roles[] = translate_user_role( $this->store->get_roles( $role )->name );
 			}
 			$title = __( 'Viewing as user', VIEW_ADMIN_AS_DOMAIN ) . ': '
-			         . $this->get_selectedUser()->data->display_name
+			         . $this->store->get_selectedUser()->data->display_name
 			         . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 		}
-		if ( $this->get_viewAs( 'visitor' ) ) {
+		if ( $this->store->get_viewAs( 'visitor' ) ) {
 			$title = __( 'Viewing as site visitor', VIEW_ADMIN_AS_DOMAIN );
 		}
 
@@ -169,14 +169,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 * @param  bool|array  $viewAs  The view data.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_viewing_as_title', $title, $this->get_viewAs() );
+		$title = apply_filters( 'vaa_admin_bar_viewing_as_title', $title, $this->store->get_viewAs() );
 
 		if ( empty( $root ) ) {
 			$root = 'top-secondary';
-			if ( $this->get_userSettings( 'admin_menu_location' )
-			     && in_array( $this->get_userSettings( 'admin_menu_location' ), $this->get_allowedUserSettings( 'admin_menu_location' ) )
+			if ( $this->store->get_userSettings( 'admin_menu_location' )
+			     && in_array( $this->store->get_userSettings( 'admin_menu_location' ), $this->store->get_allowedUserSettings( 'admin_menu_location' ) )
 			) {
-				$root = $this->get_userSettings( 'admin_menu_location' );
+				$root = $this->store->get_userSettings( 'admin_menu_location' );
 			}
 		}
 
@@ -204,10 +204,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_menu_before', $admin_bar, self::$root );
 
 		// Add reset button.
-		if ( $this->get_viewAs() ) {
+		if ( $this->store->get_viewAs() ) {
 			$rel = 'reset';
 			$name = 'reset-view';
-			if ( 'single' === $this->get_userSettings( 'view_mode' ) ) {
+			if ( 'single' === $this->store->get_userSettings( 'view_mode' ) ) {
 				$rel = 'reload';
 				$name = 'reload';
 			}
@@ -378,7 +378,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'parent' => $root,
 			'title'  => self::do_select( array(
 				'name'        => $root . '-admin-menu-location',
-				'value'       => $this->get_userSettings( 'admin_menu_location' ),
+				'value'       => $this->store->get_userSettings( 'admin_menu_location' ),
 				'label'       => __( 'Location', VIEW_ADMIN_AS_DOMAIN ) . ': &nbsp; ',
 				'description' => __( 'Change the location of this menu node', VIEW_ADMIN_AS_DOMAIN ),
 				'values'      => array(
@@ -391,6 +391,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 						'label' => __( 'My account', VIEW_ADMIN_AS_DOMAIN ),
 					),
 				),
+				//'auto_showhide_desc' => true
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -403,7 +404,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'parent' => $root,
 			'title'  => self::do_radio( array(
 				'name'     => $root . '-view-mode',
-				'value'    => $this->get_userSettings( 'view_mode' ),
+				'value'    => $this->store->get_userSettings( 'view_mode' ),
 				'values'   => array(
 					array(
 						'compare'     => 'browse',
@@ -416,6 +417,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 						'description' => __( 'Choose view on every pageload. This setting doesn\'t store views', VIEW_ADMIN_AS_DOMAIN ),
 					),
 				),
+				//'auto_showhide_desc' => true
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -428,10 +430,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'parent' => $root,
 			'title'  => self::do_checkbox( array(
 				'name'        => $root . '-hide-front',
-				'value'       => $this->get_userSettings( 'hide_front' ),
+				'value'       => $this->store->get_userSettings( 'hide_front' ),
 				'compare'     => 'yes',
 				'label'       => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN ),
+				//'auto_showhide_desc' => true,
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -451,10 +454,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'parent' => $root,
 				'title'  => self::do_checkbox( array(
 					'name'        => $root . '-freeze-locale',
-					'value'       => $this->get_userSettings( 'freeze_locale' ),
+					'value'       => $this->store->get_userSettings( 'freeze_locale' ),
 					'compare'     => 'yes',
 					'label'       => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
 					'description' => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN ),
+					//'auto_showhide_desc' => true,
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -468,16 +472,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 *
 		 * @since   1.5.2
 		 */
-		if ( true !== $this->groupUserRoles || 15 >= ( count( $this->get_users() ) + count( $this->get_roles() ) ) ) {
+		if ( true !== $this->groupUserRoles || 15 >= ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) ) ) {
 			$admin_bar->add_node( array(
 				'id'     => $root . '-force-group-users',
 				'parent' => $root,
 				'title'  => self::do_checkbox( array(
 					'name'        => $root . '-force-group-users',
-					'value'       => $this->get_userSettings( 'force_group_users' ),
+					'value'       => $this->store->get_userSettings( 'force_group_users' ),
 					'compare'     => 'yes',
 					'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
 					'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
+					//'auto_showhide_desc' => true,
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -522,7 +527,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		$this->store->store_caps();
 
-		if ( ! $this->get_caps() || ! count( $this->get_caps() ) ) {
+		if ( ! $this->store->get_caps() || ! count( $this->store->get_caps() ) ) {
 			return;
 		}
 
@@ -559,7 +564,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, self::$root );
 
 		$caps_quickselect_class = '';
-		if ( $this->get_viewAs( 'caps' ) ) {
+		if ( $this->store->get_viewAs( 'caps' ) ) {
 			$caps_quickselect_class .= ' current';
 		}
 		$admin_bar->add_node( array(
@@ -635,7 +640,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				),
 			);
 		}
-		foreach ( $this->get_roles() as $role_key => $role ) {
+		foreach ( $this->store->get_roles() as $role_key => $role ) {
 			$role_select_options[] = array(
 				'compare' => esc_attr( $role_key ),
 				'label'   => '= ' . translate_user_role( $role->name ),
@@ -685,11 +690,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		) );
 
 		$caps_quickselect_content = '';
-		foreach ( $this->get_caps() as $cap_name => $cap_val ) {
+		foreach ( $this->store->get_caps() as $cap_name => $cap_val ) {
 			$class = 'vaa-cap-item';
 			$checked = false;
 			// check if we've selected a capability view and we've changed some capabilities.
-			$selected_caps = $this->get_viewAs( 'caps' );
+			$selected_caps = $this->store->get_viewAs( 'caps' );
 			if ( isset( $selected_caps[ $cap_name ] ) ) {
 				if ( 1 == $selected_caps[ $cap_name ] ) {
 					$checked = true;
@@ -760,7 +765,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		$this->store->store_roles();
 
-		if ( ! $this->get_roles() || ! count( $this->get_roles() ) ) {
+		if ( ! $this->store->get_roles() || ! count( $this->store->get_roles() ) ) {
 			return;
 		}
 
@@ -797,7 +802,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_roles_before', $admin_bar, self::$root );
 
 		// Add the roles.
-		foreach ( $this->get_roles() as $role_key => $role ) {
+		foreach ( $this->store->get_roles() as $role_key => $role ) {
 			$parent = $root;
 			$href   = '#';
 			$class  = 'vaa-role-item';
@@ -807,12 +812,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				// make sure items are aligned properly when some roles don't have users.
 				$class .= ' vaa-menupop';
 				// Check if the current view is a user with this role.
-				if ( $this->get_viewAs( 'user' ) && $this->get_selectedUser() && in_array( $role_key, $this->get_selectedUser()->roles ) ) {
+				if ( $this->store->get_viewAs( 'user' ) && $this->store->get_selectedUser() && in_array( $role_key, $this->store->get_selectedUser()->roles ) ) {
 					$class .= ' current-parent';
 				}
 				// If there are users with this role, add a counter.
 				$user_count = 0;
-				foreach ( $this->get_users() as $user ) {
+				foreach ( $this->store->get_users() as $user ) {
 					if ( in_array( $role_key, $user->roles ) ) {
 						$user_count++;
 					}
@@ -822,9 +827,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				}
 			}
 			// Check if this role is the current view.
-			if ( $this->get_viewAs( 'role' ) && $this->get_viewAs( 'role' ) == strtolower( $role->name ) ) {
+			if ( $this->store->get_viewAs( 'role' ) && $this->store->get_viewAs( 'role' ) == strtolower( $role->name ) ) {
 				$class .= ' current';
-				if ( 1 === count( $this->get_viewAs() ) ) {
+				if ( 1 === count( $this->store->get_viewAs() ) ) {
 					$href = false;
 				}
 			}
@@ -870,7 +875,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		static $done;
 		if ( $done ) return;
 
-		if ( ! $this->get_users() || ! count( $this->get_users() ) ) {
+		if ( ! $this->store->get_users() || ! count( $this->store->get_users() ) ) {
 			return;
 		}
 
@@ -923,15 +928,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		}
 
 		// Add the users.
-		foreach ( $this->get_users() as $user_key => $user ) {
+		foreach ( $this->store->get_users() as $user_key => $user ) {
 			$parent = $root;
 			$href   = '#';
 			$class  = 'vaa-user-item';
 			$title  = $user->data->display_name;
 			// Check if this user is the current view.
-			if ( $this->get_viewAs( 'user' ) && $this->get_viewAs( 'user' ) == $user->data->ID ) {
+			if ( $this->store->get_viewAs( 'user' ) && $this->store->get_viewAs( 'user' ) == $user->data->ID ) {
 				$class .= ' current';
-				if ( 1 === count( $this->get_viewAs() ) ) {
+				if ( 1 === count( $this->store->get_viewAs() ) ) {
 					$href = false;
 				}
 			}
@@ -954,7 +959,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				}
 			} else {
 				// Users displayed as normal.
-				$all_roles = $this->get_roles();
+				$all_roles = $this->store->get_roles();
 				$user_roles = array();
 				// Add the roles of this user in the name.
 				foreach ( $user->roles as $role ) {
@@ -1457,7 +1462,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  VAA_View_Admin_As_Admin_Bar
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
+		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self( $caller );
 			}

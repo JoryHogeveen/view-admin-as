@@ -518,15 +518,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		$roles = array();
 		if ( is_array( $role ) ) {
 			foreach ( $role as $role_name ) {
-				if ( array_key_exists( $role_name, $this->get_roles() ) ) {
+				if ( array_key_exists( $role_name, $this->store->get_roles() ) ) {
 					$roles[] = $role_name;
 				}
 			}
 		} else {
-			if ( array_key_exists( $role, $this->get_roles() ) ) {
+			if ( array_key_exists( $role, $this->store->get_roles() ) ) {
 				$roles[] = $role;
 			} elseif ( $role == 'all' ) {
-				foreach ( $this->get_roles() as $role_name => $val ) {
+				foreach ( $this->store->get_roles() as $role_name => $val ) {
 					$roles[] = $role_name;
 				}
 			}
@@ -556,7 +556,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	private function init_store_role_defaults() {
-		if ( $this->get_viewAs( 'role' ) && $this->is_enabled() ) {
+		if ( $this->store->get_viewAs( 'role' ) && $this->is_enabled() ) {
 			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
 			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
 		}
@@ -584,8 +584,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  mixed
 	 */
 	public function filter_get_user_metadata( $null, $object_id, $meta_key ) {
-		if ( true === $this->compare_metakey( $meta_key ) && $object_id == $this->get_curUser()->ID ) {
-			$new_meta = $this->get_role_defaults( $this->get_viewAs( 'role' ), $meta_key );
+		if ( true === $this->compare_metakey( $meta_key ) && $object_id == $this->store->get_curUser()->ID ) {
+			$new_meta = $this->get_role_defaults( $this->store->get_viewAs( 'role' ), $meta_key );
 			// Do not check $single, this logic is in wp-includes/meta.php line 487.
 			return array( $new_meta );
 		}
@@ -614,8 +614,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  mixed
 	 */
 	public function filter_update_user_metadata( $null, $object_id, $meta_key, $meta_value ) {
-		if ( true === $this->compare_metakey( $meta_key ) && $object_id == $this->get_curUser()->ID ) {
-			$this->update_role_defaults( $this->get_viewAs( 'role' ), $meta_key, $meta_value );
+		if ( true === $this->compare_metakey( $meta_key ) && $object_id == $this->store->get_curUser()->ID ) {
+			$this->update_role_defaults( $this->store->get_viewAs( 'role' ), $meta_key, $meta_value );
 			return false; // Do not update current user meta.
 		}
 		return $null; // Go on as normal.
@@ -737,7 +737,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 		foreach ( $data as $role => $role_data ) {
 			// Make sure the role exists.
-			if ( array_key_exists( $role, $this->get_roles() ) ) {
+			if ( array_key_exists( $role, $this->store->get_roles() ) ) {
 				// Add the role to the new defaults.
 				$new_defaults[ $role ] = array();
 				foreach ( $role_data as $data_key => $data_value ) {
@@ -1077,14 +1077,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 			)
 		);
-		foreach ( $this->get_roles() as $role_key => $role ) {
+		foreach ( $this->store->get_roles() as $role_key => $role ) {
 			$role_select_options[] = array(
 				'value' => esc_attr( $role_key ),
 				'label' => translate_user_role( $role->name ),
 			);
 		}
 
-		if ( $this->get_users() ) {
+		if ( $this->store->get_users() ) {
 			// Users select.
 			$admin_bar->add_group( array(
 				'id'     => $root . '-bulk-users',
@@ -1117,9 +1117,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 			$bulk_users_select_content = '';
-			foreach ( $this->get_users() as $user ) {
+			foreach ( $this->store->get_users() as $user ) {
 				foreach ( $user->roles as $role ) {
-					$role_data = $this->get_roles( $role );
+					$role_data = $this->store->get_roles( $role );
 					if ( $role_data instanceof WP_Role ) {
 						$role_name = translate_user_role( $role_data->name );
 						$bulk_users_select_content .=
@@ -1158,7 +1158,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			) );
 		}
 
-		if ( $this->get_users() && $this->get_roles() ) {
+		if ( $this->store->get_users() && $this->store->get_roles() ) {
 			// Roles select.
 			$admin_bar->add_group( array(
 				'id'     => $root . '-bulk-roles',
@@ -1205,7 +1205,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			) );
 		}
 
-		if ( $this->get_roles() ) {
+		if ( $this->store->get_roles() ) {
 
 			/*
 			 * Export actions.

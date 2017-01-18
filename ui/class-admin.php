@@ -75,15 +75,15 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 			$link = admin_url();
 		}
 
-		if ( $user->ID === $this->get_curUser()->ID ) {
+		if ( $user->ID === $this->store->get_curUser()->ID ) {
 			// Add reset link if it is the current user and a view is selected.
-			if ( $this->get_viewAs() ) {
+			if ( $this->store->get_viewAs() ) {
 				$link = VAA_API::get_reset_link( $link );
 			} else {
 				$link = false;
 			}
 		}
-		elseif ( $this->get_userids( $user->ID ) ) {
+		elseif ( $this->store->get_userids( $user->ID ) ) {
 			$params = array(
 				'action'        => 'view_admin_as',
 				'view_admin_as' => htmlentities( json_encode( array( 'user' => $user->ID ) ) ),

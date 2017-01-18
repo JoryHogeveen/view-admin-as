@@ -163,58 +163,69 @@ abstract class VAA_View_Admin_As_Class_Base
 		return $caps;
 	}
 
-	/*
-	 * VAA Store Getters.
-	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
-	 * @todo Magic method __call()?
+	/**
+	 * Get the option key as used in the options table.
+	 * @return  string
 	 */
-	protected function get_curUser()                          { return $this->store->get_curUser(); }
-	protected function get_curUserSession()                   { return $this->store->get_curUserSession(); }
-	protected function get_viewAs( $key = null )              { return $this->store->get_viewAs( $key ); }
-	protected function get_caps( $key = null )                { return $this->store->get_caps( $key ); }
-	protected function get_roles( $key = null )               { return $this->store->get_roles( $key ); }
-	protected function get_users( $key = null )               { return $this->store->get_users( $key ); }
-	protected function get_userids( $key = null )             { return $this->store->get_userids( $key ); }
-	protected function get_selectedCaps( $key = null )        { return $this->store->get_selectedCaps( $key ); }
-	protected function get_selectedUser()                     { return $this->store->get_selectedUser(); }
-	protected function get_settings( $key = null )            { return $this->store->get_settings( $key ); }
-	protected function get_userSettings( $key = null )        { return $this->store->get_userSettings( $key ); }
-	protected function get_defaultSettings( $key = null )     { return $this->store->get_defaultSettings( $key ); }
-	protected function get_allowedSettings( $key = null )     { return $this->store->get_allowedSettings( $key ); }
-	protected function get_defaultUserSettings( $key = null ) { return $this->store->get_defaultUserSettings( $key ); }
-	protected function get_allowedUserSettings( $key = null ) { return $this->store->get_allowedUserSettings( $key ); }
-	protected function get_version()                          { return $this->store->get_version(); }
-	protected function get_dbVersion()                        { return $this->store->get_dbVersion(); }
-
-	/*
-	 * VAA Getters.
-	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
-	 */
-	protected function get_modules( $key = null ) { return $this->vaa->get_modules( $key ); }
-
-	/*
-	 * Native Getters.
-	 */
-	public function get_optionKey()                       { return (string) $this->optionKey; }
-	public function get_optionData( $key = null )         { return VAA_API::get_array_data( $this->optionData, $key ); }
-	public function get_scriptLocalization( $key = null ) { return VAA_API::get_array_data( $this->scriptLocalization, $key ); }
-
-	/*
-	 * Native Setters.
-	 */
-	protected function set_optionKey( $var ) { $this->optionKey = (string) $var; }
-	protected function set_optionData( $var, $key = null, $append = false ) {
-		$this->optionData = VAA_API::set_array_data( $this->optionData, $var, $key, $append );
-	}
-	protected function set_scriptLocalization( $var, $key = null, $append = false ) {
-		$this->scriptLocalization = VAA_API::set_array_data( $this->scriptLocalization, $var, $key, $append );
+	public function get_optionKey() {
+		return (string) $this->optionKey;
 	}
 
-	/*
-	 * Native Update.
+	/**
+	 * Get the class option data.
+	 * @param   string  $key     (optional) Data key.
+	 * @return  mixed
 	 */
-	protected function update_optionData( $var, $key = null, $append = false ) {
-		$this->set_optionData( $var, $key, $append );
+	public function get_optionData( $key = null )         {
+		return VAA_API::get_array_data( $this->optionData, $key );
+	}
+
+	/**
+	 * Get the class localisation strings
+	 * @param   string  $key     (optional) Data key.
+	 * @return  mixed
+	 */
+	public function get_scriptLocalization( $key = null ) {
+		return VAA_API::get_array_data( $this->scriptLocalization, $key );
+	}
+
+	/**
+	 * Set the option key as used in the options table.
+	 * @return  string
+	 */
+	protected function set_optionKey( $val ) { $this->optionKey = (string) $val; }
+
+	/**
+	 * Set the class option data.
+	 * @param   mixed   $val     Data.
+	 * @param   string  $key     (optional) Data key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	protected function set_optionData( $val, $key = null, $append = false ) {
+		$this->optionData = VAA_API::set_array_data( $this->optionData, $val, $key, $append );
+	}
+
+	/**
+	 * Set the class localisation strings
+	 * @param   mixed   $val     Data.
+	 * @param   string  $key     (optional) Data key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	protected function set_scriptLocalization( $val, $key = null, $append = false ) {
+		$this->scriptLocalization = VAA_API::set_array_data( $this->scriptLocalization, $val, $key, $append );
+	}
+
+	/**
+	 * Update the class option data.
+	 * @param   mixed   $val     Data.
+	 * @param   string  $key     (optional) Data key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  bool
+	 */
+	protected function update_optionData( $val, $key = null, $append = false ) {
+		$this->set_optionData( $val, $key, $append );
 		return update_option( $this->get_optionKey(), $this->optionData );
 	}
 

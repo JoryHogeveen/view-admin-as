@@ -411,6 +411,7 @@ final class VAA_View_Admin_As_Store
 			}
 
 			// @todo Maybe build network super admins where clause for SQL instead of `get_user_by`.
+
 			/*
 			if ( ! empty( $users ) && $include = implode( ',', array_map( 'strval', $users ) ) ) {
 				$user_query['where'] .= " AND users.user_login IN ({$include})";
@@ -454,9 +455,9 @@ final class VAA_View_Admin_As_Store
 				$super_admins = get_super_admins();
 				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
 
-					// Escape usernames just to be sure
+					// Escape usernames just to be sure.
 					$super_admins = array_filter( $super_admins, 'validate_username' );
-					// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4
+					// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4.
 					$super_admins = array_filter( $super_admins );
 
 					$exclude_siblings = "'" . implode( "','", $super_admins ) . "'";
@@ -523,7 +524,6 @@ final class VAA_View_Admin_As_Store
 				 * @See    wp-includes/capabilities.php >> is_super_admin()
 				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
 				 */
-				//if ( is_super_admin( $user->ID ) ) {
 				if ( is_multisite() && in_array( $user->user_login, (array) get_super_admins() ) ) {
 					// Remove super admins for multisites.
 					unset( $users[ $user_key ] );
@@ -603,7 +603,7 @@ final class VAA_View_Admin_As_Store
 				// Reset the array to make sure we find a key.
 				// Only one key is needed to add the user to the list of available users.
 				reset( $user->roles );
-				if ( $role == current( $user->roles ) ) {
+				if ( current( $user->roles ) === $role ) {
 					$tmp_users[] = $user;
 				}
 			}
@@ -821,14 +821,14 @@ final class VAA_View_Admin_As_Store
 		$id = false;
 		if ( is_numeric( $user_id ) ) {
 			// Delete hooks.
-			$id = $user_id;
+			$id = (int) $user_id;
 		} elseif ( isset( $user->ID ) ) {
 			// Login/Logout hooks.
-			$id = $user->ID;
+			$id = (int) $user->ID;
 		}
 		if ( $id ) {
 			$success = true;
-			if ( $reset_only == true ) {
+			if ( $reset_only ) {
 				// Reset db metadata (returns: true on success, false on failure).
 				if ( get_user_meta( $id, $this->get_userMetaKey() ) ) {
 					$success = update_user_meta( $id, $this->get_userMetaKey(), false );
@@ -838,7 +838,7 @@ final class VAA_View_Admin_As_Store
 				$success = delete_user_meta( $id, $this->get_userMetaKey() );
 			}
 			// Update current metadata if it is the current user.
-			if ( $success && $this->get_curUser()->ID == $id ){
+			if ( $success && (int) $this->get_curUser()->ID === $id ){
 				$this->set_userMeta( false );
 			}
 
@@ -860,7 +860,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  bool
 	 */
 	public static function is_super_admin( $user_id = null ) {
-		if ( null === $user_id || get_current_user_id() == $user_id ) {
+		if ( null === $user_id || (int) get_current_user_id() === (int) $user_id ) {
 			return self::$isCurUserSuperAdmin;
 		}
 		return is_super_admin( $user_id );
@@ -881,103 +881,430 @@ final class VAA_View_Admin_As_Store
 		return VAA_API::get_array_data( self::$curUserData, $key );
 	}
 
-	/*
-	 * Getters.
+	/**
+	 * Get current user.
+	 * @return  WP_User  $curUser  Current user object.
 	 */
-	public function get_curUser()                          { return $this->curUser; }
-	public function get_curUserSession()                   { return (string) $this->curUserSession; }
-	public function get_viewAs( $key = null )              { return VAA_API::get_array_data( $this->viewAs, $key ); }
-	public function get_caps( $key = null )                { return VAA_API::get_array_data( $this->caps, $key ); }
-	public function get_roles( $key = null )               { return VAA_API::get_array_data( $this->roles, $key ); }
-	public function get_users( $key = null )               { return VAA_API::get_array_data( $this->users, $key ); }
-	public function get_userids( $key = null )             { return VAA_API::get_array_data( $this->userids, $key ); }
-	public function get_selectedCaps( $key = null )        { return VAA_API::get_array_data( $this->selectedCaps, $key ); }
-	public function get_selectedUser()                     { return $this->selectedUser; }
-	public function get_optionKey()                        { return (string) $this->optionKey; }
-	public function get_optionData( $key = null )          { return VAA_API::get_array_data( $this->optionData, $key ); }
-	public function get_userMetaKey()                      { return (string) $this->userMetaKey; }
-	public function get_userMeta( $key = null )            { return VAA_API::get_array_data( $this->userMeta, $key ); }
-	public function get_defaultSettings( $key = null )     { return VAA_API::get_array_data( $this->defaultSettings, $key ); }
-	public function get_defaultUserSettings( $key = null ) { return VAA_API::get_array_data( $this->defaultUserSettings, $key ); }
-	public function get_allowedSettings( $key = null )     { return (array) VAA_API::get_array_data( $this->allowedSettings, $key ); }
-	public function get_allowedUserSettings( $key = null ) { return (array) VAA_API::get_array_data( $this->allowedUserSettings, $key ); }
+	public function get_curUser() {
+		return $this->curUser;
+	}
 
-	public function get_nonce( $parsed = false ) {
+	/**
+	 * Get current user session.
+	 * @return  string
+	 */
+	public function get_curUserSession() {
+		return (string) $this->curUserSession;
+	}
+
+	/**
+	 * Get view data (meta).
+	 * @param   string  $key  Key for array.
+	 * @return  mixed
+	 */
+	public function get_viewAs( $key = null ) {
+		return VAA_API::get_array_data( $this->viewAs, $key );
+	}
+
+	/**
+	 * Get available capabilities.
+	 * @param   string  $key  Cap name.
+	 * @return  mixed   Array of capabilities or a single capability value.
+	 */
+	public function get_caps( $key = null ) {
+		return VAA_API::get_array_data( $this->caps, $key );
+	}
+
+	/**
+	 * Get available roles.
+	 * @param   string  $key  Role name.
+	 * @return  mixed   Array of role objects or a single role object.
+	 */
+	public function get_roles( $key = null ) {
+		return VAA_API::get_array_data( $this->roles, $key );
+	}
+
+	/**
+	 * Get available users.
+	 * @todo Key as user ID.
+	 * @param   string  $key  User key.
+	 * @return  mixed   Array of user objects or a single user object.
+	 */
+	public function get_users( $key = null ) {
+		return VAA_API::get_array_data( $this->users, $key );
+	}
+
+	/**
+	 * Get available users.
+	 * @param   string  $key  User key.
+	 * @return  mixed   Array of user display names or a single user display name.
+	 */
+	public function get_userids( $key = null ) {
+		return VAA_API::get_array_data( $this->userids, $key );
+	}
+
+	/**
+	 * Get selected capabilities of a view.
+	 * @param   string  $key  Cap name.
+	 * @return  mixed   Array of capabilities or a single capability value.
+	 */
+	public function get_selectedCaps( $key = null ) {
+		return VAA_API::get_array_data( $this->selectedCaps, $key );
+	}
+
+	/**
+	 * Get the selected user object of a view.
+	 * @return  WP_User
+	 */
+	public function get_selectedUser() {
+		return $this->selectedUser;
+	}
+
+	/**
+	 * Get the option key as used in the options table.
+	 * @return  string
+	 */
+	public function get_optionKey() {
+		return (string) $this->optionKey;
+	}
+
+	/**
+	 * Get the option data as used in the options table.
+	 * @param   string  $key  Key in the option array.
+	 * @return  mixed
+	 */
+	public function get_optionData( $key = null ) {
+		return VAA_API::get_array_data( $this->optionData, $key );
+	}
+
+	/**
+	 * Get the user meta key as used in the usermeta table.
+	 * @return  string
+	 */
+	public function get_userMetaKey() {
+		return (string) $this->userMetaKey;
+	}
+
+	/**
+	 * Get the user metadata as used in the usermeta table.
+	 * @param   string  $key  Key in the meta array.
+	 * @return  mixed
+	 */
+	public function get_userMeta( $key = null ) {
+		return VAA_API::get_array_data( $this->userMeta, $key );
+	}
+
+	/**
+	 * Get the default settings.
+	 * @param   string  $key  Setting key.
+	 * @return  mixed
+	 */
+	public function get_defaultSettings( $key = null ) {
+		return VAA_API::get_array_data( $this->defaultSettings, $key );
+	}
+
+	/**
+	 * Get the default user settings.
+	 * @param   string  $key  Setting key.
+	 * @return  mixed
+	 */
+	public function get_defaultUserSettings( $key = null ) {
+		return VAA_API::get_array_data( $this->defaultUserSettings, $key );
+	}
+
+	/**
+	 * Get the allowed settings.
+	 * @param   string  $key  Setting key.
+	 * @return  mixed
+	 */
+	public function get_allowedSettings( $key = null ) {
+		return (array) VAA_API::get_array_data( $this->allowedSettings, $key );
+	}
+
+	/**
+	 * Get the allowed user settings.
+	 * @param   string  $key  Setting key.
+	 * @return  mixed
+	 */
+	public function get_allowedUserSettings( $key = null ) {
+		return (array) VAA_API::get_array_data( $this->allowedUserSettings, $key );
+	}
+
+	/**
+	 * Get the nonce.
+	 * @param   string  $parsed  Return parsed nonce?
+	 * @return  string
+	 */
+	public function get_nonce( $parsed = null ) {
 		return ( $parsed ) ? $this->nonce_parsed : $this->nonce;
 	}
 
-	public function get_settings( $key = null ) {
-		return VAA_API::get_array_data( $this->validate_settings( $this->get_optionData( 'settings' ), 'global' ), $key );
-	}
-	public function get_userSettings( $key = null ) {
-		return VAA_API::get_array_data( $this->validate_settings( $this->get_userMeta( 'settings' ), 'user' ), $key );
-	}
-
-	public function get_version()                           { return strtolower( (string) VIEW_ADMIN_AS_VERSION ); }
-	public function get_dbVersion()                         { return strtolower( (string) VIEW_ADMIN_AS_DB_VERSION ); }
-
-	/*
-	 * Setters.
+	/**
+	 * Get the settings.
+	 * @param   string  $key  Setting key.
+	 * @return  mixed
 	 */
-	public function set_viewAs( $var, $key = null, $append = false ) { $this->viewAs = VAA_API::set_array_data( $this->viewAs, $var, $key, $append ); }
-	public function set_caps( $var, $key = null, $append = false )   { $this->caps   = VAA_API::set_array_data( $this->caps, $var, $key, $append ); }
-	public function set_roles( $var, $key = null, $append = false )  { $this->roles  = VAA_API::set_array_data( $this->roles, $var, $key, $append ); }
-	public function set_users( $var, $key = null, $append = false )  { $this->users  = VAA_API::set_array_data( $this->users, $var, $key, $append ); }
-	public function set_userids( $var )                              { $this->userids = array_map( 'strval', (array) $var ); }
-	public function set_curUser( $var )                              { $this->curUser = $var; }
-	public function set_curUserSession( $var )                       { $this->curUserSession = (string) $var; }
-	public function set_selectedUser( $var )                         { $this->selectedUser = $var; }
-	public function set_selectedCaps( $var )                         { $this->selectedCaps = array_filter( (array) $var ); }
-	public function set_defaultSettings( $var )                      { $this->defaultSettings = array_map( 'strval', (array) $var ); }
-	public function set_defaultUserSettings( $var )                  { $this->defaultUserSettings = array_map( 'strval', (array) $var ); }
-
-	public function set_nonce( $var ) {
-		$this->nonce = (string) $var;
-		$this->nonce_parsed = wp_create_nonce( (string) $var );
+	public function get_settings( $key = null ) {
+		return VAA_API::get_array_data(
+			$this->validate_settings(
+				$this->get_optionData( 'settings' ),
+				'global'
+			),
+			$key
+		);
 	}
 
-	public function set_allowedSettings( $var, $key = null, $append = false ) {
-		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $var, $key, $append );
+	/**
+	 * Get the user settings.
+	 * @param   string  $key  Setting key.
+	 * @return  mixed
+	 */
+	public function get_userSettings( $key = null ) {
+		return VAA_API::get_array_data(
+			$this->validate_settings(
+				$this->get_userMeta( 'settings' ),
+				'user'
+			),
+			$key
+		);
 	}
-	public function set_allowedUserSettings( $var, $key = null, $append = false ) {
-		$this->allowedUserSettings = VAA_API::set_array_data( $this->allowedUserSettings, $var, $key, $append );
+
+	/**
+	 * Get plugin version.
+	 * @return  string
+	 */
+	public function get_version() {
+		return strtolower( (string) VIEW_ADMIN_AS_VERSION );
 	}
-	public function set_settings( $var, $key = null, $append = false ) {
+
+	/**
+	 * Get plugin database version.
+	 * @return  string
+	 */
+	public function get_dbVersion() {
+		return strtolower( (string) VIEW_ADMIN_AS_DB_VERSION );
+	}
+
+	/**
+	 * Set the view data.
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) View key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_viewAs( $val, $key = null, $append = false ) {
+		$this->viewAs = VAA_API::set_array_data( $this->viewAs, $val, $key, $append );
+	}
+
+	/**
+	 * Set the available capabilities.
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) Cap key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_caps( $val, $key = null, $append = false ) {
+		$this->caps = VAA_API::set_array_data( $this->caps, $val, $key, $append );
+	}
+
+	/**
+	 * Set the available roles.
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) Role name.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_roles( $val, $key = null, $append = false )  {
+		$this->roles  = VAA_API::set_array_data( $this->roles, $val, $key, $append );
+	}
+
+	/**
+	 * Set the available users.
+	 * @todo Key as user ID.
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) User key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_users( $val, $key = null, $append = false )  {
+		$this->users  = VAA_API::set_array_data( $this->users, $val, $key, $append );
+	}
+
+	/**
+	 * Set the available user display names.
+	 * @param   array  $val  Array of available user ID's (key) and display names (value).
+	 * @return  void
+	 */
+	public function set_userids( $val ) {
+		$this->userids = array_map( 'strval', (array) $val );
+	}
+
+	/**
+	 * Set the current user object.
+	 * @param   WP_User  $val  User object.
+	 * @return  void
+	 */
+	public function set_curUser( $val ) {
+		$this->curUser = $val;
+	}
+
+	/**
+	 * Set the current user session.
+	 * @param   string  $val  User session ID.
+	 * @return  void
+	 */
+	public function set_curUserSession( $val ) {
+		$this->curUserSession = (string) $val;
+	}
+
+	/**
+	 * Set the selected user object for the current view.
+	 * @param   WP_User  $val  User object.
+	 * @return  void
+	 */
+	public function set_selectedUser( $val ) {
+		$this->selectedUser = $val;
+	}
+
+	/**
+	 * Set the selected capabilities for the current view.
+	 * @param   array  $val  Selected capabilities.
+	 * @return  void
+	 */
+	public function set_selectedCaps( $val ) {
+		$this->selectedCaps = array_filter( (array) $val );
+	}
+
+	/**
+	 * Set the default settings.
+	 * @param   array  $val  Settings.
+	 * @return  void
+	 */
+	public function set_defaultSettings( $val ) {
+		$this->defaultSettings = array_map( 'strval', (array) $val );
+	}
+
+	/**
+	 * Set the default user settings.
+	 * @param   array  $val  Settings.
+	 * @return  void
+	 */
+	public function set_defaultUserSettings( $val ) {
+		$this->defaultUserSettings = array_map( 'strval', (array) $val );
+	}
+
+	/**
+	 * Set the nonce.
+	 * Also sets a parsed version of the nonce with wp_create_nonce()
+	 * @param   string  $val  Nonce.
+	 * @return  void
+	 */
+	public function set_nonce( $val ) {
+		$this->nonce = (string) $val;
+		$this->nonce_parsed = wp_create_nonce( (string) $val );
+	}
+
+	/**
+	 * Set the allowed settings.
+	 * @param   mixed   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_allowedSettings( $val, $key = null, $append = false ) {
+		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $val, $key, $append );
+	}
+
+	/**
+	 * Set the allowed user settings.
+	 * @param   mixed   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_allowedUserSettings( $val, $key = null, $append = false ) {
+		$this->allowedUserSettings = VAA_API::set_array_data( $this->allowedUserSettings, $val, $key, $append );
+	}
+
+	/**
+	 * Set the settings.
+	 * @param   mixed   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_settings( $val, $key = null, $append = false ) {
 		$this->set_optionData(
 			$this->validate_settings(
-				VAA_API::set_array_data( $this->get_settings(), $var, $key, $append ),
+				VAA_API::set_array_data( $this->get_settings(), $val, $key, $append ),
 				'global'
 			),
 			'settings',
 			true
 		);
 	}
-	public function set_userSettings( $var, $key = null, $append = false ) {
+
+	/**
+	 * Set the user settings.
+	 * @param   mixed   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_userSettings( $val, $key = null, $append = false ) {
 		$this->set_userMeta(
 			$this->validate_settings(
-				VAA_API::set_array_data( $this->get_userSettings(), $var, $key, $append ),
+				VAA_API::set_array_data( $this->get_userSettings(), $val, $key, $append ),
 				'user'
 			),
 			'settings',
 			true
 		);
 	}
-	public function set_optionData( $var, $key = null, $append = false ) {
-		$this->optionData = VAA_API::set_array_data( $this->optionData, $var, $key, $append );
-	}
-	public function set_userMeta( $var, $key = null, $append = false ) {
-		$this->userMeta = VAA_API::set_array_data( $this->userMeta, $var, $key, $append );
+
+	/**
+	 * Set the plugin option data.
+	 * @param   mixed   $val     Data.
+	 * @param   string  $key     (optional) Data key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_optionData( $val, $key = null, $append = false ) {
+		$this->optionData = VAA_API::set_array_data( $this->optionData, $val, $key, $append );
 	}
 
-	/*
-	 * Update.
+	/**
+	 * Set the user metadata.
+	 * @param   mixed   $val     Data.
+	 * @param   string  $key     (optional) Data key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
 	 */
-	public function update_optionData( $var, $key = null, $append = false ) {
-		$this->set_optionData( $var, $key, $append );
+	public function set_userMeta( $val, $key = null, $append = false ) {
+		$this->userMeta = VAA_API::set_array_data( $this->userMeta, $val, $key, $append );
+	}
+
+	/**
+	 * Update the plugin option data.
+	 * @param   mixed   $val     Data.
+	 * @param   string  $key     (optional) Data key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  bool
+	 */
+	public function update_optionData( $val, $key = null, $append = false ) {
+		$this->set_optionData( $val, $key, $append );
 		return update_option( $this->get_optionKey(), $this->get_optionData() );
 	}
-	public function update_userMeta( $var, $key = null, $append = false ) {
-		$this->set_userMeta( $var, $key, $append );
+
+	/**
+	 * Update the user metadata.
+	 * @param   mixed   $val     Data.
+	 * @param   string  $key     (optional) Data key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  bool
+	 */
+	public function update_userMeta( $val, $key = null, $append = false ) {
+		$this->set_userMeta( $val, $key, $append );
 		return update_user_meta( $this->get_curUser()->ID, $this->get_userMetaKey(), $this->get_userMeta() );
 	}
 
