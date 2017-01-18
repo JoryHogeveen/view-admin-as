@@ -520,8 +520,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		// Stop selecting the same view!
 		if ( 1 === count( $this->store->get_viewAs() )
 		    && (
-		       ( isset( $view_as['role'] ) && ( $this->store->get_viewAs( 'role' ) && $this->store->get_viewAs( 'role' ) == $view_as['role'] ) )
-		    || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs( 'user' ) && $this->store->get_viewAs( 'user' ) == $view_as['user'] ) )
+		       ( isset( $view_as['role'] ) && ( $this->store->get_viewAs( 'role' ) && $this->store->get_viewAs( 'role' ) === $view_as['role'] ) )
+		    || ( isset( $view_as['user'] ) && ( $this->store->get_viewAs( 'user' ) && (int) $this->store->get_viewAs( 'user' ) === (int) $view_as['user'] ) )
 		    || ( isset( $view_as['visitor'] ) && ( $this->store->get_viewAs( 'visitor' ) ) )
 		    )
 		) {
@@ -604,7 +604,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			}
 		}
 
-		if ( true == $success ) {
+		if ( $success ) {
 			wp_send_json_success(); // ahw yeah.
 		} else {
 			wp_send_json_error( array(

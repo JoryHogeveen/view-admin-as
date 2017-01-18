@@ -279,7 +279,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @access  private
 	 * @return  array   $this->meta  The meta keys.
 	 */
-	private function get_meta() { return $this->meta; }
+	private function get_meta() {
+		return $this->meta;
+	}
 
 	/**
 	 * Set the metadata for meta compare.

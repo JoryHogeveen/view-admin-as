@@ -94,6 +94,8 @@ engines:
       # Disable: Line indented incorrectly; expected at least # tabs, found #
       Generic WhiteSpace ScopeIndent Incorrect:
         enabled: false
+      Generic WhiteSpace ScopeIndent IncorrectExact:
+        enabled: false
 ratings:
   paths:
   - "**.css"

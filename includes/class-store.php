@@ -838,7 +838,7 @@ final class VAA_View_Admin_As_Store
 				$success = delete_user_meta( $id, $this->get_userMetaKey() );
 			}
 			// Update current metadata if it is the current user.
-			if ( $success && (int) $this->get_curUser()->ID === $id ){
+			if ( $success && (int) $this->get_curUser()->ID === $id ) {
 				$this->set_userMeta( false );
 			}
 
@@ -1114,7 +1114,7 @@ final class VAA_View_Admin_As_Store
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_roles( $val, $key = null, $append = false )  {
+	public function set_roles( $val, $key = null, $append = false ) {
 		$this->roles  = VAA_API::set_array_data( $this->roles, $val, $key, $append );
 	}
 
@@ -1126,7 +1126,7 @@ final class VAA_View_Admin_As_Store
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_users( $val, $key = null, $append = false )  {
+	public function set_users( $val, $key = null, $append = false ) {
 		$this->users  = VAA_API::set_array_data( $this->users, $val, $key, $append );
 	}
 
