@@ -12,8 +12,55 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    #config:
+    checks:
+      # Disable: The class "" is not named in CamelCase
+      Controversial/CamelCaseClassName:
+        enabled: false
+      # Disable: The method "" is not named in CamelCase
+      Controversial/CamelCaseMethodName:
+        enabled: false
+  phpcodesniffer:
+    enabled: true
     config:
-      rulesets: "phpmd.xml"
+      standard: "Wordpress"
+    checks:
+      # Disable: Member variable "" is not in valid snake_case format
+      WordPress NamingConventions ValidVariableName MemberNotSnakeCase:
+        enabled: false
+      # Disable: Object property "" is not in valid snake_case format
+      WordPress NamingConventions ValidVariableName NotSnakeCaseMemberVar:
+        enabled: false
+      # Disable: Method name "" in class "" is not in snake case format, try ""
+      WordPress NamingConventions ValidFunctionName MethodNameInvalid:
+        enabled: false
+      # Disable: Opening brace should be on the same line as the declaration for class 
+      WordPress Classes ClassOpeningStatement BraceOnNewLine:
+        enabled: false
+      # Disable: Overriding WordPress globals is prohibited
+      WordPress Variables GlobalVariables OverrideProhibited:
+        enabled: false
+      # Disable: The $domain arg should be single a string literal, not "".
+      WordPress WP I18n NonSingularStringLiteralDomain:
+        enabled: false
+      # Disable: Inline comments must end in full-stops, exclamation marks, or question marks
+      Squiz Commenting InlineComment InvalidEndChar:
+        enabled: false
+      # Disable: Expected # spaces after parameter type; # found
+      Squiz Commenting FunctionComment SpacingAfterParamType:
+        enabled: false
+      # Disable: Parameter comment must end with a full stop
+      Squiz Commenting FunctionComment ParamCommentFullStop:
+        enabled: false
+      # Disable: This comment is #% valid code; is this commented out code?
+      Squiz PHP CommentedOutCode Found:
+        enabled: false
+      # Disable: There must be exactly one blank line before the tags in a doc comment
+      Generic Commenting DocComment SpacingBeforeTags:
+        enabled: false
+      # Disable: Inline control structures are not allowed
+      Generic ControlStructures InlineControlStructure NotAllowed:
+        enabled: false
 ratings:
   paths:
   - "**.css"
