@@ -26,10 +26,16 @@ engines:
       # Disable: The method init uses an else expression. Else is never necessary and you can simplify the code to work without else.
       CleanCode/ElseExpression:
         enabled: false
+      # Disable: The method "" has a boolean flag argument "", which is a certain sign of a Single Responsibility Principle violation.
+      CleanCode/BooleanArgumentFlag:
+        enabled: false
+      # Disable: Avoid using static access to class '' in method ''.
+      CleanCode/StaticAccess:
+        enabled: false
   phpcodesniffer:
     enabled: true
     config:
-      standard: "Wordpress"
+      standard: "Wordpress-Extra"
     checks:
       # Disable: Member variable "" is not in valid snake_case format
       WordPress NamingConventions ValidVariableName MemberNotSnakeCase:
@@ -48,9 +54,6 @@ engines:
         enabled: false
       # Disable: The $domain arg should be single a string literal, not "".
       WordPress WP I18n NonSingularStringLiteralDomain:
-        enabled: false
-      # Disable:  Usage of a direct database call is discouraged.
-      WordPress VIP DirectDatabaseQuery DirectQuery:
         enabled: false
       # Disable: Expected # spaces after parameter type; # found
       Squiz Commenting FunctionComment SpacingAfterParamType:
