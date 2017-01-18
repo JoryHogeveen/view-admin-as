@@ -2,22 +2,27 @@
 /**
  * View Admin As - Admin UI
  *
- * Admin UI hooks for View Admin As
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
- * @since   1.6
- * @version 1.6.3
+ * @package View_Admin_As
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 if ( ! class_exists( 'VAA_View_Admin_As_Admin' ) ) {
 
+/**
+ * Admin UI hooks for View Admin As
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ * @since   1.6
+ * @version 1.6.3
+ * @uses    VAA_View_Admin_As_Class_Base Extends class
+ */
 final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 {
 	/**
-	 * Plugin links
+	 * Plugin links.
 	 *
 	 * @since  1.6.1
 	 * @var    array
@@ -34,18 +39,18 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
-	 * Construct function
+	 * Construct function.
 	 *
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa
+	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
-		if ( $this->store->get_userSettings('view_mode') == 'browse' ) {
+		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
 			add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
 		}
 		add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
@@ -53,13 +58,13 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Filter function to add view-as links on user rows in users.php
+	 * Filter function to add view-as links on user rows in users.php.
 	 *
 	 * @since   1.6
-	 * @since   1.6.3   Check whether to place link + reset link for current user
+	 * @since   1.6.3   Check whether to place link + reset link for current user.
 	 * @access  public
-	 * @param   array   $actions
-	 * @param   object  $user  WP_User
+	 * @param   array    $actions  The existing actions.
+	 * @param   WP_User  $user     The user object.
 	 * @return  array
 	 */
 	public function filter_user_row_actions( $actions, $user ) {
@@ -71,7 +76,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 		}
 
 		if ( $user->ID === $this->get_curUser()->ID ) {
-			// Add reset link if it is the current user and a view is selected
+			// Add reset link if it is the current user and a view is selected.
 			if ( $this->get_viewAs() ) {
 				$link = VAA_API::get_reset_link( $link );
 			} else {
@@ -96,7 +101,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Adds a 'View Admin As: Reset view' link to the Meta sidebar widget if the admin bar is hidden
+	 * Adds a 'View Admin As: Reset view' link to the Meta sidebar widget if the admin bar is hidden.
 	 *
 	 * @since   1.6.1
 	 * @access  public
@@ -111,11 +116,11 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Show row meta on the plugin screen
+	 * Show row meta on the plugin screen.
 	 *
 	 * @since   1.6.1
-	 * @param   array   $links
-	 * @param   string  $file
+	 * @param   array   $links  The existing links.
+	 * @param   string  $file   The plugin file.
 	 * @return  array
 	 */
 	public function action_plugin_row_meta( $links, $file ) {
@@ -128,7 +133,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Plugin links
+	 * Plugin links.
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.2  Added Slack channel link
@@ -199,11 +204,11 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As_Admin
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
+		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self( $caller );
 			}
@@ -212,6 +217,6 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 		return null;
 	}
 
-} // end class
+} // end class.
 
-}
+} // end if class_exists.

@@ -2,18 +2,25 @@
 /**
  * View Admin As - Role Defaults Module
  *
- * Set default screen settings for roles and apply them on users through various bulk actions.
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
- * @since   1.4
- * @version 1.6.3
+ * @package View_Admin_As
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
+if ( ! class_exists( 'VAA_View_Admin_As_Role_Defaults' ) ) {
+
 add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Role_Defaults', 'get_instance' ) );
 
+/**
+ * Set default screen settings for roles and apply them on users through various bulk actions.
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ * @since   1.4
+ * @version 1.6.3
+ * @uses    VAA_View_Admin_As_Class_Base Extends class
+ */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 {
 	/**
@@ -26,7 +33,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
-	 * Option key
+	 * Option key.
 	 *
 	 * @since  1.4
 	 * @var    string
@@ -34,7 +41,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	protected $optionKey = 'vaa_role_defaults';
 
 	/**
-	 * Array of meta strings that influence the screen settings
+	 * Array of meta strings that influence the screen settings.
 	 *
 	 * @since  1.4
 	 * @see    $meta_default
@@ -43,99 +50,100 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	private $meta = array();
 
 	/**
-	 * Array of default meta strings
-	 * %% stands for a wildcard and can be anything
+	 * Array of default meta strings.
+	 * %% stands for a wildcard and can be anything.
 	 *
 	 * @since  1.4
-	 * @since  1.5.2  Set both values and keys to fix problem with unsetting a key through the filter
+	 * @since  1.5.2  Set both values and keys to fix problem with unsetting a key through the filter.
 	 * @var    array
 	 */
 	private $meta_default = array(
-		'admin_color'            => true,  // The admin color
-		'rich_editing'           => true,  // Enable/Disable rich editing
-		'metaboxhidden_%%'       => true,  // Hidden metaboxes
-		'meta-box-order_%%'      => true,  // Metabox order and locations
-		'closedpostboxes_%%'     => true,  // Hidden post boxes
-		'edit_%%_per_page'       => true,  // Amount of items per page in edit pages (overview)
-		'manage%%columnshidden'  => true,  // Hidden columns in overview pages
-		'screen_layout_%%'       => true,  // Screen layout (num of columns)
+		'admin_color'            => true,  // The admin color.
+		'rich_editing'           => true,  // Enable/Disable rich editing.
+		'metaboxhidden_%%'       => true,  // Hidden metaboxes.
+		'meta-box-order_%%'      => true,  // Metabox order and locations.
+		'closedpostboxes_%%'     => true,  // Hidden post boxes.
+		'edit_%%_per_page'       => true,  // Amount of items per page in edit pages (overview).
+		'manage%%columnshidden'  => true,  // Hidden columns in overview pages.
+		'screen_layout_%%'       => true,  // Screen layout (num of columns).
 	);
 
 	/**
-	 * Array of forbidden meta strings
-	 * %% gets replaced with the table prefix and added to this array on class construction
+	 * Array of forbidden meta strings.
+	 * %% gets replaced with the table prefix and added to this array on class construction.
 	 *
 	 * @since  1.5.2
 	 * @var    array
 	 */
 	private $meta_forbidden = array(
-		'vaa-view-admin-as',  // Meta value for this plugin
-		'%%capabilities',     // The user's capabilities
-		'%%user_level',       // The user's user level
-		'session_tokens',     // The user's session tokens
-		'nickname',           // The user's nickname
-		'first_name',         // The user's first name
-		'last_name',          // The user's last name
-		'description',        // The user's description
+		'vaa-view-admin-as',  // Meta value for this plugin.
+		'%%capabilities',     // User capabilities.
+		'%%user_level',       // User user level.
+		'session_tokens',     // User session tokens.
+		'nickname',           // User nickname.
+		'first_name',         // User first name.
+		'last_name',          // User last name.
+		'description',        // User description.
 	);
 
 	/**
-	 * Construct function
-	 * Protected to make sure it isn't declared elsewhere
+	 * Construct function.
+	 * Protected to make sure it isn't declared elsewhere.
 	 *
 	 * @since   1.4
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa
+	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
-		// Add this class to the modules in the main class
+		// Add this class to the modules in the main class.
 		$this->vaa->register_module( array(
 			'id'       => 'role_defaults',
 			'instance' => self::$_instance
 		) );
 
 		/**
-		 * Add capabilities for this module
+		 * Add capabilities for this module.
+		 *
 		 * @since 1.6
 		 */
 		$this->capabilities = array( 'view_admin_as_role_defaults' );
 		add_filter( 'view_admin_as_add_capabilities', array( $this, 'add_capabilities' ) );
 
-		// Load data
+		// Load data.
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
 
 		/**
-		 * Checks if the management part of module should be enabled
+		 * Checks if the management part of module should be enabled.
 		 *
-		 * @since  1.4    Validate option data
-		 * @since  1.6    Also calls init()
+		 * @since  1.4    Validate option data.
+		 * @since  1.6    Also calls init().
 		 */
-		if ( true == $this->get_optionData('enable') ) {
+		if ( $this->get_optionData( 'enable' ) ) {
 			$this->enable = true;
 			$this->init();
 		}
 
 		/**
-		 * Only allow settings for admin users or users with the correct capabilities
+		 * Only allow settings for admin users or users with the correct capabilities.
 		 *
-		 * @since  1.5.2    Validate custom capability view_admin_as_role_defaults
-		 * @since  1.5.2.1  Validate is_super_admin (bug in 1.5.2)
-		 * @since  1.5.3    Disable for network pages
+		 * @since  1.5.2    Validate custom capability view_admin_as_role_defaults.
+		 * @since  1.5.2.1  Validate is_super_admin (bug in 1.5.2).
+		 * @since  1.5.3    Disable for network pages.
 		 */
 		if (   $this->is_vaa_enabled()
 			&& ! is_network_admin()
-			&& ( VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') )
+			&& ( VAA_API::is_super_admin() || current_user_can( 'view_admin_as_role_defaults' ) )
 		) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
 	}
 
 	/**
-	 * Init function for global functions (not user dependent)
+	 * Init function for global functions (not user dependent).
 	 *
 	 * @since   1.4
 	 * @access  private
@@ -146,33 +154,36 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		global $wpdb;
 
 		/**
-		 * Replace %% with the current table prefix and add it to the array of forbidden meta keys
+		 * Replace %% with the current table prefix and add it to the array of forbidden meta keys.
+		 *
 		 * @since 1.5.2
 		 */
 		foreach ( $this->meta_forbidden as $key => $meta_key ) {
-			if ( strpos( $meta_key, '%%' ) !== false ) {
+			if ( false !== strpos( $meta_key, '%%' ) ) {
 				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->prefix, $meta_key );
 			}
 		}
 		/**
-		 * Allow users to overwrite the default meta keys
+		 * Allow users to overwrite the default meta keys.
+		 *
 		 * @since   1.4
-		 * @param   array  $meta  Default metadata
+		 * @param   array  $meta  Default metadata.
 		 * @return  array  $meta
 		 */
 		$this->meta_default = $this->validate_meta( apply_filters( 'view_admin_as_role_defaults_meta', $this->meta_default ) );
 
 		/**
-		 * Get metakeys optionData and merge it with the default meta
+		 * Get metakeys optionData and merge it with the default meta.
+		 *
 		 * @since  1.6.3
 		 */
 		$this->set_meta( array_merge(
 			$this->meta_default,
-			( $this->get_optionData('meta') ) ? (array) $this->get_optionData('meta') : array()
+			( $this->get_optionData( 'meta' ) ) ? (array) $this->get_optionData( 'meta' ) : array()
 		) );
 
-		// Setting: Automatically apply defaults to new users
-		if ( true == $this->get_optionData('apply_defaults_on_register') ) {
+		// Setting: Automatically apply defaults to new users.
+		if ( $this->get_optionData( 'apply_defaults_on_register' ) ) {
 			if ( is_multisite() ) {
 				add_action( 'add_user_to_blog', array( $this, 'update_user_with_role_defaults_multisite_register' ), 100, 3 );
 			} else {
@@ -180,52 +191,52 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			}
 		}
 
-		// Setting: Hide the screen options for all users who can't access role defaults
-		if ( true == $this->get_optionData('disable_user_screen_options')
-			&& ! ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') ) )
+		// Setting: Hide the screen options for all users who can't access role defaults.
+		if ( $this->get_optionData( 'disable_user_screen_options' )
+			&& ! ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can( 'view_admin_as_role_defaults' ) ) )
 		) {
 			add_filter( 'screen_options_show_screen', '__return_false', 100 );
 		}
 
 		/**
-		 * Print script in the admin header
-		 * Also handles the lock_meta_boxes setting
+		 * Print script in the admin header.
+		 * Also handles the lock_meta_boxes setting.
+		 *
 		 * @since  1.6
-		 * @since  1.6.2  Move to footer (changed hook)
+		 * @since  1.6.2  Move to footer (changed hook).
 		 */
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
 	}
 
 	/**
-	 * init function to store data from the main class and enable functionality based on the current view
+	 * init function to store data from the main class and enable functionality based on the current view.
 	 *
 	 * @since   1.4
 	 * @access  public
-	 * @param   object
 	 * @return  void
 	 */
 	public function vaa_init() {
 
-		// Enabling this module can only be done by a super admin
+		// Enabling this module can only be done by a super admin.
 		if ( VAA_API::is_super_admin() ) {
 
-			// Add adminbar menu items in settings section
+			// Add adminbar menu items in settings section.
 			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ), 10, 2 );
 		}
 
-		// Add adminbar menu items in role section
+		// Add adminbar menu items in role section.
 		if ( $this->is_enabled() ) {
 
-			// Enable storage of role default settings
+			// Enable storage of role default settings.
 			$this->init_store_role_defaults();
 
-			// Show the admin bar node
+			// Show the admin bar node.
 			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 5, 2 );
 		}
 	}
 
 	/**
-	 * Print scripts in the admin section
+	 * Print scripts in the admin section.
 	 *
 	 * @since   1.6
 	 * @access  public
@@ -233,12 +244,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	public function admin_print_footer_scripts() {
 
 		/**
-		 * Setting: Lock meta box order and locations for all users who can't access role defaults
+		 * Setting: Lock meta box order and locations for all users who can't access role defaults.
+		 *
 		 * @since  1.6
-		 * @since  1.6.2  Improved conditions + check if sortable is enqueued and active
+		 * @since  1.6.2  Improved conditions + check if sortable is enqueued and active.
 		 */
-		if ( true == $this->get_optionData('lock_meta_boxes')
-		     && ! ( $this->is_vaa_enabled() || VAA_API::is_super_admin() || current_user_can('view_admin_as_role_defaults') )
+		if ( $this->get_optionData( 'lock_meta_boxes' )
+		     && ! ( $this->is_vaa_enabled() || VAA_API::is_super_admin() || current_user_can( 'view_admin_as_role_defaults' ) )
 		     && wp_script_is( 'jquery-ui-sortable', 'enqueued' )
 		) {
 			?>
@@ -261,21 +273,21 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Get the metadata for meta compare
+	 * Get the metadata for meta compare.
 	 *
 	 * @since   1.5
 	 * @access  private
-	 * @return  array   $this->meta
+	 * @return  array   $this->meta  The meta keys.
 	 */
 	private function get_meta() { return $this->meta; }
 
 	/**
-	 * Set the metadata for meta compare
-	 * Used to enforce only 1 level depth array of strings
+	 * Set the metadata for meta compare.
+	 * Used to enforce only 1 level depth array of strings.
 	 *
 	 * @since   1.5
 	 * @access  private
-	 * @param   array   $var
+	 * @param   array   $var  The new meta keys.
 	 * @return  void
 	 */
 	private function set_meta( $var ) {
@@ -286,17 +298,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Validates meta keys in case forbidden or invalid meta keys are added
+	 * Validates meta keys in case forbidden or invalid meta keys are added.
 	 *
 	 * @since   1.5.2
 	 * @access  private
-	 * @param   array   $metas
+	 * @param   array   $metas  The meta keys.
 	 * @return  array
 	 */
 	private function validate_meta( $metas ) {
 		if ( is_array( $metas ) ) {
 			foreach ( $metas as $meta_key => $meta_value ) {
-				// Remove forbidden or invalid meta keys
+				// Remove forbidden or invalid meta keys.
 				if (   in_array( $meta_key, $this->meta_forbidden )
 					|| strpos( $meta_key, ' ' ) !== false
 					|| ! is_string( $meta_key )
@@ -304,7 +316,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					unset( $metas[ $meta_key ] );
 					continue;
 				}
-				// Validate meta value
+				// Validate meta value.
 				$metas[ $meta_key ] = (bool) $meta_value;
 			}
 			return $metas;
@@ -313,16 +325,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Ajax handler, called from main ajax handler
+	 * Ajax handler, called from main ajax handler.
 	 *
 	 * @since   1.4
 	 * @access  public
-	 * @param   array
+	 * @param   array  $data  The ajax data for this module.
 	 * @return  array|string|bool
 	 */
 	public function ajax_handler( $data ) {
 
-		if (   ! defined('VAA_DOING_AJAX')
+		if (   ! defined( 'VAA_DOING_AJAX' )
 		    || ! VAA_DOING_AJAX
 		    || ! $this->is_vaa_enabled()
 		) {
@@ -331,22 +343,22 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		$success = false;
 
-		// Validate super admin
+		// Validate super admin.
 		if ( VAA_API::is_super_admin() ) {
 
 			if ( isset( $data['enable'] ) ) {
-				if ( true == $data['enable'] ) {
+				if ( $data['enable'] ) {
 					$success = $this->set_enable( true );
 				} else {
 					$success = $this->set_enable( false );
 				}
-				// Prevent further processing
+				// Prevent further processing.
 				return $success;
 			}
 
 		}
 
-		// From here all features need this module enabled
+		// From here all features need this module enabled.
 		if ( ! $this->is_enabled() ) {
 			return $success;
 		}
@@ -363,24 +375,24 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$value = (bool) $data['lock_meta_boxes'];
 			$success = $this->update_optionData( $value, 'lock_meta_boxes', true );
 		}
-		// @since  1.6.3  Update metakeys
+		// @since  1.6.3  Update metakeys.
 		if ( isset( $data['update_meta'] ) ) {
 			$value = $this->validate_meta( $data['update_meta'] );
 			if ( ! empty( $value ) ) {
-				if ( $value === $this->get_optionData('meta') ) {
-					// Data is the same, no changes needed
+				if ( $value === $this->get_optionData( 'meta' ) ) {
+					// Data is the same, no changes needed.
 					$success = true;
 				} else {
 					$success = $this->update_optionData( $value, 'meta', true );
 				}
 			} else {
-				$success = false; // @todo Notify for invalid data
+				$success = false; // @todo Notify for invalid data.
 			}
 		}
 		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
 			foreach ( $data['apply_defaults_to_users'] as $userData ) {
 				// @todo Send as JSON?
-				// @todo notify of errors in updates
+				// @todo notify of errors in updates.
 				$userData = explode( '|', $userData );
 				if ( is_numeric( $userData[0] ) && isset( $userData[1] ) && is_string( $userData[1] ) ) {
 					$success = $this->update_user_with_role_defaults( intval( $userData[0] ), $userData[1] );
@@ -388,7 +400,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			}
 		}
 		if ( isset( $data['apply_defaults_to_users_by_role'] ) && is_string( $data['apply_defaults_to_users_by_role'] ) ) {
-			// @todo notify of errors in updates
+			// @todo notify of errors in updates.
 			$success = $this->apply_defaults_to_users_by_role( strip_tags( $data['apply_defaults_to_users_by_role'] ) );
 		}
 		if ( isset( $data['clear_role_defaults'] ) && is_string( $data['clear_role_defaults'] ) ) {
@@ -412,7 +424,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 		if ( isset( $data['import_role_defaults'] ) && is_array( $data['import_role_defaults'] ) ) {
 			$method = ( ! empty( $data['import_role_defaults_method'] ) ) ? (string) $data['import_role_defaults_method'] : '';
-			// $content format: array( 'text' => **text**, 'errors' => **error array** )
+			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
 			$content = $this->import_role_defaults( $data['import_role_defaults'], $method );
 			if ( true === $content ) {
 				wp_send_json_success();
@@ -426,7 +438,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Update user settings with the a role default
+	 * Update user settings with the a role default.
 	 * When no role is provided this function only checks the first existing user role. If the user has multiple roles, the other roles are ignored.
 	 *
 	 * @since   1.4
@@ -438,29 +450,29 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @see     'user_register' action
 	 * @link    https://developer.wordpress.org/reference/hooks/user_register/
 	 *
-	 * @param   int          $user_id
-	 * @param   string|bool  $role
-	 * @param   int|bool     $blog_id
+	 * @param   int     $user_id  The user ID.
+	 * @param   string  $role     (optional) The user role name.
+	 * @param   int     $blog_id  (optional) The blog ID.
 	 * @return  bool
 	 */
-	public function update_user_with_role_defaults( $user_id, $role = false, $blog_id = false ) {
+	public function update_user_with_role_defaults( $user_id, $role = null, $blog_id = null ) {
 		$success = true;
 		$user = get_user_by( 'id', $user_id );
 		if ( $user ) {
-			if ( false != $blog_id && is_numeric( $blog_id ) ) {
+			if ( is_numeric( $blog_id ) ) {
 				$optionData = get_blog_option( $blog_id, $this->get_optionKey() );
 			} else {
 				$optionData = get_option( $this->get_optionKey() );
 			}
-			// If no role was set, use the first role found for this user
-			if ( false == $role && isset( $user->roles[0] ) ) {
+			// If no role was set, use the first role found for this user.
+			if ( ! $role && isset( $user->roles[0] ) ) {
 				$role = $user->roles[0];
 			}
-			if ( false != $role && false != $optionData ) {
+			if ( $role && $optionData ) {
 				if ( isset( $optionData['roles'][ $role ] ) ) {
 					foreach ( $optionData['roles'][ $role ] as $meta_key => $meta_value ) {
 						update_user_meta( $user_id, $meta_key, $meta_value );
-						// Do not return update_user_meta results since it's highly possible to be false (values are often the same)
+						// Do not return update_user_meta results since it's highly possible to be false (values are often the same).
 						// @todo check other way of validation
 					}
 				}
@@ -479,9 +491,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @see     'add_user_to_blog' action
 	 * @link    https://developer.wordpress.org/reference/hooks/add_user_to_blog/
 	 *
-	 * @param   int     $user_id
-	 * @param   string  $role
-	 * @param   int     $blog_id
+	 * @param   int     $user_id  The user ID.
+	 * @param   string  $role     The user role name.
+	 * @param   int     $blog_id  The blog ID.
 	 * @return  bool
 	 */
 	public function update_user_with_role_defaults_multisite_register( $user_id, $role, $blog_id ) {
@@ -494,11 +506,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Apply default settings to all users of a role
+	 * Apply default settings to all users of a role.
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @param   string  $role
+	 * @param   string  $role  The role name.
 	 * @return  bool
 	 */
 	private function apply_defaults_to_users_by_role( $role ) {
@@ -525,7 +537,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				if ( ! empty( $users ) ) {
 					foreach ( $users as $user ) {
 						$success = $this->update_user_with_role_defaults( $user->ID, $role );
-						// @todo notify of errors in updates
+						// @todo notify of errors in updates.
 					}
 				}
 			}
@@ -534,8 +546,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Initialize the sync functionality (store defaults)
-	 * Init function/action to load necessary data and register all used hooks
+	 * Initialize the sync functionality (store defaults).
+	 * Init function/action to load necessary data and register all used hooks.
 	 * IMPORTANT! This function should ONLY be used when a role view is selected!
 	 *
 	 * @since   1.4
@@ -544,20 +556,20 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	private function init_store_role_defaults() {
-		if ( $this->get_viewAs('role') && $this->is_enabled() ) {
-			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 5 );
+		if ( $this->get_viewAs( 'role' ) && $this->is_enabled() ) {
+			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
 			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
 		}
 	}
 
 	/**
-	 * Check if the meta_key matches one of the predefined metakeys in the role defaults
+	 * Check if the meta_key matches one of the predefined metakeys in the role defaults.
 	 * If there is a match and the role default value is set, return this value instead of the current user value.
 	 *
 	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
 	 *
 	 * @since   1.4
-	 * @since   1.5.3   Stop checking $single parameter
+	 * @since   1.5.3   Stop checking $single parameter.
 	 * @access  public
 	 * @see     init_store_role_defaults()
 	 *
@@ -565,19 +577,19 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
 	 * @link    http://hookr.io/filters/get_user_metadata/
 	 *
-	 * @param   null    $null
-	 * @param   int     $object_id
-	 * @param   string  $meta_key
-	 * @param   bool    $single
+	 * @param   null    $null       The value update_metadata() should return.
+	 * @param   int     $object_id  Object ID.
+	 * @param   string  $meta_key   Meta key.
+	 * param   bool    $single     (not used) Return a single value or an array?
 	 * @return  mixed
 	 */
-	public function filter_get_user_metadata( $null, $object_id, $meta_key, $single ) {
+	public function filter_get_user_metadata( $null, $object_id, $meta_key ) {
 		if ( true === $this->compare_metakey( $meta_key ) && $object_id == $this->get_curUser()->ID ) {
-			$new_meta = $this->get_role_defaults( $this->get_viewAs('role'), $meta_key );
-			// Do not check $single, this logic is in wp-includes/meta.php line 487
+			$new_meta = $this->get_role_defaults( $this->get_viewAs( 'role' ), $meta_key );
+			// Do not check $single, this logic is in wp-includes/meta.php line 487.
 			return array( $new_meta );
 		}
-		return $null; // Go on as normal
+		return $null; // Go on as normal.
 	}
 
 	/**
@@ -594,30 +606,30 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
 	 * @link    http://hookr.io/filters/update_user_metadata/
 	 *
-	 * @param   null    $null
-	 * @param   int     $object_id
-	 * @param   string  $meta_key
-	 * @param   string  $meta_value
-	 * @param   string  $prev_value
+	 * @param   null    $null        Whether to allow updating metadata for the given type.
+	 * @param   int     $object_id   Object ID.
+	 * @param   string  $meta_key    Meta key.
+	 * @param   string  $meta_value  Meta value.
+	 * param   string  $prev_value  (not used) Previous meta value.
 	 * @return  mixed
 	 */
-	public function filter_update_user_metadata( $null, $object_id, $meta_key, $meta_value, $prev_value ) {
+	public function filter_update_user_metadata( $null, $object_id, $meta_key, $meta_value ) {
 		if ( true === $this->compare_metakey( $meta_key ) && $object_id == $this->get_curUser()->ID ) {
-			$this->update_role_defaults( $this->get_viewAs('role'), $meta_key, $meta_value );
-			return false; // Do not update current user meta
+			$this->update_role_defaults( $this->get_viewAs( 'role' ), $meta_key, $meta_value );
+			return false; // Do not update current user meta.
 		}
-		return $null; // Go on as normal
+		return $null; // Go on as normal.
 	}
 
 	/**
-	 * Get defaults of a role
+	 * Get defaults of a role.
 	 *
 	 * @since   1.4
-	 * @since   1.6.3  Multiple get methods (parameters are now optional)
+	 * @since   1.6.3  Multiple get methods (parameters are now optional).
 	 * @access  private
 	 *
-	 * @param   string  $role
-	 * @param   string  $meta_key
+	 * @param   string  $role      Role name.
+	 * @param   string  $meta_key  Meta key.
 	 * @return  mixed
 	 */
 	private function get_role_defaults( $role = null, $meta_key = null ) {
@@ -635,14 +647,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Update a role with new defaults
+	 * Update a role with new defaults.
 	 *
 	 * @since   1.4
 	 * @access  private
 	 *
-	 * @param   string  $role
-	 * @param   string  $meta_key
-	 * @param   string  $meta_value
+	 * @param   string  $role        Role name.
+	 * @param   string  $meta_key    Meta key.
+	 * @param   string  $meta_value  Meta value.
 	 * @return  bool
 	 */
 	private function update_role_defaults( $role, $meta_key, $meta_value ) {
@@ -655,11 +667,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Remove defaults of a role
+	 * Remove defaults of a role.
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @param   string|array  $role  Role name or array of role names or just "all" for all roles
+	 * @param   string|array  $role  Role name or array of role names or just "all" for all roles.
 	 * @return  bool
 	 */
 	private function clear_role_defaults( $role ) {
@@ -676,7 +688,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( isset( $roles ) ) {
 			foreach ( $roles as $role ) {
 				if ( isset( $role_defaults[ $role ] ) ) {
-					//$role_defaults[ $role ] = array();
 					unset( $role_defaults[ $role ] );
 				}
 			}
@@ -684,23 +695,23 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		if ( $this->get_role_defaults() !== $role_defaults ) {
 			return $this->update_optionData( $role_defaults, 'roles' );
 		}
-		return true; // No changes needed
+		return true; // No changes needed.
 	}
 
 	/**
-	 * Export role defaults
+	 * Export role defaults.
 	 *
 	 * @since   1.5
 	 * @access  private
-	 * @param   string  $role
+	 * @param   string  $role  Role name or "all" for all roles.
 	 * @return  mixed
 	 */
 	private function export_role_defaults( $role = 'all' ) {
 		$role_defaults = $this->get_role_defaults();
-		if ( 'all' != $role && isset( $role_defaults[ $role ] ) ) {
+		if ( 'all' !== $role && isset( $role_defaults[ $role ] ) ) {
 			$data = $role_defaults[ $role ];
 			$data = array( $role => $data );
-		} elseif ( 'all' == $role && ! empty( $role_defaults ) ) {
+		} elseif ( 'all' === $role && ! empty( $role_defaults ) ) {
 			$data = $role_defaults;
 		} else {
 			$data = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN );
@@ -709,12 +720,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Import role defaults
+	 * Import role defaults.
 	 *
 	 * @since   1.5
+	 * @since   1.6.2  Add extra import methods
 	 * @access  private
-	 * @param   array   $data
-	 * @param   string  $method
+	 * @param   array   $data    Data to import.
+	 * @param   string  $method  Import method.
 	 * @return  mixed
 	 */
 	private function import_role_defaults( $data, $method = 'import' ) {
@@ -724,14 +736,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			return array( 'text' => esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) );
 		}
 		foreach ( $data as $role => $role_data ) {
-			// Make sure the role exists
+			// Make sure the role exists.
 			if ( array_key_exists( $role, $this->get_roles() ) ) {
-				// Add the role to the new defaults
+				// Add the role to the new defaults.
 				$new_defaults[ $role ] = array();
 				foreach ( $role_data as $data_key => $data_value ) {
-					// Make sure the import data are valid meta keys
+					// Make sure the import data are valid meta keys.
 					if ( true === $this->compare_metakey( $data_key ) ) {
-						// Add the key and data
+						// Add the key and data.
 						$new_defaults[ $role ][ $data_key ] = $data_value;
 					} else {
 						$error_list[] = esc_attr__( 'Key not allowed', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $data_key;
@@ -747,19 +759,19 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				if ( empty( $role_defaults[ $role ] ) ) {
 					$role_defaults[ $role ] = array();
 				}
-				// @since  1.6.2  Multiple import methods
+				// @since  1.6.2  Multiple import methods.
 				switch ( $method ) {
 					case 'overwrite':
-						// Overwrite the existing data, keep data that don't exist in the import
+						// Overwrite the existing data, keep data that don't exist in the import.
 						$role_defaults[ $role ] = array_merge( $role_defaults[ $role ], $role_data );
 					break;
 					case 'append':
-						// Append new data without overwriting the existing data
+						// Append new data without overwriting the existing data.
 						$role_defaults[ $role ] = array_merge( $role_data, $role_defaults[ $role ] );
 					break;
 					case 'import':
 					default:
-						// Fully Overwrite data for each supplied role
+						// Fully Overwrite data for each supplied role.
 						$role_defaults[ $role ] = $role_data;
 					break;
 				}
@@ -782,12 +794,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Match the meta key with predefined metakeys
+	 * Match the meta key with predefined metakeys.
 	 * %% stands for a wildcard. This function only supports one wildcard!
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @param   string  $meta_key_compare
+	 * @param   string  $meta_key_compare  Meta key.
 	 * @return  bool
 	 */
 	private function compare_metakey( $meta_key_compare ) {
@@ -801,12 +813,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 					$compare_start = true;
 					if ( ! empty( $meta_key_parts[0] ) ) {
-						$compare_start = $this->startsWith( $meta_key_compare, $meta_key_parts[0] );
+						$compare_start = $this->starts_with( $meta_key_compare, $meta_key_parts[0] );
 					}
 
 					$compare_end = true;
 					if ( ! empty( $meta_key_parts[1] ) ) {
-						$compare_end = $this->endsWith( $meta_key_compare, $meta_key_parts[1] );
+						$compare_end = $this->ends_with( $meta_key_compare, $meta_key_parts[1] );
 					}
 
 					if ( true == $compare_start && true == $compare_end ) {
@@ -817,24 +829,40 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 		return false;
 	}
-	private function startsWith( $haystack, $needle ) {
-		// search backwards starting from haystack length characters from the end
+
+	/**
+	 * Does a string starts with a given string?
+	 * @since   1.4
+	 * @param   string  $haystack  The string to search in.
+	 * @param   string  $needle    The string to search for.
+	 * @return  bool
+	 */
+	private function starts_with( $haystack, $needle ) {
+		// search backwards starting from haystack length characters from the end.
 		return $needle === "" || strrpos( $haystack, $needle, -strlen( $haystack ) ) !== false;
 	}
-	private function endsWith( $haystack, $needle ) {
-		// search forward starting from end minus needle length characters
+
+	/**
+	 * Does a string ends with a given string?
+	 * @since   1.4
+	 * @param   string  $haystack  The string to search in.
+	 * @param   string  $needle    The string to search for.
+	 * @return  bool
+	 */
+	private function ends_with( $haystack, $needle ) {
+		// search forward starting from end minus needle length characters.
 		return $needle === "" || ( ( $temp = strlen( $haystack ) - strlen( $needle ) ) >= 0 && strpos( $haystack, $needle, $temp ) !== false);
 	}
 
 	/**
-	 * Add admin bar setting items
+	 * Add admin bar setting items.
 	 *
 	 * @since   1.5
 	 * @access  public
 	 * @see     'vaa_admin_bar_settings_after' action
 	 *
-	 * @param   object  $admin_bar
-	 * @param   string  $root  The root item (vaa-settings)
+	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string        $root       The root item (vaa-settings).
 	 * @return  void
 	 */
 	public function admin_bar_menu_settings( $admin_bar, $root ) {
@@ -857,7 +885,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'value'       => $this->get_optionData( 'enable' ),
 				'compare'     => true,
 				'label'       => __( 'Enable role defaults', VIEW_ADMIN_AS_DOMAIN ),
-				'description' => __( 'Set default screen settings for roles and apply them on users through various bulk and automatic actions', VIEW_ADMIN_AS_DOMAIN )
+				'description' => __( 'Set default screen settings for roles and apply them on users through various bulk and automatic actions', VIEW_ADMIN_AS_DOMAIN ),
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -868,15 +896,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Add admin bar menu's
+	 * Add admin bar menu's.
 	 *
 	 * @since   1.4
-	 * @since   1.5.2   Changed hook to vaa_admin_bar_settings_after (previous: 'vaa_admin_bar_roles_before')
+	 * @since   1.5.2   Changed hook to vaa_admin_bar_settings_after (previous: 'vaa_admin_bar_roles_before').
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 *
-	 * @param   object  $admin_bar
-	 * @param   string  $root  The root item (vaa)
+	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string        $root       The root item (vaa).
 	 * @return  void
 	 */
 	public function admin_bar_menu( $admin_bar, $root ) {
@@ -888,7 +916,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
-				'tabindex' => '0'
+				'tabindex' => '0',
 			),
 		) );
 
@@ -916,7 +944,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'value'       => $this->get_optionData( 'disable_user_screen_options' ),
 				'compare'     => true,
 				'label'       => __( 'Disable screen options', VIEW_ADMIN_AS_DOMAIN ),
-				'description' => __("Hide the screen options for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN )
+				'description' => __("Hide the screen options for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -931,7 +959,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'value'       => $this->get_optionData( 'lock_meta_boxes' ),
 				'compare'     => true,
 				'label'       => __( 'Lock meta boxes', VIEW_ADMIN_AS_DOMAIN ),
-				'description' => __("Lock meta box order and locations for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN )
+				'description' => __("Lock meta box order and locations for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -940,7 +968,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		) );
 
 		/**
-		 * Manage metakeys
+		 * Manage metakeys.
+		 *
 		 * @since  1.6.3
 		 */
 		$admin_bar->add_group( array(
@@ -958,17 +987,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
-				'tabindex' => '0'
+				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-docs',
 			'parent' => $root . '-meta',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon('dashicons-info') . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-info' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/FAQ#4-what-data-is-stored-for-role-defaults-and-how-can-i-change-this',
 			'meta'   => array(
 				'class'  => 'auto-height vaa-has-icon',
-				'target' => '_blank'
+				'target' => '_blank',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -976,11 +1005,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			'parent' => $root . '-meta',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
 				'name'        => $root . '-meta-new',
-				'placeholder' => esc_attr__( 'Add meta key', VIEW_ADMIN_AS_DOMAIN )
+				'placeholder' => esc_attr__( 'Add meta key', VIEW_ADMIN_AS_DOMAIN ),
 			) ) . VAA_View_Admin_As_Admin_Bar::do_button( array(
 				'name'        => $root . '-meta-add',
 				'label'       => __( 'Add', VIEW_ADMIN_AS_DOMAIN ),
-				'classes'     => 'button-primary input-overlay'
+				'classes'     => 'button-primary input-overlay',
 			) )
 			. '<div id="' . $root . '-meta-template' . '" style="display: none;"><div class="ab-item vaa-item">'
 			. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
@@ -990,7 +1019,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'compare'        => true,
 				'checkbox_value' => 'vaa_new_item',
 				'label'          => 'vaa_new_item',
-				'removable'      => true
+				'removable'      => true,
 			) ) . '</div></div>',
 			'href'   => false,
 			'meta'   => array(
@@ -1008,7 +1037,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					'compare'        => true,
 					'checkbox_value' => $metakey,
 					'label'          => $metakey,
-					'removable'      => ( array_key_exists( $metakey, $this->meta_default ) ) ? false : true
+					'removable'      => ( array_key_exists( $metakey, $this->meta_default ) ) ? false : true,
 				) )
 				. '</div>';
 		}
@@ -1027,7 +1056,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
 				'name'    => $root . '-meta-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'classes' => 'button-primary'
+				'classes' => 'button-primary',
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -1036,27 +1065,27 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		) );
 
 		/**
-		 * Bulk actions
+		 * Bulk actions.
 		 */
 
 		$role_select_options = array(
 			array(
-				'label' => ' --- '
+				'label' => ' --- ',
 			),
 			array(
 				'value' => 'all',
-				'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - '
+				'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 			)
 		);
 		foreach ( $this->get_roles() as $role_key => $role ) {
 			$role_select_options[] = array(
 				'value' => esc_attr( $role_key ),
-				'label' => translate_user_role( $role->name )
+				'label' => translate_user_role( $role->name ),
 			);
 		}
 
 		if ( $this->get_users() ) {
-			// Users select
+			// Users select.
 			$admin_bar->add_group( array(
 				'id'     => $root . '-bulk-users',
 				'parent' => $root,
@@ -1072,7 +1101,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
-					'tabindex' => '0'
+					'tabindex' => '0',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1080,7 +1109,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'parent' => $root . '-bulk-users',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
 					'name'        => $root . '-bulk-users-filter',
-					'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username') ) . ')'
+					'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username') ) . ')',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -1099,7 +1128,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 								'name'           => 'role-defaults-bulk-users-select[]',
 								'id'             => $root . '-bulk-users-select-' . $user->ID,
 								'checkbox_value' => $user->ID.'|'.$role,
-								'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>'
+								'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
 							) )
 							. '</div>';
 					}
@@ -1120,7 +1149,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
 					'name'    => $root . '-bulk-users-apply',
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-primary'
+					'classes' => 'button-primary',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -1130,7 +1159,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		}
 
 		if ( $this->get_users() && $this->get_roles() ) {
-			// Roles select
+			// Roles select.
 			$admin_bar->add_group( array(
 				'id'     => $root . '-bulk-roles',
 				'parent' => $root,
@@ -1146,7 +1175,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
-					'tabindex' => '0'
+					'tabindex' => '0',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1154,11 +1183,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'parent' => $root . '-bulk-roles',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
 					'name' => $root . '-bulk-roles-select',
-					'values' => $role_select_options
+					'values' => $role_select_options,
 				) ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last
+					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1167,7 +1196,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
 					'name'    => $root . '-bulk-roles-apply',
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-primary'
+					'classes' => 'button-primary',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -1178,7 +1207,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 
 		if ( $this->get_roles() ) {
 
-			/* Export actions */
+			/*
+			 * Export actions.
+			 */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-export',
 				'parent' => $root,
@@ -1194,7 +1225,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
-					'tabindex' => '0'
+					'tabindex' => '0',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1202,11 +1233,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'parent' => $root . '-export',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
 					'name' => $root . '-export-roles-select',
-					'values' => $role_select_options
+					'values' => $role_select_options,
 				) ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last
+					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1215,7 +1246,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
 					'name'    => $root . '-export-roles-export',
 					'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary'
+					'classes' => 'button-secondary',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -1223,7 +1254,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				),
 			) );
 
-			/* Import actions */
+			/*
+			 * Import actions
+			 */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-import',
 				'parent' => $root,
@@ -1239,7 +1272,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
-					'tabindex' => '0'
+					'tabindex' => '0',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1248,7 +1281,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'title'  => '<textarea id="' . $root . '-import-roles-input" name="role-defaults-import-roles-input" placeholder="' . esc_attr__( 'Paste code here', VIEW_ADMIN_AS_DOMAIN  ) . '"></textarea>',
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-textarea input-role', // vaa-column-one-half vaa-column-last
+					'class' => 'ab-vaa-textarea input-role', // vaa-column-one-half vaa-column-last .
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1260,8 +1293,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
 					'attr'    => array(
 						'data-method' => 'import',
-						'data-showhide' => 'p.vaa-import-role-defaults-desc'
-					)
+						'data-showhide' => 'p.vaa-import-role-defaults-desc',
+					),
 				) ) . ' '
 				. VAA_View_Admin_As_Admin_Bar::do_button( array(
 					'name'    => $root . '-import-roles-import-overwrite',
@@ -1269,8 +1302,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
 					'attr'    => array(
 						'data-method' => 'overwrite',
-						'data-showhide' => 'p.vaa-import-role-defaults-overwrite-desc'
-					)
+						'data-showhide' => 'p.vaa-import-role-defaults-overwrite-desc',
+					),
 				) ) . ' '
 				. VAA_View_Admin_As_Admin_Bar::do_button( array(
 					'name'    => $root . '-import-roles-import-append',
@@ -1278,8 +1311,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
 					'attr'    => array(
 						'data-method' => 'append',
-						'data-showhide' => 'p.vaa-import-role-defaults-append-desc'
-					)
+						'data-showhide' => 'p.vaa-import-role-defaults-append-desc',
+					),
 				) )
 				. VAA_View_Admin_As_Admin_Bar::do_description(
 					__( 'Fully overwrite data for each supplied role', VIEW_ADMIN_AS_DOMAIN ),
@@ -1300,19 +1333,19 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			) );
 
 			/**
-			 * Add all existing roles from defaults to the clear list if they have been removed from WP
-			 * Don't show roles that don't have data
+			 * Add all existing roles from defaults to the clear list if they have been removed from WP.
+			 * Don't show roles that don't have data.
 			 *
 			 * @see    https://github.com/JoryHogeveen/view-admin-as/issues/22
 			 * @since  1.6.2
 			 */
 			$role_clear_options = array(
 				array(
-					'label' => ' --- '
+					'label' => ' --- ',
 				),
 				array(
 					'value' => 'all',
-					'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - '
+					'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 				)
 			);
 			foreach ( (array) $this->get_role_defaults() as $role_key => $role ) {
@@ -1323,12 +1356,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					}
 					$role_clear_options[] = array(
 						'value' => esc_attr( $role_key ),
-						'label' => $role_name
+						'label' => $role_name,
 					);
 				}
 			}
 
-			/* Clear actions */
+			/*
+			 * Clear actions
+			 */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-clear',
 				'parent' => $root,
@@ -1344,7 +1379,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
-					'tabindex' => '0'
+					'tabindex' => '0',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1352,11 +1387,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'parent' => $root . '-clear',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
 					'name' => $root . '-clear-roles-select',
-					'values' => $role_clear_options
+					'values' => $role_clear_options,
 				) ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last
+					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1365,7 +1400,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
 					'name'    => $root . '-clear-roles-apply',
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary'
+					'classes' => 'button-secondary',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -1383,11 +1418,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As_Role_Defaults
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
+		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self( $caller );
 			}
@@ -1396,4 +1431,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 		return null;
 	}
 
-} // end class
+} // end class.
+
+} // end if class_exists.

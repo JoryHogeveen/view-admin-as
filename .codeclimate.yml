@@ -43,14 +43,8 @@ engines:
       # Disable: The $domain arg should be single a string literal, not "".
       WordPress WP I18n NonSingularStringLiteralDomain:
         enabled: false
-      # Disable: Inline comments must end in full-stops, exclamation marks, or question marks
-      Squiz Commenting InlineComment InvalidEndChar:
-        enabled: false
       # Disable: Expected # spaces after parameter type; # found
       Squiz Commenting FunctionComment SpacingAfterParamType:
-        enabled: false
-      # Disable: Parameter comment must end with a full stop
-      Squiz Commenting FunctionComment ParamCommentFullStop:
         enabled: false
       # Disable: This comment is #% valid code; is this commented out code?
       Squiz PHP CommentedOutCode Found:

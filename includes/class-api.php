@@ -2,16 +2,20 @@
 /**
  * View Admin As - Class API
  *
- * API class that holds general functions
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
- * @since   1.6
- * @version 1.6.3
+ * @package View_Admin_As
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
+/**
+ * API class that holds general functions
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ * @since   1.6
+ * @version 1.6.x
+ */
 final class VAA_API
 {
 	/**
@@ -22,7 +26,7 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   int  $user_id  (optional) Default: current user
+	 * @param   int  $user_id  (optional) Default: current user.
 	 * @return  bool
 	 */
 	public static function is_super_admin( $user_id = null ) {
@@ -39,12 +43,12 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   int  $user_id  (optional) Default: current user
+	 * @param   int  $user_id  (optional) Default: current user.
 	 * @return  bool
 	 */
 	public static function is_superior_admin( $user_id = null ) {
 
-		// If it's the current user of null, don't pass the user ID so make sure we check the original user status
+		// If it's the current user of null, don't pass the user ID so make sure we check the original user status.
 		if ( null === $user_id || get_current_user_id() == $user_id ) {
 			$is_super_admin = self::is_super_admin();
 			if ( null == $user_id ) {
@@ -86,7 +90,7 @@ final class VAA_API
 
 	/**
 	 * Is our custom toolbar showing?
-	 * Do not use this before the `init` hook
+	 * Do not use this before the `init` hook.
 	 *
 	 * @since   1.6
 	 * @access  public
@@ -105,7 +109,7 @@ final class VAA_API
 
 	/**
 	 * Whether the site is being previewed in the Customizer.
-	 * For WP < 4.0
+	 * For WP < 4.0!
 	 *
 	 * @since   1.6.2
 	 * @see     https://developer.wordpress.org/reference/functions/is_customize_preview/
@@ -114,7 +118,7 @@ final class VAA_API
 	 */
 	public static function is_customize_preview() {
 
-		if ( function_exists('is_customize_preview') ) {
+		if ( function_exists( 'is_customize_preview' ) ) {
 			return is_customize_preview();
 		}
 
@@ -123,14 +127,14 @@ final class VAA_API
 	}
 
 	/**
-	 * Appends the "reset-view" parameter to the current URL
+	 * Appends the "reset-view" parameter to the current URL.
 	 *
 	 * @since   1.6
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $url  (optional) Use a defined url create the reset link
+	 * @param   string  $url  (optional) Use a defined url create the reset link.
 	 * @param   bool    $all  (optional) Reset all views link?
 	 * @return  string
 	 */
@@ -138,11 +142,11 @@ final class VAA_API
 
 		if ( empty( $url ) ) {
 			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			// Check protocol
+			// Check protocol.
 			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
 		}
 
-		// Check for existing query vars
+		// Check for existing query vars.
 		$url_comp = parse_url( $url );
 
 		$reset = 'reset-view';
@@ -154,14 +158,14 @@ final class VAA_API
 	}
 
 	/**
-	 * Removes the "reset-view" or "reset-all-views" parameter to the current URL
+	 * Removes the "reset-view" or "reset-all-views" parameter to the current URL.
 	 *
 	 * @since   1.6
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $url  (optional) Use a defined url to remove the reset link
+	 * @param   string  $url  (optional) Use a defined url to remove the reset link.
 	 * @return  string
 	 */
 	public static function remove_reset_link( $url = '' ) {
@@ -172,7 +176,7 @@ final class VAA_API
 			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
 		}
 
-		if ( strpos( $url, '?' ) !== false ) {
+		if ( false !== strpos( $url, '?' ) ) {
 			$url = explode( '?', $url );
 
 			if ( ! empty( $url[1] ) ) {
@@ -193,16 +197,16 @@ final class VAA_API
 	}
 
 	/**
-	 * Get full array or array key
+	 * Get full array or array key.
 	 *
 	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   array   $array  The requested array
-	 * @param   string  $key    Return only a key of the requested array (optional)
+	 * @param   array   $array  The requested array.
+	 * @param   string  $key    (optional) Return only a key of the requested array.
 	 * @return  mixed
 	 */
 	final public static function get_array_data( $array, $key = null ) {
@@ -216,18 +220,18 @@ final class VAA_API
 	}
 
 	/**
-	 * Set full array or array key
+	 * Set full array or array key.
 	 *
 	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class
+	 * @since   1.6    Moved to this class from main class.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   array   $array   Original array
-	 * @param   mixed   $var     The new value
-	 * @param   string  $key     The array key for the value (optional)
-	 * @param   bool    $append  If the key doesn't exist in the original array, append it (optional)
+	 * @param   array   $array   Original array.
+	 * @param   mixed   $var     The new value.
+	 * @param   string  $key     (optional) The array key for the value.
+	 * @param   bool    $append  (optional) If the key doesn't exist in the original array, append it.
 	 * @return  mixed
 	 */
 	final public static function set_array_data( $array, $var, $key = null, $append = false ) {
@@ -241,16 +245,17 @@ final class VAA_API
 			}
 
 			// Notify user if in debug mode
-			if ( defined('WP_DEBUG') && true === WP_DEBUG ) {
+			if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
 				trigger_error( 'View Admin As: Key ' . (string) $key . ' does not exist', E_USER_NOTICE );
-				if ( ! defined('WP_DEBUG_DISPLAY') || ( defined('WP_DEBUG_DISPLAY') && true === WP_DEBUG_DISPLAY ) ) {
+				if ( ! defined( 'WP_DEBUG_DISPLAY' ) || ( defined( 'WP_DEBUG_DISPLAY' ) && true === WP_DEBUG_DISPLAY ) ) {
 					debug_print_backtrace();
 				}
 			}
 
-			return $array; // return no changes if key is not found or appending is not allowed
+			// return no changes if key is not found or appending is not allowed.
+			return $array;
 		}
 		return $var;
 	}
 
-} // end class
+} // end class.

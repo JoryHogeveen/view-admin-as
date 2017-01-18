@@ -11,7 +11,7 @@
  * License:     GPLv2
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
+ * @package View_Admin_As
  * @since   0.1
  * @version 1.6.3
  */
@@ -47,7 +47,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	define( 'VIEW_ADMIN_AS_URL',        plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
 	define( 'VIEW_ADMIN_AS_DOMAIN',     'view-admin-as' );
 
-	// Include main init class file
+	// Include main init class file.
 	require_once( VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php' );
 
 	/**
@@ -57,21 +57,21 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	 * Only for internal use. If the $caller parameter passes an unknown object it will return null.
 	 *
 	 * @since   1.4.1
-	 * @since   1.6     $caller parameter
-	 * @param   object  $caller
+	 * @since   1.6     $caller parameter.
+	 * @param   object  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As
 	 */
 	function View_Admin_As( $caller ) {
 		return VAA_View_Admin_As::get_instance( $caller );
 	}
 
-	// Instantiate View Admin As
+	// Instantiate View Admin As.
 	VAA_View_Admin_As::instantiate();
 
-// end if class_exists
+// end if class_exists.
 } else {
 
-	// @since  1.5.1  added notice on class name conflict
+	// @since  1.5.1  added notice on class name conflict.
 	add_action( 'admin_notices', 'view_admin_as_conflict_admin_notice' );
 	function view_admin_as_conflict_admin_notice() {
 		echo '<div class="notice-error notice is-dismissible"><p><strong>' . __( 'View Admin As', 'view-admin-as' ) . ':</strong> '
