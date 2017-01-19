@@ -2,14 +2,8 @@
 /**
  * View Admin As - Restrict User Access plugin
  *
- * Compatibility class for the Restrict User Access plugin
- *
- * Tested RUA version: 0.12.4
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
- * @since   1.7
- * @version 1.7
+ * @package View_Admin_As
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -18,6 +12,17 @@ if ( ! class_exists( 'VAA_View_Admin_As_RUA' ) ) {
 
 add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_RUA', 'get_instance' ) );
 
+/** *
+ * Compatibility class for the Restrict User Access plugin
+ *
+ * Tested from RUA version: 0.12.4
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ * @since   1.7
+ * @version 1.7
+ * @uses    VAA_View_Admin_As_Class_Base Extends class
+ */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 {
 	/**
@@ -30,7 +35,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
-	 * The existing access levels
+	 * The existing access levels.
 	 *
 	 * @since  1.7
 	 * @see    restrict-user-access/app.php -> get_levels()
@@ -40,19 +45,19 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * @since  1.7
-	 * @var    int  WP_Post ID (RUA access level post type)
+	 * @var    int  WP_Post ID (RUA access level post type).
 	 */
 	private $selectedLevel;
 
 	/**
 	 * @since  1.7
-	 * @var    array  The caps set for this level
+	 * @var    array  The caps set for this level.
 	 */
 	private $selectedLevelCaps = array();
 
 	/**
 	 * @since  1.7
-	 * @var    object  The post type object of the level types
+	 * @var    object  The post type object of the level types.
 	 */
 	private $levelPostType;
 
@@ -81,11 +86,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	private $ruaTypeRestrict;
 
 	/**
-	 * Populate the instance and validate RUA plugin is active
+	 * Populate the instance and validate RUA plugin is active.
 	 *
 	 * @since   1.7
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa
+	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 
@@ -105,7 +110,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 			$this->vaa->register_module( array(
 				'id'       => $this->viewKey,
-				'instance' => self::$_instance
+				'instance' => self::$_instance,
 			) );
 
 			$this->store_levels();
@@ -120,16 +125,16 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Initialize the RUA module
+	 * Initialize the RUA module.
 	 *
 	 * @since   1.7
 	 * @access  public
 	 */
 	public function do_view() {
 
-		if ( $this->get_levels( $this->get_viewAs( $this->viewKey ) ) ) {
+		if ( $this->get_levels( $this->store->get_viewAs( $this->viewKey ) ) ) {
 
-			$this->selectedLevel     = $this->get_viewAs( $this->viewKey );
+			$this->selectedLevel     = $this->store->get_viewAs( $this->viewKey );
 			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
 
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
@@ -139,28 +144,28 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 			add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
-			// Administrators can see all restricted content in RUA
-			if ( $this->get_viewAs() && ! $this->get_selectedCaps('administrator') ) {
-				// Not a view with administrator capability == no global access
+			// Administrators can see all restricted content in RUA.
+			if ( $this->store->get_viewAs() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
+				// Not a view with administrator capability == no global access.
 				add_filter( 'rua/user/global-access', '__return_false' );
 			}
 		}
 	}
 
 	/**
-	 * Update the current user's WP_User instance with the current view data
+	 * Update the current user's WP_User instance with the current view data.
 	 *
 	 * @since   1.7
-	 * @param   WP_User  $user
-	 * @param   bool     $accessible
+	 * @param   WP_User  $user        User object.
+	 * @param   bool     $accessible  Are the WP_User properties accessible?
 	 */
 	public function modify_user( $user, $accessible ) {
 
 		$caps = (array) $this->selectedLevelCaps;
 
-		if ( $this->get_viewAs('role') || ! $accessible ) {
-			// Merge the caps with the current selected caps, overwrite existing
-			// Also do the same when WP_User parameters aren't accessible
+		if ( $this->store->get_viewAs( 'role' ) || ! $accessible ) {
+			// Merge the caps with the current selected caps, overwrite existing.
+			// Also do the same when WP_User parameters aren't accessible.
 			$caps = array_merge( $this->store->get_selectedCaps(), $caps );
 		} else {
 			$caps = array_merge( $user->allcaps, $caps );
@@ -169,22 +174,22 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		$this->store->set_selectedCaps( $caps );
 
 		if ( $accessible ) {
-			// Merge the caps with the current user caps, overwrite existing
+			// Merge the caps with the current user caps, overwrite existing.
 			$user->allcaps = array_merge( $user->caps, $caps );
 		}
 	}
 
 	/**
-	 * Filter the return metadata for the RUA levels
+	 * Filter the return metadata for the RUA levels.
 	 *
 	 * @since   1.7
-	 * @param   null    $null
-	 * @param   int     $user_id
-	 * @param   string  $meta_key
+	 * @param   null    $null      The value get_metadata() should return.
+	 * @param   int     $user_id   User/Object ID.
+	 * @param   string  $meta_key  Meta key.
 	 * @return  array
 	 */
 	public function get_user_metadata( $null, $user_id, $meta_key ) {
-		if ( $user_id == $this->get_curUser()->ID
+		if ( $user_id == $this->store->get_selectedUser()->ID
 		     && $this->get_levels( $this->selectedLevel )
 		) {
 			// @todo Check for future API updates in RUA plugin
@@ -192,7 +197,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				return array( $this->selectedLevel );
 			}
 			if ( $meta_key == $this->ruaMetaPrefix . 'level_' . $this->selectedLevel ) {
-				// Return current time + 120 seconds to make sure this level won't be set as expired
+				// Return current time + 120 seconds to make sure this level won't be set as expired.
 				return array( time() + 120 );
 			}
 		}
@@ -200,10 +205,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Add groups view type
+	 * Add groups view type.
 	 *
 	 * @since   1.7
-	 * @param   array  $types
+	 * @param   array  $types  Existing view types.
 	 * @return  array
 	 */
 	public function add_view_type( $types ) {
@@ -212,16 +217,16 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Ajax handler, called from main ajax handler
+	 * Ajax handler, called from main ajax handler.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   $data
+	 * @param   array  $data  The ajax data for this module.
 	 * @return  bool
 	 */
 	public function ajax_handler( $data ) {
 
-		if ( ! defined('VAA_DOING_AJAX')
+		if ( ! defined( 'VAA_DOING_AJAX' )
 		  || ! VAA_DOING_AJAX
 		  || ! $this->is_vaa_enabled()
 		) {
@@ -252,29 +257,31 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Change the VAA admin bar menu title
+	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   string  $title
+	 * @param   string  $title  The current title.
 	 * @return  string
 	 */
 	public function vaa_viewing_as_title( $title ) {
-		$view_label = 'Access Level';
-		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
-		if ( ! empty( $this->levelPostType->labels->singular_name ) ) {
-			$view_label = $this->levelPostType->labels->singular_name;
-		} elseif ( isset( $this->levelPostType->labels->name ) ) {
-			$view_label = $this->levelPostType->labels->name;
-		}
 
 		if ( $this->get_levels( $this->selectedLevel ) ) {
+
+			$view_label = 'Access Level';
+			$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
+			if ( ! empty( $this->levelPostType->labels->singular_name ) ) {
+				$view_label = $this->levelPostType->labels->singular_name;
+			} elseif ( isset( $this->levelPostType->labels->name ) ) {
+				$view_label = $this->levelPostType->labels->name;
+			}
+
 			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $view_label ) . ': ';
 			$title .= $this->get_levels( $this->selectedLevel )->post_title;
 			// Is there also a role selected?
-			if ( $this->get_viewAs('role') && $this->get_roles( $this->get_viewAs('role') ) ) {
+			if ( $this->store->get_viewAs( 'role' ) && $this->store->get_roles( $this->store->get_viewAs( 'role' ) ) ) {
 				$title .= ' <span class="user-role">('
-				          . translate_user_role( $this->get_roles( $this->get_viewAs('role') )->name )
+				          . translate_user_role( $this->store->get_roles( $this->store->get_viewAs( 'role' ) )->name )
 				          . ')</span>';
 			}
 		}
@@ -282,16 +289,16 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Add the RUA admin bar items
+	 * Add the RUA admin bar items.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   WP_Admin_Bar  $admin_bar
-	 * @param   string        $root
-	 * @param   mixed         $role
-	 * @param   mixed         $role_obj
+	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string        $root       The root item.
+	 * @param   string        $role       (optional) Role name.
+	 * @param   WP_Role       $role_obj   (optional) Role object.
 	 */
-	public function admin_bar_menu( $admin_bar, $root, $role = false, $role_obj = null ) {
+	public function admin_bar_menu( $admin_bar, $root, $role = null, $role_obj = null ) {
 		$view_name = 'Access Levels';
 		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
 		if ( isset( $this->levelPostType->labels->name ) ) {
@@ -321,7 +328,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
-					'tabindex' => '0'
+					'tabindex' => '0',
 				),
 			) );
 
@@ -334,7 +341,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon',
-					'tabindex' => '0'
+					'tabindex' => '0',
 				),
 			) );
 
@@ -343,22 +350,25 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		}
 
 		/**
-		 * Add items at the beginning of the rua group
+		 * Add items at the beginning of the rua group.
+		 *
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string        $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar );
+		do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar, $root );
 
-		// Add the levels
+		// Add the levels.
 		foreach ( $this->get_levels() as $level_key => $level ) {
 			$href = '#';
 			$class = 'vaa-' . $this->viewKey . '-item';
 			$title = $level->post_title;
-			// Check if this level is the current view
-			if ( $this->get_viewAs( $this->viewKey ) ) {
-				if ( $this->get_viewAs( $this->viewKey ) == $level->ID ) {
+			// Check if this level is the current view.
+			if ( $this->store->get_viewAs( $this->viewKey ) ) {
+				if ( $this->store->get_viewAs( $this->viewKey ) == $level->ID ) {
 					$class .= ' current';
-					if ( 1 === count( $this->get_viewAs() ) ) {
+					if ( 1 === count( $this->store->get_viewAs() ) ) {
 						$href = false;
 					}
 				}
@@ -387,20 +397,23 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		}
 
 		/**
-		 * Add items at the end of the rua group
+		 * Add items at the end of the rua group.
+		 *
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string        $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar );
+		do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar, $root );
 	}
 
 	/**
-	 * Add levels under roles
+	 * Add levels under roles.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   $admin_bar
-	 * @param   $root
+	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string        $root       The root item.
 	 */
 	public function admin_bar_roles_after( $admin_bar, $root ) {
 
@@ -410,7 +423,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		foreach ( $this->store->get_roles() as $role_key => $role ) {
 
-			// Admins always have full access in RUA
+			// Admins always have full access in RUA.
 			if ( 'administrator' == $role_key ) {
 				continue;
 			}
@@ -423,7 +436,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Store the available groups
+	 * Store the available groups.
 	 *
 	 * @since   1.7
 	 * @access  private
@@ -432,11 +445,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		if ( is_callable( array( $this->ruaApp, 'get_levels' ) ) ) {
 			$levels = $this->ruaApp->get_levels();
 		} else {
-			// Fallback @todo Keep this updated on changes in RUA plugin
+			// Fallback @todo Keep this updated on changes in RUA plugin.
 			$levels = get_posts( array(
 				'numberposts' => -1,
 				'post_type'   => $this->ruaTypeRestrict,
-				'post_status' => array( 'publish', 'private', 'future' )
+				'post_status' => array( 'publish', 'private', 'future' ),
 			) );
 		}
 
@@ -448,11 +461,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Get a group by ID
+	 * Get a group by ID.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   string  $key
+	 * @param   string  $key  (optional) The level key.
 	 * @return  mixed
 	 */
 	public function get_levels( $key = '-1' ) {
@@ -466,18 +479,18 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Get all caps of a level
-	 * Also able to get all caps based on level hierarchy (default)
+	 * Get all caps of a level.
+	 * Also able to get all caps based on level hierarchy (default).
 	 *
 	 * @since   1.7
-	 * @param   int   $level_id
-	 * @param   bool  $hierarchical
+	 * @param   int   $level_id      The level ID.
+	 * @param   bool  $hierarchical  Add parent level caps?
 	 * @return  array
 	 */
 	public function get_level_caps( $level_id, $hierarchical = true ) {
 
-		// @see https://github.com/intoxstudio/restrict-user-access/pull/8
-		if ( function_exists('rua_get_level_caps') ) {
+		// @see https://github.com/intoxstudio/restrict-user-access/pull/8.
+		if ( function_exists( 'rua_get_level_caps' ) ) {
 			return (array) rua_get_level_caps( $level_id, $hierarchical );
 		}
 
@@ -489,8 +502,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		$caps = array();
 		foreach ( $levels as $level ) {
-			// Just use the regular get_post_meta to prevent any errors in future or old versions of RUA
-			// @todo Check for future API updates in RUA plugin
+			// Just use the regular get_post_meta to prevent any errors in future or old versions of RUA.
+			// @todo Check for future API updates in RUA plugin.
 			// $level_caps = $this->ruaApp->level_manager->metadata()->get( "caps" )->get_data( $level );
 			$level_caps = get_post_meta( $level, $this->ruaMetaPrefix . 'caps', true );
 			if( ! empty( $level_caps ) && is_array( $level_caps ) ) {
@@ -511,11 +524,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @since   1.7
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As_RUA
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
+		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self( $caller );
 			}
@@ -524,6 +537,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		return null;
 	}
 
-} // end class
+} // end class.
 
-} // end if class_exists
+} // end if class_exists.
