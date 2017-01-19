@@ -6,6 +6,10 @@ engines:
       languages:
       - javascript
       - php
+    checks:
+      # Disable for now due to jQuery calls
+      Similar code:
+        enabled: false
   fixme:
     enabled: true
   csslint:
@@ -16,9 +20,6 @@ engines:
       complexity:
         error: 15
       wrap-iife:
-        enabled: false
-      # Disable for now due to jQuery calls
-      Similar code:
         enabled: false
   phpmd:
     enabled: true
