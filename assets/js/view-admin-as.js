@@ -9,7 +9,7 @@
  * @preserve
  */
 
-if ( 'undefined' == typeof VAA_View_Admin_As ) {
+if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	var VAA_View_Admin_As = {
 		ajaxurl: null,
 		siteurl: '',
@@ -28,13 +28,13 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
 
-	if ( 'undefined' == typeof VAA_View_Admin_As._debug ) {
+	if ( 'undefined' === typeof VAA_View_Admin_As._debug ) {
 		VAA_View_Admin_As._debug = 0;
 	} else {
-		VAA_View_Admin_As._debug = parseInt( VAA_View_Admin_As._debug );
+		VAA_View_Admin_As._debug = parseInt( VAA_View_Admin_As._debug, 10 );
 	}
 
-	if ( 'undefined' == typeof VAA_View_Admin_As.ajaxurl && 'undefined' != typeof ajaxurl ) {
+	if ( 'undefined' === typeof VAA_View_Admin_As.ajaxurl && 'undefined' !== typeof ajaxurl ) {
 		VAA_View_Admin_As.ajaxurl = ajaxurl;
 	}
 
@@ -92,11 +92,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					 * 38 = arrow up
 					 * 40 = arrow down
 					 */
-					var key = e.which;
-					if ( $(this).hasClass('active') && ( key == 13 || key == 32 || key == 38 ) ) {
+					var key = parseInt( e.which, 10 );
+					if ( $(this).hasClass('active') && ( key === 13 || key === 32 || key === 38 ) ) {
 						toggleContent.slideUp('fast');
 						$(this).removeClass('active');
-					} else if ( key == 13 || key == 32 || key == 40 ) {
+					} else if ( key === 13 || key === 32 || key === 40 ) {
 						toggleContent.slideDown('fast');
 						$(this).addClass('active');
 					}
@@ -121,7 +121,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
-			if ( $('button', this).attr('name') == 'vaa_reload' ) {
+			if ( $('button', this).attr('name') === 'vaa_reload' ) {
 				window.location.reload();
 			} else {
 				VAA_View_Admin_As.ajax( { reset : true }, true );
@@ -187,7 +187,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 		var isView = false;
 		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
-			if ( typeof viewAs[ type ] != 'undefined' ) {
+			if ( typeof viewAs[ type ] !== 'undefined' ) {
 				isView = true;
 				return true;
 			}
@@ -211,14 +211,14 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 
 			$.post( VAA_View_Admin_As.ajaxurl, data, function(response) {
 				if ( VAA_View_Admin_As._debug === 1 ) { console.log(response); }
-				if ( typeof response.success != 'undefined' && true === response.success ) {
+				if ( typeof response.success !== 'undefined' && true === response.success ) {
 					if ( false === reload ) {
 						// Check if we have more detailed data to show
-						if ( typeof response.data != 'undefined' && typeof response.data.content != 'undefined' ) {
-							if ( typeof response.data.type == 'undefined' ) {
+						if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.content ) {
+							if ( typeof response.data.type === 'undefined' ) {
 								response.data.type = 'default';
 							}
-							if ( typeof response.data.content != 'object' ) {
+							if ( 'object' !== typeof response.data.content ) {
 								response.data.content = String( response.data.content );
 							}
 							VAA_View_Admin_As.overlay( response.data.content, String( response.data.type ) );
@@ -242,10 +242,10 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					if ( true === fullPopup ) {
 						$(VAA_View_Admin_As.prefix).addClass('fullPopupActive');
 					}
-					if ( typeof response.data != 'undefined' ) {
+					if ( 'undefined' !== typeof response.data ) {
 						// Check if we have more detailed data to show
-						if ( typeof response.data.content != 'undefined' ) {
-							if ( typeof response.data.type == 'undefined' ) {
+						if ( 'undefined' !== typeof response.data.content ) {
+							if ( 'undefined' === typeof response.data.type ) {
 								response.data.type = 'error';
 							}
 							VAA_View_Admin_As.notice( response.data.content, response.data.type );
@@ -285,11 +285,11 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 		var root = 'body #vaa-overlay';
 
 		$( root ).html('<div class="vaa-overlay-container"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>');
-		if ( type == 'textarea' ) {
-			if ( typeof data.text != 'undefined' ) {
-				$(root+' .vaa-response-data').append('<p>' + data.text + '</p>');
-			}
-			if ( typeof data.textareacontent != 'undefined' ) {
+		if ( 'undefined' !== typeof data.text ) {
+			$(root+' .vaa-response-data').append('<p>' + data.text + '</p>');
+		}
+		if ( 'textarea' === type ) {
+			if ( 'undefined' !== typeof data.textareacontent ) {
 				$(root+' .vaa-response-data').append('<textarea style="width: 100%;" readonly>'+data.textareacontent+'</textarea>');
 				// Auto height
 				/*$('body #vaa-overlay .vaa-response-data textarea').each(function(){
@@ -300,11 +300,8 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				// Select full text on click
 				$(root+' .vaa-response-data textarea').click( function() { $(this).select(); } );
 			}
-		} else if ( type == 'errorlist' ) {
-			if ( typeof data.text != 'undefined' ) {
-				$(root+' .vaa-response-data').append('<p>'+data.text+'</p>');
-			}
-			if ( typeof data.errors != 'undefined' ) {
+		} else if ( 'errorlist' === type ) {
+			if ( 'undefined' !== typeof data.errors ) {
 				$(root+' .vaa-response-data').append('<ul class="errorlist"></ul>');
 				data.errors.forEach(function(error) {
 					$(root+' .vaa-response-data .errorlist').append('<li>'+error+'</li>');
@@ -385,7 +382,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 				viewAs = { user_setting : { freeze_locale : "yes" } };
 			}
 			var reload = false;
-			if ( typeof VAA_View_Admin_As.view_as == 'object' && typeof VAA_View_Admin_As.view_as.user != 'undefined' ) {
+			if ( typeof VAA_View_Admin_As.view_as === 'object' && typeof VAA_View_Admin_As.view_as.user !== 'undefined' ) {
 				reload = true;
 			}
 			VAA_View_Admin_As.ajax( viewAs, reload );
@@ -462,12 +459,12 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 					} else {
 						$(this).show();
 					}
-					if ( ( VAA_View_Admin_As.caps_filter_settings.selectedRole != 'default' ) && ( $('input', this).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ) ) {
+					if ( ( VAA_View_Admin_As.caps_filter_settings.selectedRole !== 'default' ) && ( $('input', this).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ) ) {
 						$(this).hide();
 					}
 				} else {
 					$(this).hide();
-					if ( ( VAA_View_Admin_As.caps_filter_settings.selectedRole == 'default' ) || ( $('input', this).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ) ) {
+					if ( ( VAA_View_Admin_As.caps_filter_settings.selectedRole === 'default' ) || ( $('input', this).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ) ) {
 						if ( 1 <= VAA_View_Admin_As.caps_filter_settings.filterString.length ) {
 							name = $(this).text();//$('.ab-item', this).text();
 							if ( -1 < name.toLowerCase().indexOf( VAA_View_Admin_As.caps_filter_settings.filterString.toLowerCase() ) ) {
@@ -506,7 +503,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 			} else {
 				var selectedRoleElement = $(VAA_View_Admin_As.prefix+root+'-selectrolecaps #vaa-caps-selectrolecaps option[value="' + VAA_View_Admin_As.caps_filter_settings.selectedRole + '"]');
 				VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = JSON.parse( selectedRoleElement.attr('data-caps') );
-				VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = ( '1' == selectedRoleElement.attr('data-reverse') );
+				VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = ( 1 === parseInt( selectedRoleElement.attr('data-reverse'), 10 ) );
 			}
 			VAA_View_Admin_As.filter_capabilities();
 		});
@@ -748,9 +745,9 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 						viewAs.role_defaults.import_role_defaults_method = String( $(this).attr('data-method') );
 					}
 					VAA_View_Admin_As.ajax( viewAs, false );
-				} catch ( e ) {
+				} catch ( err ) {
 					// @todo Improve error message
-					alert( e );
+					alert( err );
 				}
 			}
 			return false;
@@ -758,7 +755,7 @@ if ( 'undefined' == typeof VAA_View_Admin_As ) {
 	};
 
 	// We require a nonce to use this plugin
-	if ( 'undefined' != typeof VAA_View_Admin_As._vaa_nonce ) {
+	if ( 'undefined' !== typeof VAA_View_Admin_As._vaa_nonce ) {
 		VAA_View_Admin_As.init();
 	}
 
