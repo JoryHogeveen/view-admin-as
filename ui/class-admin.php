@@ -123,7 +123,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function action_plugin_row_meta( $links, $file ) {
-		if ( $file === VIEW_ADMIN_AS_BASENAME ) {
+		if ( VIEW_ADMIN_AS_BASENAME === $file ) {
 			foreach ( $this->get_links() as $id => $link ) {
 				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . esc_html( $link['title'] ) . '</a>';
 			}

@@ -1,7 +1,5 @@
 ---
 engines:
-  csslint:
-    enabled: true
   duplication:
     enabled: true
     config:
@@ -10,6 +8,18 @@ engines:
       - php
   fixme:
     enabled: true
+  csslint:
+    enabled: true
+  eslink:
+    enabled: true
+    check:
+      complexity:
+        error: 15
+      wrap-iife:
+        enabled: false
+      # Disable for now due to jQuery calls
+      Similar code:
+        enabled: false
   phpmd:
     enabled: true
     #config:

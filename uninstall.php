@@ -11,7 +11,9 @@
  */
 
 //if uninstall not called from WordPress exit
-! defined( 'WP_UNINSTALL_PLUGIN' ) and die();
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+    die();
+}
 
 vaa_uninstall();
 
