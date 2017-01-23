@@ -15,7 +15,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.6.3
+ * @version 1.6.4
  */
 abstract class VAA_View_Admin_As_Class_Base
 {

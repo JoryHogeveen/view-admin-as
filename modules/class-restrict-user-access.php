@@ -16,11 +16,12 @@ add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_RUA', 
  * Compatibility class for the Restrict User Access plugin
  *
  * Tested from RUA version: 0.12.4
+ * Official RUA compat release: 0.13 (https://github.com/intoxstudio/restrict-user-access/pull/8)
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.7
- * @version 1.7
+ * @since   1.6.4
+ * @version 1.6.4
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
@@ -28,7 +29,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @static
 	 * @var    VAA_View_Admin_As_RUA
 	 */
@@ -37,50 +38,50 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The existing access levels.
 	 *
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @see    restrict-user-access/app.php -> get_levels()
 	 * @var    array of WP_Post objects (RUA access level post type)
 	 */
 	private $levels;
 
 	/**
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @var    int  WP_Post ID (RUA access level post type).
 	 */
 	private $selectedLevel;
 
 	/**
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @var    array  The caps set for this level.
 	 */
 	private $selectedLevelCaps = array();
 
 	/**
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @var    object  The post type object of the level types.
 	 */
 	private $levelPostType;
 
 	/**
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @var    string
 	 */
 	private $viewKey = 'rua_level';
 
 	/**
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @var    RUA_App
 	 */
 	private $ruaApp;
 
 	/**
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @var    string
 	 */
 	private $ruaMetaPrefix;
 
 	/**
-	 * @since  1.7
+	 * @since  1.6.4
 	 * @var    string
 	 */
 	private $ruaTypeRestrict;
@@ -88,7 +89,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Populate the instance and validate RUA plugin is active.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  protected
 	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -127,7 +128,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Initialize the RUA module.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  public
 	 */
 	public function do_view() {
@@ -155,7 +156,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Update the current user's WP_User instance with the current view data.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @param   WP_User  $user        User object.
 	 * @param   bool     $accessible  Are the WP_User properties accessible?
 	 */
@@ -182,7 +183,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Filter the return metadata for the RUA levels.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @param   null    $null      The value get_metadata() should return.
 	 * @param   int     $user_id   User/Object ID.
 	 * @param   string  $meta_key  Meta key.
@@ -207,7 +208,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add groups view type.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @param   array  $types  Existing view types.
 	 * @return  array
 	 */
@@ -219,7 +220,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Ajax handler, called from main ajax handler.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  public
 	 * @param   array  $data  The ajax data for this module.
 	 * @return  bool
@@ -259,7 +260,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Change the VAA admin bar menu title.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  public
 	 * @param   string  $title  The current title.
 	 * @return  string
@@ -291,7 +292,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add the RUA admin bar items.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  public
 	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string        $root       The root item.
@@ -410,7 +411,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add levels under roles.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  public
 	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string        $root       The root item.
@@ -439,7 +440,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Store the available groups.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  private
 	 */
 	private function store_levels() {
@@ -464,7 +465,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Get a group by ID.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  public
 	 * @param   string  $key  (optional) The level key.
 	 * @return  mixed
@@ -483,7 +484,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * Get all caps of a level.
 	 * Also able to get all caps based on level hierarchy (default).
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @param   int   $level_id      The level ID.
 	 * @param   bool  $hierarchical  Add parent level caps?
 	 * @return  array
@@ -522,7 +523,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.7
+	 * @since   1.6.4
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.

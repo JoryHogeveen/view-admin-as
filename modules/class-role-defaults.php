@@ -18,7 +18,7 @@ add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Role_D
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4
- * @version 1.6.3
+ * @version 1.6.4
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base

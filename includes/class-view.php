@@ -14,7 +14,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.x
+ * @version 1.6.4
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
@@ -126,7 +126,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	private function do_view() {
 
-		// @since  1.6.x  Set the current user as the selected user by default.
+		// @since  1.6.4  Set the current user as the selected user by default.
 		$this->store->set_selectedUser( $this->store->get_curUser() );
 
 		/**
@@ -219,7 +219,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Get capabilities and user level from current user view object instead of database.
 		 *
-		 * @since  1.6.x
+		 * @since  1.6.4
 		 */
 		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
@@ -307,7 +307,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * Allow other modules to hook after the initial changes to the current user.
 		 *
 		 * @since  1.6.3
-		 * @since  1.6.x    Changed name (was: `vaa_view_admin_as_modify_current_user`).
+		 * @since  1.6.4    Changed name (was: `vaa_view_admin_as_modify_current_user`).
 		 * @param  WP_User  $user          The modified user object.
 		 * @param  bool     $accessible    Are the needed WP_User properties and methods accessible?
 		 */
@@ -363,7 +363,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 *
 	 * IMPORTANT! This filter should ONLY be used when a view is selected!
 	 *
-	 * @since   1.6.x
+	 * @since   1.6.4
 	 * @access  public
 	 * @see     init_current_user_modifications()
 	 *

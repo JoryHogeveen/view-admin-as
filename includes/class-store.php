@@ -14,7 +14,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.3
+ * @version 1.6.4
  */
 final class VAA_View_Admin_As_Store
 {
@@ -159,7 +159,7 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Array of translated role names.
 	 *
-	 * @since  1.6.x  Moved to this class from main class.
+	 * @since  1.6.4
 	 * @var    array
 	 */
 	private $rolenames = array();
@@ -340,7 +340,7 @@ final class VAA_View_Admin_As_Store
 			}
 		}
 
-		// @since  1.6.x  Set role names
+		// @since  1.6.4  Set role names
 		$role_names = array();
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $wp_roles->role_names[ $role_key ] ) ) {
@@ -938,7 +938,7 @@ final class VAA_View_Admin_As_Store
 	/**
 	 * Get the role names. Translated by default.
 	 * If key is provided but not found it will return the key (untranslated).
-	 * @since   1.6.x
+	 * @since   1.6.4
 	 * @param   string  $key        Role slug.
 	 * @param   bool    $translate  Translate the role name?
 	 * @return  array|string
@@ -1153,7 +1153,7 @@ final class VAA_View_Admin_As_Store
 
 	/**
 	 * Set the role name translations.
-	 * @since   1.6.x
+	 * @since   1.6.4
 	 * @param   mixed   $val     Value.
 	 * @param   string  $key     (optional) Role name.
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
