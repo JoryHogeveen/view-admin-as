@@ -55,10 +55,23 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Add our caps to the members plugin.
+		 * Hook `members_get_capabilities` also used by:
+		 *  - User Role Editor (URE)
+		 *  - WPFront User Role Editor
+		 *  - Pods
+		 *
 		 * @since  1.6
 		 */
 		add_filter( 'members_get_capabilities', array( $this, 'add_capabilities' ) );
-		add_action( 'members_register_cap_groups', array( $this, 'members_register_cap_group' ) );
+		add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
+
+		/**
+		 * Add our caps to the User Role Editor plugin (URE)
+		 * @since  1.6.4
+		 */
+		add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
+		add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
+
 
 		/**
 		 * Get caps from other plugins.
@@ -85,9 +98,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		}
 		*/
 
-		if ( $this->store->get_viewAs( 'role' ) || $this->store->get_viewAs( 'caps' ) ) {
-			// Pods 2.x (only needed for the role selector)
-			add_filter( 'pods_is_admin', array( $this, 'pods_caps_check' ), 99, 2 );
+		if ( $this->store->get_viewAs()
+		     && (int) $this->store->get_curUser()->ID === (int) $this->store->get_selectedUser()->ID
+		) {
+			// Only apply the filter if the current user is modified
+			add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
 		}
 	}
 
@@ -145,7 +160,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @param   array  $caps  String or Array provided by the pods_is_admin hook.
 	 * @return  bool
 	 */
-	public function pods_caps_check( $bool, $caps ) {
+	public function filter_pods_caps_check( $bool, $caps ) {
 
 		foreach ( (array) $caps as $capability ) {
 			if ( $this->vaa->view()->current_view_can( $capability ) ) {
@@ -163,7 +178,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @see     init()
 	 */
-	public function members_register_cap_group() {
+	public function action_members_register_cap_group() {
 
 		if ( function_exists( 'members_register_cap_group' ) ) {
 			// Register the vaa group.
@@ -176,6 +191,44 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 				)
 			);
 		}
+	}
+
+	/**
+	 * Add our our own capability group in the URE plugin.
+	 *
+	 * @since   1.6.4
+	 * @access  public
+	 * @see     init()
+	 * @see     URE_Capabilities_Groups_Manager::get_groups_tree()
+	 * @param   array  $groups  Current groups
+	 * @return  array
+	 */
+	public function filter_ure_capabilities_groups_tree( $groups ) {
+		$groups['view_admin_as'] = array(
+			'caption' => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
+			'parent'  => 'custom',
+			'level'   => 3,
+		);
+		return $groups;
+	}
+
+	/**
+	 * Add our capabilities to our own group in the URE plugin.
+	 *
+	 * @since   1.6.4
+	 * @access  public
+	 * @see     init()
+	 * @see     URE_Capabilities_Groups_Manager::get_cap_groups()
+	 * @param   array   $groups  Current capability groups
+	 * @param   string  $cap_id  Capability identifier
+	 * @return  array
+	 */
+	public function filter_ure_custom_capability_groups( $groups, $cap_id ) {
+		if ( in_array( $cap_id, $this->add_capabilities(), true ) ) {
+			$groups = (array) $groups;
+			$groups[] = 'view_admin_as';
+		}
+		return $groups;
 	}
 
 	/**
