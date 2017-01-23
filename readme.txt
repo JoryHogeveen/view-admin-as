@@ -37,6 +37,8 @@ Through the "Role defaults" module you can set default screen settings for roles
 
 = Compatibility / Integrations =
 
+This plugin will work with most other plugins but these are tested:
+
 *	**Advanced Access Manager** *(Pro version not verified)*
 *	**bbPress**
 *	**BuddyPress**
@@ -48,8 +50,7 @@ Through the "Role defaults" module you can set default screen settings for roles
 *	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
 *	**WPFront User Role Editor**
 
-Full list and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)  
-This plugin will work with most other plugins.
+Full list of tested plugins and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)
 
 = I can't switch back! =
 
