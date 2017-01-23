@@ -1115,7 +1115,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_roles( $val, $key = null, $append = false ) {
-		$this->roles  = VAA_API::set_array_data( $this->roles, $val, $key, $append );
+		$this->roles = VAA_API::set_array_data( $this->roles, $val, $key, $append );
 	}
 
 	/**
@@ -1127,7 +1127,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_users( $val, $key = null, $append = false ) {
-		$this->users  = VAA_API::set_array_data( $this->users, $val, $key, $append );
+		$this->users = VAA_API::set_array_data( $this->users, $val, $key, $append );
 	}
 
 	/**
