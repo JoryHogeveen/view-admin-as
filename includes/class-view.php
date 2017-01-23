@@ -395,6 +395,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				return array( $user->caps );
 			}
 			if ( $meta_key === $wpdb->get_blog_prefix() . 'user_level' ) {
+				if ( ! isset( $user->user_level ) ) {
+					// Make sure the key exists. Result will be filtered in `filter_prevent_update_user_metadata()`
+					$user->update_user_level_from_caps();
+				}
 				return array( $user->user_level );
 			}
 		}
