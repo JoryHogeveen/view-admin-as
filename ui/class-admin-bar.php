@@ -146,12 +146,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		}
 		if ( $this->store->get_viewAs( 'role' ) ) {
 			$title = __( 'Viewing as role', VIEW_ADMIN_AS_DOMAIN ) . ': '
-			         . translate_user_role( $this->store->get_roles( $this->store->get_viewAs( 'role' ) )->name );
+			         . $this->store->get_rolenames( $this->store->get_viewAs( 'role' ) );
 		}
 		if ( $this->store->get_viewAs( 'user' ) ) {
 			$selected_user_roles = array();
 			foreach ( $this->store->get_selectedUser()->roles as $role ) {
-				$selected_user_roles[] = translate_user_role( $this->store->get_roles( $role )->name );
+				$selected_user_roles[] = $this->store->get_rolenames( $role );
 			}
 			$title = __( 'Viewing as user', VIEW_ADMIN_AS_DOMAIN ) . ': '
 			         . $this->store->get_selectedUser()->data->display_name
@@ -646,14 +646,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$data_caps = json_encode( $role->capabilities );
 			$role_select_options[] = array(
 				'compare' => esc_attr( $role_key ),
-				'label'   => '= ' . translate_user_role( $role->name ),
+				'label'   => '= ' . $this->store->get_rolenames( $role_key ),
 				'attr'    => array(
 					'data-caps' => $data_caps,
 				),
 			);
 			$role_select_options[] = array(
 				'compare' => 'reversed-' . esc_attr( $role_key ),
-				'label'   => '≠ ' . translate_user_role( $role->name ),
+				'label'   => '≠ ' . $this->store->get_rolenames( $role_key ),
 				'attr'    => array(
 					'data-caps'    => $data_caps,
 					'data-reverse' => '1',
@@ -809,7 +809,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$parent = $root;
 			$href   = '#';
 			$class  = 'vaa-role-item';
-			$title  = translate_user_role( $role->name );
+			$title  = $this->store->get_rolenames( $role_key );
 			// Check if the users need to be grouped under their roles.
 			if ( true === $this->groupUserRoles ) {
 				// make sure items are aligned properly when some roles don't have users.
@@ -846,7 +846,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'href'   => $href,
 				'meta'   => array(
 					// Translators: %s stands for the translated role name.
-					'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), translate_user_role( $role->name ) ),
+					'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $this->store->get_rolenames( $role_key ) ),
 					'class' => $class,
 					'rel'   => $role_key,
 				),
@@ -965,11 +965,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				}
 			} else {
 				// Users displayed as normal.
-				$all_roles = $this->store->get_roles();
 				$user_roles = array();
 				// Add the roles of this user in the name.
 				foreach ( $user->roles as $role ) {
-					$user_roles[] = translate_user_role( $all_roles[ $role ]->name );
+					$user_roles[] = $this->store->get_rolenames( $role );
 				}
 				$title = $title . ' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
 				$admin_bar->add_node( array(

@@ -1079,10 +1079,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 			),
 		);
-		foreach ( $this->store->get_roles() as $role_key => $role ) {
+		foreach ( $this->store->get_rolenames() as $role_key => $role_name ) {
 			$role_select_options[] = array(
 				'value' => esc_attr( $role_key ),
-				'label' => translate_user_role( $role->name ),
+				'label' => esc_html( $role_name ),
 			);
 		}
 
@@ -1123,7 +1123,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				foreach ( $user->roles as $role ) {
 					$role_data = $this->store->get_roles( $role );
 					if ( $role_data instanceof WP_Role ) {
-						$role_name = translate_user_role( $role_data->name );
+						$role_name = $this->store->get_rolenames( $role );
 						$bulk_users_select_content .=
 							'<div class="ab-item vaa-item">'
 							. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
@@ -1352,10 +1352,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			);
 			foreach ( (array) $this->get_role_defaults() as $role_key => $role ) {
 				if ( ! empty( $role_key ) ) {
-					$role_name = $role_key;
-					if ( $this->store->get_roles( $role_key ) ) {
-						$role_name = translate_user_role( $this->store->get_roles( $role_key )->name );
-					}
+					// get_rolenames will return key if it didn't find the role name.
+					$role_name = $this->store->get_rolenames( $role_key );
 					$role_clear_options[] = array(
 						'value' => esc_attr( $role_key ),
 						'label' => $role_name,
