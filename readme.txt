@@ -38,14 +38,16 @@ Through the "Role defaults" module you can set default screen settings for roles
 
 = Compatibility / Integrations =
 
-*   **Members & User Role Editor**
-	- Support for multiple roles per user. (since 1.2.2)
-	- Add view-admin-as capabilities to the list (since 1.6)
-*   **Genesis Framework** *(and probably other theme frameworks)* - Changed "init" hook to "plugins_loaded" for theme support (since 1.3.3)
-*   **Pods Framework 2.0+** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine whether to show the Pods menu when you are in an other view.
-*   **Restrict User Access 0.13+** - Integrated with the access levels as a new view type (since 1.6.4)
-*   **Advanced Access Manager** - (checked in 1.6.3, Pro version not verified)
+*	**Advanced Access Manager** *(Pro version not verified)*
+*	**Genesis Framework** *(and probably other theme frameworks)*
+*	**Pods Framework 2.0+**
+*	**Members**
+*	**Restrict User Access 0.13+** *(Adds a view type for access levels)*
+*	**User Role Editor**
+*	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
+*	**WPFront User Role Editor**
 
+Full list and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)  
 This plugin will work with most other plugins.
 
 = I can't switch back! =
