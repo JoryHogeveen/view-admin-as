@@ -25,6 +25,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 ( function( $ ) {
 
+	var $document = $( document ),
+		$window = $( window );
+
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
 
@@ -38,17 +41,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.ajaxurl = ajaxurl;
 	}
 
-	// @since  1.6.1  Prevent swipe events to be seen as a click (bug in some browsers)
+	// @since  1.6.1  Prevent swipe events to be seen as a click (bug in some browsers).
 	VAA_View_Admin_As._touchmove = false;
-	$( document ).on( 'touchmove', function() {
+	$document.on( 'touchmove', function() {
 		VAA_View_Admin_As._touchmove = true;
 	} );
-	$( document ).on( 'touchstart', function() {
+	$document.on( 'touchstart', function() {
 		VAA_View_Admin_As._touchmove = false;
 	} );
 
 	/**
-	 * BASE INIT
+	 * BASE INIT.
 	**/
 	VAA_View_Admin_As.init = function() {
 
@@ -57,17 +60,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_settings();
 		VAA_View_Admin_As.init_module_role_defaults();
 
-		// Functionality that require the document to be fully loaded
-		$(window).on( "load", function() {
+		// Functionality that require the document to be fully loaded.
+		$window.on( "load", function() {
 
-			// Toggle content with title
+			// Toggle content with title.
 			$( VAA_View_Admin_As.prefix + '.ab-vaa-toggle' ).each( function() {
 				var toggleContent = $(this).parent().children().not('.ab-vaa-toggle');
 				if ( ! $(this).hasClass('active') ) {
 					toggleContent.hide();
 				}
 
-				$(this).on(  'click touchend', function( e ) {
+				$(this).on( 'click touchend', function( e ) {
 					e.preventDefault();
 					e.stopPropagation();
 					if ( true === VAA_View_Admin_As._touchmove ) {
@@ -82,8 +85,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					}
 				} );
 
-				// @since  1.6.1  Keyboard a11y
-				$(this).on(  'keyup', function( e ) {
+				// @since  1.6.1  Keyboard a11y.
+				$(this).on( 'keyup', function( e ) {
 					e.preventDefault();
 					/**
 					 * @see  https://api.jquery.com/keyup/
@@ -103,7 +106,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 			} );
 
-			// @since  1.6.3  Toggle items on hover
+			// @since  1.6.3  Toggle items on hover.
 			$( VAA_View_Admin_As.prefix + '.ab-vaa-showhide[data-showhide]' ).each( function() {
 				$( $(this).attr('data-showhide') ).hide();
 				$(this).on( 'mouseenter', function() {
@@ -113,15 +116,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 			} );
 
-		} ); // End window.load
+		} ); // End window.load.
 
-		// Process reset
-		$(document).on( 'click touchend', VAA_View_Admin_As.prefix + '.vaa-reset-item > .ab-item', function( e ) {
+		// Process reset.
+		$document.on( 'click touchend', VAA_View_Admin_As.prefix + '.vaa-reset-item > .ab-item', function( e ) {
 			e.preventDefault();
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
-			if ( $('button', this).attr('name') === 'vaa_reload' ) {
+			if ( 'vaa_reload' === $( 'button', this ).attr('name') ) {
 				window.location.reload();
 			} else {
 				VAA_View_Admin_As.ajax( { reset : true }, true );
@@ -129,9 +132,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 		} );
 
-		// @since  1.6.2  Process basic views
+		// @since  1.6.2  Process basic views.
 		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
-			$(document).on( 'click touchend', VAA_View_Admin_As.prefix + '.vaa-'+type+'-item > a.ab-item', function( e ) {
+			$document.on( 'click touchend', VAA_View_Admin_As.prefix + '.vaa-'+type+'-item > a.ab-item', function( e ) {
 				if ( true === VAA_View_Admin_As._touchmove ) {
 					return;
 				}
@@ -145,8 +148,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		} );
 
-		// @since  1.6.3  Removable items
-		$(document).on( 'click touchend', VAA_View_Admin_As.prefix + '.ab-item > .remove', function( e ) {
+		// @since  1.6.3  Removable items.
+		$document.on( 'click touchend', VAA_View_Admin_As.prefix + '.ab-item > .remove', function( e ) {
 			e.preventDefault();
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -157,7 +160,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * Apply the selected view
+	 * Apply the selected view.
 	 * viewAs format: { VIEW_TYPE : VIEW_DATA }
 	 *
 	 * @params  {object}   viewAs
@@ -181,7 +184,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		var data = {
 			'action': 'view_admin_as',
 			'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
-			// @since  1.6.2  Use JSON data
+			// @since  1.6.2  Use JSON data.
 			'view_admin_as': JSON.stringify( viewAs )
 		};
 
@@ -194,8 +197,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		/**
-		 *  @since  1.5  Check view mode
-		 *  @todo   Improve form creation
+		 *  @since  1.5  Check view mode.
+		 *  @todo   Improve form creation.
  		 */
 		if ( $( VAA_View_Admin_As.prefix + '#vaa-settings-view-mode-single' ).is(':checked') && isView ) {
 
@@ -213,7 +216,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				if ( VAA_View_Admin_As._debug === 1 ) { console.log(response); }
 				if ( typeof response.success !== 'undefined' && true === response.success ) {
 					if ( false === reload ) {
-						// Check if we have more detailed data to show
+						// Check if we have more detailed data to show.
 						if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.content ) {
 							if ( typeof response.data.type === 'undefined' ) {
 								response.data.type = 'default';
@@ -228,9 +231,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						}
 					} else {
 						/**
-						 * Reload the page
+						 * Reload the page.
 						 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
-						 * @since  1.6.1  Fix issue with anchors
+						 * @since  1.6.1  Fix issue with anchors.
 						 */
 						window.location.hash = '';
 						window.location.replace(
@@ -243,7 +246,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
 					}
 					if ( 'undefined' !== typeof response.data ) {
-						// Check if we have more detailed data to show
+						// Check if we have more detailed data to show.
 						if ( 'undefined' !== typeof response.data.content ) {
 							if ( 'undefined' === typeof response.data.type ) {
 								response.data.type = 'error';
@@ -260,7 +263,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * Show notice in the admin bar
+	 * Show notice in the admin bar.
 	 * @see    VAA_View_Admin_As.ajax
 	 * @param  {object}  notice
 	 * @param  {string}  type
@@ -275,7 +278,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * Show popup with return content
+	 * Show popup with return content.
 	 * @see    VAA_View_Admin_As.ajax
 	 * @param  {object}  data
 	 * @param  {string}  type
@@ -291,13 +294,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		if ( 'textarea' === type ) {
 			if ( 'undefined' !== typeof data.textareacontent ) {
 				$( root + ' .vaa-response-data' ).append('<textarea style="width: 100%;" readonly>' + data.textareacontent + '</textarea>');
-				// Auto height
+				// Auto height.
 				/*$('body #vaa-overlay .vaa-response-data textarea').each(function(){
 					var maxTextareaHeight = $('body #vaa-overlay .vaa-response-data').height();
 					var fullTextareaHeight = this.scrollHeight;
 					$(this).css({'height': 'auto', 'max-height': maxTextareaHeight}).height( fullTextareaHeight );
 				} );*/
-				// Select full text on click
+				// Select full text on click.
 				$( root + ' .vaa-response-data textarea' ).click( function() { $(this).select(); } );
 			}
 		} else if ( 'errorlist' === type ) {
@@ -314,8 +317,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$( root ).fadeOut( 'fast', function() { $(this).remove(); } );
 		} );
 
-		// Remove overlay on click outside of container
-		$(document).mouseup( function( e ){
+		// Remove overlay on click outside of container.
+		$document.mouseup( function( e ){
 			$( root + ' .vaa-overlay-container' ).each( function(){
 				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
 					$( root ).fadeOut( 'fast', function() { $(this).remove(); } );
@@ -326,7 +329,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * SETTINGS
+	 * SETTINGS.
 	 * @since  1.5
 	 */
 	VAA_View_Admin_As.init_settings = function() {
@@ -335,8 +338,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			prefix = 'vaa-settings',
 			root_prefix = VAA_View_Admin_As.prefix + root;
 
-		// @since  1.5  Location
-		$(document).on( 'change', root_prefix + '-admin-menu-location select#' + prefix + '-admin-menu-location', function( e ) {
+		// @since  1.5  Location.
+		$document.on( 'change', root_prefix + '-admin-menu-location select#' + prefix + '-admin-menu-location', function( e ) {
 			e.preventDefault();
 			var val = $(this).val();
 			if ( val && '' !== val ) {
@@ -345,8 +348,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 		} );
 
-		// @since  1.5  View mode
-		$(document).on( 'change', root_prefix + '-view-mode input.radio.' + prefix + '-view-mode', function( e ) {
+		// @since  1.5  View mode.
+		$document.on( 'change', root_prefix + '-view-mode input.radio.' + prefix + '-view-mode', function( e ) {
 			e.preventDefault();
 			var val = $(this).val();
 			if ( val && '' !== val ) {
@@ -355,8 +358,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 		} );
 
-		// @since  1.5.2  Force group users
-		$(document).on( 'change', root_prefix + '-force-group-users input#' + prefix + '-force-group-users', function( e ) {
+		// @since  1.5.2  Force group users.
+		$document.on( 'change', root_prefix + '-force-group-users input#' + prefix + '-force-group-users', function( e ) {
 			e.preventDefault();
 			var viewAs = { user_setting : { force_group_users : "no" } };
 			if ( this.checked ) {
@@ -365,8 +368,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, true );
 		} );
 
-		// @since  1.6  Enable hide front
-		$(document).on( 'change', root_prefix + '-hide-front input#' + prefix + '-hide-front', function( e ) {
+		// @since  1.6  Enable hide front.
+		$document.on( 'change', root_prefix + '-hide-front input#' + prefix + '-hide-front', function( e ) {
 			e.preventDefault();
 			var viewAs = { user_setting : { hide_front : "no" } };
 			if ( this.checked ) {
@@ -375,8 +378,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		} );
 
-		// @since  1.6.1  Enable freeze locale
-		$(document).on( 'change', root_prefix + '-freeze-locale input#' + prefix + '-freeze-locale', function( e ) {
+		// @since  1.6.1  Enable freeze locale.
+		$document.on( 'change', root_prefix + '-freeze-locale input#' + prefix + '-freeze-locale', function( e ) {
 			e.preventDefault();
 			var viewAs = { user_setting : { freeze_locale : "no" } };
 			if ( this.checked ) {
@@ -392,8 +395,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * USERS
-	 * Extra functions for user views
+	 * USERS.
+	 * Extra functions for user views.
 	 * @since  1.2
 	**/
 	VAA_View_Admin_As.init_users = function() {
@@ -401,8 +404,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		var root = VAA_View_Admin_As.root + '-users',
 			root_prefix = VAA_View_Admin_As.prefix + root;
 
-		// Search users
-		$(document).on( 'keyup', root_prefix + ' .ab-vaa-search.search-users input', function() {
+		// Search users.
+		$document.on( 'keyup', root_prefix + ' .ab-vaa-search.search-users input', function() {
 			$( VAA_View_Admin_As.prefix + ' .ab-vaa-search #vaa-searchuser-results' ).empty();
 			if ( 1 <= $(this).val().length ) {
 				var inputText = $(this).val();
@@ -432,7 +435,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * CAPABILITIES
+	 * CAPABILITIES.
 	 * @since  1.3
 	**/
 	VAA_View_Admin_As.init_caps = function() {
@@ -447,7 +450,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			filterString : ''
 		};
 
-		// Filter capability handler
+		// Filter capability handler.
 		VAA_View_Admin_As.filter_capabilities = function() {
 			//VAA_View_Admin_As.caps_filter_settings;
 			$( root_prefix + '-quickselect-options .vaa-cap-item' ).each( function() {
@@ -481,23 +484,23 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		};
 
-		// Set max height of the caps submenu
-		$(document).on( 'mouseenter', root_prefix + '-quickselect', function() {
-			$( root_prefix + '-quickselect-options').css( { 'max-height': ( $(window).height() - 350 )+'px' } );
+		// Set max height of the caps submenu.
+		$document.on( 'mouseenter', root_prefix + '-quickselect', function() {
+			$( root_prefix + '-quickselect-options').css( { 'max-height': ( $window.height() - 350 )+'px' } );
 		} );
-		// Enlarge caps
-		$(document).on( 'click', root_prefix + ' #open-caps-popup', function() {
+		// Enlarge caps.
+		$document.on( 'click', root_prefix + ' #open-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
 			$( root_prefix + '-quickselect > .ab-sub-wrapper').addClass('fullPopup');
 		} );
-		// Undo enlarge caps
-		$(document).on( 'click', root_prefix + ' #close-caps-popup', function() {
+		// Undo enlarge caps.
+		$document.on( 'click', root_prefix + ' #close-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
 			$( root_prefix + '-quickselect > .ab-sub-wrapper').removeClass('fullPopup');
 		} );
 
-		// Select role capabilities
-		$(document).on( 'change', root_prefix + ' .ab-vaa-select.select-role-caps select', function() {
+		// Select role capabilities.
+		$document.on( 'change', root_prefix + ' .ab-vaa-select.select-role-caps select', function() {
 			VAA_View_Admin_As.caps_filter_settings.selectedRole = $(this).val();
 
 			if ( VAA_View_Admin_As.caps_filter_settings.selectedRole == 'default' ) {
@@ -511,8 +514,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.filter_capabilities();
 		} );
 
-		// Filter capabilities with text input
-		$(document).on( 'keyup', root_prefix + ' .ab-vaa-filter input', function() {
+		// Filter capabilities with text input.
+		$document.on( 'keyup', root_prefix + ' .ab-vaa-filter input', function() {
 			if ( 1 <= $(this).val().length ) {
 				VAA_View_Admin_As.caps_filter_settings.filterString = $(this).val();
 			} else {
@@ -522,8 +525,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 
-		// Select all capabilities
-		$(document).on( 'click touchend', root_prefix + ' button#select-all-caps', function( e ) {
+		// Select all capabilities.
+		$document.on( 'click touchend', root_prefix + ' button#select-all-caps', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -535,8 +538,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 			return false;
 		} );
-		// Deselect all capabilities
-		$(document).on( 'click touchend', root_prefix + ' button#deselect-all-caps', function( e ) {
+		// Deselect all capabilities.
+		$document.on( 'click touchend', root_prefix + ' button#deselect-all-caps', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -549,8 +552,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// Process view: capabilities
-		$(document).on( 'click touchend', root_prefix + ' button#apply-caps-view', function( e ) {
+		// Process view: capabilities.
+		$document.on( 'click touchend', root_prefix + ' button#apply-caps-view', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -570,7 +573,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 
 	/**
-	 * MODULE: Role Defaults
+	 * MODULE: Role Defaults.
 	 * @since  1.4
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
@@ -579,8 +582,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			prefix = 'vaa-settings',
 			root_prefix = VAA_View_Admin_As.prefix + root;
 
-		// Enable module
-		$(document).on( 'change', root_prefix + '-role-defaults-enable input#' + prefix + '-role-defaults-enable', function( e ) {
+		// Enable module.
+		$document.on( 'change', root_prefix + '-role-defaults-enable input#' + prefix + '-role-defaults-enable', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { enable : 0 } };
 			if ( this.checked ) {
@@ -593,8 +596,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		prefix = 'vaa-role-defaults';
 		root_prefix = VAA_View_Admin_As.prefix + root;
 
-		// @since  1.4  Enable apply defaults on register
-		$(document).on( 'change', root_prefix + '-setting-register-enable input#' + prefix + '-setting-register-enable', function( e ) {
+		// @since  1.4  Enable apply defaults on register.
+		$document.on( 'change', root_prefix + '-setting-register-enable input#' + prefix + '-setting-register-enable', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { apply_defaults_on_register : 0 } };
 			if ( this.checked ) {
@@ -603,8 +606,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		} );
 
-		// @since  1.5.3  Disable screen settings for users who can't access this plugin
-		$(document).on( 'change', root_prefix + '-setting-disable-user-screen-options input#' + prefix + '-setting-disable-user-screen-options', function( e ) {
+		// @since  1.5.3  Disable screen settings for users who can't access this plugin.
+		$document.on( 'change', root_prefix + '-setting-disable-user-screen-options input#' + prefix + '-setting-disable-user-screen-options', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { disable_user_screen_options : 0 } };
 			if ( this.checked ) {
@@ -613,8 +616,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		} );
 
-		// @since  1.6  Lock meta box order and locations for users who can't access this plugin
-		$(document).on( 'change', root_prefix + '-setting-lock-meta-boxes input#' + prefix + '-setting-lock-meta-boxes', function( e ) {
+		// @since  1.6  Lock meta box order and locations for users who can't access this plugin.
+		$document.on( 'change', root_prefix + '-setting-lock-meta-boxes input#' + prefix + '-setting-lock-meta-boxes', function( e ) {
 			e.preventDefault();
 			var viewAs = { role_defaults : { lock_meta_boxes : 0 } };
 			if ( this.checked ) {
@@ -623,8 +626,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.ajax( viewAs, false );
 		} );
 
-		// @since  1.6.3  Add new meta
-		$(document).on( 'click touchend', root_prefix + '-meta-add button#' + prefix + '-meta-add', function( e ) {
+		// @since  1.6.3  Add new meta.
+		$document.on( 'click touchend', root_prefix + '-meta-add button#' + prefix + '-meta-add', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -635,8 +638,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$( root_prefix + '-meta-select > .ab-item' ).prepend( item );
 		} );
 
-		// @since  1.6.3  Update meta
-		$(document).on( 'click touchend', root_prefix + '-meta-apply button#' + prefix + '-meta-apply', function( e ) {
+		// @since  1.6.3  Update meta.
+		$document.on( 'click touchend', root_prefix + '-meta-apply button#' + prefix + '-meta-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -652,8 +655,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// @since  1.4  Filter users
-		$(document).on( 'keyup', root_prefix + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
+		// @since  1.4  Filter users.
+		$document.on( 'keyup', root_prefix + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
 			e.preventDefault();
 			if ( $(this).val().length >= 1 ) {
 				var inputText = $(this).val();
@@ -672,8 +675,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 		} );
 
-		// @since  1.4  Apply defaults to users
-		$(document).on( 'click touchend', root_prefix + '-bulk-users-apply button#' + prefix + '-bulk-users-apply', function( e ) {
+		// @since  1.4  Apply defaults to users.
+		$document.on( 'click touchend', root_prefix + '-bulk-users-apply button#' + prefix + '-bulk-users-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -691,8 +694,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// @since  1.4  Apply defaults to users by role
-		$(document).on( 'click touchend', root_prefix + '-bulk-roles-apply button#' + prefix + '-bulk-roles-apply', function( e ) {
+		// @since  1.4  Apply defaults to users by role.
+		$document.on( 'click touchend', root_prefix + '-bulk-roles-apply button#' + prefix + '-bulk-roles-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -705,8 +708,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// @since  1.4  Clear role defaults
-		$(document).on( 'click touchend', root_prefix + '-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
+		// @since  1.4  Clear role defaults.
+		$document.on( 'click touchend', root_prefix + '-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -721,8 +724,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// @since  1.5  Export role defaults
-		$(document).on( 'click touchend', root_prefix + '-export-roles-export button#' + prefix + '-export-roles-export', function( e ) {
+		// @since  1.5  Export role defaults.
+		$document.on( 'click touchend', root_prefix + '-export-roles-export button#' + prefix + '-export-roles-export', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -735,8 +738,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// @since  1.5  Import role defaults
-		$(document).on( 'click touchend', root_prefix + '-import-roles-import button.vaa-import-role-defaults', function( e ) {
+		// @since  1.5  Import role defaults.
+		$document.on( 'click touchend', root_prefix + '-import-roles-import button.vaa-import-role-defaults', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -751,7 +754,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					}
 					VAA_View_Admin_As.ajax( viewAs, false );
 				} catch ( err ) {
-					// @todo Improve error message
+					// @todo Improve error message.
 					alert( err );
 				}
 			}
@@ -759,7 +762,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 	};
 
-	// We require a nonce to use this plugin
+	// We require a nonce to use this plugin.
 	if ( 'undefined' !== typeof VAA_View_Admin_As._vaa_nonce ) {
 		VAA_View_Admin_As.init();
 	}
