@@ -218,7 +218,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 */
 	protected function set_scriptLocalization( $val, $key = null, $append = false ) {
-		$this->scriptLocalization = VAA_API::set_array_data( $this->scriptLocalization, $val, $key, $append );
+		$this->scriptLocalization = (array) VAA_API::set_array_data( $this->scriptLocalization, $val, $key, $append );
 	}
 
 	/**

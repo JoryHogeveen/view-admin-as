@@ -345,7 +345,7 @@ final class VAA_View_Admin_As_Store
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $wp_roles->role_names[ $role_key ] ) ) {
 				$role_names[ $role_key ] = $wp_roles->role_names[ $role_key ];
-			} else{
+			} else {
 				$role_names[ $role_key ] = $role->name;
 			}
 		}
@@ -945,8 +945,8 @@ final class VAA_View_Admin_As_Store
 	 */
 	public function get_rolenames( $key = null, $translate = true ) {
 		$val = VAA_API::get_array_data( $this->rolenames, $key );
-		if ( $key && ! $val ) {
-			return $key;
+		if ( ! $val ) {
+			return ( $key ) ? $key : $val;
 		}
 		if ( ! $translate ) {
 			return $val;
