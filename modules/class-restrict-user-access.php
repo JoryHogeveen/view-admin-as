@@ -281,7 +281,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			// Is there also a role selected?
 			if ( $this->store->get_viewAs( 'role' ) && $this->store->get_roles( $this->store->get_viewAs( 'role' ) ) ) {
 				$title .= ' <span class="user-role">('
-				          . translate_user_role( $this->store->get_roles( $this->store->get_viewAs( 'role' ) )->name )
+				          . $this->store->get_rolenames( $this->store->get_viewAs( 'role' ) )
 				          . ')</span>';
 			}
 		}
@@ -389,7 +389,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				'href'      => $href,
 				'meta'      => array(
 					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
-					               . ( ( $role ) ? ' (' . translate_user_role( $role_obj->name ) . ')' : '' ),
+					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
 					'rel'       => $level->ID . ( ( $role ) ? '|' . $role : '' ),
 				),
@@ -417,11 +417,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 */
 	public function admin_bar_roles_after( $admin_bar, $root ) {
 
-		if ( ! $this->store->get_roles() ) {
+		$roles = $this->store->get_roles();
+		if ( ! $roles ) {
 			return;
 		}
 
-		foreach ( $this->store->get_roles() as $role_key => $role ) {
+		foreach ( $roles as $role_key => $role ) {
 
 			// Admins always have full access in RUA.
 			if ( 'administrator' == $role_key ) {
