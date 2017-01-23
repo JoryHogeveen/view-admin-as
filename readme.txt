@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 3.5
 Tested up to: 4.7
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -36,15 +36,18 @@ Through the "Role defaults" module you can set default screen settings for roles
 *	Import/Export role defaults
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
-= Compatibility =
+= Compatibility / Integrations =
+
+*   **Members & User Role Editor**
+	- Support for multiple roles per user. (since 1.2.2)
+	- Add view-admin-as capabilities to the list (since 1.6)
+	- Integration with access restrictions in Members (since 1.6.4)
+*   **Genesis Framework** *(and probably other theme frameworks)* - Changed "init" hook to "plugins_loaded" for theme support (since 1.3.3)
+*   **Pods Framework 2.0+** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine whether to show the Pods menu when you are in an other view.
+*   **Restrict User Access 0.13+** - Integrated with the access levels as a new view type (since 1.6.4)
+*   **Advanced Access Manager** - (checked in 1.6.3, Pro version not verified)
 
 This plugin will work with most other plugins.
-
-Fixed compatibility issues:
-
-*   **Pods** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine whether to show the Pods menu when you are in an other view.
-*   **Members / User Role Editor** - Support for multiple roles per user. (since 1.2.2)
-*   **Genesis Framework** *(and probably other theme frameworks)* - Changed "init" hook to "plugins_loaded" for theme support (since 1.3.3)
 
 = I can't switch back! =
 
@@ -60,13 +63,7 @@ Please let me know through the support and add a plugins and themes list! :)
 
 = Security =
 
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
-Only if the above requirements are OK will this plugin do anything.
-Your view is stored separately so your user will keep the normal roles and capabilities.
-All settings, views, capabilities, etc. are checked before applied.
-
-So basically if your admin users are safe, this plugin will be safe.
-Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
+This plugin will keep your users and data secure, see item 7 at FAQ for more info!
 
 = Developer notes =
 
@@ -166,6 +163,15 @@ This plugin is also useful to support your clients and/or users. For example; ma
 8. Admin bar when a view is selected + the reset button location
 
 == Changelog ==
+
+= 1.6.4 =
+
+*	Feature: Integration with the Restrict User Access (RUA) plugin. Introduces a new view type "access levels" when this plugin is activated. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
+*	Enhancement: Improve compatibility with plugins that use the current user object. [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
+*	Enhancement: Improve compatibility with plugins that use the role objects.
+*	Started to use CodeClimate for style checks
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/36) | [RUA PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/34)
 
 = 1.6.3 =
 
