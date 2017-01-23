@@ -20,7 +20,7 @@ if ( class_exists( 'WP_Admin_Bar' ) && ! class_exists( 'VAA_View_Admin_As_Toolba
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.2
+ * @version 1.6.4
  * @see     wp-includes/class-wp-admin-bar.php
  * @uses    WP_Admin_Bar Extends class
  */

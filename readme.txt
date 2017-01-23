@@ -41,7 +41,6 @@ Through the "Role defaults" module you can set default screen settings for roles
 *   **Members & User Role Editor**
 	- Support for multiple roles per user. (since 1.2.2)
 	- Add view-admin-as capabilities to the list (since 1.6)
-	- Integration with access restrictions in Members (since 1.6.4)
 *   **Genesis Framework** *(and probably other theme frameworks)* - Changed "init" hook to "plugins_loaded" for theme support (since 1.3.3)
 *   **Pods Framework 2.0+** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine whether to show the Pods menu when you are in an other view.
 *   **Restrict User Access 0.13+** - Integrated with the access levels as a new view type (since 1.6.4)
@@ -167,9 +166,9 @@ This plugin is also useful to support your clients and/or users. For example; ma
 = 1.6.4 =
 
 *	Feature: Integration with the Restrict User Access (RUA) plugin. Introduces a new view type "access levels" when this plugin is activated. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
-*	Enhancement: Improve compatibility with plugins that use the current user object. [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
+*	Enhancement: Improve compatibility with plugins that use the current user object. Related: [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
 *	Enhancement: Improve compatibility with plugins that use the role objects.
-*	Started to use CodeClimate for style checks
+*	Fix: Started to use CodeClimate for style checks + applied fixes.
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/36) | [RUA PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/34)
 

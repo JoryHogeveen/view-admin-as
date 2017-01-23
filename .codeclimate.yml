@@ -40,6 +40,9 @@ engines:
       # Disable: The variable "" is not named in CamelCase
       Controversial/CamelCaseVariableName:
         enabled: false
+      # Disable: The property "" is not named in CamelCase
+      Controversial/CamelCasePropertyName:
+        enabled: false
       # Disable: The method init uses an else expression. Else is never necessary and you can simplify the code to work without else.
       CleanCode/ElseExpression:
         enabled: false
