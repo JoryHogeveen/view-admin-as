@@ -38,8 +38,8 @@ Through the "Role defaults" module you can set default screen settings for roles
 = Compatibility / Integrations =
 
 *	**Advanced Access Manager** *(Pro version not verified)*
-*	**BuddyPress**
 *	**bbPress**
+*	**BuddyPress**
 *	**Genesis Framework** *(and probably other theme frameworks)*
 *	**Pods Framework 2.0+**
 *	**Members**
@@ -53,11 +53,7 @@ This plugin will work with most other plugins.
 
 = I can't switch back! =
 
-When a view is selected there is a reset button available on the dropdown.
-If you get a 403 page of WordPress you can return with the link that this plugin will add to those pages.
-And if even that doesn't work just add "?reset-view" in the address bar and you're good to go! This will work on all pages as long as you are logged in.
-
-Example: http://www.your.domain/wp-admin/?reset-view
+See item **3** at [FAQ](https://wordpress.org/plugins/view-admin-as/faq/).
 
 = It's not working! / I found a bug! =
 
@@ -65,13 +61,19 @@ Please let me know through the support and add a plugins and themes list! :)
 
 = Security =
 
-This plugin will keep your users and data secure, see item 7 at FAQ for more info!
+This plugin will keep your users and data secure, see item **7** at [FAQ](https://wordpress.org/plugins/view-admin-as/faq/) for more info!
 
 = Developer notes =
 
-This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.
-
+This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.  
 Also keep in mind that switching to users that have equal roles is disabled. (regular admins to regular admins + super admins to super admins)
+
+I've created this at first for myself since I'm a developer and often need to see the outcome on roles which my clients use.
+
+So, when you are developing a plugin or theme that does anything with roles or capabilities you can use this plugin to easily check if everything works.
+No more hassle of creating test users and constantly logging out and in anymore!
+
+This plugin is also useful to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
 
 == Installation ==
 
@@ -144,14 +146,6 @@ All settings, views, capabilities, etc. are checked before applied.
 
 So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
-
-= 8. Why this plugin? =
-I've created this at first for myself since I'm a developer and often need to see the outcome on roles which my clients use.
-
-So, when you are developing a plugin or theme that does anything with roles or capabilities you can use this plugin to easily check if everything works.
-No more hassle of creating test users and constantly logging out and in anymore!
-
-This plugin is also useful to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
 
 == Screenshots ==
 
