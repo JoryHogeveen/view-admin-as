@@ -157,6 +157,14 @@ final class VAA_View_Admin_As_Store
 	private $roles = array();
 
 	/**
+	 * Array of translated role names.
+	 *
+	 * @since  1.6.x  Moved to this class from main class.
+	 * @var    array
+	 */
+	private $rolenames = array();
+
+	/**
 	 * Array of available users (WP_User objects).
 	 *
 	 * @since  0.1
@@ -310,7 +318,6 @@ final class VAA_View_Admin_As_Store
 
 		// Store available roles (role_objects for objects, roles for arrays).
 		$roles = $wp_roles->role_objects;
-		$role_names = $wp_roles->role_names;
 
 		if ( ! self::is_super_admin() ) {
 
@@ -333,13 +340,17 @@ final class VAA_View_Admin_As_Store
 			}
 		}
 
-		// @since  1.5.2.1  Merge role names with the role objects (for i18n).
+		// @since  1.6.x  Set role names
+		$role_names = array();
 		foreach ( $roles as $role_key => $role ) {
-			if ( isset( $role_names[ $role_key ] ) ) {
-				$roles[ $role_key ]->name = $role_names[ $role_key ];
+			if ( isset( $wp_roles->role_names[ $role_key ] ) ) {
+				$role_names[ $role_key ] = $wp_roles->role_names[ $role_key ];
+			} else {
+				$role_names[ $role_key ] = $role->name;
 			}
 		}
 
+		$this->set_rolenames( $role_names );
 		$this->set_roles( $roles );
 	}
 
@@ -917,11 +928,33 @@ final class VAA_View_Admin_As_Store
 
 	/**
 	 * Get available roles.
-	 * @param   string  $key  Role name.
+	 * @param   string  $key  Role slug/key.
 	 * @return  mixed   Array of role objects or a single role object.
 	 */
 	public function get_roles( $key = null ) {
 		return VAA_API::get_array_data( $this->roles, $key );
+	}
+
+	/**
+	 * Get the role names. Translated by default.
+	 * If key is provided but not found it will return the key (untranslated).
+	 * @since   1.6.x
+	 * @param   string  $key        Role slug.
+	 * @param   bool    $translate  Translate the role name?
+	 * @return  array|string
+	 */
+	public function get_rolenames( $key = null, $translate = true ) {
+		$val = VAA_API::get_array_data( $this->rolenames, $key );
+		if ( ! $val ) {
+			return ( $key ) ? $key : $val;
+		}
+		if ( ! $translate ) {
+			return $val;
+		}
+		if ( is_array( $val ) ) {
+			return array_map( 'translate_user_role', $val );
+		}
+		return translate_user_role( $val );
 	}
 
 	/**
@@ -1115,7 +1148,19 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_roles( $val, $key = null, $append = false ) {
-		$this->roles  = VAA_API::set_array_data( $this->roles, $val, $key, $append );
+		$this->roles = VAA_API::set_array_data( $this->roles, $val, $key, $append );
+	}
+
+	/**
+	 * Set the role name translations.
+	 * @since   1.6.x
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) Role name.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_rolenames( $val, $key = null, $append = false ) {
+		$this->rolenames = VAA_API::set_array_data( $this->rolenames, $val, $key, $append );
 	}
 
 	/**
@@ -1127,7 +1172,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_users( $val, $key = null, $append = false ) {
-		$this->users  = VAA_API::set_array_data( $this->users, $val, $key, $append );
+		$this->users = VAA_API::set_array_data( $this->users, $val, $key, $append );
 	}
 
 	/**

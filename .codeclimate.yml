@@ -49,6 +49,9 @@ engines:
       # Disable: Avoid using static access to class '' in method ''.
       CleanCode/StaticAccess:
         enabled: false
+      # Disable for now due to toolbar methods
+      Design/LongMethod:
+        enabled: false
   phpcodesniffer:
     enabled: true
     config:

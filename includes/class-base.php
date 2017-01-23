@@ -101,7 +101,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	final public function load_vaa( $vaa = null ) {
 		$this->vaa = $vaa;
 		if ( ! is_object( $vaa ) || 'VAA_View_Admin_As' !== get_class( $vaa ) ) {
-			$this->vaa = View_Admin_As( $this );
+			$this->vaa = view_admin_as( $this );
 		}
 		if ( $this->vaa ) {
 			$this->store = $this->vaa->store();
@@ -196,7 +196,6 @@ abstract class VAA_View_Admin_As_Class_Base
 	/**
 	 * Set the option key as used in the options table.
 	 * @param   string  $val  Option key.
-	 * @return  string
 	 */
 	protected function set_optionKey( $val ) {
 		$this->optionKey = (string) $val;
@@ -207,7 +206,6 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @param   mixed   $val     Data.
 	 * @param   string  $key     (optional) Data key.
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
 	 */
 	protected function set_optionData( $val, $key = null, $append = false ) {
 		$this->optionData = VAA_API::set_array_data( $this->optionData, $val, $key, $append );
@@ -218,10 +216,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @param   mixed   $val     Data.
 	 * @param   string  $key     (optional) Data key.
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
 	 */
 	protected function set_scriptLocalization( $val, $key = null, $append = false ) {
-		$this->scriptLocalization = VAA_API::set_array_data( $this->scriptLocalization, $val, $key, $append );
+		$this->scriptLocalization = (array) VAA_API::set_array_data( $this->scriptLocalization, $val, $key, $append );
 	}
 
 	/**

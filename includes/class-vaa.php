@@ -141,7 +141,7 @@ final class VAA_View_Admin_As
 	private function load() {
 
 		if (    ! class_exists( 'VAA_API' )
-			 && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
+		     && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
 		     && ! class_exists( 'VAA_View_Admin_As_Store' )
 		     && ! class_exists( 'VAA_View_Admin_As_View' )
 		     && ! class_exists( 'VAA_View_Admin_As_Update' )
