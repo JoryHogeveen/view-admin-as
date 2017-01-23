@@ -189,14 +189,14 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function get_user_metadata( $null, $user_id, $meta_key ) {
-		if ( $user_id == $this->store->get_selectedUser()->ID
+		if ( (int) $user_id === (int) $this->store->get_selectedUser()->ID
 		     && $this->get_levels( $this->selectedLevel )
 		) {
 			// @todo Check for future API updates in RUA plugin
-			if ( $meta_key == $this->ruaMetaPrefix . 'level' ) {
+			if ( $this->ruaMetaPrefix . 'level' === $meta_key ) {
 				return array( $this->selectedLevel );
 			}
-			if ( $meta_key == $this->ruaMetaPrefix . 'level_' . $this->selectedLevel ) {
+			if ( $this->ruaMetaPrefix . 'level_' . $this->selectedLevel === $meta_key ) {
 				// Return current time + 120 seconds to make sure this level won't be set as expired.
 				return array( time() + 120 );
 			}
@@ -212,7 +212,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function add_view_type( $types ) {
-		$types[] =  $this->viewKey;
+		$types[] = $this->viewKey;
 		return $types;
 	}
 
@@ -235,7 +235,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		$level = $data;
 
-		if ( is_string( $data ) && strpos( $data, '|' ) !== false ) {
+		if ( is_string( $data ) && false !== strpos( $data, '|' ) ) {
 			$data = explode( '|', $data );
 			$level = (int) $data[0];
 			if ( ! empty( $data[1] ) ) {
@@ -245,7 +245,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		if ( is_numeric( $level ) && $this->get_levels( (int) $level ) ) {
 			$view = array(
-				$this->viewKey  => (int) $level
+				$this->viewKey => (int) $level,
 			);
 			if ( ! empty( $role ) && $this->store->get_roles( $role ) ) {
 				$view['role'] = $role;
@@ -366,21 +366,21 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			$title = $level->post_title;
 			// Check if this level is the current view.
 			if ( $this->store->get_viewAs( $this->viewKey ) ) {
-				if ( $this->store->get_viewAs( $this->viewKey ) == $level->ID ) {
+				if ( (int) $this->store->get_viewAs( $this->viewKey ) === (int) $level->ID ) {
 					$class .= ' current';
 					if ( 1 === count( $this->store->get_viewAs() ) ) {
 						$href = false;
 					}
 				}
 				elseif ( $current_parent = $this->get_levels( $this->selectedLevel ) ) {
-					if ( $current_parent->post_parent == $level->ID ) {
+					if ( (int) $current_parent->post_parent === (int) $level->ID ) {
 						$class .= ' current-parent';
 					}
 				}
 			}
 			$parent = $root;
 			if ( ! empty( $level->post_parent ) ) {
-				$parent = $root .'-' . $this->viewKey . '-' . $level->post_parent;
+				$parent = $root . '-' . $this->viewKey . '-' . $level->post_parent;
 			}
 			$admin_bar->add_node( array(
 				'id'        => $root . '-' . $this->viewKey . '-' . $level->ID,
@@ -425,7 +425,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		foreach ( $roles as $role_key => $role ) {
 
 			// Admins always have full access in RUA.
-			if ( 'administrator' == $role_key ) {
+			if ( 'administrator' === $role_key ) {
 				continue;
 			}
 
@@ -507,9 +507,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			// @todo Check for future API updates in RUA plugin.
 			// $level_caps = $this->ruaApp->level_manager->metadata()->get( "caps" )->get_data( $level );
 			$level_caps = get_post_meta( $level, $this->ruaMetaPrefix . 'caps', true );
-			if( ! empty( $level_caps ) && is_array( $level_caps ) ) {
+			if ( ! empty( $level_caps ) && is_array( $level_caps ) ) {
 				foreach ( $level_caps as $key => $level_cap ) {
-					$caps[$key] = !!$level_cap;
+					$caps[ $key ] = (bool) $level_cap;
 				}
 			}
 		}
