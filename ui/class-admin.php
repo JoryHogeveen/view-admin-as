@@ -55,6 +55,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 		}
 		add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
 		add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
+		add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
 	}
 
 	/**
@@ -193,6 +194,25 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 		}
 
 		return $this->links;
+	}
+
+	/**
+	 * Filter the list of query arguments which get removed from admin area URLs in WordPress.
+	 *
+	 * @since   1.6.4
+	 * @access  public
+	 * @link    https://core.trac.wordpress.org/ticket/23367
+	 *
+	 * @param   array  $args  List of removable query arguments.
+	 * @return  array         Updated list of removable query arguments.
+	 */
+	public function filter_removable_query_args( $args ) {
+		return array_merge( $args, array(
+			'reset-view',
+			'reset-all-views',
+			'view_admin_as',
+			'_vaa_nonce',
+		) );
 	}
 
 	/**

@@ -166,7 +166,7 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 *	Feature: Integration with the Restrict User Access (RUA) plugin. Introduces a new view type "access levels" when this plugin is activated. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
 *	Enhancement: Improve compatibility with plugins that use the current user object. Related: [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
 *	Enhancement: Improve compatibility with plugins that use the role objects.
-*	Fix: Started to use CodeClimate for style checks + applied fixes.
+*	Fix: Started to use CodeClimate for style checks + applied fixes. [#37](https://github.com/JoryHogeveen/view-admin-as/issues/37)
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/36) | [RUA PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/34)
 

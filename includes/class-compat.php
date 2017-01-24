@@ -72,7 +72,6 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
 		add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
 
-
 		/**
 		 * Get caps from other plugins.
 		 * @since  1.5
@@ -90,13 +89,6 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	public function init_after() {
-
-		/*
-		if ( false !== $this->store->get_viewAs() ) {
-			// WooCommerce.
-			remove_filter( 'show_admin_bar', 'wc_disable_admin_bar', 10 );
-		}
-		*/
 
 		if ( $this->store->get_viewAs()
 		     && (int) $this->store->get_curUser()->ID === (int) $this->store->get_selectedUser()->ID

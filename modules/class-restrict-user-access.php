@@ -361,7 +361,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar, $root );
 
 		// Add the levels.
-		foreach ( $this->get_levels() as $level_key => $level ) {
+		foreach ( $this->get_levels() as $level ) {
 			$href = '#';
 			$class = 'vaa-' . $this->viewKey . '-item';
 			$title = $level->post_title;

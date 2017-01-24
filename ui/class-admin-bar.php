@@ -934,7 +934,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		}
 
 		// Add the users.
-		foreach ( $this->store->get_users() as $user_key => $user ) {
+		foreach ( $this->store->get_users() as $user ) {
 			$parent = $root;
 			$href   = '#';
 			$class  = 'vaa-user-item';

@@ -143,7 +143,7 @@ final class VAA_API
 		if ( empty( $url ) ) {
 			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			// Check protocol.
-			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
+			$url = ( is_ssl() ? 'https://' : 'http://' ) . $url;
 		}
 
 		// Check for existing query vars.
