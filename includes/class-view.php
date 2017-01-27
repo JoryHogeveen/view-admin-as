@@ -542,7 +542,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		elseif ( isset( $view_as['caps'] ) ) {
 			$db_view = $this->get_view();
 			// === comparison nor working due to key order.
-			$difference = array_diff(
+			$difference = array_diff_key(
 				array_filter( $this->store->get_curUser()->allcaps ),
 				array_filter( $view_as['caps'] )
 			);
@@ -568,7 +568,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					$this->store->set_caps( (int) $value, (string) $key, true );
 				}
 				// === comparison nor working due to key order.
-				if ( isset( $db_view['caps'] ) && ! array_diff(
+				if ( isset( $db_view['caps'] ) && ! array_diff_key(
 					array_filter( (array) $db_view['caps'] ),
 					array_filter( $this->store->get_caps() )
 				) ) {
