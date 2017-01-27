@@ -230,15 +230,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 							VAA_View_Admin_As.notice( VAA_View_Admin_As.__success, 'success' );
 						}
 					} else {
-						/**
-						 * Reload the page.
-						 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
-						 * @since  1.6.1  Fix issue with anchors.
-						 */
-						window.location.hash = '';
-						window.location.replace(
-							window.location.href.replace('#', '').replace('?reset-view', '').replace('&reset-view', '').replace('?reset-all-views', '').replace('&reset-all-views', '')
-						);
+						if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.redirect ) {
+							/**
+							 * Optional redirect
+							 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
+							 * @since  1.6.4
+							 */
+							window.location.replace( response.data.redirect );
+						} else {
+							/**
+							 * Reload the page.
+							 * @since  1.6.1  Fix issue with anchors.
+							 */
+							window.location.hash = '';
+							window.location.reload();
+						}
 					}
 				} else {
 					$('body #vaa-overlay').addClass('error').fadeOut( 'fast', function() { $(this).remove(); } );

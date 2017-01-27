@@ -538,6 +538,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		// Update user metadata with selected view.
 		if ( isset( $view_as['role'] ) || isset( $view_as['user'] ) || isset( $view_as['visitor'] ) ) {
 			$success = $this->update_view( $view_as );
+			if ( isset( $view_as['visitor'] ) ) {
+				$success = array(
+					'redirect' => esc_url( home_url() ),
+				);
+			}
 		}
 		elseif ( isset( $view_as['caps'] ) ) {
 			$db_view = $this->get_view();
@@ -609,7 +614,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		if ( $success ) {
-			wp_send_json_success(); // ahw yeah.
+			wp_send_json_success( $success ); // ahw yeah.
 		} else {
 			wp_send_json_error( array(
 				'type' => 'error',
