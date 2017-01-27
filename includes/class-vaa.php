@@ -649,15 +649,13 @@ final class VAA_View_Admin_As
 	 * @since   1.5.1
 	 * @since   1.6    Returns conflict status.
 	 * @access  private
-	 * @global  string  $wp_version  WordPress version.
 	 * @return  bool
 	 */
 	private function validate_versions() {
-		global $wp_version;
 		$valid = true;
 
 		// Validate WP
-		if ( version_compare( $wp_version, '3.5', '<' ) ) {
+		if ( ! VAA_API::validate_wp_version( '3.5' ) ) {
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '

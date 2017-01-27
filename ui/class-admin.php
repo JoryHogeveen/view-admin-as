@@ -56,6 +56,15 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 		add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
 		add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
 		add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
+
+		/**
+		 * Compat with front and WP version lower than 4.2.0.
+		 * @since  1.6.4
+		 * @link   https://developer.wordpress.org/reference/functions/wp_admin_canonical_url/
+		 */
+		if ( ! is_admin() || ! VAA_API::validate_wp_version( '4.2' ) ) {
+			add_action( 'wp_head', array( $this, 'remove_query_args' ) );
+		}
 	}
 
 	/**
@@ -213,6 +222,33 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 			'view_admin_as',
 			'_vaa_nonce',
 		) );
+	}
+
+	/**
+	 * Remove query arguments from the url.
+	 * Same logic as WP uses since v4.2.0.
+	 *
+	 * @since   1.6.4
+	 * @see     wp_admin_canonical_url()
+	 */
+	public function remove_query_args() {
+		$removable_query_args = $this->filter_removable_query_args( array() );
+
+		if ( empty( $removable_query_args ) ) {
+			return;
+		}
+
+		// Ensure we're using an absolute URL.
+		$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+		$filtered_url = remove_query_arg( $removable_query_args, $current_url );
+		?>
+		<link id="wp-admin-canonical" rel="canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
+		<script>
+			if ( window.history.replaceState ) {
+				window.history.replaceState( null, null, document.getElementById( 'wp-admin-canonical' ).href + window.location.hash );
+			}
+		</script>
+		<?php
 	}
 
 	/**

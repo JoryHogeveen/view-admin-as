@@ -258,4 +258,25 @@ final class VAA_API
 		return $var;
 	}
 
+	/**
+	 * Compare with the current WordPress version.
+	 * Returns true when it's the provided version or newer.
+	 *
+	 * @since   1.6.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @global  string      $wp_version  WordPress version.
+	 * @param   int|string  $version     The WP version to check.
+	 * @return  bool
+	 */
+	public static function validate_wp_version( $version ) {
+		global $wp_version;
+		if ( version_compare( $wp_version, $version, '<' ) ) {
+			return false;
+		}
+		return true;
+	}
+
 } // end class.
