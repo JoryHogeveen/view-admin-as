@@ -1257,7 +1257,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			) );
 
 			/*
-			 * Import actions
+			 * Import actions.
 			 */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-import',

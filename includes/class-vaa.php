@@ -28,7 +28,7 @@ final class VAA_View_Admin_As
 	private static $_instance = null;
 
 	/**
-	 * Classes that are allowed to use this class.
+	 * Classes that are allowed to access this class directly.
 	 *
 	 * @since  1.6
 	 * @static
@@ -702,7 +702,7 @@ final class VAA_View_Admin_As
 	 */
 	public static function instantiate() {
 		if ( is_null( self::$_instance ) ) {
-			// First init, returns nothing
+			// First init, returns nothing.
 			self::$_instance = new self();
 		}
 	}

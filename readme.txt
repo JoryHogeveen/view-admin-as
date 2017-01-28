@@ -35,7 +35,7 @@ Through the "Role defaults" module you can set default screen settings for roles
 *	Import/Export role defaults
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
-= Compatibility / Integrations =
+= Compatibility & Integrations =
 
 This plugin will work with most other plugins but these are tested:
 
@@ -45,7 +45,7 @@ This plugin will work with most other plugins but these are tested:
 *	**Genesis Framework** *(and probably other theme frameworks)*
 *	**Pods Framework 2.0+**
 *	**Members**
-*	**Restrict User Access 0.13+** *(Adds a view type for access levels)*
+*	**Restrict User Access 0.13+** *(Custom integration: adds a view type for access levels)*
 *	**User Role Editor** *(Pro version not verified)*
 *	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
 *	**WPFront User Role Editor**
@@ -163,13 +163,14 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 
 = 1.6.4 =
 
-*	Feature: Integration with the Restrict User Access (RUA) plugin. Introduces a new view type "access levels" when this plugin is activated. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
+*	Feature: Integration with the "Restrict User Access" (RUA) plugin. Introduces a new view type "access levels" when this plugin is activated. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
 *	Enhancement: Improve compatibility with plugins that use the current user object. Related: [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
 *	Enhancement: Improve compatibility with plugins that use the role objects.
-*	Enhancement: Redirect to homepage when selecting the visitor view
+*	Enhancement: Redirect to homepage when selecting the visitor view.
+*	Enhancement: Integrate with the capability groups in plugin "User Role Editor".
 *	Fix: Started to use CodeClimate for style checks + applied fixes. [#37](https://github.com/JoryHogeveen/view-admin-as/issues/37)
 
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/36) | [RUA PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/34)
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/36) & [RUA integration PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/34)
 
 = 1.6.3 =
 
@@ -211,7 +212,7 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 *	Enhancement: Better admin bar handling when set to hidden by user [#4](https://github.com/JoryHogeveen/view-admin-as/issues/4)
 	*	Also adds an option to hide/show our toolbar when no view is selected and the admin bar is not shown.
 *	Enhancement: Better handling for permission errors [#10](https://github.com/JoryHogeveen/view-admin-as/issues/10)
-*	Compatibility: Show our custom capabilities on role manage plugins like Members
+*	Compatibility: Show our custom capabilities on role manage plugins like "Members"
 *	Compatibility: PHP 5.2 (WP minimum)
 *	Fix: occasional issues with enabling the Role Defaults module
 *	Refactor whole backend into multiple classes for more flexibility in future development
