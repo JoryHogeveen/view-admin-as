@@ -5,9 +5,10 @@ View the WordPress admin as a different role or visitor, switch between users, t
 [![WordPress Plugin WP tested version](https://img.shields.io/wordpress/v/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
 [![WordPress Plugin downloads](https://img.shields.io/wordpress/plugin/dt/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
 [![WordPress Plugin rating](https://img.shields.io/wordpress/plugin/r/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
-[![Travis](https://secure.travis-ci.org/JoryHogeveen/view-admin-as.png?branch=master)](http://travis-ci.org/JoryHogeveen/view-admin-as)
 [![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)](https://github.com/JoryHogeveen/view-admin-as/blob/master/license.txt)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)  
+[![Travis](https://secure.travis-ci.org/JoryHogeveen/view-admin-as.png?branch=master)](http://travis-ci.org/JoryHogeveen/view-admin-as)
+[![Code Climate](https://codeclimate.com/github/JoryHogeveen/view-admin-as/badges/gpa.svg)](https://codeclimate.com/github/JoryHogeveen/view-admin-as)
 
 ## Description
 This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin without the need to login with a user that has this role!
@@ -19,12 +20,13 @@ You can also switch to a role or temporarily change your own capabilities.
 Through the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
 
 ### Overview / Features
-*	Switch to the view of a user to see their capabilities and settings (admins are filtered!)
+*	Switch between user accounts
 	*	Edit this user's screen preferences and settings
-*	Switch to a default view of a role
+*	Switch to a role view
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
-*	Do this all without loggin out and easily go back to your own (default) user view!
+*	Easily switch back anytime
+*	Do this all without logging out and easily go back to your own (default) user view!
 
 ### Module: Role defaults (screen settings)
 *	Set default screen settings for roles
@@ -36,13 +38,21 @@ Through the "Role defaults" module you can set default screen settings for roles
 
 ## Compatibility
 
-This plugin will work with most other plugins.
+This plugin will work with most other plugins but these are tested:
 
-Fixed compatibility issues:
+*	**Advanced Access Manager** *(Pro version not verified)*
+*	**bbPress**
+*	**BuddyPress**
+*	**Genesis Framework** *(and probably other theme frameworks)*
+*	**Pods Framework 2.0+**
+*	**Members**
+*	**Restrict User Access 0.13+** *(Custom integration: adds a view type for access levels)*
+*	**User Role Editor** *(Pro version not verified)*
+*	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
+*	**WPFront User Role Editor**
 
-*   **Pods** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine whether to show the Pods menu when you are in an other view.
-*   **User Role Editor / Members** - Support for multiple roles per user. (since 1.2.2)
-*   **Genesis Framework** *(and probably other theme frameworks)* - Changed "init" hook to "plugins_loaded" for theme support (since 1.3.3)
+Full list of tested plugins and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)
+
 
 ## Translations
 Please help translating this plugin on https://translate.wordpress.org/projects/wp-plugins/view-admin-as!
@@ -78,7 +88,6 @@ So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
 
 ## Installation
-
 Installation of this plugin works like any other plugin out there. Either:
 
 1. Upload the zip file to the '/wp-content/plugins/' directory
@@ -87,20 +96,23 @@ Installation of this plugin works like any other plugin out there. Either:
 Or search for "View Admin As" via your plugins menu.
 
 ### Recommended Requirements
-
 * WordPress 4.0 or greater (Though I always recommend to update to the latest version!)
 
 ### Minimum Requirements
-
 * WordPress 3.5 or greater (3.8+ recommended because of design, this plugin doesn't incorporate all styles of versions prior to WP 3.8)
 
 ## Developer notes
-This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.
-
+This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.  
 Also keep in mind that switching to users that have equal roles is disabled. (regular admins to regular admins + super admins to super admins)
 
-### Other Notes
+I've created this at first for myself since I'm a developer and often need to see the outcome on roles which my clients use.
 
+So, when you are developing a plugin or theme that does anything with roles or capabilities you can use this plugin to easily check if everything works.
+No more hassle of creating test users and constantly logging out and in anymore!
+
+This plugin is also useful to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
+
+### Other Notes
 You can find me here:
 
 *	[Keraweb](http://www.keraweb.nl/ "Keraweb")
