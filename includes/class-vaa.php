@@ -231,7 +231,7 @@ final class VAA_View_Admin_As
 			 * Init is finished. Hook is used for other classes related to View Admin As.
 			 *
 			 * @since  1.5
-			 * @param  object  $this  VAA_View_Admin_As.
+			 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
 			 */
 			do_action( 'vaa_view_admin_as_init', $this );
 
@@ -340,7 +340,7 @@ final class VAA_View_Admin_As
 		 * Modules loaded. Hook is used for other modules related to View Admin As.
 		 *
 		 * @since  1.6.2
-		 * @param  VAA_View_Admin_As  $this  The main VAA object.
+		 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
 		 */
 		do_action( 'vaa_view_admin_as_modules_loaded', $this );
 	}

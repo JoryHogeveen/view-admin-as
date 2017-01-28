@@ -122,9 +122,10 @@ Please see the `view_admin_as_role_defaults_meta` filter at [Actions & Filters](
 
 The meta manager (since 1.6.3) provides a UI to edit the meta keys.
 Please follow these guidelines:
-- `%%` stands for a wildcard which could be anything.
-- Avoid special characters. Spaces, quotes etc. are forbidden.
-- Default meta keys cannot be removed, only disabled.
+
+* `%%` stands for a wildcard which could be anything.
+* Avoid special characters. Spaces, quotes etc. are forbidden.
+* Default meta keys cannot be removed, only disabled.
 
 = 5. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins?

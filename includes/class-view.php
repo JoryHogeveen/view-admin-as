@@ -308,8 +308,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 *
 		 * @since  1.6.3
 		 * @since  1.6.4    Changed name (was: `vaa_view_admin_as_modify_current_user`).
-		 * @param  WP_User  $user          The modified user object.
-		 * @param  bool     $accessible    Are the needed WP_User properties and methods accessible?
+		 * @param  WP_User  $user        The modified user object.
+		 * @param  bool     $accessible  Are the needed WP_User properties and methods accessible?
 		 */
 		do_action( 'vaa_view_admin_as_modify_user', $user, $accessible );
 	}
