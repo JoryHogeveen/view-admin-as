@@ -13,6 +13,17 @@
 
 		<!-- Disable for now due to toolbar methods -->
 		<exclude name="LongMethod" />
+
+		<!-- Defined below for custom config -->
+		<exclude name="TooManyPublicMethods" />
+	</rule>
+	
+	<rule ref="rulesets/design.xml/TooManyPublicMethods">
+		<properties>
+
+			<!-- Allow more public methods because WP hooks force the use of public methods -->
+			<property name="maxmethods" value="20" />
+		</properties>
 	</rule>
 
 	<rule ref="rulesets/cleancode.xml">
@@ -22,6 +33,9 @@
 
 		<!-- In lack of real namespacing (Avoid using static access to class '' in method ''.) -->
 		<exclude name="StaticAccess" />
+
+		<!-- I do not agree with this, only very long if/else expressions -->
+		<exclude name="ElseExpression" />
 	</rule>
 
 	<rule ref="rulesets/codesize.xml" />
