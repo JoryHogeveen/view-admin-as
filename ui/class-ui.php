@@ -1,6 +1,6 @@
 <?php
 /**
- * View Admin As - Admin UI
+ * View Admin As - Main UI class
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
@@ -8,18 +8,19 @@
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
-if ( ! class_exists( 'VAA_View_Admin_As_Admin' ) ) {
+if ( ! class_exists( 'VAA_View_Admin_As_UI' ) ) {
 
 /**
- * Admin UI hooks for View Admin As
+ * UI hooks for View Admin As
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
+ * @since   1.6.x  Renamed to VAA_View_Admin_As_UI (previously VAA_View_Admin_As_Admin)
  * @version 1.6.4
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
-final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 {
 	/**
 	 * Plugin links.
@@ -34,7 +35,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Admin
+	 * @var    VAA_View_Admin_As_UI
 	 */
 	private static $_instance = null;
 
@@ -260,7 +261,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Admin
+	 * @return  VAA_View_Admin_As_UI
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {

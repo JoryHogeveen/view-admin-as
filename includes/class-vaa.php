@@ -274,9 +274,9 @@ final class VAA_View_Admin_As
 	private function load_ui() {
 
 		$include = array(
-			'admin' => array(
-				'file'  => 'class-admin.php',
-				'class' => 'VAA_View_Admin_As_Admin',
+			'ui' => array(
+				'file'  => 'class-ui.php',
+				'class' => 'VAA_View_Admin_As_UI',
 			),
 			'admin-bar' => array(
 				'file'  => 'class-admin-bar.php',
