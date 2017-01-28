@@ -1118,13 +1118,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 					'class' => 'ab-vaa-filter',
 				),
 			) );
-			$bulk_users_select_content = '';
+			$users_select_content = '';
 			foreach ( $this->store->get_users() as $user ) {
 				foreach ( $user->roles as $role ) {
 					$role_data = $this->store->get_roles( $role );
 					if ( $role_data instanceof WP_Role ) {
 						$role_name = $this->store->get_rolenames( $role );
-						$bulk_users_select_content .=
+						$users_select_content .=
 							'<div class="ab-item vaa-item">'
 							. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
 								'name'           => 'role-defaults-bulk-users-select[]',
@@ -1139,7 +1139,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-select',
 				'parent' => $root . '-bulk-users',
-				'title'  => $bulk_users_select_content,
+				'title'  => $users_select_content,
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'ab-vaa-multipleselect max-height',

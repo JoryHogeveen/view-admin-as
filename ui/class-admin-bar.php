@@ -563,17 +563,13 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, self::$root );
 
-		$caps_quickselect_class = '';
-		if ( $this->store->get_viewAs( 'caps' ) ) {
-			$caps_quickselect_class .= ' current';
-		}
 		$admin_bar->add_node( array(
-			'id'     => $root . '-quickselect',
+			'id'     => $root . '-select',
 			'parent' => $root,
 			'title'  => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => $caps_quickselect_class,
+				'class'    => ( $this->store->get_viewAs( 'caps' ) ) ? 'current' : '',
 				'tabindex' => '0',
 			),
 		) );
@@ -581,7 +577,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		// Capabilities submenu.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-applycaps',
-			'parent' => $root . '-quickselect',
+			'parent' => $root . '-select',
 			'title'  => self::do_button( array(
 				'name'    => 'apply-caps-view',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
@@ -607,7 +603,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$admin_bar->add_node( array(
 			'id'     => $root . '-filtercaps',
-			'parent' => $root . '-quickselect',
+			'parent' => $root . '-select',
 			'title'  => self::do_input( array(
 				'name'        => $root . '-filtercaps',
 				'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN ),
@@ -662,7 +658,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		}
 		$admin_bar->add_node( array(
 			'id'     => $root . '-selectrolecaps',
-			'parent' => $root . '-quickselect',
+			'parent' => $root . '-select',
 			'title'  => self::do_select( array(
 				'name'   => $root . '-selectrolecaps',
 				'values' => $role_select_options,
@@ -676,7 +672,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 		$admin_bar->add_node( array(
 			'id'     => $root . '-bulkselectcaps',
-			'parent' => $root . '-quickselect',
+			'parent' => $root . '-select',
 			'title'  => self::do_button( array(
 				'name'    => 'select-all-caps',
 				'label'   => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
@@ -692,7 +688,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			),
 		) );
 
-		$caps_quickselect_content = '';
+		$caps_items = '';
 		foreach ( $this->store->get_caps() as $cap_name => $cap_val ) {
 			$class = 'vaa-cap-item';
 			$checked = false;
@@ -710,7 +706,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$class .= ' current';
 			}
 			// The list of capabilities.
-			$caps_quickselect_content .=
+			$caps_items .=
 				'<div class="ab-item ' . $class . '">'
 					. self::do_checkbox( array(
 						'name'           => 'vaa_cap_' . esc_attr( $cap_name ),
@@ -722,9 +718,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				. '</div>';
 		}
 		$admin_bar->add_node( array(
-			'id'     => $root . '-quickselect-options',
-			'parent' => $root . '-quickselect',
-			'title'  => $caps_quickselect_content,
+			'id'     => $root . '-select-options',
+			'parent' => $root . '-select',
+			'title'  => $caps_items,
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'ab-vaa-multipleselect auto-height',

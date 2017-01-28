@@ -462,7 +462,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				isDefault = ( 'default' === VAA_View_Admin_As.caps_filter_settings.selectedRole ),
 				filterString = VAA_View_Admin_As.caps_filter_settings.filterString;
 
-			$( root_prefix + '-quickselect-options .vaa-cap-item' ).each( function() {
+			$( root_prefix + '-select-options .vaa-cap-item' ).each( function() {
 				var $this = $(this),
 					exists = ( $( 'input', this ).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ),
 					name;
@@ -485,18 +485,18 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		};
 
 		// Set max height of the caps submenu.
-		$document.on( 'mouseenter', root_prefix + '-quickselect', function() {
-			$( root_prefix + '-quickselect-options').css( { 'max-height': ( $window.height() - 350 )+'px' } );
+		$document.on( 'mouseenter', root_prefix + '-select', function() {
+			$( root_prefix + '-select-options').css( { 'max-height': ( $window.height() - 350 )+'px' } );
 		} );
 		// Enlarge caps.
 		$document.on( 'click', root_prefix + ' #open-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
-			$( root_prefix + '-quickselect > .ab-sub-wrapper').addClass('fullPopup');
+			$( root_prefix + '-select > .ab-sub-wrapper').addClass('fullPopup');
 		} );
 		// Undo enlarge caps.
 		$document.on( 'click', root_prefix + ' #close-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
-			$( root_prefix + '-quickselect > .ab-sub-wrapper').removeClass('fullPopup');
+			$( root_prefix + '-select > .ab-sub-wrapper').removeClass('fullPopup');
 		} );
 
 		// Select role capabilities.
@@ -527,7 +527,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			$( root_prefix + '-quickselect-options .vaa-cap-item' ).each( function() {
+			$( root_prefix + '-select-options .vaa-cap-item' ).each( function() {
 				if ( $(this).is(':visible') ) {
 					$('input', this).prop( "checked", true );
 				}
@@ -540,7 +540,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			$( root_prefix + '-quickselect-options .vaa-cap-item' ).each( function() {
+			$( root_prefix + '-select-options .vaa-cap-item' ).each( function() {
 				if ( $(this).is(':visible') ) {
 					$('input', this).prop( "checked", false );
 				}
@@ -555,7 +555,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			e.preventDefault();
 			var newCaps = {};
-			$( root_prefix + '-quickselect-options .vaa-cap-item input' ).each( function() {
+			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
 				if ( $(this).is(':checked') ) {
 					newCaps[ $(this).attr('value') ] = 1;
 				} else {

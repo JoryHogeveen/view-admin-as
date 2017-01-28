@@ -111,7 +111,7 @@
 
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
 
-#wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #wp-admin-bar-vaa-caps-quickselect-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: solid transparent; border-width: 0 10px 0 0;}
+#wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #wp-admin-bar-vaa-caps-select-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: solid transparent; border-width: 0 10px 0 0;}
 
 #wpadminbar #wp-admin-bar-vaa .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
 #wpadminbar #wp-admin-bar-vaa button {float: none; text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle; cursor: pointer;}
@@ -138,7 +138,7 @@
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup .ab-item {display: block;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #close-caps-popup {display: block;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #open-caps-popup {display: none;}
-#wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #wp-admin-bar-vaa-caps-quickselect-options .vaa-cap-item {width: 250px; float: left; clear: none;}
+#wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #wp-admin-bar-vaa-caps-select-options .vaa-cap-item {width: 250px; float: left; clear: none;}
 
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps-popup:hover {cursor: pointer;}
 
