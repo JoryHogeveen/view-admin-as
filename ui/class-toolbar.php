@@ -2,13 +2,8 @@
 /**
  * View Admin As - Toolbar UI
  *
- * Toolbar UI for View Admin As
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
- * @since   1.6
- * @version 1.6.2
- * @see     wp-includes/class-wp-admin-bar.php
+ * @package View_Admin_As
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
@@ -19,6 +14,16 @@ if ( ! class_exists( 'WP_Admin_Bar' ) && file_exists( ABSPATH . WPINC . '/class-
 
 if ( class_exists( 'WP_Admin_Bar' ) && ! class_exists( 'VAA_View_Admin_As_Toolbar' ) ) {
 
+/**
+ * Toolbar UI for View Admin As
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ * @since   1.6
+ * @version 1.6.4
+ * @see     wp-includes/class-wp-admin-bar.php
+ * @uses    WP_Admin_Bar Extends class
+ */
 final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 {
 	/**
@@ -40,21 +45,21 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	public static $showing = false;
 
 	/**
-	 * View Admin As store
+	 * View Admin As store.
 	 *
 	 * @since  1.6
-	 * @var    object
+	 * @var    VAA_View_Admin_As_Store
 	 */
 	private $vaa_store = null;
 
 	/**
-	 * Construct function
-	 * Protected to make sure it isn't declared elsewhere
+	 * Construct function.
+	 * Protected to make sure it isn't declared elsewhere.
 	 *
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa
+	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -66,7 +71,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	}
 
 	/**
-	 * Init function that initializes this plugin after the main VAA class is loaded
+	 * Init function that initializes this plugin after the main VAA class is loaded.
 	 *
 	 * @since   1.6
 	 * @access  public
@@ -74,11 +79,11 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @return  void
 	 */
 	public function vaa_init() {
-		add_action('init', array( $this, 'vaa_toolbar_init' ) );
+		add_action( 'init', array( $this, 'vaa_toolbar_init' ) );
 	}
 
 	/**
-	 * Init function for the toolbar
+	 * Init function for the toolbar.
 	 *
 	 * @since   1.6
 	 * @access  public
@@ -87,9 +92,9 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	public function vaa_toolbar_init() {
 
 		if ( ! is_admin_bar_showing()
-		     // @since  1.6.2  Check for customizer preview
+		     // @since  1.6.2  Check for customizer preview.
 		     && ! VAA_API::is_customize_preview()
-		     && ( 'no' == $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_viewAs() )
+		     && ( 'no' === $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_viewAs() )
 		) {
 
 			self::$showing = true;
@@ -102,7 +107,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	}
 
 	/**
-	 * Render our toolbar using the render function from WP_Admin_bar
+	 * Render our toolbar using the render function from WP_Admin_bar.
 	 *
 	 * @since   1.6
 	 * @access  public
@@ -117,11 +122,11 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 			),
 		) );
 
-		// Load our admin bar nodes and force the location
+		// Load our admin bar nodes and force the location.
 		do_action( 'vaa_toolbar_menu', $this, 'top-secondary' );
 
 		$toolbar_classes = array_map( 'esc_attr', apply_filters( 'vaa_toolbar_classes', array() ) );
-		echo '<div id="vaa_toolbar" class="' . implode( ' ', $toolbar_classes ) . '">';
+		echo '<div id="vaa_toolbar" class="' . esc_attr( implode( ' ', $toolbar_classes ) ) . '">';
 
 		$this->render();
 
@@ -136,11 +141,11 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As_Toolbar
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
+		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self( $caller );
 			}
@@ -149,6 +154,6 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		return null;
 	}
 
-} // end class
+} // end class.
 
-}
+} // end if class_exists.

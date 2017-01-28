@@ -7,12 +7,12 @@
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.3.4
- * @version 1.6
+ * @version 1.6.4
  */
 
 //if uninstall not called from WordPress exit
-if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-    exit();
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	die();
 }
 
 vaa_uninstall();
@@ -40,7 +40,7 @@ function vaa_uninstall( $blog_id = false ) {
 
 	if ( $blog_id ) {
 
-		if ( $blog_id == 'site' ) {
+		if ( 'site' === $blog_id ) {
 			foreach ( $option_keys as $option_key ) {
 				delete_site_option( $option_key );
 			}

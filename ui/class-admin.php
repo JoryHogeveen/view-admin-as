@@ -2,22 +2,27 @@
 /**
  * View Admin As - Admin UI
  *
- * Admin UI hooks for View Admin As
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
- * @since   1.6
- * @version 1.6.3
+ * @package View_Admin_As
  */
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 if ( ! class_exists( 'VAA_View_Admin_As_Admin' ) ) {
 
+/**
+ * Admin UI hooks for View Admin As
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ * @since   1.6
+ * @version 1.6.4
+ * @uses    VAA_View_Admin_As_Class_Base Extends class
+ */
 final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 {
 	/**
-	 * Plugin links
+	 * Plugin links.
 	 *
 	 * @since  1.6.1
 	 * @var    array
@@ -34,32 +39,42 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
-	 * Construct function
+	 * Construct function.
 	 *
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa
+	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
-		if ( $this->store->get_userSettings('view_mode') == 'browse' ) {
+		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
 			add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
 		}
 		add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
 		add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
+		add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
+
+		/**
+		 * Compat with front and WP version lower than 4.2.0.
+		 * @since  1.6.4
+		 * @link   https://developer.wordpress.org/reference/functions/wp_admin_canonical_url/
+		 */
+		if ( ! is_admin() || ! VAA_API::validate_wp_version( '4.2' ) ) {
+			add_action( 'wp_head', array( $this, 'remove_query_args' ) );
+		}
 	}
 
 	/**
-	 * Filter function to add view-as links on user rows in users.php
+	 * Filter function to add view-as links on user rows in users.php.
 	 *
 	 * @since   1.6
-	 * @since   1.6.3   Check whether to place link + reset link for current user
+	 * @since   1.6.3   Check whether to place link + reset link for current user.
 	 * @access  public
-	 * @param   array   $actions
-	 * @param   object  $user  WP_User
+	 * @param   array    $actions  The existing actions.
+	 * @param   WP_User  $user     The user object.
 	 * @return  array
 	 */
 	public function filter_user_row_actions( $actions, $user ) {
@@ -70,19 +85,19 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 			$link = admin_url();
 		}
 
-		if ( $user->ID === $this->get_curUser()->ID ) {
-			// Add reset link if it is the current user and a view is selected
-			if ( $this->get_viewAs() ) {
+		if ( $user->ID === $this->store->get_curUser()->ID ) {
+			// Add reset link if it is the current user and a view is selected.
+			if ( $this->store->get_viewAs() ) {
 				$link = VAA_API::get_reset_link( $link );
 			} else {
 				$link = false;
 			}
 		}
-		elseif ( $this->get_userids( $user->ID ) ) {
+		elseif ( $this->store->get_userids( $user->ID ) ) {
 			$params = array(
 				'action'        => 'view_admin_as',
 				'view_admin_as' => htmlentities( json_encode( array( 'user' => $user->ID ) ) ),
-				'_vaa_nonce'    => $this->store->get_nonce( true )
+				'_vaa_nonce'    => $this->store->get_nonce( true ),
 			);
 			$link .= '?' . http_build_query( $params );
 		} else {
@@ -96,13 +111,12 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Adds a 'View Admin As: Reset view' link to the Meta sidebar widget if the admin bar is hidden
+	 * Adds a 'View Admin As: Reset view' link to the Meta sidebar widget if the admin bar is hidden.
 	 *
 	 * @since   1.6.1
 	 * @access  public
 	 */
 	public function action_wp_meta() {
-
 		if ( ! is_admin_bar_showing() && $this->store->get_viewAs() ) {
 			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
 			$url = VAA_API::get_reset_link();
@@ -111,15 +125,15 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Show row meta on the plugin screen
+	 * Show row meta on the plugin screen.
 	 *
 	 * @since   1.6.1
-	 * @param   array   $links
-	 * @param   string  $file
+	 * @param   array   $links  The existing links.
+	 * @param   string  $file   The plugin file.
 	 * @return  array
 	 */
 	public function action_plugin_row_meta( $links, $file ) {
-		if ( $file == VIEW_ADMIN_AS_BASENAME ) {
+		if ( VIEW_ADMIN_AS_BASENAME === $file ) {
 			foreach ( $this->get_links() as $id => $link ) {
 				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . esc_html( $link['title'] ) . '</a>';
 			}
@@ -128,7 +142,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Plugin links
+	 * Plugin links.
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.2  Added Slack channel link
@@ -184,11 +198,57 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 					'description' => __( 'Buy me a coffee!', VIEW_ADMIN_AS_DOMAIN ),
 					'icon'  => 'dashicons-smiley',
 					'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
-				)
+				),
 			);
 		}
 
 		return $this->links;
+	}
+
+	/**
+	 * Filter the list of query arguments which get removed from admin area URLs in WordPress.
+	 *
+	 * @since   1.6.4
+	 * @access  public
+	 * @link    https://core.trac.wordpress.org/ticket/23367
+	 *
+	 * @param   array  $args  List of removable query arguments.
+	 * @return  array         Updated list of removable query arguments.
+	 */
+	public function filter_removable_query_args( $args ) {
+		return array_merge( $args, array(
+			'reset-view',
+			'reset-all-views',
+			'view_admin_as',
+			'_vaa_nonce',
+		) );
+	}
+
+	/**
+	 * Remove query arguments from the url.
+	 * Same logic as WP uses since v4.2.0.
+	 *
+	 * @since   1.6.4
+	 * @see     wp_admin_canonical_url()
+	 */
+	public function remove_query_args() {
+		$removable_query_args = $this->filter_removable_query_args( array() );
+
+		if ( empty( $removable_query_args ) ) {
+			return;
+		}
+
+		// Ensure we're using an absolute URL.
+		$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+		$filtered_url = remove_query_arg( $removable_query_args, $current_url );
+		?>
+		<link id="wp-admin-canonical" rel="canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
+		<script>
+			if ( window.history.replaceState ) {
+				window.history.replaceState( null, null, document.getElementById( 'wp-admin-canonical' ).href + window.location.hash );
+			}
+		</script>
+		<?php
 	}
 
 	/**
@@ -199,11 +259,11 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class
+	 * @param   VAA_View_Admin_As  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As_Admin
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' == get_class( $caller ) ) {
+		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
 			if ( is_null( self::$_instance ) ) {
 				self::$_instance = new self( $caller );
 			}
@@ -212,6 +272,6 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 		return null;
 	}
 
-} // end class
+} // end class.
 
-}
+} // end if class_exists.

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 3.5
 Tested up to: 4.7
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -12,19 +12,18 @@ View the WordPress admin as a different role or visitor, switch between users, t
 
 This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin without the need to login with a user that has this role!
 
-If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages.
-
-You can also switch to a role or temporarily change your own capabilities.
+If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages. You can also switch to a role or temporarily change your own capabilities.
 
 Through the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
 
 = Overview / Features =
 
-*	Switch to the view of a user to see their capabilities and settings (admins are filtered!)
+*	Switch between user accounts
 	*	Edit this user's screen preferences and settings
-*	Switch to a default view of a role
+*	Switch to a role view
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
+*	Easily switch back anytime
 *	Do this all without logging out and easily go back to your own (default) user view!
 
 = Module: Role defaults (screen settings) =
@@ -36,23 +35,26 @@ Through the "Role defaults" module you can set default screen settings for roles
 *	Import/Export role defaults
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
-= Compatibility =
+= Compatibility & Integrations =
 
-This plugin will work with most other plugins.
+This plugin will work with most other plugins but these are tested:
 
-Fixed compatibility issues:
+*	**Advanced Access Manager** *(Pro version not verified)*
+*	**bbPress**
+*	**BuddyPress**
+*	**Genesis Framework** *(and probably other theme frameworks)*
+*	**Pods Framework 2.0+**
+*	**Members**
+*	**Restrict User Access 0.13+** *(Custom integration: adds a view type for access levels)*
+*	**User Role Editor** *(Pro version not verified)*
+*	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
+*	**WPFront User Role Editor**
 
-*   **Pods** - has its own capability management to determine if the current user is an admin or not. I've used the build in capabilities from Pods to determine whether to show the Pods menu when you are in an other view.
-*   **Members / User Role Editor** - Support for multiple roles per user. (since 1.2.2)
-*   **Genesis Framework** *(and probably other theme frameworks)* - Changed "init" hook to "plugins_loaded" for theme support (since 1.3.3)
+Full list of tested plugins and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)
 
 = I can't switch back! =
 
-When a view is selected there is a reset button available on the dropdown.
-If you get a 403 page of WordPress you can return with the link that this plugin will add to those pages.
-And if even that doesn't work just add "?reset-view" in the address bar and you're good to go! This will work on all pages as long as you are logged in.
-
-Example: http://www.your.domain/wp-admin/?reset-view
+See item **3** at [FAQ](https://wordpress.org/plugins/view-admin-as/faq/).
 
 = It's not working! / I found a bug! =
 
@@ -60,19 +62,19 @@ Please let me know through the support and add a plugins and themes list! :)
 
 = Security =
 
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
-Only if the above requirements are OK will this plugin do anything.
-Your view is stored separately so your user will keep the normal roles and capabilities.
-All settings, views, capabilities, etc. are checked before applied.
-
-So basically if your admin users are safe, this plugin will be safe.
-Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
+This plugin will keep your users and data secure, see item **7** at [FAQ](https://wordpress.org/plugins/view-admin-as/faq/) for more info!
 
 = Developer notes =
 
-This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.
-
+This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.  
 Also keep in mind that switching to users that have equal roles is disabled. (regular admins to regular admins + super admins to super admins)
+
+I've created this at first for myself since I'm a developer and often need to see the outcome on roles which my clients use.
+
+So, when you are developing a plugin or theme that does anything with roles or capabilities you can use this plugin to easily check if everything works.
+No more hassle of creating test users and constantly logging out and in anymore!
+
+This plugin is also useful to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
 
 == Installation ==
 
@@ -146,14 +148,6 @@ All settings, views, capabilities, etc. are checked before applied.
 So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
 
-= 8. Why this plugin? =
-I've created this at first for myself since I'm a developer and often need to see the outcome on roles which my clients use.
-
-So, when you are developing a plugin or theme that does anything with roles or capabilities you can use this plugin to easily check if everything works.
-No more hassle of creating test users and constantly logging out and in anymore!
-
-This plugin is also useful to support your clients and/or users. For example; make screen display presets of the edit and overview pages before you let them log in.
-
 == Screenshots ==
 
 1. Default dropdown
@@ -166,6 +160,17 @@ This plugin is also useful to support your clients and/or users. For example; ma
 8. Admin bar when a view is selected + the reset button location
 
 == Changelog ==
+
+= 1.6.4 =
+
+*	Feature: Integration with the "Restrict User Access" (RUA) plugin. Introduces a new view type "access levels" when this plugin is activated. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
+*	Enhancement: Improve compatibility with plugins that use the current user object. Related: [#32](https://github.com/JoryHogeveen/view-admin-as/issues/32)
+*	Enhancement: Improve compatibility with plugins that use the role objects.
+*	Enhancement: Redirect to homepage when selecting the visitor view.
+*	Enhancement: Integrate with the capability groups in plugin "User Role Editor".
+*	Fix: Started to use CodeClimate for style checks + applied fixes. [#37](https://github.com/JoryHogeveen/view-admin-as/issues/37)
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/36) & [RUA integration PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/34)
 
 = 1.6.3 =
 
@@ -207,7 +212,7 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 *	Enhancement: Better admin bar handling when set to hidden by user [#4](https://github.com/JoryHogeveen/view-admin-as/issues/4)
 	*	Also adds an option to hide/show our toolbar when no view is selected and the admin bar is not shown.
 *	Enhancement: Better handling for permission errors [#10](https://github.com/JoryHogeveen/view-admin-as/issues/10)
-*	Compatibility: Show our custom capabilities on role manage plugins like Members
+*	Compatibility: Show our custom capabilities on role manage plugins like "Members"
 *	Compatibility: PHP 5.2 (WP minimum)
 *	Fix: occasional issues with enabling the Role Defaults module
 *	Refactor whole backend into multiple classes for more flexibility in future development
