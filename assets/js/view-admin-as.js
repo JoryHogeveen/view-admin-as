@@ -458,33 +458,27 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Filter capability handler.
 		VAA_View_Admin_As.filter_capabilities = function() {
-			//VAA_View_Admin_As.caps_filter_settings;
+			var reverse = ( true === VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse ),
+				isDefault = ( 'default' === VAA_View_Admin_As.caps_filter_settings.selectedRole ),
+				filterString = VAA_View_Admin_As.caps_filter_settings.filterString;
+
 			$( root_prefix + '-quickselect-options .vaa-cap-item' ).each( function() {
-				var name;
-				if ( true === VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse ) {
-					$(this).hide();
-					if ( 1 <= VAA_View_Admin_As.caps_filter_settings.filterString.length ) {
-						name = $(this).text();//$('.ab-item', this).text();
-						if ( -1 < name.toLowerCase().indexOf( VAA_View_Admin_As.caps_filter_settings.filterString.toLowerCase() ) ) {
-							$(this).show();
+				var $this = $(this),
+					exists = ( $( 'input', this ).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ),
+					name;
+
+				$this.hide();
+				if ( reverse || exists || isDefault ) {
+					if ( 1 <= filterString.length ) {
+						name = $this.text(); // $('.ab-item', this).text();
+						if ( -1 < name.toLowerCase().indexOf( filterString.toLowerCase() ) ) {
+							$this.show();
 						}
 					} else {
-						$(this).show();
+						$this.show();
 					}
-					if ( ( VAA_View_Admin_As.caps_filter_settings.selectedRole !== 'default' ) && ( $('input', this).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ) ) {
-						$(this).hide();
-					}
-				} else {
-					$(this).hide();
-					if ( ( VAA_View_Admin_As.caps_filter_settings.selectedRole === 'default' ) || ( $('input', this).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ) ) {
-						if ( 1 <= VAA_View_Admin_As.caps_filter_settings.filterString.length ) {
-							name = $(this).text();//$('.ab-item', this).text();
-							if ( -1 < name.toLowerCase().indexOf( VAA_View_Admin_As.caps_filter_settings.filterString.toLowerCase() ) ) {
-								$(this).show();
-							}
-						} else {
-							$(this).show();
-						}
+					if ( reverse && exists && ! isDefault ) {
+						$this.hide();
 					}
 				}
 			} );
