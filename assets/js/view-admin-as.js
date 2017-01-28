@@ -470,7 +470,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				$this.hide();
 				if ( reverse || exists || isDefault ) {
 					if ( 1 <= filterString.length ) {
-						name = $this.text(); // $('.ab-item', this).text();
+						name = $this.text(); // $( '.ab-item', this ).text();
 						if ( -1 < name.toLowerCase().indexOf( filterString.toLowerCase() ) ) {
 							$this.show();
 						}
@@ -503,7 +503,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		$document.on( 'change', root_prefix + ' .ab-vaa-select.select-role-caps select', function() {
 			VAA_View_Admin_As.caps_filter_settings.selectedRole = $(this).val();
 
-			if ( VAA_View_Admin_As.caps_filter_settings.selectedRole == 'default' ) {
+			if ( 'default' === VAA_View_Admin_As.caps_filter_settings.selectedRole ) {
 				 VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = {};
 				 VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = false;
 			} else {
@@ -516,11 +516,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Filter capabilities with text input.
 		$document.on( 'keyup', root_prefix + ' .ab-vaa-filter input', function() {
-			if ( 1 <= $(this).val().length ) {
-				VAA_View_Admin_As.caps_filter_settings.filterString = $(this).val();
-			} else {
-				VAA_View_Admin_As.caps_filter_settings.filterString = '';
-			}
+			VAA_View_Admin_As.caps_filter_settings.filterString = $(this).val();
 			VAA_View_Admin_As.filter_capabilities();
 		} );
 
