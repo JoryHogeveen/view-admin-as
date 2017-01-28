@@ -6,6 +6,15 @@
          xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
 	<description>VAA Standards</description>
 
+	<rule ref="rulesets/design.xml">
+
+		<!-- Normal in WP for redirects, etc -->
+		<exclude name="ExitExpression" />
+
+		<!-- Disable for now due to toolbar methods -->
+		<exclude name="LongMethod" />
+	</rule>
+
 	<rule ref="rulesets/cleancode.xml">
 
 		<!-- Used all over (The method "" has a boolean flag argument "", which is a certain sign of a Single Responsibility Principle violation.) -->
@@ -17,27 +26,18 @@
 
 	<rule ref="rulesets/codesize.xml" />
 
-	<rule ref="rulesets/design.xml">
-
-		<!-- Normal in WP for redirects, etc -->
-		<exclude name="ExitExpression" />
-
-		<!-- Disable for now due to toolbar methods -->
-		<exclude name="LongMethod" />
+	<rule ref="rulesets/naming.xml">
+		
+		<!-- Defined below for custom config -->
+		<exclude name="ShortVariable"/>
 	</rule>
-
+	
 	<rule ref="rulesets/naming.xml/ShortVariable">
 		<properties>
 
-			<!-- common in WP -->
+			<!-- common in WP and VAA -->
 			<property name="exceptions" value="id,wp,ui" />
 		</properties>
 	</rule>
-
-	<rule ref="rulesets/naming.xml/LongVariable" />
-	<rule ref="rulesets/naming.xml/ShortMethodName" />
-	<rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass" />
-	<rule ref="rulesets/naming.xml/ConstantNamingConventions" />
-	<rule ref="rulesets/naming.xml/BooleanGetMethodName" />
 
 </ruleset>
