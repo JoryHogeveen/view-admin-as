@@ -4,8 +4,8 @@ engines:
     enabled: true
     config:
       languages:
-        - javascript
-        - php
+      - javascript
+      - php
     checks:
       # Disable for now due to jQuery calls
       Similar code:
@@ -23,12 +23,7 @@ engines:
         enabled: false
   phpmd:
     enabled: true
-    config:
-      file_extensions:
-        - php
-      # Allow common variable names in WP
-      Naming/ShortVariable:
-        exceptions: 'id,wp,ui'
+    #config:
     checks:
       # Disable: "" accesses the super-global variable.
       Controversial/Superglobals:
