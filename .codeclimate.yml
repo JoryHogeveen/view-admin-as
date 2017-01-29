@@ -14,13 +14,7 @@ engines:
     enabled: true
   csslint:
     enabled: true
-    checks:
-      # Disable: The box-sizing property isn't supported in IE6 and IE7. (No need to support these)
-      box-sizing:
-        enabled: false
-      # Disable: Use of !important, the WP CSS in the admin bar forces me to use this
-      important:
-        enabled: false
+    # See .csslintr for config
   eslink:
     enabled: true
     check:
