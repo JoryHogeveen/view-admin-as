@@ -14,14 +14,12 @@ engines:
     enabled: true
   csslint:
     enabled: true
-    # See .csslintr for config
-  eslink:
+    config:
+      config: tests/.csslintrc
+  eslint:
     enabled: true
-    check:
-      complexity:
-        error: 15
-      wrap-iife:
-        enabled: false
+    config:
+      config: tests/.eslintrc
   phpmd:
     enabled: true
     config:
