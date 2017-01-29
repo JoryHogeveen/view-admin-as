@@ -218,14 +218,14 @@ final class VAA_View_Admin_As_Store
 	private static $isCurUserSuperAdmin = false;
 
 	/**
-	 * Selected view mode.
+	 * Selected view data as stored in the user meta.
 	 * Format: array( VIEW_TYPE => VIEW_DATA ).
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class.
 	 * @var    array
 	 */
-	private $viewAs = array();
+	private $view = array();
 
 	/**
 	 * The selected user object (if a view is selected).
@@ -910,11 +910,24 @@ final class VAA_View_Admin_As_Store
 
 	/**
 	 * Get view data (meta).
+	 * @since   1.6.x
+	 * @param   string  $key  Key for array.
+	 * @return  mixed
+	 */
+	public function get_view( $key = null ) {
+		return VAA_API::get_array_data( $this->view, $key );
+	}
+
+	/**
+	 * Get view data (meta).
+	 * @todo    Remove in future.
+	 * @deprecated
 	 * @param   string  $key  Key for array.
 	 * @return  mixed
 	 */
 	public function get_viewAs( $key = null ) {
-		return VAA_API::get_array_data( $this->viewAs, $key );
+		_deprecated_function( __METHOD__, '1.6.x', 'VAA_View_Admin_As_Store::get_view()' );
+		return $this->get_view( $key );
 	}
 
 	/**
@@ -1125,8 +1138,22 @@ final class VAA_View_Admin_As_Store
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
+	public function set_view( $val, $key = null, $append = false ) {
+		$this->view = VAA_API::set_array_data( $this->view, $val, $key, $append );
+	}
+
+	/**
+	 * Set the view data.
+	 * @todo    Remove in future.
+	 * @deprecated
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) View key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
 	public function set_viewAs( $val, $key = null, $append = false ) {
-		$this->viewAs = VAA_API::set_array_data( $this->viewAs, $val, $key, $append );
+		_deprecated_function( __METHOD__, '1.6.x', 'VAA_View_Admin_As_Store::set_view()' );
+		$this->set_view( $val, $key, $append );
 	}
 
 	/**

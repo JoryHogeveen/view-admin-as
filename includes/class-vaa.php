@@ -359,7 +359,7 @@ final class VAA_View_Admin_As
 	public function die_handler( $function_name ) {
 
 		// only do something if a view is selected.
-		if ( ! $this->store->get_viewAs() ) {
+		if ( ! $this->store->get_view() ) {
 			return $function_name;
 		}
 
@@ -454,7 +454,7 @@ final class VAA_View_Admin_As
 				'siteurl'       => get_site_url(),
 				'settings'      => $this->store->get_settings(),
 				'settings_user' => $this->store->get_userSettings(),
-				'view_as'       => $this->store->get_viewAs(),
+				'view'          => $this->store->get_view(),
 				// Other.
 				'_debug'     => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? (bool) WP_DEBUG : false,
 				'_vaa_nonce' => $this->store->get_nonce( true ),

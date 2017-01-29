@@ -133,9 +133,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 */
 	public function do_view() {
 
-		if ( $this->get_levels( $this->store->get_viewAs( $this->viewKey ) ) ) {
+		if ( $this->get_levels( $this->store->get_view( $this->viewKey ) ) ) {
 
-			$this->selectedLevel     = $this->store->get_viewAs( $this->viewKey );
+			$this->selectedLevel     = $this->store->get_view( $this->viewKey );
 			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
 
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
@@ -146,7 +146,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
 			// Administrators can see all restricted content in RUA.
-			if ( $this->store->get_viewAs() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
+			if ( $this->store->get_view() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
 				// Not a view with administrator capability == no global access.
 				add_filter( 'rua/user/global-access', '__return_false' );
 			}
@@ -164,7 +164,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		$caps = (array) $this->selectedLevelCaps;
 
-		if ( $this->store->get_viewAs( 'role' ) || ! $accessible ) {
+		if ( $this->store->get_view( 'role' ) || ! $accessible ) {
 			// Merge the caps with the current selected caps, overwrite existing.
 			// Also do the same when WP_User parameters aren't accessible.
 			$caps = array_merge( $this->store->get_selectedCaps(), $caps );
@@ -280,9 +280,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $view_label ) . ': ';
 			$title .= $this->get_levels( $this->selectedLevel )->post_title;
 			// Is there also a role selected?
-			if ( $this->store->get_viewAs( 'role' ) && $this->store->get_roles( $this->store->get_viewAs( 'role' ) ) ) {
+			if ( $this->store->get_view( 'role' ) && $this->store->get_roles( $this->store->get_view( 'role' ) ) ) {
 				$title .= ' <span class="user-role">('
-				          . $this->store->get_rolenames( $this->store->get_viewAs( 'role' ) )
+				          . $this->store->get_rolenames( $this->store->get_view( 'role' ) )
 				          . ')</span>';
 			}
 		}
@@ -366,10 +366,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			$class = 'vaa-' . $this->viewKey . '-item';
 			$title = $level->post_title;
 			// Check if this level is the current view.
-			if ( $this->store->get_viewAs( $this->viewKey ) ) {
-				if ( (int) $this->store->get_viewAs( $this->viewKey ) === (int) $level->ID ) {
+			if ( $this->store->get_view( $this->viewKey ) ) {
+				if ( (int) $this->store->get_view( $this->viewKey ) === (int) $level->ID ) {
 					$class .= ' current';
-					if ( 1 === count( $this->store->get_viewAs() ) ) {
+					if ( 1 === count( $this->store->get_view() ) ) {
 						$href = false;
 					}
 				}

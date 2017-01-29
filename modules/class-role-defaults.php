@@ -365,6 +365,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			return $success;
 		}
 
+		// Simple true/false settings.
 		if ( isset( $data['apply_defaults_on_register'] ) ) {
 			$value = (bool) $data['apply_defaults_on_register'];
 			$success = $this->update_optionData( $value, 'apply_defaults_on_register', true );
@@ -377,6 +378,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			$value = (bool) $data['lock_meta_boxes'];
 			$success = $this->update_optionData( $value, 'lock_meta_boxes', true );
 		}
+
 		// @since  1.6.3  Update metakeys.
 		if ( isset( $data['update_meta'] ) ) {
 			$value = $this->validate_meta( $data['update_meta'] );
@@ -391,6 +393,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				$success = false; // @todo Notify for invalid data.
 			}
 		}
+
 		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
 			foreach ( $data['apply_defaults_to_users'] as $user_data ) {
 				// @todo Send as JSON?
@@ -401,10 +404,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 				}
 			}
 		}
+
 		if ( isset( $data['apply_defaults_to_users_by_role'] ) && is_string( $data['apply_defaults_to_users_by_role'] ) ) {
 			// @todo notify of errors in updates.
 			$success = $this->apply_defaults_to_users_by_role( strip_tags( $data['apply_defaults_to_users_by_role'] ) );
 		}
+
 		if ( isset( $data['clear_role_defaults'] ) && is_string( $data['clear_role_defaults'] ) ) {
 			$success = $this->clear_role_defaults( strip_tags( $data['clear_role_defaults'] ) );
 		}
@@ -424,6 +429,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			}
 			die();
 		}
+
 		if ( isset( $data['import_role_defaults'] ) && is_array( $data['import_role_defaults'] ) ) {
 			$method = ( ! empty( $data['import_role_defaults_method'] ) ) ? (string) $data['import_role_defaults_method'] : '';
 			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
@@ -558,7 +564,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 * @return  void
 	 */
 	private function init_store_role_defaults() {
-		if ( $this->store->get_viewAs( 'role' ) && $this->is_enabled() ) {
+		if ( $this->store->get_view( 'role' ) && $this->is_enabled() ) {
 			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
 			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
 		}
@@ -587,7 +593,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 */
 	public function filter_get_user_metadata( $null, $object_id, $meta_key ) {
 		if ( true === $this->compare_metakey( $meta_key ) && (int) $object_id === (int) $this->store->get_curUser()->ID ) {
-			$new_meta = $this->get_role_defaults( $this->store->get_viewAs( 'role' ), $meta_key );
+			$new_meta = $this->get_role_defaults( $this->store->get_view( 'role' ), $meta_key );
 			// Do not check $single, this logic is in wp-includes/meta.php line 487.
 			return array( $new_meta );
 		}
@@ -617,7 +623,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 	 */
 	public function filter_update_user_metadata( $null, $object_id, $meta_key, $meta_value ) {
 		if ( true === $this->compare_metakey( $meta_key ) && (int) $object_id === (int) $this->store->get_curUser()->ID ) {
-			$this->update_role_defaults( $this->store->get_viewAs( 'role' ), $meta_key, $meta_value );
+			$this->update_role_defaults( $this->store->get_view( 'role' ), $meta_key, $meta_value );
 			return false; // Do not update current user meta.
 		}
 		return $null; // Go on as normal.

@@ -90,7 +90,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init_after() {
 
-		if ( $this->store->get_viewAs()
+		if ( $this->store->get_view()
 		     && (int) $this->store->get_curUser()->ID === (int) $this->store->get_selectedUser()->ID
 		) {
 			// Only apply the filter if the current user is modified

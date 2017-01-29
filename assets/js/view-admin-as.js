@@ -13,7 +13,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	var VAA_View_Admin_As = {
 		ajaxurl: null,
 		siteurl: '',
-		view_as: false,
+		view: false,
 		view_types: [ 'user', 'role', 'caps', 'visitor' ],
 		_debug: false,
 		_vaa_nonce: '',
@@ -392,7 +392,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				viewAs = { user_setting : { freeze_locale : "yes" } };
 			}
 			var reload = false;
-			if ( typeof VAA_View_Admin_As.view_as === 'object' && typeof VAA_View_Admin_As.view_as.user !== 'undefined' ) {
+			if ( typeof VAA_View_Admin_As.view === 'object' && typeof VAA_View_Admin_As.view.user !== 'undefined' ) {
 				reload = true;
 			}
 			VAA_View_Admin_As.ajax( viewAs, reload );

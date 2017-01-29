@@ -94,7 +94,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		if ( ! is_admin_bar_showing()
 		     // @since  1.6.2  Check for customizer preview.
 		     && ! VAA_API::is_customize_preview()
-		     && ( 'no' === $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_viewAs() )
+		     && ( 'no' === $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_view() )
 		) {
 
 			self::$showing = true;

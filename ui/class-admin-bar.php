@@ -137,18 +137,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$icon = 'dashicons-hidden';
 		$title = __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
 
-		if ( $this->store->get_viewAs() ) {
+		if ( $this->store->get_view() ) {
 			$icon = 'dashicons-visibility';
 		}
 
-		if ( $this->store->get_viewAs( 'caps' ) ) {
+		if ( $this->store->get_view( 'caps' ) ) {
 			$title = __( 'Modified view', VIEW_ADMIN_AS_DOMAIN );
 		}
-		if ( $this->store->get_viewAs( 'role' ) ) {
+		if ( $this->store->get_view( 'role' ) ) {
 			$title = __( 'Viewing as role', VIEW_ADMIN_AS_DOMAIN ) . ': '
-			         . $this->store->get_rolenames( $this->store->get_viewAs( 'role' ) );
+			         . $this->store->get_rolenames( $this->store->get_view( 'role' ) );
 		}
-		if ( $this->store->get_viewAs( 'user' ) ) {
+		if ( $this->store->get_view( 'user' ) ) {
 			$selected_user_roles = array();
 			foreach ( $this->store->get_selectedUser()->roles as $role ) {
 				$selected_user_roles[] = $this->store->get_rolenames( $role );
@@ -157,7 +157,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			         . $this->store->get_selectedUser()->data->display_name
 			         . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 		}
-		if ( $this->store->get_viewAs( 'visitor' ) ) {
+		if ( $this->store->get_view( 'visitor' ) ) {
 			$title = __( 'Viewing as site visitor', VIEW_ADMIN_AS_DOMAIN );
 		}
 
@@ -169,7 +169,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 * @param  bool|array  $viewAs  The view data.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_viewing_as_title', $title, $this->store->get_viewAs() );
+		$title = apply_filters( 'vaa_admin_bar_viewing_as_title', $title, $this->store->get_view() );
 
 		if ( empty( $root ) ) {
 			$root = 'top-secondary';
@@ -204,7 +204,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_menu_before', $admin_bar, self::$root );
 
 		// Add reset button.
-		if ( $this->store->get_viewAs() ) {
+		if ( $this->store->get_view() ) {
 			$rel = 'reset';
 			$name = 'reset-view';
 			if ( 'single' === $this->store->get_userSettings( 'view_mode' ) ) {
@@ -569,7 +569,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'title'  => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => ( $this->store->get_viewAs( 'caps' ) ) ? 'current' : '',
+				'class'    => ( $this->store->get_view( 'caps' ) ) ? 'current' : '',
 				'tabindex' => '0',
 			),
 		) );
@@ -620,7 +620,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'label' => __( 'Default', VIEW_ADMIN_AS_DOMAIN ),
 			),
 		);
-		if ( $this->store->get_viewAs() ) {
+		if ( $this->store->get_view() ) {
 			$data_caps = json_encode( $this->store->get_selectedCaps() );
 			$role_select_options[] = array(
 				'compare' => 'vaa',
@@ -693,7 +693,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$class = 'vaa-cap-item';
 			$checked = false;
 			// check if we've selected a capability view and we've changed some capabilities.
-			$selected_caps = $this->store->get_viewAs( 'caps' );
+			$selected_caps = $this->store->get_view( 'caps' );
 			if ( isset( $selected_caps[ $cap_name ] ) ) {
 				if ( 1 === (int) $selected_caps[ $cap_name ] ) {
 					$checked = true;
@@ -811,7 +811,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				// make sure items are aligned properly when some roles don't have users.
 				$class .= ' vaa-menupop';
 				// Check if the current view is a user with this role.
-				if ( $this->store->get_viewAs( 'user' )
+				if ( $this->store->get_view( 'user' )
 				     && $this->store->get_selectedUser()
 				     && in_array( $role_key, $this->store->get_selectedUser()->roles, true )
 				) {
@@ -829,9 +829,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				}
 			}
 			// Check if this role is the current view.
-			if ( $this->store->get_viewAs( 'role' ) === $role_key ) {
+			if ( $this->store->get_view( 'role' ) === $role_key ) {
 				$class .= ' current';
-				if ( 1 === count( $this->store->get_viewAs() ) ) {
+				if ( 1 === count( $this->store->get_view() ) ) {
 					$href = false;
 				}
 			}
@@ -936,28 +936,30 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$class  = 'vaa-user-item';
 			$title  = $user->display_name;
 			// Check if this user is the current view.
-			if ( $this->store->get_viewAs( 'user' ) && (int) $this->store->get_viewAs( 'user' ) === (int) $user->ID ) {
+			if ( $this->store->get_view( 'user' ) && (int) $this->store->get_view( 'user' ) === (int) $user->ID ) {
 				$class .= ' current';
-				if ( 1 === count( $this->store->get_viewAs() ) ) {
+				if ( 1 === count( $this->store->get_view() ) ) {
 					$href = false;
 				}
 			}
+			$user_node = array(
+				'id'     => $root . '-user-' . $user->ID,
+				'parent' => $parent,
+				'title'  => $title,
+				'href'   => $href,
+				'meta'   => array(
+					// Translators: %s stands for the user display name.
+					'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
+					'class' => $class,
+					'rel'   => $user->ID,
+				),
+			);
 			if ( true === $this->groupUserRoles ) {
 				// Users grouped under roles.
 				foreach ( $user->roles as $role ) {
-					$parent = self::$root . '-roles-role-' . $role;
-					$admin_bar->add_node( array(
-						'id'     => $root . '-user-' . $user->ID . '-' . $role,
-						'parent' => $parent,
-						'title'  => $title,
-						'href'   => $href,
-						'meta'   => array(
-							// Translators: %s stands for the user display name.
-							'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
-							'class' => $class,
-							'rel'   => $user->ID,
-						),
-					) );
+					$user_node['id'] .= '-' . $role;
+					$user_node['parent'] = self::$root . '-roles-role-' . $role;
+					$admin_bar->add_node( $user_node );
 				}
 			} else {
 				// Users displayed as normal.
@@ -966,19 +968,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				foreach ( $user->roles as $role ) {
 					$user_roles[] = $this->store->get_rolenames( $role );
 				}
-				$title = $title . ' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
-				$admin_bar->add_node( array(
-					'id'     => $root . '-user-' . $user->ID,
-					'parent' => $parent,
-					'title'  => $title,
-					'href'   => $href,
-					'meta'   => array(
-						// Translators: %s stands for the user display name.
-						'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
-						'class' => $class,
-						'rel'   => $user->ID,
-					),
-				) );
+				$user_node['title'] = $title . ' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
+				$admin_bar->add_node( $user_node );
 			}
 		}
 
@@ -1101,7 +1092,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  string
 	 */
 	public static function do_input( $args ) {
-
 		$html = '';
 
 		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
@@ -1164,7 +1154,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  string
 	 */
 	public static function do_checkbox( $args ) {
-
 		$html = '';
 
 		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
@@ -1240,7 +1229,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  string
 	 */
 	public static function do_radio( $data ) {
-
 		$html = '';
 
 		if ( is_array( $data ) && ! empty( $data['values'] ) ) {
@@ -1324,7 +1312,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @return  string
 	 */
 	public static function do_select( $data ) {
-
 		$html = '';
 
 		if ( is_array( $data ) && ! empty( $data['values'] ) ) {

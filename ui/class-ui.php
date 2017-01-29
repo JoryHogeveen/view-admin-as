@@ -88,7 +88,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 
 		if ( $user->ID === $this->store->get_curUser()->ID ) {
 			// Add reset link if it is the current user and a view is selected.
-			if ( $this->store->get_viewAs() ) {
+			if ( $this->store->get_view() ) {
 				$link = VAA_API::get_reset_link( $link );
 			} else {
 				$link = false;
@@ -118,7 +118,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 */
 	public function action_wp_meta() {
-		if ( ! is_admin_bar_showing() && $this->store->get_viewAs() ) {
+		if ( ! is_admin_bar_showing() && $this->store->get_view() ) {
 			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
 			$url = VAA_API::get_reset_link();
 			echo '<li id="vaa_reset_view"><a href="' . esc_url( $url ) . '">' . esc_html( $link ) . '</a></li>';

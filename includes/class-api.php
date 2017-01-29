@@ -48,15 +48,10 @@ final class VAA_API
 	 */
 	public static function is_superior_admin( $user_id = null ) {
 
-		// If it's the current user of null, don't pass the user ID so make sure we check the original user status.
-		if ( null === $user_id || (int) get_current_user_id() === (int) $user_id ) {
-			$is_super_admin = self::is_super_admin();
-			if ( null === $user_id ) {
-				$user_id = get_current_user_id();
-			}
-		} else {
-			$is_super_admin = self::is_super_admin( $user_id );
-		}
+		// If it's the current user or null, don't pass the user ID to make sure we check the original user status.
+		$is_super_admin = self::is_super_admin(
+			( null !== $user_id && (int) get_current_user_id() === (int) $user_id ) ? null : $user_id
+		);
 
 		// Is it a super admin and is it one of the manually configured superior admins?
 		return (bool) ( true === $is_super_admin && in_array( (int) $user_id, self::get_superior_admins(), true ) );
