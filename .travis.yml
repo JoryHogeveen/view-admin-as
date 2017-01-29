@@ -8,7 +8,7 @@ notifications:
   on_failure: change
 
 php:
-  - nightly # PHP 7.x
+  - 7.1
   - 7.0
 
 env:
@@ -26,10 +26,13 @@ env:
 matrix:
     allow_failures:
       - php: 5.2
+      - php: nightly # PHP 7.x
 #     - env: WP_VERSION=bleeding WP_MULTISITE=0
 #     - env: WP_VERSION=bleeding-maintenance WP_MULTISITE=0
 
     include:
+    - php: nightly
+      env: WP_VERSION=latest WP_MULTISITE=0
     - php: hhvm
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.6
