@@ -4,8 +4,8 @@ engines:
     enabled: true
     config:
       languages:
-      - javascript
-      - php
+        - javascript
+        - php
     checks:
       # Disable for now due to jQuery calls
       Similar code:
@@ -14,6 +14,13 @@ engines:
     enabled: true
   csslint:
     enabled: true
+    checks:
+      # Disable: The box-sizing property isn't supported in IE6 and IE7. (No need to support these)
+      box-sizing:
+        enabled: false
+      # Disable: Use of !important, the WP CSS in the admin bar forces me to use this
+      important:
+        enabled: false
   eslink:
     enabled: true
     check:
@@ -23,38 +30,8 @@ engines:
         enabled: false
   phpmd:
     enabled: true
-    #config:
-    checks:
-      # Disable: "" accesses the super-global variable.
-      Controversial/Superglobals:
-        enabled: false
-      # Disable: The class "" is not named in CamelCase
-      Controversial/CamelCaseClassName:
-        enabled: false
-      # Disable: The method "" is not named in CamelCase
-      Controversial/CamelCaseMethodName:
-        enabled: false
-      # Disable: The parameter "" is not named in CamelCase
-      Controversial/CamelCaseParameterName:
-        enabled: false
-      # Disable: The variable "" is not named in CamelCase
-      Controversial/CamelCaseVariableName:
-        enabled: false
-      # Disable: The property "" is not named in CamelCase
-      Controversial/CamelCasePropertyName:
-        enabled: false
-      # Disable: The method init uses an else expression. Else is never necessary and you can simplify the code to work without else.
-      CleanCode/ElseExpression:
-        enabled: false
-      # Disable: The method "" has a boolean flag argument "", which is a certain sign of a Single Responsibility Principle violation.
-      CleanCode/BooleanArgumentFlag:
-        enabled: false
-      # Disable: Avoid using static access to class '' in method ''.
-      CleanCode/StaticAccess:
-        enabled: false
-      # Disable for now due to toolbar methods
-      Design/LongMethod:
-        enabled: false
+    config:
+      rulesets: "tests/phpmd.xml"
   phpcodesniffer:
     enabled: true
     config:
