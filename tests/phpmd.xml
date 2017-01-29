@@ -31,7 +31,16 @@
 	<rule ref="rulesets/codesize.xml">
 		
 		<!-- Defined below for custom config -->
+		<exclude name="TooManyMethods" />
 		<exclude name="TooManyPublicMethods" />
+	</rule>
+	
+	<rule ref="rulesets/codesize.xml/TooManyMethods">
+		<properties>
+			
+			<!-- Ignore magic methods, getters and setters -->
+			<property name="ignorepattern" value="(^(set|get|__))i" />
+		</properties>
 	</rule>
 	
 	<rule ref="rulesets/codesize.xml/TooManyPublicMethods">
@@ -39,6 +48,9 @@
 			
 			<!-- Allow more public methods because WP hooks force the use of public methods -->
 			<property name="maxmethods" value="20" />
+			
+			<!-- Ignore magic methods, getters and setters -->
+			<property name="ignorepattern" value="(^(set|get|__))i" />
 		</properties>
 	</rule>
 	
