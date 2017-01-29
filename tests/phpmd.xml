@@ -16,39 +16,44 @@
 
 	<!-- CleanCode -->
 	<rule ref="rulesets/cleancode.xml">
-		
 		<!-- Used all over (The method "" has a boolean flag argument "", which is a certain sign of a Single Responsibility Principle violation.) -->
 		<exclude name="BooleanArgumentFlag" />
-		
 		<!-- In lack of real namespacing (Avoid using static access to class '' in method ''.) -->
 		<exclude name="StaticAccess" />
-		
 		<!-- I do not agree with this, only very long if/else expressions -->
 		<exclude name="ElseExpression" />
 	</rule>
 
 	<!-- CodeSize -->
 	<rule ref="rulesets/codesize.xml">
-		
 		<!-- Defined below for custom config -->
+		<exclude name="ExcessiveMethodLength" />
+		<exclude name="ExcessiveClassLength" />
 		<exclude name="TooManyMethods" />
 		<exclude name="TooManyPublicMethods" />
 	</rule>
-	
+	<rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
+		<properties>
+			<!-- Just check the actual code ok.. CodeSniffer already checks whitespace/newline errors -->
+			<property name="ignore-whitespace" value="true" />
+		</properties>
+	</rule>
+	<rule ref="rulesets/codesize.xml/ExcessiveClassLength">
+		<properties>
+			<!-- Just check the actual code ok.. CodeSniffer already checks whitespace/newline errors -->
+			<property name="ignore-whitespace" value="true" />
+		</properties>
+	</rule>
 	<rule ref="rulesets/codesize.xml/TooManyMethods">
 		<properties>
-			
 			<!-- Ignore magic methods, getters and setters -->
 			<property name="ignorepattern" value="(^(set|get|__))i" />
 		</properties>
 	</rule>
-	
 	<rule ref="rulesets/codesize.xml/TooManyPublicMethods">
 		<properties>
-			
 			<!-- Allow more public methods because WP hooks force the use of public methods -->
 			<property name="maxmethods" value="20" />
-			
 			<!-- Ignore magic methods, getters and setters -->
 			<property name="ignorepattern" value="(^(set|get|__))i" />
 		</properties>
@@ -56,11 +61,9 @@
 	
 	<!-- Naming -->
 	<rule ref="rulesets/naming.xml">
-		
 		<!-- Defined below for custom config -->
 		<exclude name="ShortVariable"/>
 	</rule>
-	
 	<rule ref="rulesets/naming.xml/ShortVariable">
 		<properties>
 			<!-- common in WP and VAA -->
