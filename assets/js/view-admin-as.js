@@ -96,10 +96,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					 * 40 = arrow down
 					 */
 					var key = parseInt( e.which, 10 );
-					if ( $(this).hasClass('active') && ( key === 13 || key === 32 || key === 38 ) ) {
+					if ( $(this).hasClass('active') && ( 13 === key || 32 === key || 38 === key ) ) {
 						toggleContent.slideUp('fast');
 						$(this).removeClass('active');
-					} else if ( key === 13 || key === 32 || key === 40 ) {
+					} else if ( 13 === key || 32 === key || 40 === key ) {
 						toggleContent.slideDown('fast');
 						$(this).addClass('active');
 					}
@@ -213,12 +213,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} else {
 
 			$.post( VAA_View_Admin_As.ajaxurl, data, function(response) {
-				if ( VAA_View_Admin_As._debug === 1 ) { console.log(response); }
-				if ( typeof response.success !== 'undefined' && true === response.success ) {
+				if ( 1 === VAA_View_Admin_As._debug ) { console.log(response); }
+				if ( 'undefined' !== typeof response.success && true === response.success ) {
 					if ( false === reload ) {
 						// Check if we have more detailed data to show.
 						if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.content ) {
-							if ( typeof response.data.type === 'undefined' ) {
+							if ( 'undefined' === typeof response.data.type ) {
 								response.data.type = 'default';
 							}
 							if ( 'object' !== typeof response.data.content ) {
@@ -392,7 +392,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				viewAs = { user_setting : { freeze_locale : "yes" } };
 			}
 			var reload = false;
-			if ( typeof VAA_View_Admin_As.view === 'object' && typeof VAA_View_Admin_As.view.user !== 'undefined' ) {
+			if ( 'object' === typeof VAA_View_Admin_As.view && 'undefined' !== typeof VAA_View_Admin_As.view.user ) {
 				reload = true;
 			}
 			VAA_View_Admin_As.ajax( viewAs, reload );
@@ -420,7 +420,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( -1 < name.toLowerCase().indexOf( inputText.toLowerCase() ) ) {
 						var exists = false;
 						$( VAA_View_Admin_As.prefix + '.ab-vaa-search #vaa-searchuser-results .vaa-user-item .ab-item' ).each(function() {
-							if ($(this).text().indexOf(name) > -1) {
+							if ( -1 < $(this).text().indexOf(name) ) {
 								exists = $(this);
 							}
 						} );
@@ -654,11 +654,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// @since  1.4  Filter users.
 		$document.on( 'keyup', root_prefix + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
 			e.preventDefault();
-			if ( $(this).val().length >= 1 ) {
+			if ( 1 <= $(this).val().length ) {
 				var inputText = $(this).val();
 				$( root_prefix + '-bulk-users-select .ab-item.vaa-item' ).each( function() {
 					var name = $('.user-name', this).text();
-					if ( name.toLowerCase().indexOf( inputText.toLowerCase() ) > -1 ) {
+					if ( -1 < name.toLowerCase().indexOf( inputText.toLowerCase() ) ) {
 						$(this).show();
 					} else {
 						$(this).hide();
