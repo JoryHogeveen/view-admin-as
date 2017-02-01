@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-semi */
 ;/**
  * View Admin As
  * https://wordpress.org/plugins/view-admin-as/
@@ -5,9 +6,10 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   0.1
- * @version 1.6.4
+ * @version 1.6.x
  * @preserve
  */
+/* eslint-enable no-extra-semi */
 
 if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	var VAA_View_Admin_As = {
@@ -52,6 +54,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	/**
 	 * BASE INIT.
+	 * @return  {null}  nothing
 	**/
 	VAA_View_Admin_As.init = function() {
 
@@ -140,9 +143,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 				e.preventDefault();
 				if ( ! $(this).parent().hasClass('not-a-view') ) {
-					var viewAs = {};
-					viewAs[ type ] = String( $(this).attr('rel') );
-					VAA_View_Admin_As.ajax( viewAs, true );
+					var view_data = {};
+					view_data[ type ] = String( $(this).attr('rel') );
+					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
 				}
 			} );
@@ -161,12 +164,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	/**
 	 * Apply the selected view.
-	 * viewAs format: { VIEW_TYPE : VIEW_DATA }
 	 *
-	 * @params  {object}   viewAs
-	 * @params  {boolean}  reload
+	 * @param   {object}   view_data  The view data, format: { VIEW_TYPE : VIEW_TYPE_DATA }
+	 * @param   {boolean}  refresh    Reload/redirect the page?
+	 * @return  {null}     nothing
 	 */
-	VAA_View_Admin_As.ajax = function( viewAs, reload ) {
+	VAA_View_Admin_As.ajax = function( view_data, refresh ) {
 
 		var body = $('body');
 
@@ -185,12 +188,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			'action': 'view_admin_as',
 			'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
 			// @since  1.6.2  Use JSON data.
-			'view_admin_as': JSON.stringify( viewAs )
+			'view_admin_as': JSON.stringify( view_data )
 		};
 
 		var isView = false;
 		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
-			if ( 'undefined' !== typeof viewAs[ type ] ) {
+			if ( 'undefined' !== typeof view_data[ type ] ) {
 				isView = true;
 				return true;
 			}
@@ -212,13 +215,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		} else {
 
-			$.post( VAA_View_Admin_As.ajaxurl, data, function(response) {
-				if ( 1 === VAA_View_Admin_As._debug ) { console.log(response); }
-				if ( 'undefined' !== typeof response.success && true === response.success ) {
-					if ( false === reload ) {
+			$.post( VAA_View_Admin_As.ajaxurl, data, function( response ) {
+				var data = ( response.hasOwnProperty( 'data' ) ) ? response.data : {},
+					success = ( response.hasOwnProperty( 'success' ) && true === response.success );
+
+				if ( 1 === VAA_View_Admin_As._debug ) {
+					// Show debug info in console.
+					console.log( response );
+				}
+				if ( success ) {
+					if ( refresh ) {
+						VAA_View_Admin_As.refresh( data );
+					} else {
 						// Check if we have more detailed data to show.
-						if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.content ) {
-							if ( 'undefined' === typeof response.data.type ) {
+						if ( data.hasOwnProperty( 'content' ) ) {
+							if ( ! data.hasOwnProperty( 'type' ) ) {
 								response.data.type = 'default';
 							}
 							if ( 'object' !== typeof response.data.content ) {
@@ -226,57 +237,64 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 							}
 							VAA_View_Admin_As.overlay( response.data.content, String( response.data.type ) );
 						} else {
-							$('body #vaa-overlay').addClass('success').fadeOut( 'fast', function() { $(this).remove(); } );
+							$('body #vaa-overlay').addClass( 'success' ).fadeOut( 'fast', function() { $(this).remove(); } );
 							VAA_View_Admin_As.notice( VAA_View_Admin_As.__success, 'success' );
-						}
-					} else {
-						if ( 'undefined' !== typeof response.data && 'undefined' !== typeof response.data.redirect ) {
-							/**
-							 * Optional redirect
-							 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
-							 * @since  1.6.4
-							 */
-							window.location.replace( response.data.redirect );
-						} else {
-							/**
-							 * Reload the page.
-							 * @since  1.6.1  Fix issue with anchors.
-							 */
-							window.location.hash = '';
-							window.location.reload();
 						}
 					}
 				} else {
-					$('body #vaa-overlay').addClass('error').fadeOut( 'fast', function() { $(this).remove(); } );
-					if ( true === fullPopup ) {
-						$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
+					$('body #vaa-overlay').addClass( 'error' ).fadeOut( 'fast', function() { $(this).remove(); } );
+					if ( fullPopup ) {
+						$( VAA_View_Admin_As.prefix ).addClass( 'fullPopupActive' );
 					}
-					if ( 'undefined' !== typeof response.data ) {
+					if ( response.hasOwnProperty( 'data' ) ) {
 						// Check if we have more detailed data to show.
-						if ( 'undefined' !== typeof response.data.content ) {
-							if ( 'undefined' === typeof response.data.type ) {
-								response.data.type = 'error';
-							}
-							VAA_View_Admin_As.notice( response.data.content, response.data.type );
-						} else {
-							VAA_View_Admin_As.notice( response.data, 'error' );
-						}
+						var type = ( data.hasOwnProperty( 'type' ) ) ? data.type : 'error',
+							content = ( data.hasOwnProperty( 'content' ) ) ? data.content : data;
+
+						VAA_View_Admin_As.notice( String( content ), type );
 					}
 				}
 			} );
 		}
 	};
 
+	/**
+	 * Reload the page or optionally redirect the user
+	 * @since  1.6.x
+	 * @see    VAA_View_Admin_As.ajax
+	 * @param  {object}  data  Info for the redirect: { redirect: URL }
+	 * @return {null}  Nothing
+	 */
+	VAA_View_Admin_As.refresh = function( data ) {
+		if ( data.hasOwnProperty( 'redirect' ) ) {
+			/**
+			 * Optional redirect.
+			 * Currently I use "replace" since no history seems necessary. Other option would be "assign" which enables history.
+			 * @since  1.6.4
+			 */
+			window.location.replace( String( data.redirect ) );
+		} else {
+			/**
+			 * Reload the page.
+			 * @since  1.6.1  Fix issue with anchors.
+			 */
+			window.location.hash = '';
+			window.location.reload();
+		}
+	};
 
 	/**
 	 * Show notice in the admin bar.
 	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {object}  notice
-	 * @param  {string}  type
+	 * @param  {string}  notice  The notice text
+	 * @param  {string}  type    The notice type (error, notice, etc)
+	 * @return {null}  Nothing
 	 */
 	VAA_View_Admin_As.notice = function( notice, type ) {
 		var root = '#wpadminbar .vaa-notice';
-		$('#wp-admin-bar-top-secondary').append('<li class="vaa-notice vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>');
+		$('#wp-admin-bar-top-secondary').append(
+			'<li class="vaa-notice vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>'
+		);
 		$( root + ' .remove' ).click( function() { $(this).parent().remove(); } );
 		// Remove it after 5 seconds
 		setTimeout( function(){ $(root).fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
@@ -286,19 +304,20 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show popup with return content.
 	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {object}  data
-	 * @param  {string}  type
+	 * @param  {object}  data  Data to use
+	 * @param  {string}  type  The notice/overlay type (error, notice, etc)
+	 * @return {null}  Nothing
 	 */
 	VAA_View_Admin_As.overlay = function( data, type ) {
 
 		var root = 'body #vaa-overlay';
 
 		$( root ).html('<div class="vaa-overlay-container"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>');
-		if ( 'undefined' !== typeof data.text ) {
+		if ( data.hasOwnProperty( 'text' ) ) {
 			$( root + ' .vaa-response-data' ).append('<p>' + data.text + '</p>');
 		}
 		if ( 'textarea' === type ) {
-			if ( 'undefined' !== typeof data.textareacontent ) {
+			if ( data.hasOwnProperty( 'textareacontent' ) ) {
 				$( root + ' .vaa-response-data' ).append('<textarea style="width: 100%;" readonly>' + data.textareacontent + '</textarea>');
 				// Auto height.
 				/*$('body #vaa-overlay .vaa-response-data textarea').each(function(){
@@ -310,7 +329,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				$( root + ' .vaa-response-data textarea' ).click( function() { $(this).select(); } );
 			}
 		} else if ( 'errorlist' === type ) {
-			if ( 'undefined' !== typeof data.errors ) {
+			if ( data.hasOwnProperty( 'errors' ) ) {
 				$( root + ' .vaa-response-data' ).append('<ul class="errorlist"></ul>');
 				data.errors.forEach(function(error) {
 					$( root + ' .vaa-response-data .errorlist' ).append('<li>' + error + '</li>');
@@ -337,6 +356,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * SETTINGS.
 	 * @since  1.5
+	 * @return  {null}  nothing
 	 */
 	VAA_View_Admin_As.init_settings = function() {
 
@@ -349,8 +369,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $(this).val();
 			if ( val && '' !== val ) {
-				var viewAs = { user_setting : { admin_menu_location : val } };
-				VAA_View_Admin_As.ajax( viewAs, true );
+				var view_data = { user_setting : { admin_menu_location : val } };
+				VAA_View_Admin_As.ajax( view_data, true );
 			}
 		} );
 
@@ -359,43 +379,43 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $(this).val();
 			if ( val && '' !== val ) {
-				var viewAs = { user_setting : { view_mode : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				var view_data = { user_setting : { view_mode : val } };
+				VAA_View_Admin_As.ajax( view_data, false );
 			}
 		} );
 
 		// @since  1.5.2  Force group users.
 		$document.on( 'change', root_prefix + '-force-group-users input#' + prefix + '-force-group-users', function( e ) {
 			e.preventDefault();
-			var viewAs = { user_setting : { force_group_users : "no" } };
+			var view_data = { user_setting : { force_group_users : "no" } };
 			if ( this.checked ) {
-				viewAs = { user_setting : { force_group_users : "yes" } };
+				view_data = { user_setting : { force_group_users : "yes" } };
 			}
-			VAA_View_Admin_As.ajax( viewAs, true );
+			VAA_View_Admin_As.ajax( view_data, true );
 		} );
 
 		// @since  1.6  Enable hide front.
 		$document.on( 'change', root_prefix + '-hide-front input#' + prefix + '-hide-front', function( e ) {
 			e.preventDefault();
-			var viewAs = { user_setting : { hide_front : "no" } };
+			var view_data = { user_setting : { hide_front : "no" } };
 			if ( this.checked ) {
-				viewAs = { user_setting : { hide_front : "yes" } };
+				view_data = { user_setting : { hide_front : "yes" } };
 			}
-			VAA_View_Admin_As.ajax( viewAs, false );
+			VAA_View_Admin_As.ajax( view_data, false );
 		} );
 
 		// @since  1.6.1  Enable freeze locale.
 		$document.on( 'change', root_prefix + '-freeze-locale input#' + prefix + '-freeze-locale', function( e ) {
 			e.preventDefault();
-			var viewAs = { user_setting : { freeze_locale : "no" } };
+			var view_data = { user_setting : { freeze_locale : "no" } };
 			if ( this.checked ) {
-				viewAs = { user_setting : { freeze_locale : "yes" } };
+				view_data = { user_setting : { freeze_locale : "yes" } };
 			}
 			var reload = false;
 			if ( 'object' === typeof VAA_View_Admin_As.view && 'undefined' !== typeof VAA_View_Admin_As.view.user ) {
 				reload = true;
 			}
-			VAA_View_Admin_As.ajax( viewAs, reload );
+			VAA_View_Admin_As.ajax( view_data, reload );
 		} );
 	};
 
@@ -404,6 +424,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * USERS.
 	 * Extra functions for user views.
 	 * @since  1.2
+	 * @return  {null}  nothing
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
@@ -443,6 +464,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * CAPABILITIES.
 	 * @since  1.3
+	 * @return  {null}  nothing
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
@@ -571,6 +593,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Defaults.
 	 * @since  1.4
+	 * @return  {null}  nothing
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
@@ -581,11 +604,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// Enable module.
 		$document.on( 'change', root_prefix + '-role-defaults-enable input#' + prefix + '-role-defaults-enable', function( e ) {
 			e.preventDefault();
-			var viewAs = { role_defaults : { enable : 0 } };
+			var view_data = { role_defaults : { enable : 0 } };
 			if ( this.checked ) {
-				viewAs = { role_defaults : { enable : true } };
+				view_data = { role_defaults : { enable : true } };
 			}
-			VAA_View_Admin_As.ajax( viewAs, true );
+			VAA_View_Admin_As.ajax( view_data, true );
 		} );
 
 		root = VAA_View_Admin_As.root + '-role-defaults';
@@ -595,31 +618,31 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// @since  1.4  Enable apply defaults on register.
 		$document.on( 'change', root_prefix + '-setting-register-enable input#' + prefix + '-setting-register-enable', function( e ) {
 			e.preventDefault();
-			var viewAs = { role_defaults : { apply_defaults_on_register : 0 } };
+			var view_data = { role_defaults : { apply_defaults_on_register : 0 } };
 			if ( this.checked ) {
-				viewAs = { role_defaults : { apply_defaults_on_register : true } };
+				view_data = { role_defaults : { apply_defaults_on_register : true } };
 			}
-			VAA_View_Admin_As.ajax( viewAs, false );
+			VAA_View_Admin_As.ajax( view_data, false );
 		} );
 
 		// @since  1.5.3  Disable screen settings for users who can't access this plugin.
 		$document.on( 'change', root_prefix + '-setting-disable-user-screen-options input#' + prefix + '-setting-disable-user-screen-options', function( e ) {
 			e.preventDefault();
-			var viewAs = { role_defaults : { disable_user_screen_options : 0 } };
+			var view_data = { role_defaults : { disable_user_screen_options : 0 } };
 			if ( this.checked ) {
-				viewAs = { role_defaults : { disable_user_screen_options : true } };
+				view_data = { role_defaults : { disable_user_screen_options : true } };
 			}
-			VAA_View_Admin_As.ajax( viewAs, false );
+			VAA_View_Admin_As.ajax( view_data, false );
 		} );
 
 		// @since  1.6  Lock meta box order and locations for users who can't access this plugin.
 		$document.on( 'change', root_prefix + '-setting-lock-meta-boxes input#' + prefix + '-setting-lock-meta-boxes', function( e ) {
 			e.preventDefault();
-			var viewAs = { role_defaults : { lock_meta_boxes : 0 } };
+			var view_data = { role_defaults : { lock_meta_boxes : 0 } };
 			if ( this.checked ) {
-				viewAs = { role_defaults : { lock_meta_boxes : true } };
+				view_data = { role_defaults : { lock_meta_boxes : true } };
 			}
-			VAA_View_Admin_As.ajax( viewAs, false );
+			VAA_View_Admin_As.ajax( view_data, false );
 		} );
 
 		// @since  1.6.3  Add new meta.
@@ -645,8 +668,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				val[ $(this).val() ] = ( $(this).is(':checked') );
 			} );
 			if ( val ) {
-				var viewAs = { role_defaults : { update_meta : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				var view_data = { role_defaults : { update_meta : val } };
+				VAA_View_Admin_As.ajax( view_data, false );
 			}
 			return false;
 		} );
@@ -684,8 +707,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 			} );
 			if ( val ) {
-				var viewAs = { role_defaults : { apply_defaults_to_users : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				var view_data = { role_defaults : { apply_defaults_to_users : val } };
+				VAA_View_Admin_As.ajax( view_data, false );
 			}
 			return false;
 		} );
@@ -698,8 +721,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $( root_prefix + '-bulk-roles-select select#' + prefix + '-bulk-roles-select' ).val();
 			if ( val && '' !== val ) {
-				var viewAs = { role_defaults : { apply_defaults_to_users_by_role : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				var view_data = { role_defaults : { apply_defaults_to_users_by_role : val } };
+				VAA_View_Admin_As.ajax( view_data, false );
 			}
 			return false;
 		} );
@@ -712,9 +735,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $( root_prefix + '-clear-roles-select select#' + prefix + '-clear-roles-select' ).val();
 			if ( val && '' !== val ) {
-				var viewAs = { role_defaults : { clear_role_defaults : val } };
+				var view_data = { role_defaults : { clear_role_defaults : val } };
 				if ( confirm( VAA_View_Admin_As.__confirm ) ) {
-					VAA_View_Admin_As.ajax( viewAs, false );
+					VAA_View_Admin_As.ajax( view_data, false );
 				}
 			}
 			return false;
@@ -728,8 +751,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $( root_prefix + '-export-roles-select select#' + prefix + '-export-roles-select' ).val();
 			if ( val && '' !== val ) {
-				var viewAs = { role_defaults : { export_role_defaults : val } };
-				VAA_View_Admin_As.ajax( viewAs, false );
+				var view_data = { role_defaults : { export_role_defaults : val } };
+				VAA_View_Admin_As.ajax( view_data, false );
 			}
 			return false;
 		} );
@@ -744,11 +767,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( val && '' !== val ) {
 				try {
 					val = JSON.parse( val );
-					var viewAs = { role_defaults : { import_role_defaults : val } };
+					var view_data = { role_defaults : { import_role_defaults : val } };
 					if ( $(this).attr('data-method') ) {
-						viewAs.role_defaults.import_role_defaults_method = String( $(this).attr('data-method') );
+						view_data.role_defaults.import_role_defaults_method = String( $(this).attr('data-method') );
 					}
-					VAA_View_Admin_As.ajax( viewAs, false );
+					VAA_View_Admin_As.ajax( view_data, false );
 				} catch ( err ) {
 					// @todo Improve error message.
 					alert( err );
@@ -763,4 +786,4 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init();
 	}
 
-} )( jQuery );
+} ( jQuery ) );
