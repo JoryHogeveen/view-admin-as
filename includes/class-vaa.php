@@ -142,6 +142,7 @@ final class VAA_View_Admin_As
 
 		if (    ! class_exists( 'VAA_API' )
 		     && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
+		     && ! class_exists( 'VAA_View_Admin_As_Settings' )
 		     && ! class_exists( 'VAA_View_Admin_As_Store' )
 		     && ! class_exists( 'VAA_View_Admin_As_View' )
 		     && ! class_exists( 'VAA_View_Admin_As_Update' )
@@ -150,6 +151,7 @@ final class VAA_View_Admin_As
 
 			self::$vaa_class_names[] = 'VAA_API';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Class_Base';
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Settings';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Store';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_View';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Update';
@@ -157,6 +159,7 @@ final class VAA_View_Admin_As
 
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-api.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
+			require( VIEW_ADMIN_AS_DIR . 'includes/class-settings.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-view.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
