@@ -16,6 +16,19 @@ engines:
     enabled: true
     config:
       config: tests/.csslintrc
+    checks:
+      adjoining-classes:
+        enabled: false
+      box-model:
+        enabled: false
+      ids:
+        enabled: false
+      important:
+        enabled: false
+      order-alphabetical:
+        enabled: false
+      unqualified-attributes:
+        enabled: false
   eslint:
     enabled: true
     config:
@@ -86,9 +99,9 @@ ratings:
   paths:
   - "**.css"
   - "**.js"
-  - "**.jsx"
-  - "**.module"
   - "**.php"
 exclude_paths:
 - tests/*
 - bin/*
+# Local
+- vendor/*
