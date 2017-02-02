@@ -52,13 +52,19 @@
 	</rule>
 	<rule ref="rulesets/codesize.xml/TooManyPublicMethods">
 		<properties>
-			<!-- Allow more public methods because WP hooks force the use of public methods -->
+			<!-- Allow more public methods because WP hooks force the use of public methods. Default: 10 -->
 			<property name="maxmethods" value="20" />
 			<!-- Ignore magic methods, getters and setters -->
 			<property name="ignorepattern" value="(^(set|get|__))i" />
 		</properties>
 	</rule>
-	
+	<rule ref="rulesets/codesize.xml/ExcessiveClassComplexity">
+		<properties>
+			<!-- Allow higher overall class complexity. Default: 50 -->
+			<property name="maximum" value="100" />
+		</properties>
+	</rule>
+
 	<!-- Naming -->
 	<rule ref="rulesets/naming.xml">
 		<!-- Defined below for custom config -->
