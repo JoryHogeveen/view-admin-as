@@ -21,12 +21,13 @@
 		<!-- In lack of real namespacing (Avoid using static access to class '' in method ''.) -->
 		<exclude name="StaticAccess" />
 		<!-- I do not agree with this, only very long if/else expressions -->
-		<exclude name="ElseExpression" />
-	</rule>
+		<exclude name="ElseExpression" />8	
+</rule>
 
 	<!-- CodeSize -->
 	<rule ref="rulesets/codesize.xml">
 		<!-- Defined below for custom config -->
+		<exclude name="ExcessiveClassComplexity" />
 		<exclude name="ExcessiveMethodLength" />
 		<exclude name="ExcessiveClassLength" />
 		<exclude name="TooManyMethods" />
