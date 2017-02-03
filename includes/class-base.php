@@ -131,6 +131,21 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * Check if the AJAX call is ok.
+	 * Must always be used before AJAX data is processed
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @return  bool
+	 */
+	public function is_valid_ajax() {
+		if ( defined( 'VAA_DOING_AJAX' ) && VAA_DOING_AJAX && $this->is_vaa_enabled() ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Set plugin enabled true/false.
 	 *
 	 * @since   1.5.1
