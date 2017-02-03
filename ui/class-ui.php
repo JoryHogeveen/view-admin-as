@@ -17,7 +17,7 @@ if ( ! class_exists( 'VAA_View_Admin_As_UI' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.6.x  Renamed to VAA_View_Admin_As_UI (previously VAA_View_Admin_As_Admin)
- * @version 1.6.4
+ * @version 1.6.x
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
@@ -57,6 +57,11 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 		add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
 		add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
 		add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 
 		/**
 		 * Compat with front and WP version lower than 4.2.0.
@@ -250,6 +255,154 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 			}
 		</script>
 		<?php
+	}
+
+	/**
+	 * Add necessary scripts and styles.
+	 *
+	 * @since   0.1
+	 * @since   1.6.x  Moved to this class from main class.
+	 * @access  public
+	 * @return  void
+	 */
+	public function enqueue_scripts() {
+		// Only enqueue scripts if the admin bar is enabled otherwise they have no use.
+		if ( ! $this->is_vaa_enabled() || ! VAA_API::is_toolbar_showing() ) {
+			return;
+		}
+
+		// Use non-minified versions.
+		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+		// Prevent browser cache.
+		$version = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? time() : $this->store->get_version();
+
+		wp_enqueue_style(
+			'vaa_view_admin_as_style',
+			VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css',
+			array(),
+			$version
+		);
+		wp_enqueue_script(
+			'vaa_view_admin_as_script',
+			VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js',
+			array( 'jquery' ),
+			$version,
+			true // load in footer.
+		);
+
+		$script_localization = array(
+			// Data.
+			'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+			'siteurl'       => get_site_url(),
+			'settings'      => $this->store->get_settings(),
+			'settings_user' => $this->store->get_userSettings(),
+			'view'          => $this->store->get_view(),
+			// Other.
+			'_debug'     => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
+			'_vaa_nonce' => $this->store->get_nonce( true ),
+			// i18n.
+			'__no_users_found' => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
+			'__success'        => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
+			'__confirm'        => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
+		);
+
+		/**
+		 * Add basic view types for automated use in JS.
+		 *
+		 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key).
+		 * - Menu items require the rel attribute for the view data to be send (string or numeric).
+		 * - Menu items require the href attribute (the node needs to be an <a> element), I'd set it to '#'.
+		 *
+		 * @since  1.6.2
+		 * @param  array  $array  Empty array.
+		 * @return array  An array of strings (view types).
+		 */
+		$script_localization['view_types'] = array_unique( array_merge(
+			array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
+			array( 'user', 'role', 'caps', 'visitor' )
+		) );
+
+		foreach ( $this->vaa->get_modules() as $name => $module ) {
+			if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
+				$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
+			}
+		}
+
+		wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', $script_localization );
+	}
+
+	/**
+	 * Add options to the access denied page when the user has selected a view and did something this view is not allowed.
+	 *
+	 * @since   1.3
+	 * @since   1.5.1   Check for SSL.
+	 * @since   1.6     More options and better description.
+	 * @since   1.6.x   Moved to this class from main class.
+	 * @access  public
+	 *
+	 * @param   string  $function_name  function callback.
+	 * @return  string  $function_name  function callback.
+	 */
+	public function die_handler( $function_name ) {
+
+		// only do something if a view is selected.
+		if ( ! $this->store->get_view() ) {
+			return $function_name;
+		}
+
+		$options = array();
+
+		if ( is_network_admin() ) {
+			$dashboard_url = network_admin_url();
+			$options[] = array(
+				'text' => __( 'Go to network dashboard', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => $dashboard_url,
+			);
+		} else {
+			$dashboard_url = admin_url();
+			$options[] = array(
+				'text' => __( 'Go to dashboard', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => $dashboard_url,
+			);
+			$options[] = array(
+				'text' => __( 'Go to homepage', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => get_bloginfo( 'url' ),
+			);
+		}
+
+		// Reset url.
+		$options[] = array(
+			'text' => __( 'Reset the view', VIEW_ADMIN_AS_DOMAIN ),
+			'url' => VAA_API::get_reset_link(),
+		);
+
+		/**
+		 * Add or remove options to the die/error handler pages.
+		 *
+		 * @since  1.6.2
+		 * @param  array  $options {
+		 *     Required array of arrays.
+		 *     @type  array {
+		 *         @type  string  $text  The text to show.
+		 *         @type  string  $url   The link.
+		 *     }
+		 * }
+		 * @return array
+		 */
+		$options = apply_filters( 'view_admin_as_error_page_options', $options );
+		?>
+		<div>
+			<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) ?>:</h3>
+			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ) ?>
+			<ul>
+				<?php foreach ( $options as $option ) { ?>
+					<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
+				<?php } ?>
+			</ul>
+		</div>
+		<hr>
+		<?php
+		return $function_name;
 	}
 
 	/**
