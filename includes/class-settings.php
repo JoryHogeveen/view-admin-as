@@ -163,6 +163,9 @@ class VAA_View_Admin_As_Settings {
 				'view_mode'           => array( 'browse', 'single' ),
 			);
 
+			add_filter( 'view_admin_as_validate_view_data_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
+			add_filter( 'view_admin_as_validate_view_data_user_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
+
 			// Make identifier empty for the filters
 			$id = '';
 
@@ -220,6 +223,27 @@ class VAA_View_Admin_As_Settings {
 	}
 
 	/**
+	 * Validate hook for settings
+	 *
+	 * @since   1.6.x
+	 * @param   null    $null  Default return (invalid).
+	 * @param   mixed   $data  The view data.
+	 * @param   string  $key   The data key.
+	 * @return  mixed
+	 */
+	public function filter_validate_settings( $null, $data, $key ) {
+		if ( ! empty( $data ) && ! empty( $key ) ) {
+			if ( $key == 'setting' ) {
+				return $this->validate_settings( $data, 'global', false );
+			}
+			if ( $key == 'user_setting' ) {
+				return $this->validate_settings( $data, 'user', false );
+			}
+		}
+		return $null;
+	}
+
+	/**
 	 * Store settings based on allowed settings.
 	 * Also merges with the default settings.
 	 *
@@ -247,21 +271,22 @@ class VAA_View_Admin_As_Settings {
 		if ( ! is_array( $current ) ) {
 			$current = $defaults;
 		}
+
+		$settings = $this->validate_settings( $settings, $type, false );
+
 		foreach ( $settings as $setting => $value ) {
-			// Only allow the settings when it exists in the defaults and the value exists in the allowed settings.
-			if ( array_key_exists( $setting, $defaults ) && in_array( $value, $allowed[ $setting ], true ) ) {
-				$current[ $setting ] = $value;
-				// Some settings need a reset.
-				if ( in_array( $setting, array( 'view_mode' ), true ) ) {
-					view_admin_as( $this )->view()->reset_view();
-				}
+			$current[ $setting ] = $value;
+			// Some settings need a reset.
+			if ( in_array( $setting, array( 'view_mode' ), true ) ) {
+				view_admin_as( $this )->view()->reset_view();
 			}
 		}
+
+		$new = $this->parse_settings( $current, $defaults, $allowed );
+
 		if ( 'global' === $type ) {
-			$new = $this->validate_settings( wp_parse_args( $current, $defaults ), 'global' );
 			return $this->update_optionData( $new, 'settings', true );
 		} elseif ( 'user' === $type ) {
-			$new = $this->validate_settings( wp_parse_args( $current, $defaults ), 'user' );
 			return $this->update_userMeta( $new, 'settings', true );
 		}
 		return false;
@@ -269,18 +294,19 @@ class VAA_View_Admin_As_Settings {
 
 	/**
 	 * Validate setting data based on allowed settings.
-	 * Also merges with the default settings.
+	 * Will also merge with the default settings unless third $merge parameter is false.
 	 *
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.6.x  Moved to this class from store class.
+	 * @since   1.6.x  Moved to this class from store class. Added third $merge parameter.
 	 * @access  public
 	 *
 	 * @param   array       $settings  The new settings.
 	 * @param   string      $type      The type of settings (global / user).
+	 * @param   bool        $merge     Merge with defaults? (will return all settings).
 	 * @return  array|bool  $settings / false
 	 */
-	public function validate_settings( $settings, $type ) {
+	public function validate_settings( $settings, $type, $merge = true ) {
 		if ( 'global' === $type ) {
 			$defaults = $this->get_defaultSettings();
 			$allowed  = $this->get_allowedSettings();
@@ -290,9 +316,35 @@ class VAA_View_Admin_As_Settings {
 		} else {
 			return false;
 		}
+
+		if ( $merge ) {
+			return $this->parse_settings( $settings, $defaults, $allowed );
+		}
+
+		foreach ( $settings as $setting => $value ) {
+			// Only pass the settings if the key and value matched the data in the allowed settings
+			if ( ! array_key_exists( $setting, $allowed ) || ! in_array( $value, $allowed[ $setting ], true ) ) {
+				unset( $settings[ $setting ] );
+			}
+		}
+		return $settings;
+	}
+
+	/**
+	 * Parse the settings.
+	 * Checks if the setting exists, removes it otherwise.
+	 * Checks if the setting is allowed, otherwise sets it to the default value.
+	 *
+	 * @since   1.6.x
+	 * @param   array  $settings  The new settings
+	 * @param   array  $defaults  The default settings
+	 * @param   array  $allowed   The allowed settings
+	 * @return  array
+	 */
+	public function parse_settings( $settings, $defaults, $allowed ) {
 		$settings = wp_parse_args( $settings, $defaults );
 		foreach ( $settings as $setting => $value ) {
-			if ( ! array_key_exists( $setting, $defaults ) ) {
+			if ( ! array_key_exists( $setting, $allowed ) ) {
 				// We don't have such a setting.
 				unset( $settings[ $setting ] );
 			} elseif ( ! in_array( $value, $allowed[ $setting ], true ) ) {
@@ -492,7 +544,7 @@ class VAA_View_Admin_As_Settings {
 	 * @param   string  $val  Option key.
 	 */
 	public function set_optionKey( $val ) {
-		$this->optionKey = (string) $val;
+		$this->optionKey = (string) str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $val ) );
 	}
 
 	/**
@@ -500,7 +552,7 @@ class VAA_View_Admin_As_Settings {
 	 * @param   string  $val  Option key.
 	 */
 	public function set_userMetaKey( $val ) {
-		$this->userMetaKey = (string) $val;
+		$this->userMetaKey = (string) sanitize_title_with_dashes( $val );
 	}
 
 	/**
