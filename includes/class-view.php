@@ -59,6 +59,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
 		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
 
+		// Reset view will always return true
+		add_filter( 'view_admin_as_validate_view_data_reset', '__return_true' );
+
 		/**
 		 * Change expiration time for view meta.
 		 *
@@ -897,10 +900,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 					 * Validate the data for a view custom type.
 					 *
 					 * @since  1.6.2
-					 * @param  mixed  $data[ $key ]  Unvalidated view data.
-					 * @return mixed  validated view data.
+					 * @since  1.6.x   Added third $key parameter
+					 * @param  null    $null          Ensures a validation filter is required.
+					 * @param  mixed   $data[ $key ]  Unvalidated view data.
+					 * @param  string  $key           The data key.
+					 * @return mixed   validated view data.
 					 */
-					$data[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, $data[ $key ] );
+					$data[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, null, $data[ $key ], $key );
 				break;
 			}
 		}

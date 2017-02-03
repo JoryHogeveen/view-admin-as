@@ -122,6 +122,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_roles_after' ), 10, 2 );
 
 			add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
+
+			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
 		}
 	}
 
@@ -215,6 +217,34 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	public function add_view_type( $types ) {
 		$types[] = $this->viewKey;
 		return $types;
+	}
+
+	/**
+	 * Validate data for this view type
+	 *
+	 * @since   1.6.x
+	 * @param   null   $null  Default return (invalid)
+	 * @param   mixed  $data  The view data
+	 * @return  mixed
+	 */
+	public function validate_view_data( $null, $data ) {
+		$level = $data;
+
+		if ( is_string( $data ) && false !== strpos( $data, '|' ) ) {
+			$data = explode( '|', $data );
+			$level = (int) $data[0];
+			// @todo Activate role validation when hook is in use
+			/*if ( ! empty( $data[1] ) ) {
+				$data[1] = apply_filters( 'view_admin_as_validate_view_data_role', null, $data[1] );
+			}*/
+			$data = implode( '|', $data );
+		}
+
+		//
+		if ( is_numeric( $level ) && $this->get_levels( (int) $level ) ) {
+			return $data;
+		}
+		return $null;
 	}
 
 	/**
