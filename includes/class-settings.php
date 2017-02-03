@@ -233,10 +233,10 @@ class VAA_View_Admin_As_Settings {
 	 */
 	public function filter_validate_settings( $null, $data, $key ) {
 		if ( ! empty( $data ) && ! empty( $key ) ) {
-			if ( $key == 'setting' ) {
+			if ( 'setting' === $key ) {
 				return $this->validate_settings( $data, 'global', false );
 			}
-			if ( $key == 'user_setting' ) {
+			if ( 'user_setting' === $key ) {
 				return $this->validate_settings( $data, 'user', false );
 			}
 		}

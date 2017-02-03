@@ -228,7 +228,7 @@ final class VAA_API
 			if ( isset( $array[ $key ] ) ) {
 				return $array[ $key ];
 			}
-			return false; // return false if key is not found
+			return null; // return null if key is not found
 		}
 		return $array;
 	}

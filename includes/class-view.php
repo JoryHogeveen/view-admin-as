@@ -61,6 +61,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		// Reset view will always return true
 		add_filter( 'view_admin_as_validate_view_data_reset', '__return_true' );
+		// Visitor view is always a boolean
+		add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
+
+		// Validation checks for caps, role and user views
+		add_filter( 'view_admin_as_validate_view_data_caps', array( $this, 'validate_view_data_caps' ), 10, 2 );
+		add_filter( 'view_admin_as_validate_view_data_role', array( $this, 'validate_view_data_role' ), 10, 2 );
+		add_filter( 'view_admin_as_validate_view_data_user', array( $this, 'validate_view_data_user' ), 10, 2 );
 
 		/**
 		 * Change expiration time for view meta.
@@ -491,6 +498,25 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * Ajax call validator. Verifies caller and nonce.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @return  bool
+	 */
+	public function is_valid_ajax() {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX
+		    && $this->is_vaa_enabled()
+		    && isset( $_POST['view_admin_as'] )
+		    && isset( $_POST['_vaa_nonce'] )
+		    && wp_verify_nonce( $_POST['_vaa_nonce'], $this->store->get_nonce() )
+		) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * AJAX handler.
 	 * Gets the AJAX input. If it is valid: store it in the current user metadata.
 	 *
@@ -508,13 +534,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function ajax_view_admin_as() {
 
-		if (   ! defined( 'DOING_AJAX' )
-		    || ! DOING_AJAX
-		    || ! $this->is_vaa_enabled()
-		    || ! isset( $_POST['view_admin_as'] )
-		    || ! isset( $_POST['_vaa_nonce'] )
-		    || ! wp_verify_nonce( $_POST['_vaa_nonce'], $this->store->get_nonce() )
-		) {
+		if ( ! $this->is_valid_ajax() ) {
 			wp_send_json_error( __( 'Cheatin uh?', VIEW_ADMIN_AS_DOMAIN ) );
 			die();
 		}
@@ -548,46 +568,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			}
 		}
 		elseif ( isset( $data['caps'] ) ) {
-			$db_view = $this->get_view();
-			// === comparison nor working due to key order.
-			$difference = array_diff_key(
-				array_filter( $this->store->get_curUser()->allcaps ),
-				array_filter( $data['caps'] )
-			);
-			// Check if the selected caps are equal to the default caps.
-			if ( ! $difference ) {
-				// The selected caps are equal to the current user default caps so we can reset the view.
-				$this->reset_view();
-				if ( isset( $db_view['caps'] ) ) {
-					// The user was in a custom caps view.
-					$success = true; // and continue.
-				} else {
-					// The user was in his default view, notify the user.
-					wp_send_json_error( array(
-						'type' => 'error',
-						'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
-					) );
-				}
-			} else {
-				// Reset the stored caps.
-				$this->store->set_caps( array() );
-				// Store the selected caps.
-				foreach ( $data['caps'] as $key => $value ) {
-					$this->store->set_caps( (int) $value, (string) $key, true );
-				}
-				// === comparison nor working due to key order.
-				if ( isset( $db_view['caps'] ) && ! array_diff_key(
-					array_filter( (array) $db_view['caps'] ),
-					array_filter( $this->store->get_caps() )
-				) ) {
-					wp_send_json_error( array(
-						'type' => 'error',
-						'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
-					) );
-				} else {
-					$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
-				}
-			}
+			$success = $this->ajax_handler_caps( $data['caps'] );
 		}
 		elseif ( isset( $data['reset'] ) ) {
 			$success = $this->reset_view();
@@ -600,16 +581,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 		else {
 			// Maybe a module?
-			foreach ( $data as $key => $data ) {
-				if ( array_key_exists( $key, $this->vaa->get_modules() ) ) {
-					$module = $this->vaa->get_modules( $key );
-					if ( is_callable( array( $module, 'ajax_handler' ) ) ) {
-						$success = $module->ajax_handler( $data );
-						if ( ! is_bool( $success ) && ! empty( $success ) ) {
-							wp_send_json_error( $success );
-						} elseif ( false === $success ) {
-							break; // Default error
-						}
+			foreach ( $data as $key => $key_data ) {
+				$module = $this->vaa->get_modules( $key );
+				if ( is_callable( array( $module, 'ajax_handler' ) ) ) {
+					$success = $module->ajax_handler( $key_data );
+					if ( ! is_bool( $success ) && ! empty( $success ) ) {
+						wp_send_json_error( $success );
+					} elseif ( false === $success ) {
+						break; // Default error
 					}
 				}
 				break; // @todo Maybe check for multiple keys
@@ -626,6 +605,58 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		die(); // Just to make sure it's actually dead..
+	}
+
+	/**
+	 * Handles the caps view since it's a bit more complex
+	 *
+	 * @since   1.6.x
+	 * @access  private
+	 * @param   array  $data  Caps view data
+	 * @return  bool
+	 */
+	private function ajax_handler_caps( $data ) {
+		$success = false;
+		$db_view = $this->store->get_view( 'caps' );
+		// === comparison nor working due to key order.
+		$difference = array_diff_key(
+			array_filter( $this->store->get_curUser()->allcaps ),
+			array_filter( $data )
+		);
+		// Check if the selected caps are equal to the default caps.
+		if ( ! $difference ) {
+			// The selected caps are equal to the current user default caps so we can reset the view.
+			$this->reset_view();
+			if ( $db_view ) {
+				// The user was in a custom caps view.
+				$success = true; // and continue.
+			} else {
+				// The user was in his default view, notify the user.
+				wp_send_json_error( array(
+					'type' => 'error',
+					'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
+				) );
+			}
+		} else {
+			// Store the selected caps.
+			$this->store->set_caps( array_map( 'absint', $data ) );
+
+			// Check if the new caps selection is different.
+			// === comparison not working due to key order.
+			$difference = array_diff_key(
+				array_filter( (array) $db_view ),
+				array_filter( $this->store->get_caps() )
+			);
+			if ( ! $difference ) {
+				wp_send_json_error( array(
+					'type' => 'error',
+					'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
+				) );
+			} else {
+				$success = $this->update_view( array( 'caps' => $this->store->get_caps() ) );
+			}
+		}
+		return $success;
 	}
 
 	/**
@@ -673,7 +704,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			}
 		}
 
-		return false;
+		return null;
 	}
 
 	/**
@@ -725,6 +756,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$user = $this->store->get_curUser();
 		}
 		if ( isset( $user->ID ) ) {
+			// Do not use the store as it currently doesn't support a different user ID.
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// Check if this user session has metadata.
 			if ( isset( $meta['views'][ $this->store->get_curUserSession() ] ) ) {
@@ -762,13 +794,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$user = $this->store->get_curUser();
 		}
 		if ( isset( $user->ID ) ) {
+			// Do not use the store as it currently doesn't support a different user ID.
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, loop it.
 			if ( isset( $meta['views'] ) ) {
-				if ( ! is_array( $meta['views'] ) ) {
-					$meta['views'] = array();
-				}
-				foreach ( $meta['views'] as $key => $value ) {
+
+				foreach ( (array) $meta['views'] as $key => $value ) {
 					// Check expiration date: if it doesn't exist or is in the past, remove it.
 					if ( ! isset( $meta['views'][ $key ]['expire'] ) || time() > (int) $meta['views'][ $key ]['expire'] ) {
 						unset( $meta['views'][ $key ] );
@@ -853,64 +884,82 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		// We only want allowed keys and data, otherwise it's not added through this plugin.
 		foreach ( $data as $key => $value ) {
+
 			// Check for keys that are not allowed.
 			if ( ! in_array( $key, $allowed_keys, true ) ) {
 				unset( $data[ $key ] );
 				continue;
 			}
-			switch ( $key ) {
 
-				case 'caps':
-					if ( is_array( $data['caps'] ) ) {
-						// The data is an array, most likely from the database.
-						$data['caps'] = array_map( 'absint', $data['caps'] );
-						ksort( $data['caps'] ); // Sort the new caps the same way we sort the existing caps.
-					} else {
-						// Caps data is not valid.
-						unset( $data['caps'] );
-					}
-					break;
+			/**
+			 * Validate the data.
+			 * Hook is required!
+			 *
+			 * @since  1.6.2
+			 * @since  1.6.x   Added third $key parameter
+			 * @param  null    $null          Ensures a validation filter is required.
+			 * @param  mixed   $data[ $key ]  Unvalidated view data.
+			 * @param  string  $key           The data key.
+			 * @return mixed   validated view data.
+			 */
+			$data[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, null, $data[ $key ], $key );
 
-				case 'role':
-					// Role data must be a string and exists in the loaded array of roles.
-					if (    ! is_string( $data['role'] )
-					     || ! $this->store->get_roles()
-					     || ! array_key_exists( $data['role'], $this->store->get_roles() )
-					) {
-						unset( $data['role'] );
-					}
-					break;
-
-				case 'user':
-					// User data must be a number and exists in the loaded array of user id's.
-					if (    ! is_numeric( $data['user'] )
-					     || ! $this->store->get_userids()
-					     || ! array_key_exists( (int) $data['user'], $this->store->get_userids() )
-					) {
-						unset( $data['user'] );
-					}
-					break;
-
-				case 'visitor':
-					$data['visitor'] = (bool) $data['visitor'];
-					break;
-
-				default:
-					/**
-					 * Validate the data for a view custom type.
-					 *
-					 * @since  1.6.2
-					 * @since  1.6.x   Added third $key parameter
-					 * @param  null    $null          Ensures a validation filter is required.
-					 * @param  mixed   $data[ $key ]  Unvalidated view data.
-					 * @param  string  $key           The data key.
-					 * @return mixed   validated view data.
-					 */
-					$data[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, null, $data[ $key ], $key );
-				break;
+			if ( null === $data[ $key ] ) {
+				unset( $data[ $key ] );
 			}
 		}
 		return $data;
+	}
+
+	/**
+	 * Validate data for role view type
+	 *
+	 * @since   1.6.x
+	 * @param   null   $null  Default return (invalid)
+	 * @param   mixed  $data  The view data
+	 * @return  mixed
+	 */
+	function validate_view_data_caps( $null, $data ) {
+		// Caps data must be an array
+		if ( is_array( $data ) ) {
+			// The data is an array, most likely from the database.
+			$data = array_map( 'absint', $data );
+			ksort( $data ); // Sort the new caps the same way we sort the existing caps.
+			return $data;
+		}
+		return $null;
+	}
+
+	/**
+	 * Validate data for role view type
+	 *
+	 * @since   1.6.x
+	 * @param   null   $null  Default return (invalid)
+	 * @param   mixed  $data  The view data
+	 * @return  mixed
+	 */
+	function validate_view_data_role( $null, $data ) {
+		// Role data must be a string and exists in the loaded array of roles.
+		if ( is_string( $data ) && array_key_exists( $data, $this->store->get_roles() ) ) {
+			return $data;
+		}
+		return $null;
+	}
+
+	/**
+	 * Validate data for user view type
+	 *
+	 * @since   1.6.x
+	 * @param   null   $null  Default return (invalid)
+	 * @param   mixed  $data  The view data
+	 * @return  mixed
+	 */
+	function validate_view_data_user( $null, $data ) {
+		// User data must be a number and exists in the loaded array of user id's.
+		if ( is_numeric( $data ) && array_key_exists( (int) $data, $this->store->get_userids() ) ) {
+			return $data;
+		}
+		return $null;
 	}
 
 	/**

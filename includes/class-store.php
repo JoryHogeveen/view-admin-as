@@ -795,7 +795,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_view( $val, $key = null, $append = false ) {
-		$this->view = VAA_API::set_array_data( $this->view, $val, $key, $append );
+		$this->view = (array) VAA_API::set_array_data( $this->view, $val, $key, $append );
 	}
 
 	/**
@@ -820,7 +820,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_caps( $val, $key = null, $append = false ) {
-		$this->caps = VAA_API::set_array_data( $this->caps, $val, $key, $append );
+		$this->caps = (array) VAA_API::set_array_data( $this->caps, $val, $key, $append );
 	}
 
 	/**
@@ -831,7 +831,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_roles( $val, $key = null, $append = false ) {
-		$this->roles = VAA_API::set_array_data( $this->roles, $val, $key, $append );
+		$this->roles = (array) VAA_API::set_array_data( $this->roles, $val, $key, $append );
 	}
 
 	/**
@@ -843,7 +843,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_rolenames( $val, $key = null, $append = false ) {
-		$this->rolenames = VAA_API::set_array_data( $this->rolenames, $val, $key, $append );
+		$this->rolenames = (array) VAA_API::set_array_data( $this->rolenames, $val, $key, $append );
 	}
 
 	/**
@@ -855,7 +855,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_users( $val, $key = null, $append = false ) {
-		$this->users = VAA_API::set_array_data( $this->users, $val, $key, $append );
+		$this->users = (array) VAA_API::set_array_data( $this->users, $val, $key, $append );
 	}
 
 	/**
@@ -864,7 +864,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_userids( $val ) {
-		$this->userids = array_map( 'strval', (array) $val );
+		$this->userids = (array) array_map( 'strval', (array) $val );
 	}
 
 	/**
