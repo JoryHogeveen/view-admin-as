@@ -19,6 +19,15 @@
 class VAA_View_Admin_As_Settings {
 
 	/**
+	 * The main VAA settings instance.
+	 *
+	 * @since  1.6.x
+	 * @static
+	 * @var    VAA_View_Admin_As_Settings
+	 */
+	private static $_vaa_instance = null;
+
+	/**
 	 * Database option key.
 	 *
 	 * @since  1.4
@@ -106,19 +115,65 @@ class VAA_View_Admin_As_Settings {
 	/**
 	 * Sets the default data
 	 * @access  protected
+	 * @param   string  $id  Identifier for this settings instance
+	 * @return  VAA_View_Admin_As_Settings
 	 */
-	protected function __construct() {
+	protected function __construct( $id = 'vaa' ) {
 
-		$this->set_optionKey( 'vaa_view_admin_as' );
-		$this->set_optionData( array(
-			'db_version',
-		) );
+		if ( empty( $id ) ) {
+			return null;
+		}
 
-		$this->set_userMetaKey( 'vaa-view-admin-as' );
-		$this->set_userMeta( array(
-			'settings',
-			'views',
-		) );
+		$default = array();
+		$allowed = array();
+
+		$default_user = array();
+		$allowed_user = array();
+
+		if ( 'vaa' === $id ) {
+
+			if ( null !== self::$_vaa_instance ) {
+				return self::$_vaa_instance;
+			}
+			self::$_vaa_instance = $this;
+
+			$this->set_optionKey( 'vaa_view_admin_as' );
+			$this->set_optionData( array(
+				'db_version',
+			) );
+
+			$this->set_userMetaKey( 'vaa-view-admin-as' );
+			$this->set_userMeta( array(
+				'settings',
+				'views',
+			) );
+
+			$default_user = array(
+				'admin_menu_location' => 'top-secondary',
+				'force_group_users'   => 'no',
+				'freeze_locale'       => 'no',
+				'hide_front'          => 'no',
+				'view_mode'           => 'browse',
+			);
+			$allowed_user = array(
+				'admin_menu_location' => array( 'top-secondary', 'my-account' ),
+				'force_group_users'   => array( 'yes', 'no' ),
+				'freeze_locale'       => array( 'yes', 'no' ),
+				'hide_front'          => array( 'yes', 'no' ),
+				'view_mode'           => array( 'browse', 'single' ),
+			);
+
+			// Make identifier empty for the filters
+			$id = '';
+
+		} else {
+
+			$this->set_optionKey( 'vaa_' . $id );
+			$this->set_userMetaKey( 'vaa-' . $id );
+
+			// Append underscore to the identifier for the filters
+			$id = '_' . $id;
+		}
 
 		/**
 		 * Set the default global settings
@@ -127,7 +182,7 @@ class VAA_View_Admin_As_Settings {
 		 * @param  array
 		 * @return array
 		 */
-		$this->set_defaultSettings( apply_filters( 'vaa_view_admin_as_default_global_settings', array() ) );
+		$this->set_defaultSettings( apply_filters( 'vaa_view_admin_as_default_global_settings' . $id, $default ) );
 
 		/**
 		 * Set the allowed global settings
@@ -139,7 +194,7 @@ class VAA_View_Admin_As_Settings {
 		 * }
 		 * @return array
 		 */
-		$this->set_allowedSettings( apply_filters( 'vaa_view_admin_as_allowed_global_settings', array() ) );
+		$this->set_allowedSettings( apply_filters( 'vaa_view_admin_as_allowed_global_settings' . $id, $allowed ) );
 
 		/**
 		 * Set the default settings for users
@@ -148,13 +203,7 @@ class VAA_View_Admin_As_Settings {
 		 * @param  array
 		 * @return array
 		 */
-		$this->set_defaultUserSettings( apply_filters( 'vaa_view_admin_as_default_user_settings', array(
-			'admin_menu_location' => 'top-secondary',
-			'force_group_users'   => 'no',
-			'freeze_locale'       => 'no',
-			'hide_front'          => 'no',
-			'view_mode'           => 'browse',
-		) ) );
+		$this->set_defaultUserSettings( apply_filters( 'vaa_view_admin_as_default_user_settings' . $id, $default_user ) );
 
 		/**
 		 * Set the allowed settings for users
@@ -166,13 +215,7 @@ class VAA_View_Admin_As_Settings {
 		 * }
 		 * @return array
 		 */
-		$this->set_allowedUserSettings( apply_filters( 'vaa_view_admin_as_allowed_user_settings', array(
-			'admin_menu_location' => array( 'top-secondary', 'my-account' ),
-			'force_group_users'   => array( 'yes', 'no' ),
-			'freeze_locale'       => array( 'yes', 'no' ),
-			'hide_front'          => array( 'yes', 'no' ),
-			'view_mode'           => array( 'browse', 'single' ),
-		) ) );
+		$this->set_allowedUserSettings( apply_filters( 'vaa_view_admin_as_allowed_user_settings' . $id, $allowed_user ) );
 
 	}
 
