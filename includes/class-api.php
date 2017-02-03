@@ -84,6 +84,25 @@ final class VAA_API
 	}
 
 	/**
+	 * Is any toolbar showing?
+	 * Do not use this before the `init` hook.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_toolbar_showing() {
+
+		if ( is_admin_bar_showing() || self::is_vaa_toolbar_showing() ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Is our custom toolbar showing?
 	 * Do not use this before the `init` hook.
 	 *
