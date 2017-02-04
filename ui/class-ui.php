@@ -267,7 +267,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 	 */
 	public function enqueue_scripts() {
 		// Only enqueue scripts if the admin bar is enabled otherwise they have no use.
-		if ( ! $this->is_vaa_enabled() || ! VAA_API::is_toolbar_showing() ) {
+		if ( ! VAA_API::is_toolbar_showing() ) {
 			return;
 		}
 
