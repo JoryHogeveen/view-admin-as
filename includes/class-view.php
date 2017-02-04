@@ -114,13 +114,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		$this->store->set_view( $this->get_view() );
 
 		// Short circuit needed for visitor view (BEFORE the current user is set).
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! empty( $_POST['action'] ) && 'view_admin_as' === $_POST['action'] ) {
+		if ( VAA_API::is_ajax_request( 'view_admin_as' ) ) {
 			$this->ajax_view_admin_as();
+		} else {
+			// Admin selector ajax return (fallback).
+			add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+			//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 		}
-
-		// Admin selector ajax return (fallback).
-		add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
-		//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 
 		if ( $this->store->get_view() ) {
 			$this->do_view();
@@ -498,25 +498,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Ajax call validator. Verifies caller and nonce.
-	 *
-	 * @since   1.6.x
-	 * @access  public
-	 * @return  bool
-	 */
-	public function is_valid_ajax() {
-		if ( defined( 'DOING_AJAX' ) && DOING_AJAX
-		    && $this->is_vaa_enabled()
-		    && isset( $_POST['view_admin_as'] )
-		    && isset( $_POST['_vaa_nonce'] )
-		    && wp_verify_nonce( $_POST['_vaa_nonce'], $this->store->get_nonce() )
-		) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * AJAX handler.
 	 * Gets the AJAX input. If it is valid: store it in the current user metadata.
 	 *
@@ -534,7 +515,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function ajax_view_admin_as() {
 
-		if ( ! $this->is_valid_ajax() ) {
+		$data = VAA_API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as' );
+		if ( ! $data ) {
 			wp_send_json_error( __( 'Cheatin uh?', VIEW_ADMIN_AS_DOMAIN ) );
 			die();
 		}
@@ -542,7 +524,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		define( 'VAA_DOING_AJAX', true );
 
 		$success = false;
-		$data = $this->validate_view_data( json_decode( stripslashes( $_POST['view_admin_as'] ), true ) );
+		$data = $this->validate_view_data( json_decode( stripslashes( $data ), true ) );
 
 		// Stop selecting the same view!
 		if ( 1 === count( $this->store->get_view() )
@@ -665,19 +647,18 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.3.4
 	 * @since   1.5     Single mode.
 	 * @since   1.6     Moved to this class from main class.
-	 * @access  public
-	 * @return  array|string|bool
+	 * @since   1.6.x   Private method. Use store.
+	 * @access  private
+	 * @return  array
 	 */
-	public function get_view() {
+	private function get_view() {
+
+		$view_mode = $this->store->get_userSettings( 'view_mode' );
 
 		// Static actions.
-		if ( ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-		     && isset( $_GET['view_admin_as'] )
-		     && 'browse' === $this->store->get_userSettings( 'view_mode' )
-		     && isset( $_GET['_vaa_nonce'] )
-		     && wp_verify_nonce( (string) $_GET['_vaa_nonce'], $this->store->get_nonce() )
-		) {
-			$view = $this->validate_view_data( json_decode( stripcslashes( html_entity_decode( $_GET['view_admin_as'] ) ), true ) );
+		$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as', 'get' );
+		if ( $request && 'browse' === $view_mode ) {
+			$view = $this->validate_view_data( json_decode( stripcslashes( html_entity_decode( $request ) ), true ) );
 			$this->update_view( $view );
 			if ( is_network_admin() ) {
 				wp_redirect( network_admin_url() );
@@ -687,17 +668,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		}
 
 		// Single mode.
-		if ( ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX )
-		     && isset( $_POST['view_admin_as'] )
-		     && 'single' === $this->store->get_userSettings( 'view_mode' )
-		     && isset( $_POST['_vaa_nonce'] )
-		     && wp_verify_nonce( (string) $_POST['_vaa_nonce'], $this->store->get_nonce() )
-		) {
-			return $this->validate_view_data( json_decode( stripcslashes( $_POST['view_admin_as'] ), true ) );
+		$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as' );
+		if ( $request && 'single' === $view_mode ) {
+			return $this->validate_view_data( json_decode( stripcslashes( $request ), true ) );
 		}
 
 		// Browse mode.
-		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
+		if ( 'browse' === $view_mode ) {
 			$meta = $this->store->get_userMeta( 'views' );
 			if ( isset( $meta[ $this->store->get_curUserSession() ]['view'] ) ) {
 				return $this->validate_view_data( $meta[ $this->store->get_curUserSession() ]['view'] );

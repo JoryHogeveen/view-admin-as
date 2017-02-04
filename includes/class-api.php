@@ -293,4 +293,108 @@ final class VAA_API
 		return true;
 	}
 
+	/**
+	 * AJAX Request validator. Verifies caller and nonce.
+	 * Returns the requested data.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   string  $nonce  The nonce to validate
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  mixed
+	 */
+	public static function get_ajax_request( $nonce, $key = null, $type = 'post' ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return self::get_request( $nonce, $key, $type );
+		}
+		return null;
+	}
+
+	/**
+	 * AJAX Request validator. Verifies caller and nonce.
+	 * Returns the requested data.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   string  $nonce  The nonce to validate
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  mixed
+	 */
+	public static function get_normal_request( $nonce, $key = null, $type = 'post' ) {
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
+			return self::get_request( $nonce, $key, $type );
+		}
+		return null;
+	}
+
+	/**
+	 * Request validator. Verifies caller and nonce.
+	 * Returns the requested data.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   string  $nonce  The nonce to validate
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  mixed
+	 */
+	public static function get_request( $nonce, $key = null, $type = 'post' ) {
+		$data = ( 'get' === $type ) ? $_GET : $_POST;
+		if ( isset( $data[ $key ] ) && isset( $data['_vaa_nonce'] ) && wp_verify_nonce( $data['_vaa_nonce'], $nonce ) ) {
+			return VAA_API::get_array_data( $data, $key );
+		}
+		return null;
+	}
+
+	/**
+	 * AJAX Request check.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  bool
+	 */
+	public static function is_ajax_request( $key = null, $type = 'post' ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return self::is_request( $key, $type );
+		}
+		return false;
+	}
+
+	/**
+	 * Normal Request check.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  bool
+	 */
+	public static function is_normal_request( $key = null, $type = 'post' ) {
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
+			return self::is_request( $key, $type );
+		}
+		return false;
+	}
+
+	/**
+	 * Check if there is a request made.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   string  $key    The key to check.
+	 * @param   string  $type   The type of request.
+	 * @return  bool
+	 */
+	public static function is_request( $key = null, $type = 'post' ) {
+		$data = ( 'get' === $type ) ? $_GET : $_POST;
+		if ( isset( $data[ $key ] ) ) {
+			return true;
+		}
+		return false;
+	}
+
 } // end class.
