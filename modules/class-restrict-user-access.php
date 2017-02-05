@@ -278,7 +278,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			if ( ! empty( $role ) && $this->store->get_roles( $role ) ) {
 				$view['role'] = $role;
 			}
-			$this->vaa->view()->update_view( $view );
+			$this->vaa->controller()->update_view( $view );
 			return true;
 		}
 		return false;
