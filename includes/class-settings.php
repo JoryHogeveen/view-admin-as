@@ -29,6 +29,8 @@ class VAA_View_Admin_As_Settings {
 
 	/**
 	 * Database option key.
+	 * Always starts with `vaa_`.
+	 * Keys are parsed with underscores as spacing.
 	 *
 	 * @since  1.4
 	 * @since  1.6    Moved to this class from main class.
@@ -49,6 +51,8 @@ class VAA_View_Admin_As_Settings {
 
 	/**
 	 * User meta key for settings ans views.
+	 * Always starts with `vaa-`.
+	 * Keys are parsed with dashes as spacing.
 	 *
 	 * @since  1.3.4
 	 * @since  1.6    Moved to this class from main class.
@@ -113,10 +117,10 @@ class VAA_View_Admin_As_Settings {
 	protected $allowedUserSettings = array();
 
 	/**
-	 * Sets the default data
+	 * Sets the default data.
+	 * @since   1.6.x
 	 * @access  protected
-	 * @param   string  $id  Identifier for this settings instance
-	 * @return  VAA_View_Admin_As_Settings
+	 * @param   string  $id  Identifier for this settings instance.
 	 */
 	protected function __construct( $id = 'vaa' ) {
 
@@ -133,7 +137,7 @@ class VAA_View_Admin_As_Settings {
 		if ( 'vaa' === $id ) {
 
 			if ( null !== self::$_vaa_instance ) {
-				return self::$_vaa_instance;
+				return;
 			}
 			self::$_vaa_instance = $this;
 
@@ -166,7 +170,7 @@ class VAA_View_Admin_As_Settings {
 			add_filter( 'view_admin_as_validate_view_data_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 			add_filter( 'view_admin_as_validate_view_data_user_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 
-			// Make identifier empty for the filters
+			// Make identifier empty for the filters.
 			$id = '';
 
 		} else {
@@ -174,12 +178,12 @@ class VAA_View_Admin_As_Settings {
 			$this->set_optionKey( 'vaa_' . $id );
 			$this->set_userMetaKey( 'vaa-' . $id );
 
-			// Append underscore to the identifier for the filters
+			// Append underscore to the identifier for the filters.
 			$id = '_' . $id;
 		}
 
 		/**
-		 * Set the default global settings
+		 * Set the default global settings.
 		 *
 		 * @since  1.6.x
 		 * @param  array
@@ -188,19 +192,19 @@ class VAA_View_Admin_As_Settings {
 		$this->set_defaultSettings( apply_filters( 'vaa_view_admin_as_default_global_settings' . $id, $default ) );
 
 		/**
-		 * Set the allowed global settings
+		 * Set the allowed global settings.
 		 *
 		 * @since  1.6.x
 		 * @param  array {
-		 *     Settings array (key = setting name)
-		 *     @type  array  Array of allowed values
+		 *     Settings array (key = setting name).
+		 *     @type  array  Array of allowed values.
 		 * }
 		 * @return array
 		 */
 		$this->set_allowedSettings( apply_filters( 'vaa_view_admin_as_allowed_global_settings' . $id, $allowed ) );
 
 		/**
-		 * Set the default settings for users
+		 * Set the default settings for users.
 		 *
 		 * @since  1.6.x
 		 * @param  array
@@ -209,12 +213,12 @@ class VAA_View_Admin_As_Settings {
 		$this->set_defaultUserSettings( apply_filters( 'vaa_view_admin_as_default_user_settings' . $id, $default_user ) );
 
 		/**
-		 * Set the allowed settings for users
+		 * Set the allowed settings for users.
 		 *
 		 * @since  1.6.x
 		 * @param  array {
-		 *     Settings array (key = setting name)
-		 *     @type  array  Array of allowed values
+		 *     Settings array (key = setting name).
+		 *     @type  array  Array of allowed values.
 		 * }
 		 * @return array
 		 */
@@ -223,7 +227,7 @@ class VAA_View_Admin_As_Settings {
 	}
 
 	/**
-	 * Validate hook for settings
+	 * Validate hook for settings.
 	 *
 	 * @since   1.6.x
 	 * @param   null    $null  Default return (invalid).
@@ -278,7 +282,7 @@ class VAA_View_Admin_As_Settings {
 			$current[ $setting ] = $value;
 			// Some settings need a reset.
 			if ( in_array( $setting, array( 'view_mode' ), true ) ) {
-				view_admin_as( $this )->view()->reset_view();
+				view_admin_as( $this )->controller()->reset_view();
 			}
 		}
 

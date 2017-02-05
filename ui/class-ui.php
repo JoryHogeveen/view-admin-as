@@ -297,6 +297,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 			'settings'      => $this->store->get_settings(),
 			'settings_user' => $this->store->get_userSettings(),
 			'view'          => $this->store->get_view(),
+			'view_types'    => $this->vaa->controller()->get_view_types(),
 			// Other.
 			'_debug'     => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
 			'_vaa_nonce' => $this->store->get_nonce( true ),
@@ -305,22 +306,6 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 			'__success'        => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
 			'__confirm'        => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
 		);
-
-		/**
-		 * Add basic view types for automated use in JS.
-		 *
-		 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key).
-		 * - Menu items require the rel attribute for the view data to be send (string or numeric).
-		 * - Menu items require the href attribute (the node needs to be an <a> element), I'd set it to '#'.
-		 *
-		 * @since  1.6.2
-		 * @param  array  $array  Empty array.
-		 * @return array  An array of strings (view types).
-		 */
-		$script_localization['view_types'] = array_unique( array_merge(
-			array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
-			array( 'user', 'role', 'caps', 'visitor' )
-		) );
 
 		foreach ( $this->vaa->get_modules() as $name => $module ) {
 			if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {

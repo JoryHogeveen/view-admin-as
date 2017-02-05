@@ -268,6 +268,26 @@ final class VAA_API
 	}
 
 	/**
+	 * Check if two arrays are the same.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array  $array1  Array one
+	 * @param   array  $array2  Array two
+	 * @return  bool
+	 */
+	public static function array_equal( $array1, $array2 ) {
+		return (
+			is_array( $array1 ) && is_array( $array2 ) &&
+			count( $array1 ) == count( $array2 ) &&
+			array_diff_assoc( $array1, $array2 ) === array_diff_assoc( $array2, $array1 )
+		);
+	}
+
+	/**
 	 * Compare with the current WordPress version.
 	 * Returns true when it's the provided version or newer.
 	 *

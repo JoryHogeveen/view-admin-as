@@ -62,6 +62,14 @@ final class VAA_View_Admin_As
 	private $store = null;
 
 	/**
+	 * VAA Controller.
+	 *
+	 * @since  1.6
+	 * @var    VAA_View_Admin_As_Controller
+	 */
+	private $controller = null;
+
+	/**
 	 * VAA View handler.
 	 *
 	 * @since  1.6
@@ -113,8 +121,9 @@ final class VAA_View_Admin_As
 
 		if ( (boolean) $this->load() ) {
 
-			$this->store = VAA_View_Admin_As_Store::get_instance( $this );
-			$this->view  = VAA_View_Admin_As_View::get_instance( $this );
+			$this->store      = VAA_View_Admin_As_Store::get_instance( $this );
+			$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
+			$this->view       = VAA_View_Admin_As_View::get_instance( $this );
 
 			// Lets start!
 			add_action( 'plugins_loaded', array( $this, 'init' ), 0 );
@@ -140,19 +149,21 @@ final class VAA_View_Admin_As
 	 */
 	private function load() {
 
-		if (    ! class_exists( 'VAA_API' )
-		     && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
-		     && ! class_exists( 'VAA_View_Admin_As_Settings' )
-		     && ! class_exists( 'VAA_View_Admin_As_Store' )
-		     && ! class_exists( 'VAA_View_Admin_As_View' )
-		     && ! class_exists( 'VAA_View_Admin_As_Update' )
-		     && ! class_exists( 'VAA_View_Admin_As_Compat' )
+		if (   ! class_exists( 'VAA_API' )
+		    && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
+		    && ! class_exists( 'VAA_View_Admin_As_Settings' )
+		    && ! class_exists( 'VAA_View_Admin_As_Store' )
+		    && ! class_exists( 'VAA_View_Admin_As_Controller' )
+		    && ! class_exists( 'VAA_View_Admin_As_View' )
+		    && ! class_exists( 'VAA_View_Admin_As_Update' )
+		    && ! class_exists( 'VAA_View_Admin_As_Compat' )
 		) {
 
 			self::$vaa_class_names[] = 'VAA_API';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Class_Base';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Settings';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Store';
+			self::$vaa_class_names[] = 'VAA_View_Admin_As_Controller';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_View';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Update';
 			self::$vaa_class_names[] = 'VAA_View_Admin_As_Compat';
@@ -161,6 +172,7 @@ final class VAA_View_Admin_As
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-settings.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
+			require( VIEW_ADMIN_AS_DIR . 'includes/class-controller.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-view.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
 			require( VIEW_ADMIN_AS_DIR . 'includes/class-compat.php' );
@@ -220,6 +232,7 @@ final class VAA_View_Admin_As
 			$this->store->store_roles();
 			$this->store->store_users();
 
+			$this->controller->init();
 			$this->view->init();
 
 			$this->load_ui();
@@ -394,6 +407,17 @@ final class VAA_View_Admin_As
 	 */
 	public function store() {
 		return $this->store;
+	}
+
+	/**
+	 * Get the controller class.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @return  VAA_View_Admin_As_Controller
+	 */
+	public function controller() {
+		return $this->controller;
 	}
 
 	/**
