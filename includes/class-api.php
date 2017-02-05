@@ -282,7 +282,7 @@ final class VAA_API
 	public static function array_equal( $array1, $array2 ) {
 		return (
 			is_array( $array1 ) && is_array( $array2 ) &&
-			count( $array1 ) == count( $array2 ) &&
+			count( $array1 ) === count( $array2 ) &&
 			array_diff_assoc( $array1, $array2 ) === array_diff_assoc( $array2, $array1 )
 		);
 	}

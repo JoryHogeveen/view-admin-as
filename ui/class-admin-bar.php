@@ -448,7 +448,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 * @see     https://github.com/JoryHogeveen/view-admin-as/issues/21
 		 * @since   1.6.1
 		 */
-		if ( function_exists( 'get_user_locale' ) && function_exists( 'switch_to_locale' ) ) {
+		if ( VAA_API::validate_wp_version( '4.7' ) ) {
 			$admin_bar->add_node( array(
 				'id'     => $root . '-freeze-locale',
 				'parent' => $root,
@@ -527,7 +527,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		$this->store->store_caps();
 
-		if ( ! $this->store->get_caps() || ! count( $this->store->get_caps() ) ) {
+		if ( ! $this->store->get_caps() ) {
 			return;
 		}
 
@@ -764,7 +764,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		$this->store->store_roles();
 
-		if ( ! $this->store->get_roles() || ! count( $this->store->get_roles() ) ) {
+		if ( ! $this->store->get_roles() ) {
 			return;
 		}
 
@@ -812,7 +812,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$class .= ' vaa-menupop';
 				// Check if the current view is a user with this role.
 				if ( $this->store->get_view( 'user' )
-				     && $this->store->get_selectedUser()
 				     && in_array( $role_key, $this->store->get_selectedUser()->roles, true )
 				) {
 					$class .= ' current-parent';
@@ -877,7 +876,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		static $done;
 		if ( $done ) return;
 
-		if ( ! $this->store->get_users() || ! count( $this->store->get_users() ) ) {
+		if ( ! $this->store->get_users() ) {
 			return;
 		}
 

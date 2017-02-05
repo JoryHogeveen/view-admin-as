@@ -13,7 +13,6 @@
 
 if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	var VAA_View_Admin_As = {
-		ajaxurl: null,
 		siteurl: '',
 		view: false,
 		view_types: [ 'user', 'role', 'caps', 'visitor' ],
@@ -33,13 +32,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
 
-	if ( 'undefined' === typeof VAA_View_Admin_As._debug ) {
+	if ( ! VAA_View_Admin_As.hasOwnProperty( '_debug' ) ) {
 		VAA_View_Admin_As._debug = 0;
-	} else {
-		VAA_View_Admin_As._debug = parseInt( VAA_View_Admin_As._debug, 10 );
 	}
+	VAA_View_Admin_As._debug = parseInt( VAA_View_Admin_As._debug, 10 );
 
-	if ( 'undefined' === typeof VAA_View_Admin_As.ajaxurl && 'undefined' !== typeof ajaxurl ) {
+	if ( ! VAA_View_Admin_As.hasOwnProperty( 'ajaxurl' ) && 'undefined' !== typeof ajaxurl ) {
 		VAA_View_Admin_As.ajaxurl = ajaxurl;
 	}
 
@@ -165,11 +163,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Apply the selected view.
 	 *
-	 * @param   {object}   view_data  The view data, format: { VIEW_TYPE : VIEW_TYPE_DATA }
-	 * @param   {boolean}  refresh    Reload/redirect the page?
+	 * @param   {object}   data     The data to send, view format: { VIEW_TYPE : VIEW_TYPE_DATA }
+	 * @param   {boolean}  refresh  Reload/redirect the page?
 	 * @return  {null}     nothing
 	 */
-	VAA_View_Admin_As.ajax = function( view_data, refresh ) {
+	VAA_View_Admin_As.ajax = function( data, refresh ) {
 
 		var body = $('body');
 
@@ -184,16 +182,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
 		}
 
-		var data = {
+		var post_data = {
 			'action': 'view_admin_as',
 			'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
 			// @since  1.6.2  Use JSON data.
-			'view_admin_as': JSON.stringify( view_data )
+			'view_admin_as': JSON.stringify( data )
 		};
 
 		var isView = false;
 		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
-			if ( 'undefined' !== typeof view_data[ type ] ) {
+			if ( 'undefined' !== typeof data[ type ] ) {
 				isView = true;
 				return true;
 			}
@@ -207,15 +205,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 			body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
 			var form = $('#vaa_single_mode_form');
-			form.append('<input type="hidden" name="action" value="' + data.action + '">');
-			form.append('<input type="hidden" name="_vaa_nonce" value="' + data._vaa_nonce + '">');
+			form.append('<input type="hidden" name="action" value="' + post_data.action + '">');
+			form.append('<input type="hidden" name="_vaa_nonce" value="' + post_data._vaa_nonce + '">');
 			form.append('<input id="data" type="hidden" name="view_admin_as">');
-			form.find('#data').val( data.view_admin_as );
+			form.find('#data').val( post_data.view_admin_as );
 			form.submit();
 
 		} else {
 
-			$.post( VAA_View_Admin_As.ajaxurl, data, function( response ) {
+			$.post( VAA_View_Admin_As.ajaxurl, post_data, function( response ) {
 				var data = ( response.hasOwnProperty( 'data' ) ) ? response.data : {},
 					success = ( response.hasOwnProperty( 'success' ) && true === response.success );
 
