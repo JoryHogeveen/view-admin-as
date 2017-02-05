@@ -319,6 +319,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add the RUA admin bar items.
 	 *
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 *
 	 * @since   1.6.4
 	 * @access  public
 	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
