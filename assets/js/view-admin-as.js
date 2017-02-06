@@ -311,9 +311,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		var root = 'body #vaa-overlay';
 
 		$( root ).html('<div class="vaa-overlay-container"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>');
+
+		if ( 'object' !== typeof data ) {
+			data = { text: String( data ) };
+		}
 		if ( data.hasOwnProperty( 'text' ) ) {
 			$( root + ' .vaa-response-data' ).append('<p>' + data.text + '</p>');
 		}
+
 		if ( 'textarea' === type ) {
 			if ( data.hasOwnProperty( 'textareacontent' ) ) {
 				$( root + ' .vaa-response-data' ).append('<textarea style="width: 100%;" readonly>' + data.textareacontent + '</textarea>');
@@ -333,9 +338,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					$( root + ' .vaa-response-data .errorlist' ).append('<li>' + error + '</li>');
 				} );
 			}
-		} else {
-			$( root + ' .vaa-response-data' ).append('<div>' + data + '</div>');
 		}
+
 		$( root + ' .vaa-overlay-container .remove' ).click( function() {
 			$( root ).fadeOut( 'fast', function() { $(this).remove(); } );
 		} );

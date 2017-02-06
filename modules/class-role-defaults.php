@@ -139,6 +139,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Class_Base
 			&& ( VAA_API::is_super_admin() || current_user_can( 'view_admin_as_role_defaults' ) )
 		) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+			add_filter( 'view_admin_as_validate_view_data_role_defaults', array( $this, 'validate_view_data' ), 10, 2 );
 		}
 	}
 

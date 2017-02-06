@@ -163,7 +163,7 @@ class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		// Stop selecting the same view!
 		if ( $this->is_current_view( $data ) ) {
 			wp_send_json_error( array(
-				'type' => 'error',
+				'type' => 'notice',
 				'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
 			) );
 		}
@@ -239,7 +239,7 @@ class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			} else {
 				// The user was in his default view, notify the user.
 				wp_send_json_error( array(
-					'type' => 'error',
+					'type' => 'notice',
 					'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
 				) );
 			}
@@ -250,7 +250,7 @@ class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			// Check if the new caps selection is different.
 			if ( VAA_API::array_equal( $db_view, $this->store->get_caps() ) ) {
 				wp_send_json_error( array(
-					'type' => 'error',
+					'type' => 'notice',
 					'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
 				) );
 			} else {
@@ -531,7 +531,6 @@ class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			$allowed_keys[] = $key;
 		}
 
-		// @since  1.6.2  Filter is documented in VAA_View_Admin_As::enqueue_scripts (includes/class-vaa.php).
 		$allowed_keys = array_unique( array_merge(
 			$this->get_view_types(),
 			$allowed_keys
@@ -552,12 +551,12 @@ class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			 *
 			 * @since  1.6.2
 			 * @since  1.6.x   Added third $key parameter
-			 * @param  null    $null          Ensures a validation filter is required.
-			 * @param  mixed   $data[ $key ]  Unvalidated view data.
-			 * @param  string  $key           The data key.
+			 * @param  null    $null   Ensures a validation filter is required.
+			 * @param  mixed   $value  Unvalidated view data.
+			 * @param  string  $key    The data key.
 			 * @return mixed   validated view data.
 			 */
-			$data[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, null, $data[ $key ], $key );
+			$data[ $key ] = apply_filters( 'view_admin_as_validate_view_data_' . $key, null, $value, $key );
 
 			if ( null === $data[ $key ] ) {
 				unset( $data[ $key ] );

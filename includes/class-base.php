@@ -183,6 +183,23 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * Simple data validation.
+	 * Meant to be overwritten by subclass.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   null   $null  Null.
+	 * @param   mixed  $data  The view data.
+	 * @return  mixed
+	 */
+	public function validate_view_data( $null, $data ) {
+		if ( $data ) {
+			return $data;
+		}
+		return $null;
+	}
+
+	/**
 	 * Get the option key as used in the options table.
 	 * @return  string
 	 */
