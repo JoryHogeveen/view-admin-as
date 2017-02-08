@@ -1118,12 +1118,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$label_attr = array();
 		$desc_attr = array();
 		if ( ! empty( $args['auto_showhide_desc'] ) ) {
-			$showhide = $id . '-desc';
-			$label_attr = array(
-				'class' => 'ab-vaa-showhide',
-				'data-showhide' => '.' . $showhide,
-			);
-			$desc_attr = array( 'class' => $showhide );
+			self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 		}
 
 		if ( ! empty( $args['label'] ) ) {
@@ -1185,12 +1180,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$label_attr = array();
 		$desc_attr = array();
 		if ( ! empty( $args['auto_showhide_desc'] ) ) {
-			$showhide = $id . '-desc';
-			$label_attr = array(
-				'class' => 'ab-vaa-showhide',
-				'data-showhide' => '.' . $showhide,
-			);
-			$desc_attr = array( 'class' => $showhide );
+			self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 		}
 
 		$html .= '<input ' . $attr . ' ' . $checked . '/>';
@@ -1263,12 +1253,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				if (   ( ! empty( $args['auto_showhide_desc'] ) )
 					|| ( ! isset( $args['auto_showhide_desc'] ) && ! empty( $data['auto_showhide_desc'] ) )
 				) {
-					$showhide = $id . '-desc';
-					$label_attr = array(
-						'class' => 'ab-vaa-showhide',
-						'data-showhide' => '.' . $showhide,
-					);
-					$desc_attr = array( 'class' => $showhide );
+					self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 				}
 
 				$html .= '<input ' . $attr . ' ' . $checked . '/>';
@@ -1327,12 +1312,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$label_attr = array();
 			$desc_attr = array();
 			if ( ! empty( $data['auto_showhide_desc'] ) ) {
-				$showhide = $id . '-desc';
-				$label_attr = array(
-					'class' => 'ab-vaa-showhide',
-					'data-showhide' => '.' . $showhide,
-				);
-				$desc_attr = array( 'class' => $showhide );
+				self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 			}
 
 			if ( ! empty( $data['label'] ) ) {
@@ -1423,6 +1403,22 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
 		$attr = self::parse_to_html_attr( $attr );
 		return '<p' . $attr . '>' . $text . '</p>';
+	}
+
+	/**
+	 * Update label and description attributes to enable auto show/hide functionality
+	 *
+	 * @since   1.6.x
+	 * @param   string  $target      The target element.
+	 * @param   array   $label_attr  Label attributes.
+	 * @param   array   $desc_attr   Description attributes.
+	 */
+	public static function enable_auto_showhide( $target, &$label_attr = array(), &$desc_attr = array() ) {
+		$label_attr = array(
+			'class' => 'ab-vaa-showhide',
+			'data-showhide' => '.' . $target,
+		);
+		$desc_attr = array( 'class' => $target );
 	}
 
 	/**
