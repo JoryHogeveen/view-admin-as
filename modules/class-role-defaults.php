@@ -161,7 +161,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 */
 		foreach ( $this->meta_forbidden as $key => $meta_key ) {
 			if ( false !== strpos( $meta_key, '%%' ) ) {
-				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->prefix, $meta_key );
+				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->get_blog_prefix(), $meta_key );
 			}
 		}
 		/**

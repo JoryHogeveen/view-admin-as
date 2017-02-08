@@ -102,7 +102,9 @@ final class VAA_View_Admin_As
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
+		if ( is_admin() ) {
+			add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
+		}
 
 		// Returns false on conflict.
 		if ( ! (boolean) $this->validate_versions() ) {
@@ -110,10 +112,6 @@ final class VAA_View_Admin_As
 		}
 
 		if ( (boolean) $this->load() ) {
-
-			$this->store      = VAA_View_Admin_As_Store::get_instance( $this );
-			$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
-			$this->view       = VAA_View_Admin_As_View::get_instance( $this );
 
 			// Lets start!
 			add_action( 'plugins_loaded', array( $this, 'init' ), 0 );
@@ -199,6 +197,10 @@ final class VAA_View_Admin_As
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
+
+		$this->store      = VAA_View_Admin_As_Store::get_instance( $this );
+		$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
+		$this->view       = VAA_View_Admin_As_View::get_instance( $this );
 
 		$this->store->init();
 

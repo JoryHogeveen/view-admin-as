@@ -15,6 +15,7 @@
  * @package View_Admin_As
  * @since   1.6
  * @version 1.6.x
+ * @uses    VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 {
@@ -169,7 +170,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 */
 	public function init( $redo = false ) {
 		static $done = false;
-		if ( ( $done && ! $redo ) ) return;
+		if ( $done && ! $redo ) return;
 
 		$this->set_nonce( 'view-admin-as' );
 
@@ -322,7 +323,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			foreach ( $users as $key => $user_login ) {
 				$user = get_user_by( 'login', $user_login );
 				// Compare user ID with superior admins array.
-				if ( $user && ! in_array( (int) $user->ID, $superior_admins, true ) ) {
+				if ( isset( $user->ID ) && ! in_array( (int) $user->ID, $superior_admins, true ) ) {
 					$users[ $key ] = $user;
 				} else {
 					unset( $users[ $key ] );
