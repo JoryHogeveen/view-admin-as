@@ -176,12 +176,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		body.append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url('+VAA_View_Admin_As.siteurl+'/wp-includes/images/spinner-2x.gif) center center no-repeat; background-size: contain;"></span></div>');
 		$('body #vaa-overlay').fadeIn('fast');
 
-		var fullPopup = false;
-		if ( $( VAA_View_Admin_As.prefix ).hasClass('fullPopupActive') ) {
-			fullPopup = true;
-			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
-		}
-
 		var post_data = {
 			'action': 'view_admin_as',
 			'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
@@ -214,43 +208,50 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} else {
 
 			$.post( VAA_View_Admin_As.ajaxurl, post_data, function( response ) {
-				var data = ( response.hasOwnProperty( 'data' ) ) ? response.data : {},
-					success = ( response.hasOwnProperty( 'success' ) && true === response.success );
+				var success = ( response.hasOwnProperty( 'success' ) && true === response.success ),
+					data = {},
+					display = false;
 
 				if ( 1 === VAA_View_Admin_As._debug ) {
 					// Show debug info in console.
 					console.log( response );
 				}
+
+				if ( response.hasOwnProperty( 'data' ) ) {
+					if ( 'object' === typeof response.data ) {
+						data = response.data;
+					}
+					display = ( data.hasOwnProperty( 'display' ) ) ? data.display : display;
+				}
+
 				if ( success ) {
 					if ( refresh ) {
 						VAA_View_Admin_As.refresh( data );
+						return;
 					} else {
-						// Check if we have more detailed data to show.
-						if ( data.hasOwnProperty( 'content' ) ) {
-							if ( ! data.hasOwnProperty( 'type' ) ) {
-								response.data.type = 'default';
-							}
-							if ( 'object' !== typeof response.data.content ) {
-								response.data.content = String( response.data.content );
-							}
-							VAA_View_Admin_As.overlay( response.data.content, String( response.data.type ) );
-						} else {
-							$('body #vaa-overlay').addClass( 'success' ).fadeOut( 'fast', function() { $(this).remove(); } );
-							VAA_View_Admin_As.notice( VAA_View_Admin_As.__success, 'success' );
+						if ( ! data.hasOwnProperty( 'text' ) ) {
+							data.text = VAA_View_Admin_As.__success;
 						}
 					}
-				} else {
-					$('body #vaa-overlay').addClass( 'error' ).fadeOut( 'fast', function() { $(this).remove(); } );
-					if ( fullPopup ) {
-						$( VAA_View_Admin_As.prefix ).addClass( 'fullPopupActive' );
-					}
-					if ( response.hasOwnProperty( 'data' ) ) {
-						// Check if we have more detailed data to show.
-						var type = ( data.hasOwnProperty( 'type' ) ) ? data.type : 'error',
-							content = ( data.hasOwnProperty( 'content' ) ) ? data.content : data;
+				}
 
-						VAA_View_Admin_As.notice( String( content ), type );
+				if ( ! data.hasOwnProperty( 'type' ) ) {
+					if ( success ) {
+						data.type = 'success';
+					} else {
+						data.type = 'error';
 					}
+				}
+
+				if ( 'popup' === display ) {
+					VAA_View_Admin_As.popup( data, data.type );
+				} else {
+					if ( ! data.hasOwnProperty( 'text' ) ) {
+						data.text = response.data;
+					}
+					VAA_View_Admin_As.notice( String( data.text ), data.type );
+
+					$('body #vaa-overlay').addClass( data.type ).fadeOut( 'fast', function() { $(this).remove(); } );
 				}
 			} );
 		}
@@ -306,38 +307,38 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @param  {string}  type  The notice/overlay type (error, notice, etc)
 	 * @return {null}  Nothing
 	 */
-	VAA_View_Admin_As.overlay = function( data, type ) {
+	VAA_View_Admin_As.popup = function( data, type ) {
 
 		var root = 'body #vaa-overlay';
 
-		$( root ).html('<div class="vaa-overlay-container"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>');
+		$( root ).html(
+			'<div class="vaa-overlay-container vaa-' + type + '"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>'
+		);
 
 		if ( 'object' !== typeof data ) {
-			data = { text: String( data ) };
+			data = { text: data };
 		}
 		if ( data.hasOwnProperty( 'text' ) ) {
-			$( root + ' .vaa-response-data' ).append('<p>' + data.text + '</p>');
+			$( root + ' .vaa-response-data' ).append('<p>' + String( data.text ) + '</p>');
 		}
 
-		if ( 'textarea' === type ) {
-			if ( data.hasOwnProperty( 'textareacontent' ) ) {
-				$( root + ' .vaa-response-data' ).append('<textarea style="width: 100%;" readonly>' + data.textareacontent + '</textarea>');
-				// Auto height.
-				/*$('body #vaa-overlay .vaa-response-data textarea').each(function(){
-					var maxTextareaHeight = $('body #vaa-overlay .vaa-response-data').height();
-					var fullTextareaHeight = this.scrollHeight;
-					$(this).css({'height': 'auto', 'max-height': maxTextareaHeight}).height( fullTextareaHeight );
-				} );*/
-				// Select full text on click.
-				$( root + ' .vaa-response-data textarea' ).click( function() { $(this).select(); } );
-			}
-		} else if ( 'errorlist' === type ) {
-			if ( data.hasOwnProperty( 'errors' ) ) {
-				$( root + ' .vaa-response-data' ).append('<ul class="errorlist"></ul>');
-				data.errors.forEach(function(error) {
-					$( root + ' .vaa-response-data .errorlist' ).append('<li>' + error + '</li>');
-				} );
-			}
+		if ( data.hasOwnProperty( 'list' ) ) {
+			$( root + ' .vaa-response-data' ).append('<ul></ul>');
+			data.list.forEach( function( item ) {
+				$( root + ' .vaa-response-data ul' ).append('<li>' + String( item ) + '</li>');
+			} );
+		}
+
+		if ( data.hasOwnProperty( 'textarea' ) ) {
+			$( root + ' .vaa-response-data' ).append('<textarea style="width: 100%;" readonly>' + String( data.textarea ) + '</textarea>');
+			// Auto height.
+			/*$('body #vaa-overlay .vaa-response-data textarea').each(function(){
+				var maxTextareaHeight = $('body #vaa-overlay .vaa-response-data').height();
+				var fullTextareaHeight = this.scrollHeight;
+				$(this).css({'height': 'auto', 'max-height': maxTextareaHeight}).height( fullTextareaHeight );
+			} );*/
+			// Select full text on click.
+			$( root + ' .vaa-response-data textarea' ).click( function() { $(this).select(); } );
 		}
 
 		$( root + ' .vaa-overlay-container .remove' ).click( function() {

@@ -189,10 +189,39 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		if ( $this->is_current_view( $data ) ) {
 			wp_send_json_error( array(
 				'type' => 'message',
-				'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
+				'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
 			) );
 		}
 
+		/**
+		 * Ajax return filters.
+		 *
+		 * @see     view_admin_as_update_view_{$key}
+		 * @see     view_admin_as_handle_data_{$key}
+		 *
+		 * @since   1.6.x
+		 * @param   null    $null   Null.
+		 * @param   mixed   $value  View data value.
+		 * @param   string  $key    View data key.
+		 * @return  bool|array {
+		 *     In case of array. Uses wp_json_return() structure.
+		 *     @type  bool   $success  Send JSON success or error?
+		 *     @type  array  $data {
+		 *         Optional extra data to send with the JSON return.
+		 *         In case of a view the page normally refreshes.
+		 *         @type  string  $redirect  (URL) Redirect the user?
+		 *         @type  string  $display   Options: notice   A notice type in the admin bar
+		 *                                            popup    A popup/overlay with content
+		 *         @type  string  $type      Options: success  Ureka! (green)      - Default when $success is true
+		 *                                            error    Send an error (red) - Default when $success is false
+		 *                                            message  Just a message (blue)
+		 *                                            warning  Send a warning (orange)
+		 *         @type  string  $text      The text to show
+		 *         @type  array   $list      Show multiple messages (Popup only)
+		 *         @type  string  $textarea  Textarea content (Popup only)
+		 *     }
+		 * }
+		 */
 		foreach ( $data as $key => $value ) {
 			if ( $this->is_view_type( $key ) ) {
 				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
@@ -264,7 +293,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 					'success' => false,
 					'data' => array(
 						'type' => 'message',
-						'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
+						'text' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
 					),
 				);
 			}
@@ -278,7 +307,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 					'success' => false,
 					'data' => array(
 						'type' => 'message',
-						'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
+						'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
 					),
 				);
 			} else {
@@ -625,11 +654,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * Validate data for role view type
 	 *
 	 * @since   1.6.x
+	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
 	 * @return  mixed
 	 */
-	function validate_view_data_caps( $null, $data ) {
+	public function validate_view_data_caps( $null, $data ) {
 		// Caps data must be an array
 		if ( is_array( $data ) ) {
 			// The data is an array, most likely from the database.
@@ -650,11 +680,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * Validate data for role view type
 	 *
 	 * @since   1.6.x
+	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
 	 * @return  mixed
 	 */
-	function validate_view_data_role( $null, $data ) {
+	public function validate_view_data_role( $null, $data ) {
 		// Role data must be a string and exists in the loaded array of roles.
 		if ( is_string( $data ) && array_key_exists( $data, $this->store->get_roles() ) ) {
 			return $data;
@@ -666,11 +697,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * Validate data for user view type
 	 *
 	 * @since   1.6.x
+	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
 	 * @return  mixed
 	 */
-	function validate_view_data_user( $null, $data ) {
+	public function validate_view_data_user( $null, $data ) {
 		// User data must be a number and exists in the loaded array of user id's.
 		if ( is_numeric( $data ) && array_key_exists( (int) $data, $this->store->get_userids() ) ) {
 			return $data;

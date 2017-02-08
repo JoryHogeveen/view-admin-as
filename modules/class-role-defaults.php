@@ -416,17 +416,25 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( isset( $data['export_role_defaults'] ) && is_string( $data['export_role_defaults'] ) ) {
 			$content = $this->export_role_defaults( strip_tags( $data['export_role_defaults'] ) );
 			if ( is_array( $content ) ) {
-				wp_send_json_success( array(
-					'type' => 'textarea',
-					'content' => array(
+				$success = array(
+					'success' => true,
+					'data' => array(
+						'display' => 'popup',
+						'type' => 'success',
 						'text' => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
-						'textareacontent' => wp_json_encode( $content ),
+						'textarea' => wp_json_encode( $content ),
 					),
-				) );
+				);
 			} else {
-				wp_send_json_error( array( 'type' => 'error', 'content' => $content ) );
+				$success = array(
+					'success' => false,
+					'data' => array(
+						'display' => 'notice',
+						'type' => 'error',
+						'text' => $content,
+					),
+				);
 			}
-			die();
 		}
 
 		if ( isset( $data['import_role_defaults'] ) && is_array( $data['import_role_defaults'] ) ) {
@@ -434,11 +442,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
 			$content = $this->import_role_defaults( $data['import_role_defaults'], $method );
 			if ( true === $content ) {
-				wp_send_json_success();
+				$success = true;
 			} else {
-				wp_send_json_success( array( 'type' => 'errorlist', 'content' => $content ) );
+				$success = array(
+					'success' => false,
+					'data' => array(
+						'display' => 'popup',
+						'type' => 'error',
+					),
+				);
+				$success[ 'data' ] = array_merge( $success[ 'data' ], $content );
 			}
-			die();
 		}
 
 		return $success;
@@ -787,16 +801,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			if ( ! empty( $error_list ) ) {
 				// Close enough!
 				return array(
-					'text'   => esc_attr__( 'Data imported but there were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
-					'errors' => $error_list,
+					'text' => esc_attr__( 'Data imported but there were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
+					'list' => $error_list,
 				);
 			}
 			return true; // Yay!
 		}
 		// Nope..
 		return array(
-			'text'   => esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) . ':',
-			'errors' => $error_list,
+			'text' => esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) . ':',
+			'list' => $error_list,
 		);
 	}
 
