@@ -14,7 +14,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.4
+ * @version 1.6.x
  */
 final class VAA_API
 {
@@ -69,6 +69,8 @@ final class VAA_API
 	 * @return array
 	 */
 	public static function get_superior_admins() {
+		static $superior_admins;
+		if ( ! is_null( $superior_admins ) ) return $superior_admins;
 
 		/**
 		 * Grant admins the capability to view other admins. There is no UI for this!
@@ -77,10 +79,12 @@ final class VAA_API
 		 * @param  array
 		 * @return array requires a returned array of user ID's
 		 */
-		return array_filter(
+		$superior_admins = array_unique( array_map( 'absint', array_filter(
 			(array) apply_filters( 'view_admin_as_superior_admins', array() ),
 			'is_numeric'  // Only allow numeric values (user id's)
-		);
+		) ) );
+
+		return $superior_admins;
 	}
 
 	/**
