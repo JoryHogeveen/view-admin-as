@@ -129,7 +129,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @see     'admin_bar_menu' action
 	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item ID/Name.
+	 * @param   string        $root       The root item ID/Name. If set it will overwrite the user setting.
 	 * @return  void
 	 */
 	public function admin_bar_menu( $admin_bar, $root = '' ) {
@@ -1063,7 +1063,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$args['attr']['name'] = $name;
 		$args['attr']['class'] = 'button' . $classes;
 
-		$attr = self::parse_attr_to_html( $args['attr'] );
+		$attr = self::parse_to_html_attr( $args['attr'] );
 
 		return '<' . $elem . ' ' . $attr . '>' . $label . '</' . $elem . '>';
 	}
@@ -1106,7 +1106,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$args['attr']['value'] = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
 		$args['attr']['class'] = $classes;
 
-		$attr = self::parse_attr_to_html( $args['attr'] );
+		$attr = self::parse_to_html_attr( $args['attr'] );
 
 		$label_attr = array();
 		$desc_attr = array();
@@ -1173,7 +1173,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$args['attr']['value'] = ( ! empty( $args['checkbox_value'] ) ) ? $args['checkbox_value'] : '1';
 		$args['attr']['class'] = 'checkbox' . $classes;
 
-		$attr = self::parse_attr_to_html( $args['attr'] );
+		$attr = self::parse_to_html_attr( $args['attr'] );
 
 		$label_attr = array();
 		$desc_attr = array();
@@ -1249,7 +1249,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$args['attr']['value'] = $args['compare'];
 				$args['attr']['class'] = 'radio' . $classes;
 
-				$attr = self::parse_attr_to_html( $args['attr'] );
+				$attr = self::parse_to_html_attr( $args['attr'] );
 
 				$label_attr = array();
 				$desc_attr = array();
@@ -1341,7 +1341,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$data['attr']['id'] = $id;
 			$data['attr']['name'] = $name;
 			$data['attr']['class'] = 'selectbox' . $classes;
-			$attr = self::parse_attr_to_html( $data['attr'] );
+			$attr = self::parse_to_html_attr( $data['attr'] );
 
 			$html .= '<select ' . $attr . '/>';
 
@@ -1354,7 +1354,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$selected = selected( $data['value'], $args['compare'], false );
 
 				$args['attr']['value'] = $args['compare'];
-				$attr = self::parse_attr_to_html( $args['attr'] );
+				$attr = self::parse_to_html_attr( $args['attr'] );
 
 				$html .= '<option ' . $attr . ' ' . $selected . '>' . $label . '</option>';
 
@@ -1381,7 +1381,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public static function do_icon( $icon, $attr = array() ) {
 		$attr['class'] = 'ab-icon dashicons ' . $icon;
 		$attr['aria-hidden'] = 'true';
-		$attr = self::parse_attr_to_html( $attr );
+		$attr = self::parse_to_html_attr( $attr );
 		return '<span' . $attr . '></span>';
 	}
 
@@ -1398,7 +1398,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 */
 	public static function do_label( $label, $for = '', $attr = array() ) {
 		$attr['for'] = $for;
-		$attr = self::parse_attr_to_html( $attr );
+		$attr = self::parse_to_html_attr( $attr );
 		return '<label' . $attr . '>' . $label . '</label>';
 	}
 
@@ -1414,7 +1414,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 */
 	public static function do_description( $text, $attr = array() ) {
 		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
-		$attr = self::parse_attr_to_html( $attr );
+		$attr = self::parse_to_html_attr( $attr );
 		return '<p' . $attr . '>' . $text . '</p>';
 	}
 
@@ -1422,11 +1422,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Converts an array of attributes to a HTML string format starting with a space.
 	 *
 	 * @since   1.6.1
+	 * @since   1.6.x   Renamed from `parse_attr_to_html`
 	 * @static
 	 * @param   array   $array  Array to parse. (attribute => value pairs)
 	 * @return  string
 	 */
-	public static function parse_attr_to_html( $array ) {
+	public static function parse_to_html_attr( $array ) {
 		$str = '';
 		if ( is_array( $array ) && ! empty( $array ) ) {
 			foreach ( $array as $attr => $value ) {

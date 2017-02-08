@@ -518,6 +518,7 @@ final class VAA_View_Admin_As
 	 */
 	private function validate_versions() {
 		global $wp_version;
+		// Start positive!
 		$valid = true;
 
 		// Validate WP
@@ -528,9 +529,13 @@ final class VAA_View_Admin_As
 				             // Translators, %1$s stands for "WordPress", %2$s stands for version 3.5
 				             . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
 			) );
+			$valid = false;
+		}
+
+		if ( ! $valid ) {
+			// Too bad..
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
-			$valid = false;
 		}
 
 		return $valid;
