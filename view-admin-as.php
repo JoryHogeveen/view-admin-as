@@ -13,7 +13,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.6.4
+ * @version 1.6.x
  */
 
 /*
@@ -52,22 +52,18 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
 	/**
 	 * Main instance of View Admin As.
-	 *
 	 * Returns the main instance of VAA_View_Admin_As to prevent the need to use globals.
-	 * Only for internal use. If the $caller parameter passes an unknown object it will return null.
 	 *
 	 * @since   1.4.1
-	 * @since   1.6     $caller parameter.
 	 * @since   1.6.4   Changed to lowercase (style fix).
-	 * @param   object  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As
 	 */
-	function view_admin_as( $caller ) {
-		return VAA_View_Admin_As::get_instance( $caller );
+	function view_admin_as() {
+		return VAA_View_Admin_As::get_instance();
 	}
 
 	// Instantiate View Admin As.
-	VAA_View_Admin_As::instantiate();
+	view_admin_as();
 
 // end if class_exists.
 } else {

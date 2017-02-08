@@ -14,7 +14,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.6.4
+ * @version 1.6.x
  */
 final class VAA_View_Admin_As
 {
@@ -26,16 +26,6 @@ final class VAA_View_Admin_As
 	 * @var    VAA_View_Admin_As
 	 */
 	private static $_instance = null;
-
-	/**
-	 * Classes that are allowed to access this class directly.
-	 *
-	 * @since  1.6
-	 * @static
-	 * @see    get_instance()
-	 * @var    array
-	 */
-	private static $vaa_class_names = array();
 
 	/**
 	 * Enable functionalities for this user?
@@ -302,7 +292,6 @@ final class VAA_View_Admin_As
 			if ( empty( $inc['class'] ) || ! class_exists( $inc['class'] ) ) {
 				require( VIEW_ADMIN_AS_DIR . 'ui/' . $inc['file'] );
 				if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
-					self::$vaa_class_names[] = $inc['class'];
 					$this->ui[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
 				}
 			} else {
@@ -550,37 +539,19 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Main View Admin As instance.
-	 *
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *
 	 * @since   1.4.1
-	 * @since   1.6    Restrict direct access to known classes.
 	 * @access  public
 	 * @static
 	 * @see     View_Admin_As()
-	 * @param   object  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As
 	 */
-	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && in_array( get_class( $caller ), self::$vaa_class_names, true ) ) {
-			return self::$_instance;
-		}
-		return null;
-	}
-
-	/**
-	 * Populate the instance with this class.
-	 *
-	 * @since   1.6
-	 * @access  public
-	 * @static
-	 * @return  void
-	 */
-	public static function instantiate() {
+	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
-			// First init, returns nothing.
 			self::$_instance = new self();
 		}
+		return self::$_instance;
 	}
 
 	/**

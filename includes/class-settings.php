@@ -282,7 +282,7 @@ class VAA_View_Admin_As_Settings {
 			$current[ $setting ] = $value;
 			// Some settings need a reset.
 			if ( in_array( $setting, array( 'view_mode' ), true ) ) {
-				view_admin_as( $this )->controller()->reset_view();
+				view_admin_as()->controller()->reset_view();
 			}
 		}
 
