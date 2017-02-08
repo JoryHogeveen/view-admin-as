@@ -290,28 +290,31 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 			true // load in footer.
 		);
 
-		$script_localization = array(
-			// Data.
-			'ajaxurl'       => admin_url( 'admin-ajax.php' ),
-			'siteurl'       => get_site_url(),
-			'settings'      => $this->store->get_settings(),
-			'settings_user' => $this->store->get_userSettings(),
-			'view'          => $this->store->get_view(),
-			'view_types'    => $this->vaa->controller()->get_view_types(),
-			// Other.
-			'_debug'     => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
-			'_vaa_nonce' => $this->store->get_nonce( true ),
-			// i18n.
-			'__no_users_found' => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
-			'__success'        => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
-			'__confirm'        => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
+		/**
+		 * Add data to the VAA script localization.
+		 * @since   1.6.x
+		 * @param   array  $array  Empty array.
+		 * @return  array
+		 */
+		$script_localization = array_merge(
+			(array) apply_filters( 'vaa_view_admin_as_script_localization', array() ),
+			array(
+				// Data.
+				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'siteurl'       => get_site_url(),
+				'settings'      => $this->store->get_settings(),
+				'settings_user' => $this->store->get_userSettings(),
+				'view'          => $this->store->get_view(),
+				'view_types'    => $this->vaa->controller()->get_view_types(),
+				// Other.
+				'_debug'     => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
+				'_vaa_nonce' => $this->store->get_nonce( true ),
+				// i18n.
+				'__no_users_found' => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
+				'__success'        => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
+				'__confirm'        => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
+			)
 		);
-
-		foreach ( $this->vaa->get_modules() as $name => $module ) {
-			if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
-				$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
-			}
-		}
 
 		wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', $script_localization );
 	}
