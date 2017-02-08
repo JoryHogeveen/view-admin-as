@@ -170,6 +170,9 @@ class VAA_View_Admin_As_Settings {
 			add_filter( 'view_admin_as_validate_view_data_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 			add_filter( 'view_admin_as_validate_view_data_user_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 
+			add_filter( 'view_admin_as_handle_data_setting', array( $this, 'filter_store_settings' ), 10, 3 );
+			add_filter( 'view_admin_as_handle_data_user_setting', array( $this, 'filter_store_settings' ), 10, 3 );
+
 			// Make identifier empty for the filters.
 			$id = '';
 
@@ -248,6 +251,65 @@ class VAA_View_Admin_As_Settings {
 	}
 
 	/**
+	 * Validate hook for settings.
+	 *
+	 * @since   1.6.x
+	 * @param   null    $null  Default return (invalid).
+	 * @param   mixed   $data  The view data.
+	 * @param   string  $key   The data key.
+	 * @return  mixed
+	 */
+	public function filter_store_settings( $null, $data, $key ) {
+		if ( ! empty( $data ) && ! empty( $key ) ) {
+			if ( 'setting' === $key ) {
+				return $this->store_settings( $data, 'global' );
+			}
+			if ( 'user_setting' === $key ) {
+				return $this->store_settings( $data, 'user' );
+			}
+		}
+		return $null;
+	}
+
+	/**
+	 * Validate setting data based on allowed settings.
+	 * Will also merge with the default settings unless third $merge parameter is false.
+	 *
+	 * @since   1.5
+	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.6.x  Moved to this class from store class. Added third $merge parameter.
+	 * @access  public
+	 *
+	 * @param   array       $settings  The new settings.
+	 * @param   string      $type      The type of settings (global / user).
+	 * @param   bool        $merge     Merge with defaults? (will return all settings).
+	 * @return  array|bool  $settings / false
+	 */
+	public function validate_settings( $settings, $type, $merge = true ) {
+		if ( 'global' === $type ) {
+			$defaults = $this->get_defaultSettings();
+			$allowed  = $this->get_allowedSettings();
+		} elseif ( 'user' === $type ) {
+			$defaults = $this->get_defaultUserSettings();
+			$allowed  = $this->get_allowedUserSettings();
+		} else {
+			return false;
+		}
+
+		if ( $merge ) {
+			return $this->parse_settings( $settings, $defaults, $allowed );
+		}
+
+		foreach ( $settings as $setting => $value ) {
+			// Only pass the settings if the key and value matched the data in the allowed settings
+			if ( ! array_key_exists( $setting, $allowed ) || ! in_array( $value, $allowed[ $setting ], true ) ) {
+				unset( $settings[ $setting ] );
+			}
+		}
+		return $settings;
+	}
+
+	/**
 	 * Store settings based on allowed settings.
 	 * Also merges with the default settings.
 	 *
@@ -294,44 +356,6 @@ class VAA_View_Admin_As_Settings {
 			return $this->update_userMeta( $new, 'settings', true );
 		}
 		return false;
-	}
-
-	/**
-	 * Validate setting data based on allowed settings.
-	 * Will also merge with the default settings unless third $merge parameter is false.
-	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.6.x  Moved to this class from store class. Added third $merge parameter.
-	 * @access  public
-	 *
-	 * @param   array       $settings  The new settings.
-	 * @param   string      $type      The type of settings (global / user).
-	 * @param   bool        $merge     Merge with defaults? (will return all settings).
-	 * @return  array|bool  $settings / false
-	 */
-	public function validate_settings( $settings, $type, $merge = true ) {
-		if ( 'global' === $type ) {
-			$defaults = $this->get_defaultSettings();
-			$allowed  = $this->get_allowedSettings();
-		} elseif ( 'user' === $type ) {
-			$defaults = $this->get_defaultUserSettings();
-			$allowed  = $this->get_allowedUserSettings();
-		} else {
-			return false;
-		}
-
-		if ( $merge ) {
-			return $this->parse_settings( $settings, $defaults, $allowed );
-		}
-
-		foreach ( $settings as $setting => $value ) {
-			// Only pass the settings if the key and value matched the data in the allowed settings
-			if ( ! array_key_exists( $setting, $allowed ) || ! in_array( $value, $allowed[ $setting ], true ) ) {
-				unset( $settings[ $setting ] );
-			}
-		}
-		return $settings;
 	}
 
 	/**

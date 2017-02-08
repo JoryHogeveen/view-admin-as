@@ -124,6 +124,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 
 			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
+			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 2 );
 		}
 	}
 
@@ -248,17 +249,19 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Ajax handler, called from main ajax handler.
+	 * View update handler (Ajax probably), called from main handler.
 	 *
 	 * @since   1.6.4
+	 * @since   1.6.x  Renamed from `ajax_handler`
 	 * @access  public
+	 * @param   null   $null  Null.
 	 * @param   array  $data  The ajax data for this module.
 	 * @return  bool
 	 */
-	public function ajax_handler( $data ) {
+	public function update_view( $null, $data ) {
 
 		if ( ! $this->is_valid_ajax() ) {
-			return false;
+			return $null;
 		}
 
 		$level = $data;

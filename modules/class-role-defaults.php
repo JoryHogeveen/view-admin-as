@@ -139,7 +139,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			&& ( VAA_API::is_super_admin() || current_user_can( 'view_admin_as_role_defaults' ) )
 		) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-			add_filter( 'view_admin_as_validate_view_data_role_defaults', array( $this, 'validate_view_data' ), 10, 2 );
+			add_filter( 'view_admin_as_handle_data_role_defaults', array( $this, 'ajax_handler' ), 10, 2 );
 		}
 	}
 
@@ -328,17 +328,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	}
 
 	/**
-	 * Ajax handler, called from main ajax handler.
+	 * Data update handler (Ajax probably), called from main handler.
 	 *
 	 * @since   1.4
 	 * @access  public
+	 * @param   null   $null  Null.
 	 * @param   array  $data  The ajax data for this module.
 	 * @return  array|string|bool
 	 */
-	public function ajax_handler( $data ) {
+	public function ajax_handler( $null, $data ) {
 
 		if ( ! $this->is_valid_ajax() ) {
-			return false;
+			return $null;
 		}
 
 		$success = false;
