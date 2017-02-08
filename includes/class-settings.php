@@ -122,9 +122,9 @@ class VAA_View_Admin_As_Settings {
 	 * @access  protected
 	 * @param   string  $id  Identifier for this settings instance.
 	 */
-	protected function __construct( $id = 'vaa' ) {
+	protected function __construct( $id ) {
 
-		if ( empty( $id ) ) {
+		if ( empty( $id ) || ! is_string( $id ) ) {
 			return null;
 		}
 
@@ -134,11 +134,8 @@ class VAA_View_Admin_As_Settings {
 		$default_user = array();
 		$allowed_user = array();
 
-		if ( 'vaa' === $id ) {
+		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) && null === self::$_vaa_instance ) {
 
-			if ( null !== self::$_vaa_instance ) {
-				return;
-			}
 			self::$_vaa_instance = $this;
 
 			$this->set_optionKey( 'vaa_view_admin_as' );
@@ -177,6 +174,18 @@ class VAA_View_Admin_As_Settings {
 			$id = '';
 
 		} else {
+
+			if ( 'view-admin-as' === sanitize_title_with_dashes( $id ) ) {
+				_doing_it_wrong(
+					__METHOD__,
+					sprintf(
+						__( 'The setting key %1$s is reserved for class %2$s', VIEW_ADMIN_AS_DOMAIN ),
+						$id, 'VAA_View_Admin_As_Store'
+					),
+					''
+				);
+				return;
+			}
 
 			$this->set_optionKey( 'vaa_' . $id );
 			$this->set_userMetaKey( 'vaa-' . $id );

@@ -157,7 +157,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since  1.6
 	 */
 	protected function __construct() {
-		parent::__construct( 'vaa' );
+		parent::__construct( 'view-admin-as' );
 		self::$_instance = $this;
 	}
 
