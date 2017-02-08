@@ -319,8 +319,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add the RUA admin bar items.
 	 *
+	 * Disable some PHPMD checks for this method.
 	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
 	 *
 	 * @since   1.6.4
 	 * @access  public
