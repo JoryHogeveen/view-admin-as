@@ -224,7 +224,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		}
 		if ( $success && 'visitor' === $type ) {
 			$success = array(
-				'redirect' => esc_url( home_url() ),
+				'success' => true,
+				'data' => array(
+					'redirect' => esc_url( home_url() ),
+				),
 			);
 		}
 		return $success;
