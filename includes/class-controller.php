@@ -407,16 +407,20 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class.
 	 * @access  public
 	 *
-	 * @param   array  $data  The view data.
+	 * @param   array  $data    The view data.
+	 * @param   bool   $append  Combine with the current view?
 	 * @return  bool
 	 */
-	public function update_view( $data ) {
+	public function update_view( $data, $append = false ) {
 		$data = $this->validate_view_data( $data );
 		if ( $data ) {
 			$meta = $this->store->get_userMeta( 'views' );
 			// Make sure it is an array (no array means no valid data so we can safely clear it).
 			if ( ! is_array( $meta ) ) {
 				$meta = array();
+			}
+			if ( $append && ! empty( $meta[ $this->store->get_curUserSession() ]['view'] ) ) {
+				$data = array_merge( $meta[ $this->store->get_curUserSession() ]['view'], $data );
 			}
 			// Add the new view metadata and expiration date.
 			$meta[ $this->store->get_curUserSession() ] = array(
