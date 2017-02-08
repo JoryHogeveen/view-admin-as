@@ -257,10 +257,13 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 				$success = true; // and continue.
 			} else {
 				// The user was in his default view, notify the user.
-				$success = array( 'success' => false, 'data' => array(
-					'type' => 'message',
-					'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
-				) );
+				$success = array(
+					'success' => false,
+					'data' => array(
+						'type' => 'message',
+						'content' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
+					),
+				);
 			}
 		} else {
 			// Store the selected caps.
@@ -268,10 +271,13 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 
 			// Check if the new caps selection is different.
 			if ( VAA_API::array_equal( $db_view, $new_caps ) ) {
-				$success = array( 'success' => false, 'data' => array(
-					'type' => 'message',
-					'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
-				) );
+				$success = array(
+					'success' => false,
+					'data' => array(
+						'type' => 'message',
+						'content' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
+					),
+				);
 			} else {
 				$success = $this->update_view( array( 'caps' => $new_caps ), $append );
 			}
