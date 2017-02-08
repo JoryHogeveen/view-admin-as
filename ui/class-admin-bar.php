@@ -628,7 +628,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			),
 		);
 		if ( $this->store->get_view() ) {
-			$data_caps = json_encode( $this->store->get_selectedCaps() );
+			$data_caps = wp_json_encode( $this->store->get_selectedCaps() );
 			$role_select_options[] = array(
 				'compare' => 'vaa',
 				'label'   => '= ' . __( 'Current view', VIEW_ADMIN_AS_DOMAIN ),
@@ -646,7 +646,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			);
 		}
 		foreach ( $this->store->get_roles() as $role_key => $role ) {
-			$data_caps = json_encode( $role->capabilities );
+			$data_caps = wp_json_encode( $role->capabilities );
 			$role_select_options[] = array(
 				'compare' => esc_attr( $role_key ),
 				'label'   => '= ' . $this->store->get_rolenames( $role_key ),

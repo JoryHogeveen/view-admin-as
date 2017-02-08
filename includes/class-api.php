@@ -126,25 +126,6 @@ final class VAA_API
 	}
 
 	/**
-	 * Whether the site is being previewed in the Customizer.
-	 * For WP < 4.0!
-	 *
-	 * @since   1.6.2
-	 * @see     https://developer.wordpress.org/reference/functions/is_customize_preview/
-	 * @global  WP_Customize_Manager  $wp_customize
-	 * @return  bool
-	 */
-	public static function is_customize_preview() {
-
-		if ( function_exists( 'is_customize_preview' ) ) {
-			return is_customize_preview();
-		}
-
-		global $wp_customize;
-		return ( $wp_customize instanceof WP_Customize_Manager ) && $wp_customize->is_preview();
-	}
-
-	/**
 	 * Appends the "reset-view" parameter to the current URL.
 	 *
 	 * @since   1.6

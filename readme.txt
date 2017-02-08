@@ -2,7 +2,7 @@
 Contributors: keraweb
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
-Requires at least: 3.5
+Requires at least: 4.1
 Tested up to: 4.7
 Stable tag: 1.6.4
 
@@ -85,13 +85,9 @@ Installation of this plugin works like any other plugin out there. Either:
 
 Or search for "View Admin As" via your plugins menu.
 
-= Recommended Requirements =
-
-* WordPress 4.0 or greater (Though I always recommend to update to the latest version!)
-
 = Minimum Requirements =
 
-* WordPress 3.5 or greater (3.8+ recommended because of design, this plugin doesn't incorporate all styles of versions prior to WP 3.8)
+* WordPress 4.1 or greater (Though I always recommend to update to the latest version!)
 
 == Frequently Asked Questions ==
 

@@ -95,11 +95,8 @@ Installation of this plugin works like any other plugin out there. Either:
 
 Or search for "View Admin As" via your plugins menu.
 
-### Recommended Requirements
-* WordPress 4.0 or greater (Though I always recommend to update to the latest version!)
-
 ### Minimum Requirements
-* WordPress 3.5 or greater (3.8+ recommended because of design, this plugin doesn't incorporate all styles of versions prior to WP 3.8)
+* WordPress 4.1 or greater (Though I always recommend to update to the latest version!)
 
 ## Developer notes
 This plugin will only be useful for admins (network super admins or regular admins). It will not add functionalities for other roles unless you specifically apply custom capabilities for those users.  

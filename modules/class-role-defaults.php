@@ -419,7 +419,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'type' => 'textarea',
 					'content' => array(
 						'text' => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
-						'textareacontent' => json_encode( $content ),
+						'textareacontent' => wp_json_encode( $content ),
 					),
 				) );
 			} else {

@@ -102,7 +102,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 		elseif ( $this->store->get_userids( $user->ID ) ) {
 			$params = array(
 				'action'        => 'view_admin_as',
-				'view_admin_as' => htmlentities( json_encode( array( 'user' => $user->ID ) ) ),
+				'view_admin_as' => htmlentities( wp_json_encode( array( 'user' => $user->ID ) ) ),
 				'_vaa_nonce'    => $this->store->get_nonce( true ),
 			);
 			$link .= '?' . http_build_query( $params );
