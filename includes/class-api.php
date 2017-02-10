@@ -273,6 +273,78 @@ final class VAA_API
 	}
 
 	/**
+	 * Check if an array has a key and optional compare or validate the value.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array   $array
+	 * @param   string  $key
+	 * @param   array   $args {
+	 *     Optional array of match arguments.
+	 *     @type  mixed         $compare     A value to compare against (NOTE, strict comparison!).
+	 *     @type  string|array  $validation  A variable function check, example: 'is_int' or 'MyClass::check'.
+	 * }
+	 * @return bool
+	 */
+	public static function array_has( $array, $key, $args = array() ) {
+		$isset = ( isset( $array[ $key ] ) );
+		if ( empty( $args ) || ! $isset ) {
+			return $isset;
+		}
+		$value = $array[ $key ];
+		if ( isset( $args['compare'] ) ) {
+			return ( $args['compare'] === $value );
+		}
+		if ( ! empty( $args['validation'] ) && is_callable( $args['validation'] ) ) {
+			$validation = $args['validation'];
+			if ( is_array( $validation ) ) {
+				return (bool) call_user_func( $validation, $value );
+			}
+			return (bool) $validation( $value );
+		}
+		return false;
+	}
+
+	/**
+	 * Does a string starts with a given string?
+	 *
+	 * @since   1.4
+	 * @since   1.6.x  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $haystack  The string to search in.
+	 * @param   string  $needle    The string to search for.
+	 * @return  bool
+	 */
+	public static function starts_with( $haystack, $needle ) {
+		// search backwards starting from haystack length characters from the end.
+		return '' === $needle || strrpos( $haystack, $needle, -strlen( $haystack ) ) !== false;
+	}
+
+	/**
+	 * Does a string ends with a given string?
+	 *
+	 * @since   1.4
+	 * @since   1.6.x  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $haystack  The string to search in.
+	 * @param   string  $needle    The string to search for.
+	 * @return  bool
+	 */
+	public static function ends_with( $haystack, $needle ) {
+		// search forward starting from end minus needle length characters.
+		return '' === $needle || ( ( $temp = strlen( $haystack ) - strlen( $needle ) ) >= 0 && strpos( $haystack, $needle, $temp ) !== false);
+	}
+
+	/**
 	 * Compare with the current WordPress version.
 	 * Returns true when it's the provided version or newer.
 	 *

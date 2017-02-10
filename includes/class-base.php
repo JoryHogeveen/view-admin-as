@@ -103,6 +103,22 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * Extender function for WP current_user_can().
+	 * Also checks if VAA is enabled.
+	 *
+	 * @since   1.6.x
+	 * @param   string  $capability  (optional) The capability to check when the user isn't a super admin.
+	 * @return  bool
+	 */
+	public function current_user_can( $capability = null ) {
+		if ( $capability ) {
+			return ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can( $capability ) ) );
+		} else {
+			return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
+		}
+	}
+
+	/**
 	 * Add capabilities.
 	 * Used for the _vaa_add_capabilities hook.
 	 *
