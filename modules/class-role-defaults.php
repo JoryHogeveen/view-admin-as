@@ -384,18 +384,38 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			if ( ! empty( $value ) ) {
 				$success = $this->update_optionData( $value, 'meta', true );
 			} else {
-				$success = false; // @todo Notify for invalid data.
+				$success = array(
+					'success' => false,
+					'data' => __( 'Invalid meta key(s)', VIEW_ADMIN_AS_DOMAIN ),
+				);
 			}
 		}
 
 		if ( isset( $data['apply_defaults_to_users'] ) && is_array( $data['apply_defaults_to_users'] ) ) {
-			foreach ( $data['apply_defaults_to_users'] as $user_data ) {
+			$errors = array();
+			foreach ( $data['apply_defaults_to_users'] as $key => $user_data ) {
 				// @todo Send as JSON?
-				// @todo notify of errors in updates.
 				$user_data = explode( '|', $user_data );
+				$errors[ $key ] = false;
 				if ( is_numeric( $user_data[0] ) && isset( $user_data[1] ) && is_string( $user_data[1] ) ) {
-					$success = $this->update_user_with_role_defaults( intval( $user_data[0] ), $user_data[1] );
+					// Flip return boolean
+					$errors[ $key ] = ! (bool) $this->update_user_with_role_defaults( intval( $user_data[0] ), $user_data[1] );
+				} else {
+					$errors[ $key ] = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN )
+									  . ': <code>' . implode( '|', $user_data ) . ' (user_id|role)</code>';
 				}
+			}
+			$success = true;
+			$errors = array_filter( $errors );
+			if ( ! empty( $errors ) ) {
+				$success = array(
+					'success' => false,
+					'data' => array(
+						'display' => 'popup',
+						'text' => esc_attr__( 'There were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
+						'list' => $errors,
+					),
+				);
 			}
 		}
 
