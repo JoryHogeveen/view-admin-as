@@ -46,48 +46,27 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	private $nonce_parsed = '';
 
 	/**
-	 * Array of available capabilities.
+	 * View type data.
+	 * You can add custom view data with VAA_View_Admin_As_Store::set_data().
 	 *
-	 * @since  1.3
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
+	 * @see    VAA_View_Admin_As_Store::set_data()
+	 * @since  1.6.x
+	 * @var    array {
+	 *     Default view data.
+	 *     @type  array  $caps       Since 1.3    Array of available capabilities.
+	 *     @type  array  $roles      Since 0.1    Array of available roles (WP_Role objects).
+	 *     @type  array  $rolenames  Since 1.6.4  Array of role names (used for role translations).
+	 *     @type  array  $users      Since 0.1    Array of available users (WP_User objects).
+	 *     @type  array  $userids    Since 0.1    Array of available user ID's (key) and display names (value).
+	 * }
 	 */
-	private $caps = array();
-
-	/**
-	 * Array of available roles (WP_Role objects).
-	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $roles = array();
-
-	/**
-	 * Array of translated role names.
-	 *
-	 * @since  1.6.4
-	 * @var    array
-	 */
-	private $rolenames = array();
-
-	/**
-	 * Array of available users (WP_User objects).
-	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $users = array();
-
-	/**
-	 * Array of available user ID's (key) and display names (value).
-	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $userids = array();
+	private $data = array(
+		'caps' => array(),
+		'roles' => array(),
+		'rolenames' => array(),
+		'users' => array(),
+		'userids' => array(),
+	);
 
 	/**
 	 * Current user object.
@@ -688,12 +667,27 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
+	 * Get view type data
+	 *
+	 * @since   1.6.x
+	 * @param   string  $type  Type key
+	 * @param   string  $key   Type data key.
+	 * @return  mixed
+	 */
+	public function get_data( $type, $key ) {
+		if ( isset( $this->data[ $type ] ) ) {
+			return VAA_API::get_array_data( $this->data[ $type ], $key );
+		}
+		return null;
+	}
+
+	/**
 	 * Get available capabilities.
 	 * @param   string  $key  Cap name.
 	 * @return  mixed   Array of capabilities or a single capability value.
 	 */
 	public function get_caps( $key = null ) {
-		return VAA_API::get_array_data( $this->caps, $key );
+		return $this->get_data( 'caps', $key );
 	}
 
 	/**
@@ -702,7 +696,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  mixed   Array of role objects or a single role object.
 	 */
 	public function get_roles( $key = null ) {
-		return VAA_API::get_array_data( $this->roles, $key );
+		return $this->get_data( 'roles', $key );
 	}
 
 	/**
@@ -714,7 +708,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  array|string
 	 */
 	public function get_rolenames( $key = null, $translate = true ) {
-		$val = VAA_API::get_array_data( $this->rolenames, $key );
+		$val = $this->get_data( 'rolenames', $key );
 		if ( ! $val ) {
 			return ( $key ) ? $key : $val;
 		}
@@ -734,7 +728,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  mixed   Array of user objects or a single user object.
 	 */
 	public function get_users( $key = null ) {
-		return VAA_API::get_array_data( $this->users, $key );
+		return $this->get_data( 'users', $key );
 	}
 
 	/**
@@ -743,7 +737,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  mixed   Array of user display names or a single user display name.
 	 */
 	public function get_userids( $key = null ) {
-		return VAA_API::get_array_data( $this->userids, $key );
+		return $this->get_data( 'userids', $key );
 	}
 
 	/**
@@ -814,6 +808,26 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
+	 * Set view type data
+	 *
+	 * @since   1.6.x
+	 * @param   string  $type
+	 * @param   mixed   $val
+	 * @param   string  $key
+	 * @param   bool    $append
+	 * @return  void
+	 */
+	public function set_data( $type, $val, $key = null, $append = false ) {
+		if ( is_callable( array( $this, 'set_' . $type ) ) ) {
+			$method = 'set_' . $type;
+			$this->$method( $val, $key, $append );
+			return;
+		}
+		$current = ( isset( $this->data[ $type ] ) ) ? $this->data[ $type ] : array();
+		$this->data[ $type ] = (array) VAA_API::set_array_data( $current, $val, $key, $append );
+	}
+
+	/**
 	 * Set the available capabilities.
 	 * @param   mixed   $val     Value.
 	 * @param   string  $key     (optional) Cap key.
@@ -821,7 +835,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_caps( $val, $key = null, $append = false ) {
-		$this->caps = (array) VAA_API::set_array_data( $this->caps, $val, $key, $append );
+		$this->data['caps'] = (array) VAA_API::set_array_data( $this->data['caps'], $val, $key, $append );
 	}
 
 	/**
@@ -832,7 +846,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_roles( $val, $key = null, $append = false ) {
-		$this->roles = (array) VAA_API::set_array_data( $this->roles, $val, $key, $append );
+		$this->data['roles'] = (array) VAA_API::set_array_data( $this->data['roles'], $val, $key, $append );
 	}
 
 	/**
@@ -844,7 +858,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_rolenames( $val, $key = null, $append = false ) {
-		$this->rolenames = (array) VAA_API::set_array_data( $this->rolenames, $val, $key, $append );
+		$this->data['rolenames'] = (array) VAA_API::set_array_data( $this->data['rolenames'], $val, $key, $append );
 	}
 
 	/**
@@ -856,7 +870,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_users( $val, $key = null, $append = false ) {
-		$this->users = (array) VAA_API::set_array_data( $this->users, $val, $key, $append );
+		$this->data['users'] = (array) VAA_API::set_array_data( $this->data['users'], $val, $key, $append );
 	}
 
 	/**
@@ -865,7 +879,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_userids( $val ) {
-		$this->userids = (array) array_map( 'strval', (array) $val );
+		$this->data['userids'] = array_map( 'strval', (array) $val );
 	}
 
 	/**
