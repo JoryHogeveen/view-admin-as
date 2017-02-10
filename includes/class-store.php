@@ -364,6 +364,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			}
 
 			// Run query (OBJECT_K to set the user ID as key).
+			// @codingStandardsIgnoreLine >> $wpdb->prepare() not needed
 			$users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K );
 
 			if ( $users_results ) {

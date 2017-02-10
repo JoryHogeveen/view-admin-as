@@ -382,12 +382,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( isset( $data['update_meta'] ) ) {
 			$value = $this->validate_meta( $data['update_meta'] );
 			if ( ! empty( $value ) ) {
-				if ( $value === $this->get_optionData( 'meta' ) ) {
-					// Data is the same, no changes needed.
-					$success = true;
-				} else {
-					$success = $this->update_optionData( $value, 'meta', true );
-				}
+				$success = $this->update_optionData( $value, 'meta', true );
 			} else {
 				$success = false; // @todo Notify for invalid data.
 			}
@@ -451,7 +446,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'type' => 'error',
 					),
 				);
-				$success[ 'data' ] = array_merge( $success[ 'data' ], $content );
+				$success['data'] = array_merge( $success['data'], $content );
 			}
 		}
 
