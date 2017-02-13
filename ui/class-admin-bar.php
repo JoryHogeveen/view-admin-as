@@ -622,7 +622,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $root, $main_root );
 
 		// Add caps actions.
-		include( VIEW_ADMIN_AS_DIR . '/ui/templates/adminbar-caps-actions.php' );
+		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-actions.php' );
 
 		/**
 		 * Add items at the after of the caps actions.
@@ -637,7 +637,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $root, $main_root );
 
 		// Add the caps.
-		include( VIEW_ADMIN_AS_DIR . '/ui/templates/adminbar-caps-items.php' );
+		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-items.php' );
 
 		/**
 		 * Add items at the end of the caps group.
@@ -714,7 +714,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_roles_before', $admin_bar, $main_root );
 
 		// Add the roles.
-		include( VIEW_ADMIN_AS_DIR . '/ui/templates/adminbar-role-items.php' );
+		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-role-items.php' );
 
 		/**
 		 * Add items at the end of the roles group.
@@ -798,7 +798,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		}
 
 		// Add the users.
-		include( VIEW_ADMIN_AS_DIR . '/ui/templates/adminbar-user-items.php' );
+		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-items.php' );
 
 		/**
 		 * Add items at the end of the users group.
