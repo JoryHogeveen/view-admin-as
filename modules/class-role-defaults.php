@@ -325,6 +325,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Data update handler (Ajax probably), called from main handler.
 	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
 	 * @since   1.4
 	 * @access  public
 	 * @param   null   $null  Null.
@@ -359,15 +365,21 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			return $success;
 		}
 
-		// Simple true/false settings.
+		/**
+		 * Simple true/false settings.
+		 */
+
+		// @since  1.4  Apply defaults to a new users (on register)
 		if ( isset( $data['apply_defaults_on_register'] ) ) {
 			$value = (bool) $data['apply_defaults_on_register'];
 			$success = $this->update_optionData( $value, 'apply_defaults_on_register', true );
 		}
+		// @since  1.5.1  Disable the screen options
 		if ( isset( $data['disable_user_screen_options'] ) ) {
 			$value = (bool) $data['disable_user_screen_options'];
 			$success = $this->update_optionData( $value, 'disable_user_screen_options', true );
 		}
+		// @since  1.6  Lock the locations of meta boxes
 		if ( isset( $data['lock_meta_boxes'] ) ) {
 			$value = (bool) $data['lock_meta_boxes'];
 			$success = $this->update_optionData( $value, 'lock_meta_boxes', true );
@@ -386,6 +398,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
+		/**
+		 * Bulk actions
+		 */
+
+		// @since  1.4  Apply defaults to users
 		if ( VAA_API::array_has( $data, 'apply_defaults_to_users', array( 'validation' => 'is_array' ) ) ) {
 			$errors = array();
 			foreach ( $data['apply_defaults_to_users'] as $key => $user_data ) {
@@ -414,15 +431,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
+		// @since  1.4  Apply defaults to users by role
 		if ( VAA_API::array_has( $data, 'apply_defaults_to_users_by_role', array( 'validation' => 'is_string' ) ) ) {
 			// @todo notify of errors in updates.
 			$success = $this->apply_defaults_to_users_by_role( strip_tags( $data['apply_defaults_to_users_by_role'] ) );
 		}
 
+		// @since  1.4  Clear defaults for a role
 		if ( VAA_API::array_has( $data, 'clear_role_defaults', array( 'validation' => 'is_string' ) ) ) {
 			$success = $this->clear_role_defaults( strip_tags( $data['clear_role_defaults'] ) );
 		}
 
+		// @since  1.5  Export
 		if ( VAA_API::array_has( $data, 'export_role_defaults', array( 'validation' => 'is_string' ) ) ) {
 			$content = $this->export_role_defaults( strip_tags( $data['export_role_defaults'] ) );
 			if ( is_array( $content ) ) {
@@ -447,6 +467,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
+		// @since  1.5  Import
 		if ( VAA_API::array_has( $data, 'import_role_defaults', array( 'validation' => 'is_array' ) ) ) {
 			$method = ( ! empty( $data['import_role_defaults_method'] ) ) ? (string) $data['import_role_defaults_method'] : '';
 			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
@@ -499,13 +520,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			if ( ! $role && isset( $user->roles[0] ) ) {
 				$role = $user->roles[0];
 			}
-			if ( $role && $option_data ) {
-				if ( isset( $option_data['roles'][ $role ] ) ) {
-					foreach ( $option_data['roles'][ $role ] as $meta_key => $meta_value ) {
-						update_user_meta( $user_id, $meta_key, $meta_value );
-						// Do not return update_user_meta results since it's highly possible to be false (values are often the same).
-						// @todo check other way of validation
-					}
+			if ( ! empty( $option_data['roles'][ $role ] ) ) {
+				foreach ( $option_data['roles'][ $role ] as $meta_key => $meta_value ) {
+					update_user_meta( $user_id, $meta_key, $meta_value );
+					// Do not return update_user_meta results since it's highly possible to be false (values are often the same).
+					// @todo check other way of validation
 				}
 			}
 		}

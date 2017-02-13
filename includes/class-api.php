@@ -284,7 +284,7 @@ final class VAA_API
 	 * @param   string  $key
 	 * @param   array   $args {
 	 *     Optional array of match arguments.
-	 *     @type  mixed         $compare     A value to compare against (NOTE, strict comparison!).
+	 *     @type  mixed         $compare     A value to compare against (NOTE: strict comparison!).
 	 *     @type  string|array  $validation  A variable function check, example: 'is_int' or 'MyClass::check'.
 	 * }
 	 * @return bool
