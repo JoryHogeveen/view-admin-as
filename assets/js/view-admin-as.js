@@ -773,6 +773,23 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
+		// @since  1.6.x  Copy role defaults.
+		$document.on( 'click touchend', root_prefix + '-copy-roles-copy button#' + prefix + '-copy-roles-copy', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var data = {
+				from: $( root_prefix + '-copy-roles-from select#' + prefix + '-copy-roles-from' ).val(),
+				to: $( root_prefix + '-copy-roles-to select#' + prefix + '-copy-roles-to' ).val()
+			};
+			if ( data.from && data.to ) {
+				var view_data = { role_defaults : { copy_role_defaults : data } };
+				VAA_View_Admin_As.ajax( view_data, false );
+			}
+			return false;
+		} );
+
 		// @since  1.4  Clear role defaults.
 		$document.on( 'click touchend', root_prefix + '-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {

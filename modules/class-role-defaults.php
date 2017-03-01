@@ -482,6 +482,26 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
+		// @since  1.6.x  Copy
+		if ( VAA_API::array_has( $data, 'copy_role_defaults', array( 'validation' => 'is_array' ) ) ) {
+			if ( isset( $data['copy_role_defaults']['from'] ) && isset( $data['copy_role_defaults']['to'] ) ) {
+				// $content format: array( 'text' => **text**, 'errors' => **error array** ).
+				$content = $this->copy_role_defaults( $data['copy_role_defaults']['from'], $data['copy_role_defaults']['to'] );
+				if ( true === $content ) {
+					$success = true;
+				} else {
+					$success = array(
+						'success' => false,
+						'data' => array(
+							'display' => 'popup',
+							'type' => 'error',
+						),
+					);
+					$success['data'] = array_merge( $success['data'], $content );
+				}
+			}
+		}
+
 		return $success;
 	}
 
@@ -691,6 +711,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Update a role with new defaults.
 	 *
+	 * @todo  Refactor like get_role_defaults for enhanced usage.
+	 *
 	 * @since   1.4
 	 * @access  private
 	 *
@@ -706,6 +728,43 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		}
 		$role_defaults[ $role ][ $meta_key ] = $meta_value;
 		return $this->update_optionData( $role_defaults, 'roles', true );
+	}
+
+	/**
+	 * Copy defaults from one role to another (or multiple).
+	 *
+	 * @since   1.6.x
+	 * @access  private
+	 *
+	 * @param   string        $from_role  The source role defaults.
+	 * @param   string|array  $to_role    The role(s) to copy to.
+	 * @return  array|bool
+	 */
+	private function copy_role_defaults( $from_role, $to_role ) {
+		$to_role       = (array) $to_role;
+		$error_list    = array();
+		$role_defaults = $this->get_role_defaults();
+		if ( ! empty( $role_defaults[ $from_role ] ) ) {
+			foreach ( $to_role as $role ) {
+				if ( $this->store->get_roles( $role ) ) {
+					$role_defaults[ $role ] = $role_defaults[ $from_role ];
+				} else {
+					$error_list[] = esc_attr__( 'Role not found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role;
+				}
+			}
+			$this->update_optionData( $role_defaults, 'roles', true );
+			if ( ! empty( $error_list ) ) {
+				return array(
+					'text' => esc_attr__( 'Data copied but there were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
+					'list' => $error_list,
+				);
+			}
+			return true;
+		}
+		return array(
+			'text' => esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) . ':',
+			'list' => $error_list,
+		);
 	}
 
 	/**
@@ -1105,16 +1164,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	private function admin_bar_menu_bulk_actions( $admin_bar, $root ) {
 
 		$role_select_options = array(
-			array(
+			'' => array(
 				'label' => ' --- ',
 			),
-			array(
+			'all' => array(
 				'value' => 'all',
 				'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 			),
 		);
 		foreach ( $this->store->get_rolenames() as $role_key => $role_name ) {
-			$role_select_options[] = array(
+			$role_select_options[ $role_key ] = array(
 				'value' => esc_attr( $role_key ),
 				'label' => esc_html( $role_name ),
 			);
@@ -1256,9 +1315,79 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		}
 
 		/**
-		 * Import / Export
+		 * Copy / Import / Export
 		 */
 		if ( $roles ) {
+
+			/*
+			 * Copy actions.
+			 */
+			$role_copy_options = $role_select_options;
+			// Remove 'all' option from copy list.
+			unset( $role_copy_options['all'] );
+			$admin_bar->add_group( array(
+				'id'     => $root . '-copy',
+				'parent' => $root,
+				'meta'   => array(
+					'class' => 'ab-sub-secondary',
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-copy-roles',
+				'parent' => $root . '-copy',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-pressthis' )
+					. __( 'Copy defaults to role', VIEW_ADMIN_AS_DOMAIN ),
+				'href'   => false,
+				'meta'   => array(
+				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
+					'tabindex' => '0',
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-copy-roles-from',
+				'parent' => $root . '-copy',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+					'name'   => $root . '-copy-roles-from',
+					'label'  => __( 'Copy from:', VIEW_ADMIN_AS_DOMAIN ) . '<br>',
+					'values' => $role_copy_options,
+				) ),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
+				),
+			) );
+			// Since it is a multiple select an empty first item is not needed.
+			unset( $role_copy_options[''] );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-copy-roles-to',
+				'parent' => $root . '-copy',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+					'name'   => $root . '-copy-roles-to',
+					'label'  => __( 'Copy to:', VIEW_ADMIN_AS_DOMAIN ) . '<br>',
+					'description' => __( 'You can select multiple items', VIEW_ADMIN_AS_DOMAIN ) . ' | Ctrl (Windows) / Command (Mac)',
+					'values' => $role_copy_options,
+					'attr'   => array(
+						'multiple' => true,
+					),
+				) ),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-copy-roles-copy',
+				'parent' => $root . '-copy',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+					'name'  => $root . '-copy-roles-copy',
+					'label' => __( 'Copy', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-secondary',
+				) ),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'vaa-button-container',
+				),
+			) );
 
 			/*
 			 * Export actions.
