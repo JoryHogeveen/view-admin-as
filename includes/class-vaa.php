@@ -315,7 +315,9 @@ final class VAA_View_Admin_As
 	 */
 	private function load_modules() {
 
-		$files = scandir( VIEW_ADMIN_AS_DIR . 'modules' );
+		$dir   = VIEW_ADMIN_AS_DIR . 'modules';
+		$files = scandir( $dir );
+		$dir  .= '/';
 
 		foreach ( $files as $file ) {
 			if ( ! in_array( $file, array( '.', '..', 'index.php' ), true ) ) {
@@ -323,13 +325,17 @@ final class VAA_View_Admin_As
 
 				// Single file modules.
 				if ( ! empty( $file_info['extension'] ) ) {
-					if ( 'php' === $file_info['extension'] && is_file( VIEW_ADMIN_AS_DIR . 'modules/' . $file ) ) {
-						include( VIEW_ADMIN_AS_DIR . 'modules/' . $file );
+					if ( 'php' === $file_info['extension'] && is_file( $dir . $file ) ) {
+						include( $dir . $file );
 					}
 				}
-				// Directory modules.
-				elseif ( is_file( VIEW_ADMIN_AS_DIR . 'modules/' . $file . '/' . $file . '.php' ) ) {
-					include( VIEW_ADMIN_AS_DIR . 'modules/' . $file . '/' . $file . '.php' );
+				// Directory class modules.
+				elseif ( is_file( $dir . $file . '/class-' . $file . '.php' ) ) {
+					include( $dir . $file . '/class-' . $file . '.php' );
+				}
+				// Directory regular modules.
+				elseif ( is_file( $dir . $file . '/' . $file . '.php' ) ) {
+					include( $dir . $file . '/' . $file . '.php' );
 				}
 			}
 		}
