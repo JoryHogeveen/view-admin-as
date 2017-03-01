@@ -120,6 +120,22 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 			} );
 
+			// @since  1.6.x  Conditional items.
+			$( VAA_View_Admin_As.prefix + '.ab-vaa-conditional[data-condition-target]' ).each( function() {
+				var $this    = $( this ),
+					$target  = $( $this.attr( 'data-condition-target' ) ),
+					$compare = $this.attr( 'data-condition' );
+				$this.hide();
+				$target.on( 'change', function() {
+					if ( $compare === $target.val() ) {
+						$this.slideDown('fast');
+					} else {
+						$this.slideUp('fast');
+					}
+					VAA_View_Admin_As.autoMaxHeight();
+				} );
+			} );
+
 		} ); // End window.load.
 
 		// Process reset.
