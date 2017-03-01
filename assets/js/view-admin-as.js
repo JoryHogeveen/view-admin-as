@@ -528,6 +528,34 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		};
 
+		// Since  1.6.x  Get the selected capabilities
+		VAA_View_Admin_As.get_selected_capabilities = function() {
+			var capabilities = {};
+			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
+				if ( $(this).is(':checked') ) {
+					capabilities[ $(this).attr('value') ] = 1;
+				} else {
+					capabilities[ $(this).attr('value') ] = 0;
+				}
+			} );
+			return capabilities;
+		};
+
+		// Since  1.6.x  Set the selected capabilities
+		VAA_View_Admin_As.set_selected_capabilities = function( capabilities ) {
+			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
+				if ( capabilities.hasOwnProperty( $(this).attr('value') ) ) {
+					if ( capabilities[ $(this).attr('value') ] ) {
+						$( this ).attr('checked','checked');
+					} else {
+						$( this ).attr( 'checked', false );
+					}
+				} else {
+					$( this ).attr( 'checked', false );
+				}
+			} );
+		};
+
 		// Set max height of the caps submenu.
 		$document.on( 'mouseenter', root_prefix + '-manager', function() {
 			VAA_View_Admin_As.autoMaxHeight();
@@ -600,14 +628,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			var newCaps = {};
-			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
-				if ( $(this).is(':checked') ) {
-					newCaps[ $(this).attr('value') ] = 1;
-				} else {
-					newCaps[ $(this).attr('value') ] = 0;
-				}
-			} );
+			var newCaps = VAA_View_Admin_As.get_selected_capabilities();
 			VAA_View_Admin_As.ajax( { caps : newCaps }, true );
 			return false;
 		} );
