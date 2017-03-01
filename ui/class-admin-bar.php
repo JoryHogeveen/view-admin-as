@@ -572,7 +572,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, $main_root );
 
 		$admin_bar->add_node( array(
-			'id'     => $root . '-select',
+			'id'     => $root . '-manager',
 			'parent' => $root,
 			'title'  => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
@@ -585,7 +585,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		// Capabilities submenu.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-applycaps',
-			'parent' => $root . '-select',
+			'parent' => $root . '-manager',
 			'title'  => self::do_button( array(
 				'name'    => 'apply-caps-view',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
@@ -610,16 +610,39 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		) );
 
 		/**
+		 * Add items at the before of the caps selection options.
+		 *
+		 * @since   1.6.x
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string        $root        The current root item. ($root.'-manager')
+		 * @param   string        $main_root   The main root item.
+		 */
+		do_action( 'vaa_admin_bar_caps_manager_before', $admin_bar, $root . '-manager', $main_root );
+
+		$admin_bar->add_group( array(
+			'id'     => $root . '-select',
+			'parent' => $root . '-manager',
+			'meta'   => array(
+				'class' => 'ab-sub-secondary ab-vaa-spacing-top',
+			),
+		) );
+
+		// Used in templates
+		$parent = $root . '-select';
+
+		/**
 		 * Add items at the before of the caps actions.
 		 *
 		 * @since   1.6.x
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
+		 * @param   string        $parent      The current root item.
 		 * @param   string        $main_root   The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $root, $main_root );
+		do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $parent, $main_root );
 
 		// Add caps actions.
 		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-actions.php' );
@@ -631,10 +654,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
+		 * @param   string        $parent      The current root item.
 		 * @param   string        $main_root   The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $root, $main_root );
+		do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $parent, $main_root );
 
 		// Add the caps.
 		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-items.php' );

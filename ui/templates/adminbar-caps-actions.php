@@ -16,12 +16,15 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
 	}
+	if ( ! isset( $parent ) ) {
+		$parent = $root;
+	}
 
 	// Text filter
 	$admin_bar->add_node(
 		array(
 			'id'     => $root . '-filtercaps',
-			'parent' => $root . '-select',
+			'parent' => $parent,
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_input(
 				array(
 					'name'        => $root . '-filtercaps',
@@ -83,7 +86,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	$admin_bar->add_node(
 		array(
 			'id'     => $root . '-selectrolecaps',
-			'parent' => $root . '-select',
+			'parent' => $parent,
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_select(
 				array(
 					'name'   => $root . '-selectrolecaps',
@@ -102,7 +105,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	$admin_bar->add_node(
 		array(
 			'id'     => $root . '-bulkselectcaps',
-			'parent' => $root . '-select',
+			'parent' => $parent,
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button(
 				array(
 					'name'    => 'select-all-caps',

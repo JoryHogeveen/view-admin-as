@@ -16,6 +16,9 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
 	}
+	if ( ! isset( $parent ) ) {
+		$parent = $root;
+	}
 
 	$caps_items = '';
 	foreach ( $this->store->get_caps() as $cap_name => $cap_val ) {
@@ -51,11 +54,11 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	$admin_bar->add_node(
 		array(
 			'id'     => $root . '-select-options',
-			'parent' => $root . '-select',
+			'parent' => $parent,
 			'title'  => $caps_items,
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-multipleselect auto-height',
+				'class' => 'ab-vaa-multipleselect auto-height max-height-listener',
 			),
 		)
 	);
