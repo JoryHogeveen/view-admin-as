@@ -426,7 +426,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-clone-title',
 			'parent' => $root . '-clone',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-star-half' ) . __( 'Clone role', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-pressthis' ) . __( 'Clone role', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
@@ -572,20 +572,20 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			$caps = $this->store->get_selectedCaps();
 		}
 		$role_select_options = array(
-			array(
-				'label' => ' --- ' . __( 'Select role', VIEW_ADMIN_AS_DOMAIN ) . ' --- ',
+			'' => array(
+				'label' => ' --- ' . __( 'Add/Edit role', VIEW_ADMIN_AS_DOMAIN ) . ' --- ',
 				'attr'  => array(
 					'data-caps' => wp_json_encode( $caps ),
 				),
 			),
-			array(
+			'__new__' => array(
 				'value' => '__new__',
 				'label' => ' ++ ' . __( 'New role', VIEW_ADMIN_AS_DOMAIN ) . ' ++ ',
 			),
 		);
 		foreach ( $this->store->get_roles() as $role_key => $role ) {
 			$data_caps = wp_json_encode( $role->capabilities );
-			$role_select_options[] = array(
+			$role_select_options[ $role_key ] = array(
 				'compare' => esc_attr( $role_key ),
 				'label'   => $this->store->get_rolenames( $role_key ),
 				'attr'    => array(
