@@ -48,6 +48,7 @@
 #wpadminbar #wp-admin-bar-vaa.menupop ul.ab-sub-secondary {position: static;}
 #wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {top: 1px;}
 
+#wpadminbar #wp-admin-bar-vaa ul.ab-vaa-spacing-top,
 #wpadminbar #wp-admin-bar-vaa > div > ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
 #wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary + ul.ab-sub-secondary {padding-top: 0;}
 
@@ -89,6 +90,7 @@
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item {height: auto; line-height: normal;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item textarea {width: 100%; padding: 5px; margin-top: 5px; box-sizing: border-box; line-height: normal;}
 
+#wpadminbar #wp-admin-bar-vaa .ab-item select + button.input-overlay,
 #wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {position: absolute; right: 10px; margin: 5px 0;}
 
 /*#wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {border: 0; margin-top: 6px;}*/
@@ -133,7 +135,7 @@
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #apply-caps-view {float: left; margin-right: 5px;}
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #reset-caps-view,
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #open-caps-popup,
-#wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #close-caps-popup {float: right; margin-left: 5px;}
+#wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #close-caps-popup {float: right; margin-left: 5px; height: auto;}
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #close-caps-popup {display: none;}
 /*#wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #wp-admin-bar-filtercaps {clear: both;}*/
 
