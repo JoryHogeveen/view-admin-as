@@ -27,7 +27,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 ( function( $ ) {
 
 	var $document = $( document ),
-		$window = $( window );
+		$window = $( window ),
+		$body = $('body');
 
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
@@ -955,10 +956,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				var element = $( this ),
 					count = 0,
 					wait = setInterval( function() {
-						var offset = element.offset();
-						if ( element.is(':visible') && 0 < offset.top ) {
+						var offset = element.offset(),
+							// @link  http://stackoverflow.com/questions/11193453/find-the-vertical-position-of-scrollbar-without-jquery
+							scrollTop = ( 'undefined' !== typeof window.pageYOffset ) ? window.pageYOffset : ( document.documentElement || document.body.parentNode || document.body ).scrollTop,
+							offsetTop = ( offset.top - scrollTop );
+						if ( element.is(':visible') && 0 < offsetTop ) {
 							clearInterval( wait );
-							var maxHeight = $window.height() - offset.top - 100;
+							var maxHeight = $window.height() - offsetTop - 100;
 							maxHeight = ( 100 < maxHeight ) ? maxHeight : 100;
 							element.css( { 'max-height': maxHeight + 'px' } );
 						}
