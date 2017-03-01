@@ -349,11 +349,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( VAA_API::is_super_admin() ) {
 
 			if ( isset( $data['enable'] ) ) {
-				if ( $data['enable'] ) {
-					$success = $this->set_enable( true );
-				} else {
-					$success = $this->set_enable( false );
-				}
+				$success = $this->set_enable( (bool) $data['enable'] );
 				// Prevent further processing.
 				return $success;
 			}
