@@ -31,6 +31,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
+	VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + ' .max-height-listener' );
 
 	if ( ! VAA_View_Admin_As.hasOwnProperty( '_debug' ) ) {
 		VAA_View_Admin_As._debug = 0;
@@ -84,6 +85,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						toggleContent.slideDown('fast');
 						$(this).addClass('active');
 					}
+					VAA_View_Admin_As.autoMaxHeight();
 				} );
 
 				// @since  1.6.1  Keyboard a11y.
@@ -104,6 +106,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						toggleContent.slideDown('fast');
 						$(this).addClass('active');
 					}
+					VAA_View_Admin_As.autoMaxHeight();
 				} );
 			} );
 
@@ -359,7 +362,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * SETTINGS.
 	 * @since  1.5
-	 * @return  {null}  nothing
+	 * @return {null}  nothing
 	 */
 	VAA_View_Admin_As.init_settings = function() {
 
@@ -427,7 +430,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * USERS.
 	 * Extra functions for user views.
 	 * @since  1.2
-	 * @return  {null}  nothing
+	 * @return {null}  nothing
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
@@ -467,7 +470,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * CAPABILITIES.
 	 * @since  1.3
-	 * @return  {null}  nothing
+	 * @return {null}  nothing
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
@@ -510,18 +513,20 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		};
 
 		// Set max height of the caps submenu.
-		$document.on( 'mouseenter', root_prefix + '-select', function() {
-			$( root_prefix + '-select-options').css( { 'max-height': ( $window.height() - 350 )+'px' } );
+		$document.on( 'mouseenter', root_prefix + '-manager', function() {
+			VAA_View_Admin_As.autoMaxHeight();
 		} );
 		// Enlarge caps.
 		$document.on( 'click', root_prefix + ' #open-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
-			$( root_prefix + '-select > .ab-sub-wrapper').addClass('fullPopup');
+			$( root_prefix + '-manager > .ab-sub-wrapper').addClass('fullPopup');
+			VAA_View_Admin_As.autoMaxHeight();
 		} );
 		// Undo enlarge caps.
 		$document.on( 'click', root_prefix + ' #close-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
-			$( root_prefix + '-select > .ab-sub-wrapper').removeClass('fullPopup');
+			$( root_prefix + '-manager > .ab-sub-wrapper').removeClass('fullPopup');
+			VAA_View_Admin_As.autoMaxHeight();
 		} );
 
 		// Select role capabilities.
@@ -592,11 +597,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 	};
 
-
 	/**
 	 * MODULE: Role Defaults.
 	 * @since  1.4
-	 * @return  {null}  nothing
+	 * @return {null}  nothing
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
@@ -783,6 +787,34 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 	};
+
+	/**
+	 * Auto resize max height elements
+	 * @since  1.6.x
+	 * @return {null}  nothing
+	 */
+	VAA_View_Admin_As.autoMaxHeight = function() {
+		setTimeout( function() {
+			VAA_View_Admin_As.maxHeightListenerElements.each( function() {
+				var element = $( this ),
+					count = 0,
+					wait = setInterval( function() {
+						var offset = element.offset();
+						if ( element.is(':visible') && 0 < offset.top ) {
+							clearInterval( wait );
+							var maxHeight = $window.height() - offset.top - 100;
+							maxHeight = ( 100 < maxHeight ) ? maxHeight : 100;
+							element.css( { 'max-height': maxHeight + 'px' } );
+						}
+						count++;
+						if ( 5 < count ) {
+							clearInterval( wait );
+						}
+					}, 100 );
+			} );
+		}, 100 );
+	};
+	$document.on( 'resize', VAA_View_Admin_As.autoMaxHeight );
 
 	// We require a nonce to use this plugin.
 	if ( 'undefined' !== typeof VAA_View_Admin_As._vaa_nonce ) {

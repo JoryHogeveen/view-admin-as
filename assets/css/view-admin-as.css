@@ -93,6 +93,7 @@
 
 /*#wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {border: 0; margin-top: 6px;}*/
 
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {transition: max-height .3s;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-empty-item {height: auto; overflow: hidden;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect.max-height .ab-empty-item {max-height: 100px; overflow-y: scroll; background: #fff; margin: 0 10px 5px; padding: 5px 10px;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect.max-height .ab-empty-item .ab-item {color: #333;}
@@ -121,7 +122,7 @@
 
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
 
-#wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #wp-admin-bar-vaa-caps-select-options {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: solid transparent; border-width: 0 10px 0 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 5px 0; padding: 0; border: solid transparent; border-width: 0 10px 0 0;}
 
 #wpadminbar #wp-admin-bar-vaa .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
 #wpadminbar #wp-admin-bar-vaa button {float: none; text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle; cursor: pointer;}
