@@ -222,9 +222,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'id'     => self::$root . '-reset',
 				'parent' => self::$root,
 				'title'  => self::do_button( array(
-					'name'    => self::$root . '-' . $name,
-					'label'   => __( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary',
+					'name'  => self::$root . '-' . $name,
+					'label' => __( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-secondary',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -589,18 +589,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'title'  => self::do_button( array(
 				'name'    => 'apply-caps-view',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'classes' => 'button-primary',
+				'class'   => 'button-primary',
 			) )
 			. self::do_button( array(
 				'name'    => 'close-caps-popup',
 				'label'   => self::do_icon( 'dashicons-editor-contract' ),
-				'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
+				'class'   => 'button-secondary vaa-icon vaa-hide-responsive',
 				'element' => 'a',
 			) )
 			. self::do_button( array(
 				'name'    => 'open-caps-popup',
 				'label'   => self::do_icon( 'dashicons-editor-expand' ),
-				'classes' => 'button-secondary vaa-icon vaa-hide-responsive',
+				'class'   => 'button-secondary vaa-icon vaa-hide-responsive',
 				'element' => 'a',
 			) ),
 			'href'   => false,
@@ -875,7 +875,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $name     Required.
 	 *     @type  string  $id       Optional (Will be generated from $name if empty).
 	 *     @type  string  $label    Optional.
-	 *     @type  string  $classes  Optional.
+	 *     @type  string  $class    Optional.
 	 *     @type  string  $element  Optional.
 	 *     @type  array   $attr     Optional.
 	 * }
@@ -886,11 +886,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
 		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : '';
-		$classes = ( ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '' );
+		$class = ( ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '' );
 
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;
-		$args['attr']['class'] = 'button' . $classes;
+		$args['attr']['class'] = 'button' . $class;
 
 		$attr = self::parse_to_html_attr( $args['attr'] );
 
@@ -913,7 +913,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $value        Optional.
 	 *     @type  string  $label        Optional.
 	 *     @type  string  $description  Optional.
-	 *     @type  string  $classes      Optional.
+	 *     @type  string  $class        Optional.
 	 *     @type  array   $attr         Optional.
 	 *     @type  bool    $auto_showhide_desc  Optional.
 	 * }
@@ -926,21 +926,21 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 		$default = ( ! empty( $args['default'] ) ) ? $args['default'] : '';
 		$placeholder = ( ! empty( $args['placeholder'] ) ) ? $args['placeholder'] : '';
-		$classes = ( ! empty( $args['classes'] ) ) ? $args['classes'] : '';
+		$class = ( ! empty( $args['class'] ) ) ? $args['class'] : '';
 
 		$args['attr']['type'] = 'text';
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;
 		$args['attr']['placeholder'] = $placeholder;
 		$args['attr']['value'] = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
-		$args['attr']['class'] = $classes;
+		$args['attr']['class'] = $class;
 
 		$attr = self::parse_to_html_attr( $args['attr'] );
 
 		$label_attr = array();
 		$desc_attr = array();
 		if ( ! empty( $args['auto_showhide_desc'] ) ) {
-			self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
+			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
 		}
 
 		if ( ! empty( $args['label'] ) ) {
@@ -969,7 +969,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $checkbox_value  Optional  (default: 1).
 	 *     @type  string  $label           Optional.
 	 *     @type  string  $description     Optional.
-	 *     @type  string  $classes         Optional.
+	 *     @type  string  $class           Optional.
 	 *     @type  array   $attr            Optional.
 	 *     @type  bool    $auto_showhide_desc   Optional.
 	 *     @type  bool    $removable       Optional.
@@ -989,20 +989,20 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$args['compare'] = 1;
 		}
 		$checked = checked( $args['value'], $args['compare'], false );
-		$classes = ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '';
+		$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
 
 		$args['attr']['type'] = 'checkbox';
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;
 		$args['attr']['value'] = ( ! empty( $args['checkbox_value'] ) ) ? $args['checkbox_value'] : '1';
-		$args['attr']['class'] = 'checkbox' . $classes;
+		$args['attr']['class'] = 'checkbox' . $class;
 
 		$attr = self::parse_to_html_attr( $args['attr'] );
 
 		$label_attr = array();
 		$desc_attr = array();
 		if ( ! empty( $args['auto_showhide_desc'] ) ) {
-			self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
+			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
 		}
 
 		$html .= '<input ' . $attr . ' ' . $checked . '/>';
@@ -1038,7 +1038,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *             @type  string  $compare      Required.
 	 *             @type  string  $label        Optional.
 	 *             @type  string  $description  Optional.
-	 *             @type  string  $classes      Optional.
+	 *             @type  string  $class        Optional.
 	 *             @type  array   $attr         Optional.
 	 *             @type  bool    $auto_showhide_desc   Optional  (overwrite $data).
 	 *         }
@@ -1059,14 +1059,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					$data['value'] = null;
 				}
 				$checked = checked( $data['value'], $args['compare'], false );
-				$classes = ( ! empty( $args['classes'] ) ) ? ' ' . $args['classes'] : '';
-				$classes .= ' ' . esc_attr( $data['name'] );
+				$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
+				$class .= ' ' . esc_attr( $data['name'] );
 
 				$args['attr']['type'] = 'radio';
 				$args['attr']['id'] = $id;
 				$args['attr']['name'] = $name;
 				$args['attr']['value'] = $args['compare'];
-				$args['attr']['class'] = 'radio' . $classes;
+				$args['attr']['class'] = 'radio' . $class;
 
 				$attr = self::parse_to_html_attr( $args['attr'] );
 
@@ -1075,7 +1075,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				if (   ( ! empty( $args['auto_showhide_desc'] ) )
 					|| ( ! isset( $args['auto_showhide_desc'] ) && ! empty( $data['auto_showhide_desc'] ) )
 				) {
-					self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
+					self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
 				}
 
 				$html .= '<input ' . $attr . ' ' . $checked . '/>';
@@ -1108,7 +1108,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $value        Optional.
 	 *     @type  string  $label        Optional.
 	 *     @type  string  $description  Optional.
-	 *     @type  string  $classes      Optional.
+	 *     @type  string  $class        Optional.
 	 *     @type  array   $attr         Optional.
 	 *     @type  bool    $auto_showhide_desc   Optional.
 	 *     @type  array   $values {
@@ -1117,7 +1117,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 *             @type  string  $compare  Required.
 	 *             @type  string  $value    Optional  (Alias for compare).
 	 *             @type  string  $label    Optional.
-	 *             @type  string  $classes  Optional.
+	 *             @type  string  $class  Optional.
 	 *             @type  array   $attr     Optional.
 	 *         }
 	 *     }
@@ -1134,7 +1134,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			$label_attr = array();
 			$desc_attr = array();
 			if ( ! empty( $data['auto_showhide_desc'] ) ) {
-				self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
+				self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
 			}
 
 			if ( ! empty( $data['label'] ) ) {
@@ -1145,11 +1145,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				$data['value'] = null;
 			}
 
-			$classes = ( ! empty( $data['classes'] ) ) ? ' ' . $data['classes'] : '';
+			$class = ( ! empty( $data['class'] ) ) ? ' ' . $data['class'] : '';
 
 			$data['attr']['id'] = $id;
 			$data['attr']['name'] = $name;
-			$data['attr']['class'] = 'selectbox' . $classes;
+			$data['attr']['class'] = 'selectbox' . $class;
 			$attr = self::parse_to_html_attr( $data['attr'] );
 
 			$html .= '<select ' . $attr . '/>';
@@ -1235,7 +1235,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * @param   array   $label_attr  Label attributes.
 	 * @param   array   $desc_attr   Description attributes.
 	 */
-	public static function enable_auto_showhide( $target, &$label_attr = array(), &$desc_attr = array() ) {
+	public static function enable_auto_showhide_desc( $target, &$label_attr = array(), &$desc_attr = array() ) {
 		$label_attr = array(
 			'class' => 'ab-vaa-showhide',
 			'data-showhide' => '.' . $target,

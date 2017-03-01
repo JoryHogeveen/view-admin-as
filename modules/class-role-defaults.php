@@ -1031,7 +1031,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			) ) . VAA_View_Admin_As_Admin_Bar::do_button( array(
 				'name'        => $root . '-meta-add',
 				'label'       => __( 'Add', VIEW_ADMIN_AS_DOMAIN ),
-				'classes'     => 'button-primary input-overlay',
+				'class'       => 'button-primary input-overlay',
 			) )
 			. '<div id="' . $root . '-meta-template" style="display: none;"><div class="ab-item vaa-item">'
 			. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
@@ -1076,9 +1076,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-meta-apply',
 			'parent' => $root . '-meta',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-				'name'    => $root . '-meta-apply',
-				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'classes' => 'button-primary',
+				'name'  => $root . '-meta-apply',
+				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-primary',
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -1197,9 +1197,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-bulk-users-apply',
 				'parent' => $root . '-bulk-users',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'    => $root . '-bulk-users-apply',
-					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-primary',
+					'name'  => $root . '-bulk-users-apply',
+					'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-primary',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -1235,7 +1235,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'id'     => $root . '-bulk-roles-select',
 					'parent' => $root . '-bulk-roles',
 					'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
-						'name' => $root . '-bulk-roles-select',
+						'name'   => $root . '-bulk-roles-select',
 						'values' => $role_select_options,
 					) ),
 					'href'   => false,
@@ -1247,9 +1247,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'id'     => $root . '-bulk-roles-apply',
 					'parent' => $root . '-bulk-roles',
 					'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-						'name'    => $root . '-bulk-roles-apply',
-						'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-						'classes' => 'button-primary',
+						'name'  => $root . '-bulk-roles-apply',
+						'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+						'class' => 'button-primary',
 					) ),
 					'href'   => false,
 					'meta'   => array(
@@ -1289,7 +1289,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-export-roles-select',
 				'parent' => $root . '-export',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
-					'name' => $root . '-export-roles-select',
+					'name'   => $root . '-export-roles-select',
 					'values' => $role_select_options,
 				) ),
 				'href'   => false,
@@ -1301,9 +1301,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-export-roles-export',
 				'parent' => $root . '-export',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'    => $root . '-export-roles-export',
-					'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary',
+					'name'  => $root . '-export-roles-export',
+					'label' => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-secondary',
 				) ),
 				'href'   => false,
 				'meta'   => array(
@@ -1346,28 +1346,28 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-import-roles-import',
 				'parent' => $root . '-import',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'    => $root . '-import-roles-import',
-					'label'   => __( 'Import', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
-					'attr'    => array(
+					'name'  => $root . '-import-roles-import',
+					'label' => __( 'Import', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
+					'attr'  => array(
 						'data-method' => 'import',
 						'data-showhide' => 'p.vaa-import-role-defaults-desc',
 					),
 				) ) . ' '
 				. VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'    => $root . '-import-roles-import-overwrite',
-					'label'   => __( 'Overwrite', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
-					'attr'    => array(
+					'name'  => $root . '-import-roles-import-overwrite',
+					'label' => __( 'Overwrite', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
+					'attr'  => array(
 						'data-method' => 'overwrite',
 						'data-showhide' => 'p.vaa-import-role-defaults-overwrite-desc',
 					),
 				) ) . ' '
 				. VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'    => $root . '-import-roles-import-append',
-					'label'   => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
-					'classes' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
-					'attr'    => array(
+					'name'  => $root . '-import-roles-import-append',
+					'label' => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
+					'attr'  => array(
 						'data-method' => 'append',
 						'data-showhide' => 'p.vaa-import-role-defaults-append-desc',
 					),
@@ -1458,9 +1458,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-clear-roles-apply',
 			'parent' => $root . '-clear',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-				'name'    => $root . '-clear-roles-apply',
-				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'classes' => 'button-secondary',
+				'name'  => $root . '-clear-roles-apply',
+				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-secondary',
 			) ),
 			'href'   => false,
 			'meta'   => array(
