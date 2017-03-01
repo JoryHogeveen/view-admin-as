@@ -15,6 +15,11 @@ add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Role_D
 /**
  * Set default screen settings for roles and apply them on users through various bulk actions.
  *
+ * Disable some PHPMD checks for this class.
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @todo Refactor to enable above checks?
+ *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4
