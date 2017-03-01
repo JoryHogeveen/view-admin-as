@@ -869,6 +869,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		prefix = 'vaa-role-manager';
 		root_prefix = VAA_View_Admin_As.prefix + root;
 
+		// Apply current view capabilities to role
+		$document.on( 'click touchend', root_prefix + '-apply-view-apply button#' + prefix + '-apply-view-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var role = $( root_prefix + '-apply-view-select select#' + prefix + '-apply-view-select' ).val();
+			var capabilities = JSON.parse( $(this).attr('data-view-caps') );
+			if ( role && '' !== role && capabilities ) {
+				var view_data = { role_manager : { apply_view_to_role : { role: role, capabilities: capabilities } } };
+				VAA_View_Admin_As.ajax( view_data, true );
+			}
+			return false;
+		} );
+
 		// Clone role
 		$document.on( 'click touchend', root_prefix + '-clone-apply button#' + prefix + '-clone-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {

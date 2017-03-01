@@ -192,30 +192,46 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			return $success;
 		}
 
-		if ( VAA_API::array_has( $data, 'save_role', array( 'validation' => 'is_array' ) ) ) {
-			if ( empty( $data['save_role']['role'] ) || empty( $data['save_role']['capabilities'] ) ) {
-				$success = array(
-					'success' => false,
-					'data' => __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ),
-				);
-			} else {
-				$success = $this->save_role( $data['save_role']['role'], $data['save_role']['capabilities'] );
-			}
-		}
+		$callbacks = array(
+			'apply_view_to_role' => array(
+				'validation' => 'is_array',
+				'values' => array( 'role' => '', 'capabilities' => '' ),
+				'callback' => 'save_role',
+			),
+			'save_role' => array(
+				'validation' => 'is_array',
+				'values' => array( 'role' => '', 'capabilities' => '' ),
+				'callback' => 'save_role',
+			),
+			'clone_role' => array(
+				'validation' => 'is_array',
+				'values' => array( 'role' => '', 'new_role' => '' ),
+				'callback' => 'clone_role',
+			),
+			'delete_role' => array(
+				'validation' => 'is_string',
+				'callback' => 'delete_role',
+			),
+		);
 
-		if ( VAA_API::array_has( $data, 'clone_role', array( 'validation' => 'is_array' ) ) ) {
-			if ( empty( $data['clone_role']['role'] ) || empty( $data['clone_role']['new_role'] ) ) {
-				$success = array(
-					'success' => false,
-					'data' => __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ),
-				);
-			} else {
-				$success = $this->clone_role( $data['clone_role']['role'], $data['clone_role']['new_role'] );
+		foreach ( $callbacks as $key => $val ) {
+			if ( VAA_API::array_has( $data, $key, array( 'validation' => $val['validation'] ) ) ) {
+				if ( 'is_array' === $val['validation'] && array_diff_key( $val['values'], $data[ $key ] ) ) {
+					$success = array(
+						'success' => false,
+						'data' => __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ),
+					);
+				} else {
+					$args = (array) $data[ $key ];
+					if ( is_array( $val['values'] ) ) {
+						// Make sure the arguments are in the right order.
+						$args = array_merge( $val['values'], $args );
+					}
+					$success = call_user_func_array( array( $this, $val['callback'] ), $args );
+				}
+				// @todo Maybe allow more settings to be applied at the same time?
+				break;
 			}
-		}
-
-		if ( VAA_API::array_has( $data, 'delete_role', array( 'validation' => 'is_string' ) ) ) {
-			$success = $this->delete_role( $data['delete_role'] );
 		}
 
 		return $success;
@@ -242,15 +258,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$existing_role = $this->wp_roles->get_role( $role );
 		if ( $existing_role ) {
 			$role = $existing_role;
-			// Update existing role.
-			foreach ( $capabilities as $cap => $grant ) {
-				// @todo Option to deny capability (like Members).
-				if ( $grant ) {
-					$role->add_cap( (string) $cap, (bool) $grant );
-				} else {
-					$role->remove_cap( (string) $cap );
-				}
-			}
+			$this->update_role_caps( $role, $capabilities );
 		} else {
 			// Add new role.
 			$role_name = ucfirst( $role );
@@ -259,6 +267,31 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			$this->wp_roles->add_role( $role, $role_name, $capabilities );
 		}
 		return true;
+	}
+
+	/**
+	 * Update a role with new capabilities.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   WP_Role  $role          The role object.
+	 * @param   array    $capabilities  The new role capabilities.
+	 */
+	public function update_role_caps( $role, $capabilities ) {
+		if ( $role instanceof WP_Role ) {
+			// Ensure we have all the caps (even old ones that need to be removed).
+			$caps = array_merge( $role->capabilities, $capabilities );
+			// Update existing role.
+			foreach ( $caps as $cap => $grant ) {
+				// @todo Option to deny capability (like Members).
+				// @todo Do this in one call (prevent a lot of queries).
+				if ( ! empty( $capabilities[ $cap ] ) ) {
+					$role->add_cap( (string) $cap, (bool) $grant );
+				} else {
+					$role->remove_cap( (string) $cap );
+				}
+			}
+		}
 	}
 
 	/**
@@ -412,6 +445,64 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		/*
 		 * Apply current view capabilities to role.
 		 */
+		$admin_bar->add_group( array(
+			'id'     => $root . '-apply-view',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-apply-view-title',
+			'parent' => $root . '-apply-view',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-welcome-view-site' ) . __( 'Apply current view capabilities to role', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
+				'tabindex' => '0',
+			),
+		) );
+
+		if ( $this->store->get_selectedCaps() ) {
+			$admin_bar->add_node( array(
+				'id'     => $root . '-apply-view-select',
+				'parent' => $root . '-apply-view',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_select(
+					array(
+						'name'   => $root . '-apply-view-select',
+						'values' => $role_select_options,
+					)
+				),
+				'href'   => false,
+				'meta'   => array(
+					'class'    => 'ab-vaa-select select-role',
+					'tabindex' => '0',
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-apply-view-apply',
+				'parent' => $root . '-apply-view',
+				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+					'name'  => $root . '-apply-view-apply',
+					'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-primary',
+					'attr'  => array(
+						'data-view-caps' => wp_json_encode( $this->store->get_selectedCaps() ),
+					),
+				) ),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'vaa-button-container',
+				),
+			) );
+		} else {
+			$admin_bar->add_node( array(
+				'id'     => $root . '-apply-view-notice',
+				'parent' => $root . '-apply-view',
+				'title'  => __( 'No view selected', VIEW_ADMIN_AS_DOMAIN ),
+				'href'   => false,
+			) );
+		}
 
 		/*
 		 * Clone role.
