@@ -298,8 +298,12 @@ final class VAA_API
 		if ( isset( $args['compare'] ) ) {
 			return ( $args['compare'] === $value );
 		}
-		if ( ! empty( $args['validation'] ) && is_callable( $args['validation'] ) ) {
+		if ( ! empty( $args['validation'] ) ) {
 			$validation = $args['validation'];
+			// Don't accept unavailable validation methods.
+			if ( ! is_callable( $validation ) ) {
+				return false;
+			}
 			if ( is_array( $validation ) ) {
 				return (bool) call_user_func( $validation, $value );
 			}
