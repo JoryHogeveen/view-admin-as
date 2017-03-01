@@ -61,6 +61,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_users();
 		VAA_View_Admin_As.init_settings();
 		VAA_View_Admin_As.init_module_role_defaults();
+		VAA_View_Admin_As.init_module_role_manager();
 
 		// Functionality that require the document to be fully loaded.
 		$window.on( "load", function() {
@@ -823,6 +824,124 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			return false;
 		} );
+	};
+
+	/**
+	 * MODULE: Role Manager.
+	 * @since  1.6.x
+	 * @return {null}  nothing
+	 */
+	VAA_View_Admin_As.init_module_role_manager = function() {
+
+		var root = VAA_View_Admin_As.root + '-settings',
+			prefix = 'vaa-settings',
+			root_prefix = VAA_View_Admin_As.prefix + root;
+
+		// Enable module.
+		$document.on( 'change', root_prefix + '-role-manager-enable input#' + prefix + '-role-manager-enable', function( e ) {
+			e.preventDefault();
+			var view_data = { role_manager : { enable : 0 } };
+			if ( this.checked ) {
+				view_data = { role_manager : { enable : true } };
+			}
+			VAA_View_Admin_As.ajax( view_data, true );
+		} );
+
+		root = VAA_View_Admin_As.root + '-role-manager';
+		prefix = 'vaa-role-manager';
+		root_prefix = VAA_View_Admin_As.prefix + root;
+
+		// Clone role
+		$document.on( 'click touchend', root_prefix + '-clone-apply button#' + prefix + '-clone-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var role = $( root_prefix + '-clone-select select#' + prefix + '-clone-select' ).val();
+			var new_role = $( root_prefix + '-clone-input input#' + prefix + '-clone-input' ).val();
+			if ( role && '' !== role && new_role && '' !== new_role ) {
+				var view_data = { role_manager : { clone_role : { role : role, new_role : new_role } } };
+				VAA_View_Admin_As.ajax( view_data, true );
+			}
+			return false;
+		} );
+
+		// Delete role
+		$document.on( 'click touchend', root_prefix + '-delete-apply button#' + prefix + '-delete-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var val = $( root_prefix + '-delete-select select#' + prefix + '-delete-select' ).val();
+			if ( val && '' !== val ) {
+				var view_data = { role_manager : { delete_role : val } };
+				VAA_View_Admin_As.ajax( view_data, true );
+			}
+			return false;
+		} );
+
+		/**
+		 * Capability functions
+		 */
+		var caps_root = VAA_View_Admin_As.root + '-caps-manager-role-manager',
+			caps_prefix = 'vaa-caps-manager-role-manager',
+			caps_root_prefix = VAA_View_Admin_As.prefix + caps_root;
+
+		// Update capabilities when selecting a role
+		$document.on( 'change', caps_root_prefix + ' select#' + caps_prefix + '-edit-role', function() {
+			var $this = $(this),
+				role  = $this.val(),
+				caps  = {},
+				selectedRoleElement = $( caps_root_prefix + ' select#' + caps_prefix + '-edit-role option[value="' + role + '"]' );
+			if ( selectedRoleElement.attr('data-caps') ) {
+				caps = JSON.parse( selectedRoleElement.attr('data-caps') );
+			}
+
+			// Reset role filters
+			VAA_View_Admin_As.caps_filter_settings.selectedRole = 'default';
+			VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = {};
+			VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = false;
+			VAA_View_Admin_As.filter_capabilities();
+
+			VAA_View_Admin_As.set_selected_capabilities( caps );
+		} );
+
+		// Add/Modify roles
+		$document.on( 'click touchend', caps_root_prefix + ' button#' + caps_prefix + '-save-role', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var role = $( caps_root_prefix + ' select#' + caps_prefix + '-edit-role' ).val(),
+				refresh = false;
+			if ( ! role ) {
+				return false;
+			}
+			if ( '__new__' === role ) {
+				role = $( caps_root_prefix + ' input#' + caps_prefix + '-new-role' ).val();
+				//refresh = true;
+			}
+			var data = {
+				role: role,
+				capabilities: VAA_View_Admin_As.get_selected_capabilities()
+			};
+			VAA_View_Admin_As.ajax( { role_manager : { save_role : data } }, refresh );
+			return false;
+		} );
+
+		// Add new capabilities.
+		$document.on( 'click touchend', caps_root_prefix + '-new-cap button#' + caps_prefix + '-add-cap', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var val = $( caps_root_prefix + '-new-cap input#' + caps_prefix + '-new-cap' ).val();
+			var item = $( caps_root_prefix + '-new-cap #' + caps_prefix + '-cap-template' ).html().toString();
+			item = item.replace( /vaa_new_item/g, val.replace( / /g, '_' ) );
+			console.log( item );
+			$( VAA_View_Admin_As.root + '-caps-select-options > .ab-item' ).prepend( item );
+		} );
+
 	};
 
 	/**
