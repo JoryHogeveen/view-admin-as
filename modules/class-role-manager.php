@@ -156,6 +156,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Data update handler (Ajax probably), called from main handler.
 	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
 	 * @since   1.6.x
 	 * @access  public
 	 * @param   null   $null  Null.
@@ -357,6 +363,40 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 		$root = $root . '-role-manager';
 
+		// Notice for capability editor location.
+		$admin_bar->add_node( array(
+			'id'     => $root . '-intro',
+			'parent' => $root,
+			// Translators: %s stands for "Capabilities".
+			'title'  => sprintf( __( 'You can add/edit roles under "%s"', VIEW_ADMIN_AS_DOMAIN ), __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ) ),
+			'href'   => false,
+			'meta'   => array(
+				'tabindex' => '0',
+			),
+		) );
+
+		$this->admin_bar_menu_bulk_actions( $admin_bar, $root );
+	}
+
+	/**
+	 * Add admin bar menu bulk actions.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
+	 * @since   1.6.x  Separated the tools from the main function.
+	 * @access  public
+	 * @see     admin_bar_menu()
+	 *
+	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string        $root       The root item (vaa).
+	 * @return  void
+	 */
+	private function admin_bar_menu_bulk_actions( $admin_bar, $root ) {
+
 		$role_select_options = array(
 			array(
 				'label' => ' --- ' . __( 'Select role', VIEW_ADMIN_AS_DOMAIN ) . ' --- ',
@@ -368,20 +408,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'label' => esc_html( $role_name ),
 			);
 		}
-
-		/*
-		 * Notice on capability editor location.
-		 */
-		$admin_bar->add_node( array(
-			'id'     => $root . '-intro',
-			'parent' => $root,
-			// Translators: %s stands for "Capabilities".
-			'title'  => sprintf( __( 'You can add/edit roles under "%s"', VIEW_ADMIN_AS_DOMAIN ), __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ) ),
-			'href'   => false,
-			'meta'   => array(
-				'tabindex' => '0',
-			),
-		) );
 
 		/*
 		 * Apply current view capabilities to role.
@@ -503,6 +529,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 	/**
 	 * Add admin bar items to the capability node.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
 	 *
 	 * @since   1.6.x
 	 * @access  public

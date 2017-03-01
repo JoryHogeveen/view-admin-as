@@ -48,7 +48,7 @@
 #wpadminbar #wp-admin-bar-vaa.menupop ul.ab-sub-secondary {position: static;}
 #wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {top: 1px;}
 
-#wpadminbar #wp-admin-bar-vaa ul.ab-vaa-spacing-top,
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-spacing-top,
 #wpadminbar #wp-admin-bar-vaa > div > ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
 #wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary + ul.ab-sub-secondary {padding-top: 0;}
 
