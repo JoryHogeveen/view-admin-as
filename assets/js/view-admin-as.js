@@ -32,7 +32,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
-	VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + ' .max-height-listener' );
+	VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + ' .auto-height' );
 
 	if ( ! VAA_View_Admin_As.hasOwnProperty( '_debug' ) ) {
 		VAA_View_Admin_As._debug = 0;
@@ -779,11 +779,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
+			var val = [];
+			$( root_prefix + '-copy-roles-to .ab-item.vaa-item input' ).each( function() {
+				if ( $(this).is(':checked') ) {
+					val.push( $(this).val() );
+				}
+			} );
 			var data = {
 				from: $( root_prefix + '-copy-roles-from select#' + prefix + '-copy-roles-from' ).val(),
-				to: $( root_prefix + '-copy-roles-to select#' + prefix + '-copy-roles-to' ).val()
+				to: val
 			};
-			if ( data.from && data.to ) {
+			if ( data.from && data.to.length ) {
 				var view_data = { role_defaults : { copy_role_defaults : data } };
 				if ( $(this).attr('data-method') ) {
 					view_data.role_defaults.copy_role_defaults_method = String( $(this).attr('data-method') );

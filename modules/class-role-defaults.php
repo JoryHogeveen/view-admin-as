@@ -1147,7 +1147,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'title'  => $meta_select_content,
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-multipleselect max-height',
+				'class' => 'ab-vaa-multipleselect vaa-small',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1195,11 +1195,40 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 			),
 		);
+		$role_check_content = array();
 		foreach ( $this->store->get_rolenames() as $role_key => $role_name ) {
 			$role_select_options[ $role_key ] = array(
 				'value' => esc_attr( $role_key ),
 				'label' => esc_html( $role_name ),
 			);
+			$role_check_content[ $role_key ] =
+				'<div class="ab-item vaa-item">'
+				. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+					'name'           => 'role-defaults-bulk-roles-select[]',
+					'id'             => $root . '-bulk-roles-select-' . esc_attr( $role_key ),
+					'checkbox_value' => esc_attr( $role_key ),
+					'label'          => '<span class="user-name">' . esc_html( $role_name ) . ')</span>',
+				) )
+				. '</div>';
+		}
+
+		$users_check_content = array();
+		foreach ( $this->store->get_users() as $user ) {
+			foreach ( $user->roles as $role ) {
+				$role_data = $this->store->get_roles( $role );
+				if ( $role_data instanceof WP_Role ) {
+					$role_name = $this->store->get_rolenames( $role );
+					$users_check_content[] =
+						'<div class="ab-item vaa-item">'
+						. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+							'name'           => 'role-defaults-bulk-users-select[]',
+							'id'             => $root . '-bulk-users-select-' . $user->ID,
+							'checkbox_value' => $user->ID . '|' . $role,
+							'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
+						) )
+						. '</div>';
+				}
+			}
 		}
 
 		$role_defaults = $this->get_role_defaults();
@@ -1244,31 +1273,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'class' => 'ab-vaa-filter',
 				),
 			) );
-			$users_select_content = '';
-			foreach ( $this->store->get_users() as $user ) {
-				foreach ( $user->roles as $role ) {
-					$role_data = $this->store->get_roles( $role );
-					if ( $role_data instanceof WP_Role ) {
-						$role_name = $this->store->get_rolenames( $role );
-						$users_select_content .=
-							'<div class="ab-item vaa-item">'
-							. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
-								'name'           => 'role-defaults-bulk-users-select[]',
-								'id'             => $root . '-bulk-users-select-' . $user->ID,
-								'checkbox_value' => $user->ID . '|' . $role,
-								'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
-							) )
-							. '</div>';
-					}
-				}
-			}
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-select',
 				'parent' => $root . '-bulk-users',
-				'title'  => $users_select_content,
+				'title'  => implode( '', $users_check_content ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-multipleselect max-height',
+					'class' => 'ab-vaa-multipleselect vaa-small',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1346,8 +1357,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			 * Copy actions.
 			 */
 			$role_copy_options = $role_select_options;
+			$role_copy_options['']['label'] = '- ' . __( 'Select role source', VIEW_ADMIN_AS_DOMAIN ) . ' -';
 			// Remove 'all' option from copy list.
 			unset( $role_copy_options['all'] );
+
 			$admin_bar->add_group( array(
 				'id'     => $root . '-copy',
 				'parent' => $root,
@@ -1371,7 +1384,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'parent' => $root . '-copy',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
 					'name'   => $root . '-copy-roles-from',
-					'label'  => __( 'Copy from:', VIEW_ADMIN_AS_DOMAIN ) . '<br>',
 					'values' => $role_copy_options,
 				) ),
 				'href'   => false,
@@ -1379,23 +1391,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
 				),
 			) );
-			// Since it is a multiple select an empty first item is not needed.
-			unset( $role_copy_options[''] );
 			$admin_bar->add_node( array(
 				'id'     => $root . '-copy-roles-to',
 				'parent' => $root . '-copy',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
-					'name'   => $root . '-copy-roles-to',
-					'label'  => __( 'Copy to:', VIEW_ADMIN_AS_DOMAIN ) . '<br>',
-					'description' => __( 'You can select multiple items', VIEW_ADMIN_AS_DOMAIN ) . ' | Ctrl (Windows) / Command (Mac)',
-					'values' => $role_copy_options,
-					'attr'   => array(
-						'multiple' => true,
-					),
-				) ),
+				'title'  => implode( '', $role_check_content ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
+					'class' => 'ab-vaa-multipleselect vaa-small',
 				),
 			) );
 			$admin_bar->add_node( array(
