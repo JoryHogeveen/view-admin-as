@@ -682,7 +682,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	public function filter_update_user_metadata( $null, $object_id, $meta_key, $meta_value ) {
 		if ( true === $this->compare_metakey( $meta_key ) && (int) $object_id === (int) $this->store->get_curUser()->ID ) {
-			$this->update_role_defaults( $this->store->get_view( 'role' ), $meta_key, $meta_value );
+			$this->filter_update_role_defaults( $this->store->get_view( 'role' ), $meta_key, $meta_value );
 			return false; // Do not update current user meta.
 		}
 		return $null; // Go on as normal.
@@ -714,9 +714,46 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	}
 
 	/**
-	 * Update a role with new defaults.
+	 * Set the role default.
+	 * Iterates over each role and sets the new values with an optional method.
+	 * By default it fully overwrites the previous values.
 	 *
-	 * @todo  Refactor like get_role_defaults for enhanced usage.
+	 * @since   1.6.x
+	 * @access  private
+	 * @param   array   $new_defaults
+	 * @param   string  $method
+	 */
+	private function set_role_defaults( $new_defaults, $method = '' ) {
+		if ( empty( $new_defaults ) ) {
+			return;
+		}
+		$role_defaults = $this->get_role_defaults();
+		foreach ( $new_defaults as $role => $role_data ) {
+			if ( empty( $role_defaults[ $role ] ) ) {
+				$role_defaults[ $role ] = array();
+			}
+			// @since  1.6.2  Multiple import methods.
+			switch ( $method ) {
+				case 'overwrite':
+					// Overwrite the existing data, keep data that don't exist in the import.
+					$role_defaults[ $role ] = array_merge( $role_defaults[ $role ], $role_data );
+				break;
+				case 'append':
+					// Append new data without overwriting the existing data.
+					$role_defaults[ $role ] = array_merge( $role_data, $role_defaults[ $role ] );
+				break;
+				case 'import':
+				default:
+					// Fully Overwrite data for each supplied role.
+					$role_defaults[ $role ] = $role_data;
+				break;
+			}
+		}
+		$this->update_optionData( $role_defaults, 'roles', true );
+	}
+
+	/**
+	 * Update a role with new defaults.
 	 *
 	 * @since   1.4
 	 * @access  private
@@ -726,7 +763,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @param   string  $meta_value  Meta value.
 	 * @return  bool
 	 */
-	private function update_role_defaults( $role, $meta_key, $meta_value ) {
+	private function filter_update_role_defaults( $role, $meta_key, $meta_value ) {
 		$role_defaults = $this->get_role_defaults();
 		if ( ! isset( $role_defaults[ $role ] ) ) {
 			$role_defaults[ $role ] = array();
@@ -757,7 +794,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					$error_list[] = esc_attr__( 'Role not found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role;
 				}
 			}
-			$this->update_optionData( $role_defaults, 'roles', true );
+			$this->set_role_defaults( $role_defaults );
 			if ( ! empty( $error_list ) ) {
 				return array(
 					'text' => esc_attr__( 'Data copied but there were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
@@ -843,7 +880,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		}
 		foreach ( $data as $role => $role_data ) {
 			// Make sure the role exists.
-			if ( array_key_exists( $role, $this->store->get_roles() ) ) {
+			if ( $this->store->get_roles( $role ) ) {
 				// Add the role to the new defaults.
 				$new_defaults[ $role ] = array();
 				foreach ( $role_data as $data_key => $data_value ) {
@@ -860,29 +897,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 		if ( ! empty( $new_defaults ) ) {
-			$role_defaults = $this->get_role_defaults();
-			foreach ( $new_defaults as $role => $role_data ) {
-				if ( empty( $role_defaults[ $role ] ) ) {
-					$role_defaults[ $role ] = array();
-				}
-				// @since  1.6.2  Multiple import methods.
-				switch ( $method ) {
-					case 'overwrite':
-						// Overwrite the existing data, keep data that don't exist in the import.
-						$role_defaults[ $role ] = array_merge( $role_defaults[ $role ], $role_data );
-					break;
-					case 'append':
-						// Append new data without overwriting the existing data.
-						$role_defaults[ $role ] = array_merge( $role_data, $role_defaults[ $role ] );
-					break;
-					case 'import':
-					default:
-						// Fully Overwrite data for each supplied role.
-						$role_defaults[ $role ] = $role_data;
-					break;
-				}
-			}
-			$this->update_optionData( $role_defaults, 'roles', true );
+
+			$this->set_role_defaults( $new_defaults, $method );
+
 			if ( ! empty( $error_list ) ) {
 				// Close enough!
 				return array(
