@@ -9,7 +9,7 @@
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 /**
- * Store class that stores the VAA data for use
+ * Store class that stores the VAA data for use.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
@@ -671,11 +671,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * Get view type data
 	 *
 	 * @since   1.6.x
-	 * @param   string  $type  Type key
-	 * @param   string  $key   Type data key.
+	 * @param   string  $type  Type key.
+	 * @param   string  $key   (optional) Type data key.
 	 * @return  mixed
 	 */
-	public function get_data( $type, $key ) {
+	public function get_data( $type, $key = null ) {
 		if ( isset( $this->data[ $type ] ) ) {
 			return VAA_API::get_array_data( $this->data[ $type ], $key );
 		}

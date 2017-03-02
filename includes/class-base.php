@@ -9,8 +9,8 @@
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 /**
- * Base class that gets the VAA data from the main class
- * Use this class as an extender for other classes
+ * Base class that gets the VAA data from the main class.
+ * Use this class as an extender for other classes.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As

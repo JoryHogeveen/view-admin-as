@@ -9,7 +9,7 @@
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 /**
- * Compatibility class
+ * Compatibility class.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As

@@ -11,7 +11,7 @@
 if ( ! class_exists( 'VAA_View_Admin_As_UI' ) ) {
 
 /**
- * UI hooks for View Admin As
+ * UI hooks for View Admin As.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As

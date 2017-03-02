@@ -12,8 +12,8 @@ if ( ! class_exists( 'VAA_View_Admin_As_RUA' ) ) {
 
 add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_RUA', 'get_instance' ) );
 
-/** *
- * Compatibility class for the Restrict User Access plugin
+/**
+ * Compatibility class for the Restrict User Access plugin.
  *
  * Tested from RUA version: 0.12.4
  * Official RUA compat release: 0.13 (https://github.com/intoxstudio/restrict-user-access/pull/8)

@@ -9,7 +9,7 @@
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 /**
- * Update class used for version control and updates
+ * Update class used for version control and updates.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As

@@ -9,7 +9,7 @@
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 /**
- * Admin Bar UI for View Admin As
+ * Admin Bar UI for View Admin As.
  *
  * Disable some PHPMD checks for this class.
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)

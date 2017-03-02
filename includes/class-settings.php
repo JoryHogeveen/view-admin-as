@@ -9,7 +9,9 @@
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 /**
- * Settings class that stores the VAA settings for use
+ * Settings class that stores the VAA settings for use.
+ *
+ * @see VAA_View_Admin_As_Store
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As

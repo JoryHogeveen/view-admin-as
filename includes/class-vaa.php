@@ -9,7 +9,7 @@
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
 /**
- * Plugin initializer class
+ * Plugin initializer class.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As

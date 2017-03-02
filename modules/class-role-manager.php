@@ -13,7 +13,7 @@ if ( ! class_exists( 'VAA_View_Admin_As_Role_Manager' ) ) {
 add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Role_Manager', 'get_instance' ) );
 
 /**
- * Add or remove roles and grant or deny them capabilities
+ * Add or remove roles and grant or deny them capabilities.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
