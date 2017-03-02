@@ -774,7 +774,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.6.x  Copy role defaults.
-		$document.on( 'click touchend', root_prefix + '-copy-roles-copy button#' + prefix + '-copy-roles-copy', function( e ) {
+		$document.on( 'click touchend', root_prefix + '-copy-roles-copy button.vaa-copy-role-defaults', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -785,23 +785,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			};
 			if ( data.from && data.to ) {
 				var view_data = { role_defaults : { copy_role_defaults : data } };
-				VAA_View_Admin_As.ajax( view_data, false );
-			}
-			return false;
-		} );
-
-		// @since  1.4  Clear role defaults.
-		$document.on( 'click touchend', root_prefix + '-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = $( root_prefix + '-clear-roles-select select#' + prefix + '-clear-roles-select' ).val();
-			if ( val && '' !== val ) {
-				var view_data = { role_defaults : { clear_role_defaults : val } };
-				if ( confirm( VAA_View_Admin_As.__confirm ) ) {
-					VAA_View_Admin_As.ajax( view_data, false );
+				if ( $(this).attr('data-method') ) {
+					view_data.role_defaults.copy_role_defaults_method = String( $(this).attr('data-method') );
 				}
+				VAA_View_Admin_As.ajax( view_data, false );
 			}
 			return false;
 		} );
@@ -838,6 +825,22 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} catch ( err ) {
 					// @todo Improve error message.
 					alert( err );
+				}
+			}
+			return false;
+		} );
+
+		// @since  1.4  Clear role defaults.
+		$document.on( 'click touchend', root_prefix + '-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var val = $( root_prefix + '-clear-roles-select select#' + prefix + '-clear-roles-select' ).val();
+			if ( val && '' !== val ) {
+				var view_data = { role_defaults : { clear_role_defaults : val } };
+				if ( confirm( VAA_View_Admin_As.__confirm ) ) {
+					VAA_View_Admin_As.ajax( view_data, false );
 				}
 			}
 			return false;
@@ -974,7 +977,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			console.log( item );
 			$( VAA_View_Admin_As.root + '-caps-select-options > .ab-item' ).prepend( item );
 		} );
-
 	};
 
 	/**

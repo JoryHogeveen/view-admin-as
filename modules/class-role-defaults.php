@@ -490,8 +490,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		// @since  1.6.x  Copy
 		if ( VAA_API::array_has( $data, 'copy_role_defaults', array( 'validation' => 'is_array' ) ) ) {
 			if ( isset( $data['copy_role_defaults']['from'] ) && isset( $data['copy_role_defaults']['to'] ) ) {
+				$method = ( ! empty( $data['copy_role_defaults_method'] ) ) ? (string) $data['copy_role_defaults_method'] : '';
 				// $content format: array( 'text' => **text**, 'errors' => **error array** ).
-				$content = $this->copy_role_defaults( $data['copy_role_defaults']['from'], $data['copy_role_defaults']['to'] );
+				$content = $this->copy_role_defaults( $data['copy_role_defaults']['from'], $data['copy_role_defaults']['to'], $method );
 				if ( true === $content ) {
 					$success = true;
 				} else {
@@ -720,8 +721,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.6.x
 	 * @access  private
-	 * @param   array   $new_defaults
-	 * @param   string  $method
+	 * @param   array   $new_defaults  New role defaults (requires a full array of roles with data).
+	 * @param   string  $method        Method to be used (overwrite, append or default)
 	 */
 	private function set_role_defaults( $new_defaults, $method = '' ) {
 		if ( empty( $new_defaults ) ) {
@@ -742,7 +743,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					// Append new data without overwriting the existing data.
 					$role_defaults[ $role ] = array_merge( $role_data, $role_defaults[ $role ] );
 				break;
-				case 'import':
 				default:
 					// Fully Overwrite data for each supplied role.
 					$role_defaults[ $role ] = $role_data;
@@ -780,9 +780,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @param   string        $from_role  The source role defaults.
 	 * @param   string|array  $to_role    The role(s) to copy to.
+	 * @param   string        $method     Clone method.
 	 * @return  array|bool
 	 */
-	private function copy_role_defaults( $from_role, $to_role ) {
+	private function copy_role_defaults( $from_role, $to_role, $method = '' ) {
 		$to_role       = (array) $to_role;
 		$error_list    = array();
 		$role_defaults = $this->get_role_defaults();
@@ -794,7 +795,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					$error_list[] = esc_attr__( 'Role not found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role;
 				}
 			}
-			$this->set_role_defaults( $role_defaults );
+			$this->set_role_defaults( $role_defaults, $method );
 			if ( ! empty( $error_list ) ) {
 				return array(
 					'text' => esc_attr__( 'Data copied but there were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
@@ -872,7 +873,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @param   string  $method  Import method.
 	 * @return  mixed
 	 */
-	private function import_role_defaults( $data, $method = 'import' ) {
+	private function import_role_defaults( $data, $method = '' ) {
 		$new_defaults = array();
 		$error_list   = array();
 		if ( empty( $data ) || ! is_array( $data ) ) {
@@ -1403,8 +1404,42 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
 					'name'  => $root . '-copy-roles-copy',
 					'label' => __( 'Copy', VIEW_ADMIN_AS_DOMAIN ),
-					'class' => 'button-secondary',
-				) ),
+					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
+					'attr'  => array(
+						'data-method' => 'copy',
+						'data-showhide' => 'p.vaa-copy-role-defaults-desc',
+					),
+				) ) . ' '
+				. VAA_View_Admin_As_Admin_Bar::do_button( array(
+					'name'  => $root . '-copy-roles-copy-overwrite',
+					'label' => __( 'Overwrite', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
+					'attr'  => array(
+						'data-method' => 'overwrite',
+						'data-showhide' => 'p.vaa-copy-role-defaults-overwrite-desc',
+					),
+				) ) . ' '
+				. VAA_View_Admin_As_Admin_Bar::do_button( array(
+					'name'  => $root . '-copy-roles-copy-append',
+					'label' => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
+					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
+					'attr'  => array(
+						'data-method' => 'append',
+						'data-showhide' => 'p.vaa-copy-role-defaults-append-desc',
+					),
+				) )
+				. VAA_View_Admin_As_Admin_Bar::do_description(
+					__( 'Fully overwrite data', VIEW_ADMIN_AS_DOMAIN ),
+					array( 'class' => 'vaa-copy-role-defaults-desc' )
+				)
+				. VAA_View_Admin_As_Admin_Bar::do_description(
+					__( 'Overwrite and keep existing data that is not overwritten', VIEW_ADMIN_AS_DOMAIN ),
+					array( 'class' => 'vaa-copy-role-defaults-overwrite-desc' )
+				)
+				. VAA_View_Admin_As_Admin_Bar::do_description(
+					__( 'Append without overwriting the existing data', VIEW_ADMIN_AS_DOMAIN ),
+					array( 'class' => 'vaa-copy-role-defaults-append-desc' )
+				),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'vaa-button-container',
@@ -1520,7 +1555,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					),
 				) )
 				. VAA_View_Admin_As_Admin_Bar::do_description(
-					__( 'Fully overwrite data for each supplied role', VIEW_ADMIN_AS_DOMAIN ),
+					__( 'Fully overwrite data', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-import-role-defaults-desc' )
 				)
 				. VAA_View_Admin_As_Admin_Bar::do_description(
