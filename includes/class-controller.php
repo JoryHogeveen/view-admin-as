@@ -101,7 +101,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		}
 
 		// Reset hook
-		add_filter( 'view_admin_as_handle_data_reset', array( $this, 'reset_view' ) );
+		add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
 
 		// Validation hooks
 		add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
@@ -197,7 +197,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 * Ajax return filters.
 		 *
 		 * @see     view_admin_as_update_view_{$key}
-		 * @see     view_admin_as_handle_data_{$key}
+		 * @see     view_admin_as_handle_ajax_{$key}
 		 *
 		 * @since   1.6.x
 		 * @param   null    $null   Null.
@@ -226,7 +226,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			if ( $this->is_view_type( $key ) ) {
 				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
 			} else {
-				$success = apply_filters( 'view_admin_as_handle_data_' . $key, null, $value, $key );
+				$success = apply_filters( 'view_admin_as_handle_ajax_' . $key, null, $value, $key );
 			}
 			if ( true !== $success ) {
 				break;
@@ -625,6 +625,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			return array();
 		}
 
+		// Only leave keys that are view types.
 		$data = array_intersect_key( $data, array_flip( $this->get_view_types() ) );
 
 		// We only want allowed keys and data, otherwise it's not added through this plugin.
@@ -662,6 +663,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	public function validate_view_data_caps( $null, $data ) {
 		// Caps data must be an array
 		if ( is_array( $data ) ) {
+
 			// The data is an array, most likely from the database.
 			$data = array_map( 'absint', $data );
 			ksort( $data ); // Sort the new caps the same way we sort the existing caps.

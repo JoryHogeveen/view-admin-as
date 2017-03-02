@@ -141,7 +141,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 */
 		if ( ! is_network_admin() && $this->current_user_can( 'view_admin_as_role_defaults' ) ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-			add_filter( 'view_admin_as_handle_data_role_defaults', array( $this, 'ajax_handler' ), 10, 2 );
+			add_filter( 'view_admin_as_handle_ajax_role_defaults', array( $this, 'ajax_handler' ), 10, 2 );
 		}
 	}
 

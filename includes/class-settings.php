@@ -164,11 +164,12 @@ class VAA_View_Admin_As_Settings {
 				'view_mode'           => array( 'browse', 'single' ),
 			);
 
+			// @todo Remove?
 			add_filter( 'view_admin_as_validate_view_data_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 			add_filter( 'view_admin_as_validate_view_data_user_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 
-			add_filter( 'view_admin_as_handle_data_setting', array( $this, 'filter_store_settings' ), 10, 3 );
-			add_filter( 'view_admin_as_handle_data_user_setting', array( $this, 'filter_store_settings' ), 10, 3 );
+			add_filter( 'view_admin_as_handle_ajax_setting', array( $this, 'filter_store_settings' ), 10, 3 );
+			add_filter( 'view_admin_as_handle_ajax_user_setting', array( $this, 'filter_store_settings' ), 10, 3 );
 
 			// Make identifier empty for the filters.
 			$id = '';
