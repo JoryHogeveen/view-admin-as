@@ -41,12 +41,21 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	protected $optionKey = 'vaa_role_manager';
 
 	/**
-	 * The WP_Roles object
+	 * The WP_Roles object.
 	 *
 	 * @since  1.6.x
 	 * @var    WP_Roles
 	 */
 	public $wp_roles = null;
+
+	/**
+	 * Protected roles.
+	 * These roles cannot be removed.
+	 *
+	 * @since  1.6.x
+	 * @var    array
+	 */
+	private $protected_roles = array();
 
 	/**
 	 * Construct function.
@@ -126,6 +135,13 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				)
 			);
 		}
+
+		// Define protected roles
+		$default_role = get_option( 'default_role' ); // Normally `subscriber`
+		$this->protected_roles = array(
+			'administrator' => 'administrator',
+			$default_role => $default_role,
+		);
 	}
 
 	/**
@@ -192,7 +208,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			return $success;
 		}
 
-		$callbacks = array(
+		$options = array(
 			'apply_view_to_role' => array(
 				'validation' => 'is_array',
 				'values' => array( 'role' => '', 'capabilities' => '' ),
@@ -214,7 +230,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			),
 		);
 
-		foreach ( $callbacks as $key => $val ) {
+		foreach ( $options as $key => $val ) {
 			if ( VAA_API::array_has( $data, $key, array( 'validation' => $val['validation'] ) ) ) {
 				if ( 'is_array' === $val['validation'] && array_diff_key( $val['values'], $data[ $key ] ) ) {
 					$success = array(
@@ -323,8 +339,11 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 */
 	public function delete_role( $role ) {
 		if ( $this->store->get_roles( $role ) ) {
-			$this->wp_roles->remove_role( $role );
-			return true;
+			if ( ! in_array( $role, $this->protected_roles, true ) ) {
+				$this->wp_roles->remove_role( $role );
+				return true;
+			}
+			return __( 'This role cannot be removed', VIEW_ADMIN_AS_DOMAIN );
 		}
 		return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
 	}
@@ -431,12 +450,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	private function admin_bar_menu_bulk_actions( $admin_bar, $root ) {
 
 		$role_select_options = array(
-			array(
+			'' => array(
 				'label' => ' --- ' . __( 'Select role', VIEW_ADMIN_AS_DOMAIN ) . ' --- ',
 			),
 		);
 		foreach ( $this->store->get_rolenames() as $role_key => $role_name ) {
-			$role_select_options[] = array(
+			$role_select_options[ $role_key ] = array(
 				'value' => esc_attr( $role_key ),
 				'label' => esc_html( $role_name ),
 			);
@@ -571,6 +590,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		/*
 		 * Delete role.
 		 */
+		$role_select_options = array_diff_key( $role_select_options, $this->protected_roles );
 		$admin_bar->add_group( array(
 			'id'     => $root . '-delete',
 			'parent' => $root,
