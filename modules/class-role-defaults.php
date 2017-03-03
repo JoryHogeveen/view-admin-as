@@ -998,6 +998,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Add admin bar menu's.
 	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+	 * @todo Refactor to enable above checks?
+	 *
 	 * @since   1.4
 	 * @since   1.5.2   Changed hook to vaa_admin_bar_settings_after (previous: 'vaa_admin_bar_roles_before').
 	 * @access  public
@@ -1207,7 +1211,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'name'           => 'role-defaults-bulk-roles-select[]',
 					'id'             => $root . '-bulk-roles-select-' . esc_attr( $role_key ),
 					'checkbox_value' => esc_attr( $role_key ),
-					'label'          => '<span class="user-name">' . esc_html( $role_name ) . ')</span>',
+					'label'          => '<span class="user-name">' . esc_html( $role_name ) . '</span>',
 				) )
 				. '</div>';
 		}
