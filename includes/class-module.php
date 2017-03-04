@@ -89,18 +89,23 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.6.x
 	 * @access  public
-	 * @param   array   $data  Array of detailed info.
-	 * @param   string  $type  Notice type.
+	 * @param   bool    $success  Success return.
+	 * @param   array   $data     Array of detailed info.
+	 * @param   string  $type     Notice type.
 	 * @return  array
 	 */
-	public function ajax_data_notice( $data, $type = 'message' ) {
-		if ( is_bool( $type ) ) {
-			$type = ( $type ) ? 'success' : 'error';
+	public function ajax_data_notice( $success, $data, $type = null ) {
+		if ( ! is_string( $type ) ) {
+			$type = ( $success ) ? 'success' : 'error';
 		}
-		return wp_parse_args( $data, array(
+		$data = wp_parse_args( $data, array(
 			'display' => 'notice',
 			'type' => $type,
 		) );
+		return array(
+			'success' => (bool) $success,
+			'data' => $data,
+		);
 	}
 
 	/**
@@ -109,18 +114,23 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.6.x
 	 * @access  public
-	 * @param   array   $data  Array of detailed info.
-	 * @param   string  $type  Popup type.
+	 * @param   bool    $success  Success return.
+	 * @param   array   $data     Array of detailed info.
+	 * @param   string  $type     Popup type.
 	 * @return  array
 	 */
-	public function ajax_data_popup( $data, $type = 'message' ) {
-		if ( is_bool( $type ) ) {
-			$type = ( $type ) ? 'success' : 'error';
+	public function ajax_data_popup( $success, $data, $type = null ) {
+		if ( ! is_string( $type ) ) {
+			$type = ( $success ) ? 'success' : 'error';
 		}
-		return wp_parse_args( $data, array(
+		$data = wp_parse_args( $data, array(
 			'display' => 'popup',
 			'type' => $type,
 		) );
+		return array(
+			'success' => (bool) $success,
+			'data' => $data,
+		);
 	}
 
 	/**

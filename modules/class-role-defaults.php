@@ -421,14 +421,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$success = true;
 			$errors = array_filter( $errors );
 			if ( ! empty( $errors ) ) {
-				$success = array(
-					'success' => false,
-					'data' => array(
-						'display' => 'popup',
-						'text' => esc_attr__( 'There were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
-						'list' => $errors,
-					),
-				);
+				$success = $this->ajax_data_popup( false, array(
+					'text' => esc_attr__( 'There were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
+					'list' => $errors,
+				), 'error' );
 			}
 		}
 
@@ -447,20 +443,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( VAA_API::array_has( $data, 'export_role_defaults', array( 'validation' => 'is_string' ) ) ) {
 			$content = $this->export_role_defaults( strip_tags( $data['export_role_defaults'] ) );
 			if ( is_array( $content ) ) {
-				$success = array(
-					'success' => true,
-					'data' => array(
-						'display' => 'popup',
-						'type' => 'success',
-						'text' => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
-						'textarea' => wp_json_encode( $content ),
-					),
-				);
+				$success = $this->ajax_data_popup( true, array(
+					'text' => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
+					'textarea' => wp_json_encode( $content ),
+				) );
 			} else {
-				$success = array(
-					'success' => false,
-					'data' => $this->ajax_data_notice( array( 'text' => $content ), 'error' ),
-				);
+				$success = $this->ajax_data_notice( false, array( 'text' => $content ), 'error' );
 			}
 		}
 
@@ -472,10 +460,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			if ( true === $content ) {
 				$success = true;
 			} else {
-				$success = array(
-					'success' => false,
-					'data' => $this->ajax_data_popup( (array) $content, 'error' ),
-				);
+				$success = $this->ajax_data_popup( false, (array) $content, 'error' );
 			}
 		}
 
@@ -492,10 +477,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				if ( true === $content ) {
 					$success = true;
 				} else {
-					$success = array(
-						'success' => false,
-						'data' => $this->ajax_data_popup( (array) $content, 'error' ),
-					);
+					$success = $this->ajax_data_popup( false, (array) $content, 'error' );
 				}
 			}
 		}
