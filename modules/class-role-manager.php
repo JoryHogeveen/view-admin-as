@@ -138,8 +138,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			);
 		}
 
-		// Define protected roles
-		$default_role = get_option( 'default_role' ); // Normally `subscriber`
+		// Define protected roles.
+		$default_role = get_option( 'default_role' ); // Normally `subscriber`.
 		$this->protected_roles = array(
 			'administrator' => 'administrator',
 			$default_role => $default_role,
@@ -213,22 +213,22 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$options = array(
 			'apply_view_to_role' => array(
 				'validation' => 'is_array',
-				'values' => array( 'role' => '', 'capabilities' => '' ),
-				'callback' => 'save_role',
+				'values'     => array( 'role' => '', 'capabilities' => '' ),
+				'callback'   => 'save_role',
 			),
 			'save_role' => array(
 				'validation' => 'is_array',
-				'values' => array( 'role' => '', 'capabilities' => '' ),
-				'callback' => 'save_role',
+				'values'     => array( 'role' => '', 'capabilities' => '' ),
+				'callback'   => 'save_role',
 			),
 			'clone_role' => array(
 				'validation' => 'is_array',
-				'values' => array( 'role' => '', 'new_role' => '' ),
-				'callback' => 'clone_role',
+				'values'     => array( 'role' => '', 'new_role' => '' ),
+				'callback'   => 'clone_role',
 			),
-			'delete_role' => array(
+			'delete_role'    => array(
 				'validation' => 'is_string',
-				'callback' => 'delete_role',
+				'callback'   => 'delete_role',
 			),
 		);
 

@@ -459,11 +459,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			} else {
 				$success = array(
 					'success' => false,
-					'data' => array(
-						'display' => 'notice',
-						'type' => 'error',
-						'text' => $content,
-					),
+					'data' => $this->ajax_data_notice( array( 'text' => $content ), 'error' ),
 				);
 			}
 		}
@@ -478,12 +474,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			} else {
 				$success = array(
 					'success' => false,
-					'data' => array(
-						'display' => 'popup',
-						'type' => 'error',
-					),
+					'data' => $this->ajax_data_popup( (array) $content, 'error' ),
 				);
-				$success['data'] = array_merge( $success['data'], $content );
 			}
 		}
 
@@ -492,18 +484,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			if ( isset( $data['copy_role_defaults']['from'] ) && isset( $data['copy_role_defaults']['to'] ) ) {
 				$method = ( ! empty( $data['copy_role_defaults_method'] ) ) ? (string) $data['copy_role_defaults_method'] : '';
 				// $content format: array( 'text' => **text**, 'errors' => **error array** ).
-				$content = $this->copy_role_defaults( $data['copy_role_defaults']['from'], $data['copy_role_defaults']['to'], $method );
+				$content = $this->copy_role_defaults(
+					$data['copy_role_defaults']['from'],
+					$data['copy_role_defaults']['to'],
+					$method
+				);
 				if ( true === $content ) {
 					$success = true;
 				} else {
 					$success = array(
 						'success' => false,
-						'data' => array(
-							'display' => 'popup',
-							'type' => 'error',
-						),
+						'data' => $this->ajax_data_popup( (array) $content, 'error' ),
 					);
-					$success['data'] = array_merge( $success['data'], $content );
 				}
 			}
 		}
