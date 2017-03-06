@@ -293,11 +293,11 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Add data to the VAA script localization.
 		 * @since   1.6.x
-		 * @param   array  $array  Empty array.
+		 * @param   array  $array  Empty array (Will be overwritten with VAA core data so use unique keys).
 		 * @return  array
 		 */
 		$script_localization = array_merge(
-			(array) apply_filters( 'vaa_view_admin_as_script_localization', array() ),
+			(array) apply_filters( 'view_admin_as_script_localization', array() ),
 			array(
 				// Data.
 				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
