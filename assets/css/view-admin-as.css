@@ -190,7 +190,7 @@
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item {padding: 8px 44px; white-space: normal; height: auto;}
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item > .ab-item {padding: 8px 0;}
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper:last-child .ab-item.description {margin-bottom: 0;}
-	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: text-top;}
+	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon .ab-item .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: text-top;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon > .ab-item > .ab-icon {font-size: 30px !important; margin-left: -6px; margin-top: -1px; vertical-align: top;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 12px; padding-right: 12px;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-menupop div li {margin-left: 12px;}

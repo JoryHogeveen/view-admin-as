@@ -401,6 +401,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		if ( VAA_View_Admin_As._mobile ) {
 			html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
 			$( VAA_View_Admin_As.prefix + '> .ab-sub-wrapper').prepend( html );
+			$( 'html, body' ).animate( { scrollTop: '0' } );
 			$( root + ' .remove' ).click( function() { $(this).parent().slideUp('fast').remove(); } );
 			// Remove it after 5 seconds
 			setTimeout( function(){ $(root).slideUp('fast', function() { $(this).remove(); } ); }, 5000 );
