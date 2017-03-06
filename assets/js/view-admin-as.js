@@ -33,6 +33,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
 	VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + ' .auto-height' );
+	VAA_View_Admin_As._mobile = false;
 
 	if ( ! VAA_View_Admin_As.hasOwnProperty( '_debug' ) ) {
 		VAA_View_Admin_As._debug = 0;
@@ -138,6 +139,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 			} );
 
+			// @since  1.6.x  Init mobile fixes.
+			if ( $body.hasClass('mobile') ) {
+				VAA_View_Admin_As._mobile = true;
+				VAA_View_Admin_As.mobile();
+			}
+
 		} ); // End window.load.
 
 		// Process reset.
@@ -161,9 +168,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					return;
 				}
 				e.preventDefault();
-				if ( ! $(this).parent().hasClass('not-a-view') ) {
+				var $this = $(this);
+				// Fix for responsive views (first click triggers show child items).
+				if ( $this.parent().hasClass('menupop') && ! $this.next().is(':visible') ) {
+					$this.next().show().parent().addClass('active');
+					return;
+				}
+				if ( ! $this.parent().hasClass('not-a-view') ) {
 					var view_data = {};
-					view_data[ type ] = String( $(this).attr('rel') );
+					view_data[ type ] = String( $this.attr('rel') );
 					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
 				}
@@ -177,6 +190,77 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			$(this).parent('.ab-item').slideUp('fast', function() { $(this).remove(); } );
+		} );
+	};
+
+	/**
+	 * MOBILE INIT.
+	 * @since   1.6.x
+	 * @return  {null}  nothing
+	 **/
+	VAA_View_Admin_As.mobile = function() {
+		var prefix = '.mobile ' + VAA_View_Admin_As.prefix;
+
+		// @since  1.6.x  Fix for clicking within sub secondary elements. Overwrites WP core 'hover' functionality.
+		$document.on( 'click touchend', prefix + ' > .ab-sub-wrapper .ab-item', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+			var $sub = $(this).parent('.menupop').children('.ab-sub-wrapper');
+			if ( $sub.length ) {
+				if ( $sub.hasClass('active') ) {
+					$sub.slideUp('fast');
+					$sub.removeClass('active');
+				} else {
+					$sub.slideDown('fast');
+					$sub.addClass('active');
+				}
+			}
+		} );
+
+		/*
+		 * @since  1.6.x  Mimic default form handling because this gets overwritten by WP core.
+		 **/
+		// Checkboxes
+		$document.on( 'click touchend', prefix + 'input[type="checkbox"]', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+			var $this = $(this);
+			if ( $this.is(':checked') ) {
+				$this.attr( 'checked', false );
+			} else {
+				$this.attr( 'checked', 'checked' );
+			}
+			$this.trigger('change');
+			return false;
+		} );
+		// Radio
+		$document.on( 'click touchend', prefix + 'input[type="radio"]', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+			var $this = $(this);
+			$('input[name="' + $this.attr['name'] + '"]').removeAttr('checked');
+			$this.attr( 'checked', 'checked' );
+			$this.trigger('change');
+			return false;
+		} );
+		// Labels
+		$document.on( 'click touchend', prefix + 'label', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			e.stopPropagation();
+			$( '#' + $(this).attr( 'for' ) ).trigger( e.type );
+			return false;
 		} );
 	};
 
@@ -241,8 +325,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				if ( response.hasOwnProperty( 'data' ) ) {
 					if ( 'object' === typeof response.data ) {
 						data = response.data;
+						if ( data.hasOwnProperty( 'display' ) ) {
+							display = data.display;
+						}
 					}
-					display = ( data.hasOwnProperty( 'display' ) ) ? data.display : display;
 				}
 
 				if ( success ) {
@@ -311,13 +397,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return {null}  Nothing
 	 */
 	VAA_View_Admin_As.notice = function( notice, type ) {
-		var root = '#wpadminbar .vaa-notice';
-		$('#wp-admin-bar-top-secondary').append(
-			'<li class="vaa-notice vaa-' + type + '"><span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice + '</li>'
-		);
-		$( root + ' .remove' ).click( function() { $(this).parent().remove(); } );
-		// Remove it after 5 seconds
-		setTimeout( function(){ $(root).fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
+		var root = '#wpadminbar .vaa-notice',
+			html = '<span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice;
+		if ( VAA_View_Admin_As._mobile ) {
+			html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
+			$( VAA_View_Admin_As.prefix + '> .ab-sub-wrapper').prepend( html );
+			$( root + ' .remove' ).click( function() { $(this).parent().slideUp('fast').remove(); } );
+			// Remove it after 5 seconds
+			setTimeout( function(){ $(root).slideUp('fast', function() { $(this).remove(); } ); }, 5000 );
+		} else {
+			html = '<li class="vaa-notice vaa-' + type + '">' + html + '</li>';
+			$('#wp-admin-bar-top-secondary').append( html );
+			$( root + ' .remove' ).click( function() { $(this).parent().remove(); } );
+			// Remove it after 5 seconds
+			setTimeout( function(){ $(root).fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
+		}
 	};
 
 

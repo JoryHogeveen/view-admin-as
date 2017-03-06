@@ -169,7 +169,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 
 		wp_send_json_error( array(
 			'type' => 'error',
-			'content' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN ),
+			'text' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN ),
 		) );
 		die();
 	}
