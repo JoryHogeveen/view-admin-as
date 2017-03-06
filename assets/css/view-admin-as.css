@@ -172,10 +172,12 @@
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa:hover > .ab-item .ab-label {display: inline-block;}
 
 /**
- * Responsive (still disabled for production)
+ * Responsive (currently tablet only)
  */
 @media screen and (min-width: 480px) and (max-width: 782px) {
-    #wpadminbar #wp-admin-bar-vaa {display: block; position: static;}
+	#wpadminbar #wp-admin-bar-vaa {display: block; position: static;}
+}
+@media screen and (max-width: 782px) {
 	#wpadminbar #wp-admin-bar-vaa > .ab-item > .ab-icon {margin-left: 0;}
 	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper {width: 100%;}
 	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper {position: static; top: auto; margin: 0; -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none;}
@@ -187,7 +189,7 @@
 
 	#wpadminbar #wp-admin-bar-vaa > div > ul,
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-submenu {padding: 5px 0;}
-	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item {padding: 8px 44px;}
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item {padding: 8px 44px; white-space: normal; height: auto;}
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item > .ab-item {padding: 8px 0;}
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper:last-child .ab-item.description {margin-bottom: 0;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: text-top;}
@@ -195,14 +197,20 @@
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 12px; padding-right: 12px;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-menupop div li {margin-left: 12px;}
 
+	#wpadminbar #wp-admin-bar-vaa button {font-size: 16px; padding: 5px 15px;}
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-input .ab-item input,
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item input,
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item input {padding: 8px 12px;}
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {padding: 7px 12px;}
+
 	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .vaa-role-item.menupop > .ab-item {padding-left: 15px;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle .ab-item::after,
-	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .vaa-menupop.menupop > .ab-item:after {content: "\f140"; font-family: 'dashicons'; position: absolute; right: 10px; margin: 0; font-size: 30px; font-weight: normal;}
+	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .vaa-menupop.menupop > .ab-item:after {content: "\f140"; font-family: 'dashicons'; position: absolute; right: 10px; top: 8px; margin: 0; font-size: 30px; font-weight: normal;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle.active .ab-item::after,
 	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .vaa-menupop.menupop.active > .ab-item:after {content: "\f142";}
 
 	#wpadminbar #wp-admin-bar-vaa .ab-item select + button.input-overlay,
-	#wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {right: 44px; padding: 1px 10px;}
+	#wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {right: 44px; padding: 6px 10px 7px; font-size: 14px;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {border-width: 0 44px; max-height: 300px !important;}
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-vaa-multipleselect > .ab-item {padding: 8px 16px;}
 
