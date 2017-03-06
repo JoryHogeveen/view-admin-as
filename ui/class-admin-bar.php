@@ -804,6 +804,19 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
 
+		// Notice for users location.
+		if ( true === $this->groupUserRoles ) {
+			$admin_bar->add_node( array(
+				'id'     => $root . '-notice',
+				'parent' => $root,
+				'title'  => __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ),
+				'href'   => false,
+				'meta'   => array(
+					'tabindex' => '0',
+				),
+			) );
+		}
+
 		if ( true === $this->searchUsers ) {
 			$admin_bar->add_node( array(
 				'id'     => $root . '-searchusers',
