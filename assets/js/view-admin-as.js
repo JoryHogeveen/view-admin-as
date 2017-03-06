@@ -140,7 +140,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 
 			// @since  1.6.x  Init mobile fixes.
-			if ( $body.hasClass('mobile') ) {
+			if ( $body.hasClass('mobile') || 783 > $body.innerWidth() ) {
+				$body.addClass('vaa-mobile');
 				VAA_View_Admin_As._mobile = true;
 				VAA_View_Admin_As.mobile();
 			}
@@ -199,7 +200,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return  {null}  nothing
 	 **/
 	VAA_View_Admin_As.mobile = function() {
-		var prefix = '.mobile ' + VAA_View_Admin_As.prefix;
+		var prefix = '.vaa-mobile ' + VAA_View_Admin_As.prefix;
 
 		// @since  1.6.x  Fix for clicking within sub secondary elements. Overwrites WP core 'hover' functionality.
 		$document.on( 'click touchend', prefix + ' > .ab-sub-wrapper .ab-item', function( e ) {
@@ -223,34 +224,32 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		/*
 		 * @since  1.6.x  Mimic default form handling because this gets overwritten by WP core.
 		 **/
-		// Checkboxes
-		$document.on( 'click touchend', prefix + 'input[type="checkbox"]', function( e ) {
+		// Form elements
+		$document.on( 'click touchend', prefix + 'input, ' + prefix + 'textarea, ' + prefix + 'select', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
-			e.preventDefault();
 			e.stopPropagation();
 			var $this = $(this);
-			if ( $this.is(':checked') ) {
-				$this.attr( 'checked', false );
-			} else {
+			if ( $this.is('[type="checkbox"]') ) {
+				// Checkboxes
+				e.preventDefault();
+				if ( $this.is(':checked') ) {
+					$this.attr( 'checked', false );
+				} else {
+					$this.attr( 'checked', 'checked' );
+				}
+				$this.trigger('change');
+				return false;
+			} else if ( $this.is('[type="radio"]') ) {
+				// Radio
+				e.preventDefault();
+				$('input[name="' + $this.attr['name'] + '"]').removeAttr('checked');
 				$this.attr( 'checked', 'checked' );
+				$this.trigger('change');
+				return false;
 			}
-			$this.trigger('change');
-			return false;
-		} );
-		// Radio
-		$document.on( 'click touchend', prefix + 'input[type="radio"]', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			e.stopPropagation();
-			var $this = $(this);
-			$('input[name="' + $this.attr['name'] + '"]').removeAttr('checked');
-			$this.attr( 'checked', 'checked' );
-			$this.trigger('change');
-			return false;
+			return true;
 		} );
 		// Labels
 		$document.on( 'click touchend', prefix + 'label', function( e ) {

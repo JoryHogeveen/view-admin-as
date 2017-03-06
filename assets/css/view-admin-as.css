@@ -172,12 +172,10 @@
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa:hover > .ab-item .ab-label {display: inline-block;}
 
 /**
- * Responsive (currently tablet only)
+ * Responsive
  */
-@media screen and (min-width: 480px) and (max-width: 782px) {
-	#wpadminbar #wp-admin-bar-vaa {display: block; position: static;}
-}
 @media screen and (max-width: 782px) {
+	#wpadminbar #wp-admin-bar-vaa {display: block; position: static;}
 	#wpadminbar #wp-admin-bar-vaa > .ab-item > .ab-icon {margin-left: 0;}
 	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper {width: 100%;}
 	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper {position: static; top: auto; margin: 0; -webkit-box-shadow: none; -moz-box-shadow: none; box-shadow: none;}
