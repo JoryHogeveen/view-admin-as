@@ -204,7 +204,7 @@ class VAA_View_Admin_As_Settings {
 		 * @param  array
 		 * @return array
 		 */
-		$this->set_defaultSettings( apply_filters( 'vaa_view_admin_as_default_global_settings' . $id, $default ) );
+		$this->set_defaultSettings( apply_filters( 'view_admin_as_default_global_settings' . $id, $default ) );
 
 		/**
 		 * Set the allowed global settings.
@@ -216,7 +216,7 @@ class VAA_View_Admin_As_Settings {
 		 * }
 		 * @return array
 		 */
-		$this->set_allowedSettings( apply_filters( 'vaa_view_admin_as_allowed_global_settings' . $id, $allowed ) );
+		$this->set_allowedSettings( apply_filters( 'view_admin_as_allowed_global_settings' . $id, $allowed ) );
 
 		/**
 		 * Set the default settings for users.
@@ -225,7 +225,7 @@ class VAA_View_Admin_As_Settings {
 		 * @param  array
 		 * @return array
 		 */
-		$this->set_defaultUserSettings( apply_filters( 'vaa_view_admin_as_default_user_settings' . $id, $default_user ) );
+		$this->set_defaultUserSettings( apply_filters( 'view_admin_as_default_user_settings' . $id, $default_user ) );
 
 		/**
 		 * Set the allowed settings for users.
@@ -237,7 +237,7 @@ class VAA_View_Admin_As_Settings {
 		 * }
 		 * @return array
 		 */
-		$this->set_allowedUserSettings( apply_filters( 'vaa_view_admin_as_allowed_user_settings' . $id, $allowed_user ) );
+		$this->set_allowedUserSettings( apply_filters( 'view_admin_as_allowed_user_settings' . $id, $allowed_user ) );
 
 	}
 
