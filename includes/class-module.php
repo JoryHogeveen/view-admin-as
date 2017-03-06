@@ -84,8 +84,8 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Helper function for ajax notice return data.
-	 * Merges first param with data defaults.
+	 * Helper function for ajax return data.
+	 * Merges second param with data defaults.
 	 *
 	 * @since   1.6.x
 	 * @access  public
@@ -94,7 +94,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	 * @param   string  $type     Notice type.
 	 * @return  array
 	 */
-	public function ajax_data_notice( $success, $data, $type = null ) {
+	public function ajax_data_return( $success, $data, $type = null ) {
 		if ( ! is_string( $type ) ) {
 			$type = ( $success ) ? 'success' : 'error';
 		}
@@ -109,8 +109,24 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * Helper function for ajax notice return data.
+	 * Merges second param with data defaults.
+	 *
+	 * @since   1.6.x
+	 * @access  public
+	 * @param   bool    $success  Success return.
+	 * @param   array   $data     Array of detailed info.
+	 * @param   string  $type     Notice type.
+	 * @return  array
+	 */
+	public function ajax_data_notice( $success, $data, $type = null ) {
+		$data['display'] = 'notice';
+		return $this->ajax_data_return( $success, $data, $type );
+	}
+
+	/**
 	 * Helper function for ajax popup return data.
-	 * Merges first param with data defaults.
+	 * Merges second param with data defaults.
 	 *
 	 * @since   1.6.x
 	 * @access  public
@@ -120,17 +136,8 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	 * @return  array
 	 */
 	public function ajax_data_popup( $success, $data, $type = null ) {
-		if ( ! is_string( $type ) ) {
-			$type = ( $success ) ? 'success' : 'error';
-		}
-		$data = wp_parse_args( $data, array(
-			'display' => 'popup',
-			'type' => $type,
-		) );
-		return array(
-			'success' => (bool) $success,
-			'data' => $data,
-		);
+		$data['display'] = 'popup';
+		return $this->ajax_data_return( $success, $data, $type );
 	}
 
 	/**

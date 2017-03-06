@@ -370,27 +370,27 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * Simple true/false settings.
 		 */
 
-		// @since  1.4  Apply defaults to a new users (on register)
-		if ( isset( $data['apply_defaults_on_register'] ) ) {
-			$value = (bool) $data['apply_defaults_on_register'];
-			$success = $this->update_optionData( $value, 'apply_defaults_on_register', true );
-		}
-		// @since  1.5.1  Disable the screen options
-		if ( isset( $data['disable_user_screen_options'] ) ) {
-			$value = (bool) $data['disable_user_screen_options'];
-			$success = $this->update_optionData( $value, 'disable_user_screen_options', true );
-		}
-		// @since  1.6  Lock the locations of meta boxes
-		if ( isset( $data['lock_meta_boxes'] ) ) {
-			$value = (bool) $data['lock_meta_boxes'];
-			$success = $this->update_optionData( $value, 'lock_meta_boxes', true );
+		$bool_options = array(
+			// @since  1.4  Apply defaults to a new users (on register)
+			'apply_defaults_on_register',
+			// @since  1.5.1  Disable the screen options
+			'disable_user_screen_options',
+			// @since  1.6  Lock the locations of meta boxes
+			'lock_meta_boxes',
+		);
+
+		foreach ( $bool_options as $option ) {
+			if ( isset( $data[ $option ] ) ) {
+				$success = $this->update_optionData( (bool) $data[ $option ], $option, true );
+			}
 		}
 
 		// @since  1.6.3  Update metakeys.
 		if ( isset( $data['update_meta'] ) ) {
 			$value = $this->validate_meta( $data['update_meta'] );
 			if ( ! empty( $value ) ) {
-				$success = $this->update_optionData( $value, 'meta', true );
+				$this->update_optionData( $value, 'meta', true );
+				$success = true;
 			} else {
 				$success = array(
 					'success' => false,
@@ -563,9 +563,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$success = true;
 		$roles = array();
 		if ( 'all' === $role ) {
-			foreach ( $this->store->get_roles() as $role_name => $val ) {
-				$roles[] = $role_name;
-			}
+			$roles = array_keys( (array) $this->store->get_roles() );
 		} else {
 			foreach ( (array) $role as $role_name ) {
 				if ( array_key_exists( $role_name, $this->store->get_roles() ) ) {
@@ -657,7 +655,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	public function filter_update_user_metadata( $null, $object_id, $meta_key, $meta_value ) {
 		if ( true === $this->compare_metakey( $meta_key ) && (int) $object_id === (int) $this->store->get_curUser()->ID ) {
-			$this->filter_update_role_defaults( $this->store->get_view( 'role' ), $meta_key, $meta_value );
+			$this->update_role_defaults_metadata( $this->store->get_view( 'role' ), $meta_key, $meta_value );
 			return false; // Do not update current user meta.
 		}
 		return $null; // Go on as normal.
@@ -737,7 +735,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @param   string  $meta_value  Meta value.
 	 * @return  bool
 	 */
-	private function filter_update_role_defaults( $role, $meta_key, $meta_value ) {
+	private function update_role_defaults_metadata( $role, $meta_key, $meta_value ) {
 		$role_defaults = $this->get_role_defaults();
 		if ( ! isset( $role_defaults[ $role ] ) ) {
 			$role_defaults[ $role ] = array();
@@ -769,7 +767,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					$error_list[] = esc_attr__( 'Role not found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role;
 				}
 			}
+
 			$this->set_role_defaults( $role_defaults, $method );
+
 			if ( ! empty( $error_list ) ) {
 				return array(
 					'text' => esc_attr__( 'Data copied but there were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
@@ -906,22 +906,21 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			foreach ( $meta_keys as $meta_key => $meta_value ) {
 				if ( empty( $meta_value ) || ! is_string( $meta_key ) ) {
 					continue;
-				} else {
-					$meta_key_parts = explode( '%%', $meta_key );
+				}
+				$meta_key_parts = explode( '%%', $meta_key );
 
-					$compare_start = true;
-					if ( ! empty( $meta_key_parts[0] ) ) {
-						$compare_start = VAA_API::starts_with( $meta_key_compare, $meta_key_parts[0] );
-					}
+				$compare_start = true;
+				if ( ! empty( $meta_key_parts[0] ) ) {
+					$compare_start = VAA_API::starts_with( $meta_key_compare, $meta_key_parts[0] );
+				}
 
-					$compare_end = true;
-					if ( ! empty( $meta_key_parts[1] ) ) {
-						$compare_end = VAA_API::ends_with( $meta_key_compare, $meta_key_parts[1] );
-					}
+				$compare_end = true;
+				if ( ! empty( $meta_key_parts[1] ) ) {
+					$compare_end = VAA_API::ends_with( $meta_key_compare, $meta_key_parts[1] );
+				}
 
-					if ( true === $compare_start && true === $compare_end ) {
-						return true;
-					}
+				if ( true === $compare_start && true === $compare_end ) {
+					return true;
 				}
 			}
 		}
@@ -1060,8 +1059,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-title',
 			'parent' => $root . '-meta',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-tools' )
-						. __( 'Manage meta sync', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-tools' ) . __( 'Manage meta sync', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
