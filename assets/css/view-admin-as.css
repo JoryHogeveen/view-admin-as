@@ -177,6 +177,10 @@
 @media screen and (min-width: 480px) and (max-width: 782px) {
     #wpadminbar #wp-admin-bar-vaa {display: block; position: static;}
 	#wpadminbar #wp-admin-bar-vaa > .ab-item > .ab-icon {margin-left: 0;}
+	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper {width: 100%;}
+	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper {position: static; top: auto; margin: 0; -webkit-box-shadow: none; box-shadow: none;}
+
+	#wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {content: '';}
 
 	#wpadminbar #wp-admin-bar-vaa .vaa-notice {line-height: 42px; font-size: 16px;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-notice .ab-icon {height: auto;}
