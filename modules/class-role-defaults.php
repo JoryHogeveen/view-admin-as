@@ -8,10 +8,6 @@
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
-if ( ! class_exists( 'VAA_View_Admin_As_Role_Defaults' ) ) {
-
-add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Role_Defaults', 'get_instance' ) );
-
 /**
  * Set default screen settings for roles and apply them on users through various bulk actions.
  *
@@ -1649,5 +1645,3 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	}
 
 } // end class.
-
-} // end if class_exists.

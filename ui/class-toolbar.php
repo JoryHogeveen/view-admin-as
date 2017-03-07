@@ -125,7 +125,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		do_action( 'vaa_toolbar_menu', $this, 'top-secondary' );
 
 		/**
-		 * Add classes to the toolbar menu (front only)
+		 * Add classes to the toolbar menu (front only).
 		 * @since   1.6
 		 * @param   array  $array  Empty array.
 		 * @return  array

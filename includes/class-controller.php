@@ -209,7 +209,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 *     @type  array  $data {
 		 *         Optional extra data to send with the JSON return.
 		 *         In case of a view the page normally refreshes.
-		 *         @type  string  $redirect  (URL) Redirect the user?
+		 *         @type  string  $redirect  (URL) Redirect the user? (Only works on success).
 		 *         @type  string  $display   Options: notice   A notice type in the admin bar
 		 *                                            popup    A popup/overlay with content
 		 *         @type  string  $type      Options: success  Ureka! (green)      - Default when $success is true

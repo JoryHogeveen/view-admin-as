@@ -262,6 +262,38 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Helper function to include files. Checks class existence and throws an error if needed.
+	 * Also adds the class to a supplied group if available.
+	 *
+	 * @since   1.6.x
+	 * @access  private
+	 * @param   array  $includes
+	 * @param   array  $group
+	 * @return  array  $group
+	 */
+	private function include_files( $includes, &$group = null ) {
+
+		$group = (array) $group;
+
+		foreach ( $includes as $key => $inc ) {
+			if ( empty( $inc['class'] ) || ! class_exists( $inc['class'] ) ) {
+				include( VIEW_ADMIN_AS_DIR . $inc['file'] );
+				if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
+					$group[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
+				}
+			} else {
+				$this->add_notice( 'class-error-' . $key, array(
+					'type' => 'notice-error',
+					'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+					             . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+					             . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
+				) );
+			}
+		}
+		return $group;
+	}
+
+	/**
 	 * Load the user interface.
 	 *
 	 * @since   1.5
@@ -272,36 +304,23 @@ final class VAA_View_Admin_As
 	 */
 	private function load_ui() {
 
-		$include = array(
+		$includes = array(
 			'ui' => array(
-				'file'  => 'class-ui.php',
+				'file'  => 'ui/class-ui.php',
 				'class' => 'VAA_View_Admin_As_UI',
 			),
-			'admin-bar' => array(
-				'file'  => 'class-admin-bar.php',
+			'admin_bar' => array(
+				'file'  => 'ui/class-admin-bar.php',
 				'class' => 'VAA_View_Admin_As_Admin_Bar',
 			),
 			'toolbar' => array(
-				'file'  => 'class-toolbar.php',
+				'file'  => 'ui/class-toolbar.php',
 				'class' => 'VAA_View_Admin_As_Toolbar',
 			),
 		);
 
-		foreach ( $include as $key => $inc ) {
-			if ( empty( $inc['class'] ) || ! class_exists( $inc['class'] ) ) {
-				require( VIEW_ADMIN_AS_DIR . 'ui/' . $inc['file'] );
-				if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
-					$this->ui[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
-				}
-			} else {
-				$this->add_notice( 'class-error-' . $key, array(
-					'type' => 'notice-error',
-					'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-					    . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-					    . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
-				) );
-			}
-		}
+		// Include UI files and add them to the `ui` property.
+		$this->include_files( $includes, $this->ui );
 	}
 
 	/**
@@ -315,30 +334,26 @@ final class VAA_View_Admin_As
 	 */
 	private function load_modules() {
 
-		$dir   = VIEW_ADMIN_AS_DIR . 'modules';
-		$files = scandir( $dir );
-		$dir  .= '/';
+		$includes = array(
+			'role_defaults' => array(
+				'file'  => 'modules/class-role-defaults.php',
+				'class' => 'VAA_View_Admin_As_Role_Defaults',
+			),
+			'role_manager' => array(
+				'file'  => 'modules/class-role-manager.php',
+				'class' => 'VAA_View_Admin_As_Role_Manager',
+			),
+		);
 
-		foreach ( $files as $file ) {
-			if ( ! in_array( $file, array( '.', '..', 'index.php' ), true ) ) {
-				$file_info = pathinfo( $file );
-
-				// Single file modules.
-				if ( ! empty( $file_info['extension'] ) ) {
-					if ( 'php' === $file_info['extension'] && is_file( $dir . $file ) ) {
-						include( $dir . $file );
-					}
-				}
-				// Directory class modules.
-				elseif ( is_file( $dir . $file . '/class-' . $file . '.php' ) ) {
-					include( $dir . $file . '/class-' . $file . '.php' );
-				}
-				// Directory regular modules.
-				elseif ( is_file( $dir . $file . '/' . $file . '.php' ) ) {
-					include( $dir . $file . '/' . $file . '.php' );
-				}
-			}
+		if ( is_callable( array( 'RUA_App', 'instance' ) ) ) {
+			$includes['rua_level'] = array(
+				'file'  => 'modules/class-restrict-user-access.php',
+				'class' => 'VAA_View_Admin_As_RUA',
+			);
 		}
+
+		// Run include code but do not register modules yet (leave that to the modules).
+		$this->include_files( $includes );
 
 		/**
 		 * Modules loaded. Hook is used for other modules related to View Admin As.
