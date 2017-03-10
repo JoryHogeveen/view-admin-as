@@ -308,9 +308,10 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 				'_debug'     => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
 				'_vaa_nonce' => $this->store->get_nonce( true ),
 				// i18n.
-				'__no_users_found' => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
-				'__success'        => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
-				'__confirm'        => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
+				'__no_users_found'     => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
+				'__key_already_exists' => esc_html__( 'Key already exists.', VIEW_ADMIN_AS_DOMAIN ),
+				'__success'            => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
+				'__confirm'            => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
 			)
 		);
 

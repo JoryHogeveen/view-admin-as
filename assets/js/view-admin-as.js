@@ -19,6 +19,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		_debug: false,
 		_vaa_nonce: '',
 		__no_users_found: 'No users found.',
+		__key_already_exists: 'Key already exists.',
 		__success: 'Success',
 		__confirm: 'Are you sure?'
 	};
@@ -355,7 +356,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( ! data.hasOwnProperty( 'text' ) ) {
 						data.text = response.data;
 					}
-					VAA_View_Admin_As.notice( String( data.text ), data.type );
+					VAA_View_Admin_As.notice( String( data.text ), data.type, 5000 );
 
 					$('body #vaa-overlay').addClass( data.type ).fadeOut( 'fast', function() { $(this).remove(); } );
 				}
@@ -391,26 +392,62 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show notice in the admin bar.
 	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {string}  notice  The notice text
-	 * @param  {string}  type    The notice type (error, notice, etc)
+	 * @param  {object}  element  The HTML element to add the notice to (selector or jQuery object)
+	 * @param  {string}  notice   The notice text
+	 * @param  {string}  type     The notice type (error, notice, etc)
+	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` to stop auto-removal
 	 * @return {null}  Nothing
 	 */
-	VAA_View_Admin_As.notice = function( notice, type ) {
+	VAA_View_Admin_As.item_notice = function( element, notice, type, timeout ) {
+		var root = '.vaa-notice',
+			html = '<span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice,
+			$element = $( element );
+
+		type    = ( 'undefined' === typeof type ) ? 'notice' : type;
+		timeout = ( 'undefined' === typeof timeout ) ? 5000 : timeout;
+
+		html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
+		$( $element ).append( html );
+		$( root + ' .remove', $element ).click( function() { $(this).parent().slideUp('fast').remove(); } );
+
+		// Remove it after # seconds
+		if ( timeout ) {
+			setTimeout( function(){ $( root, $element ).slideUp('fast', function() { $(this).remove(); } ); }, timeout );
+		}
+	};
+
+	/**
+	 * Show notice in the admin bar.
+	 * @see    VAA_View_Admin_As.ajax
+	 * @param  {string}  notice  The notice text
+	 * @param  {string}  type    The notice type (error, notice, etc)
+	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` to stop auto-removal
+	 * @return {null}  Nothing
+	 */
+	VAA_View_Admin_As.notice = function( notice, type, timeout ) {
 		var root = '#wpadminbar .vaa-notice',
 			html = '<span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice;
+
+		type    = ( 'undefined' === typeof type ) ? 'notice' : type;
+		timeout = ( 'undefined' === typeof timeout ) ? 5000 : timeout;
+
 		if ( VAA_View_Admin_As._mobile ) {
 			html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
 			$( VAA_View_Admin_As.prefix + '> .ab-sub-wrapper').prepend( html );
 			$( 'html, body' ).animate( { scrollTop: '0' } );
 			$( root + ' .remove' ).click( function() { $(this).parent().slideUp('fast').remove(); } );
 			// Remove it after 5 seconds
-			setTimeout( function(){ $(root).slideUp('fast', function() { $(this).remove(); } ); }, 5000 );
+			if ( timeout ) {
+				setTimeout( function () { $( root ).slideUp( 'fast', function () { $( this ).remove(); } ); }, timeout );
+			}
 		} else {
 			html = '<li class="vaa-notice vaa-' + type + '">' + html + '</li>';
 			$('#wp-admin-bar-top-secondary').append( html );
 			$( root + ' .remove' ).click( function() { $(this).parent().remove(); } );
 			// Remove it after 5 seconds
-			setTimeout( function(){ $(root).fadeOut('fast', function() { $(this).remove(); } ); }, 5000 );
+			if ( timeout ) {
+				setTimeout( function () { $( root ).fadeOut( 'fast', function () { $( this ).remove(); } ); }, timeout );
+			}
 		}
 	};
 
@@ -423,8 +460,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return {null}  Nothing
 	 */
 	VAA_View_Admin_As.popup = function( data, type ) {
-
 		var root = 'body #vaa-overlay';
+		type = ( 'undefined' === typeof type ) ? 'notice' : type;
 
 		$( root ).html(
 			'<div class="vaa-overlay-container vaa-' + type + '"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>'
@@ -551,14 +588,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Search users.
 		$document.on( 'keyup', root_prefix + ' .ab-vaa-search.search-users input', function() {
-			$( VAA_View_Admin_As.prefix + ' .ab-vaa-search #vaa-searchuser-results' ).empty();
+			$( VAA_View_Admin_As.prefix + ' .ab-vaa-search .ab-vaa-results' ).empty();
 			if ( 1 <= $(this).val().length ) {
 				var inputText = $(this).val();
 				$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
 					var name = $('.ab-item', this).text();
 					if ( -1 < name.toLowerCase().indexOf( inputText.toLowerCase() ) ) {
 						var exists = false;
-						$( VAA_View_Admin_As.prefix + '.ab-vaa-search #vaa-searchuser-results .vaa-user-item .ab-item' ).each(function() {
+						$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results .vaa-user-item .ab-item' ).each(function() {
 							if ( -1 < $(this).text().indexOf(name) ) {
 								exists = $(this);
 							}
@@ -567,12 +604,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						if ( false !== exists && exists.length ) {
 							exists.find('.user-role').text( exists.find('.user-role').text().replace(')', ', ' + role + ')') );
 						} else {
-							$(this).clone().appendTo( VAA_View_Admin_As.prefix + '.ab-vaa-search #vaa-searchuser-results' ).children('.ab-item').append(' &nbsp; <span class="user-role">(' + role + ')</span>');
+							$(this).clone()
+							       .appendTo( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
+							       .children('.ab-item')
+							       .append(' &nbsp; <span class="user-role">(' + role + ')</span>');
 						}
 					}
 				} );
-				if ( '' === $.trim( $( VAA_View_Admin_As.prefix + '.ab-vaa-search #vaa-searchuser-results' ).html() ) ) {
-					$( VAA_View_Admin_As.prefix + '.ab-vaa-search #vaa-searchuser-results' ).append('<div class="ab-item ab-empty-item vaa-not-found">'+VAA_View_Admin_As.__no_users_found+'</div>');
+				if ( '' === $.trim( $( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' ).html() ) ) {
+					$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
+						.append('<div class="ab-item ab-empty-item vaa-not-found">'+VAA_View_Admin_As.__no_users_found+'</div>');
 				}
 			}
 		} );
@@ -628,10 +669,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.get_selected_capabilities = function() {
 			var capabilities = {};
 			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
-				if ( $(this).is(':checked') ) {
-					capabilities[ $(this).attr('value') ] = 1;
-				} else {
-					capabilities[ $(this).attr('value') ] = 0;
+				var val = $(this).attr('value');
+				if ( 'undefined' === typeof capabilities[ val ] ) {
+					if ( $(this).is(':checked') ) {
+						capabilities[ val ] = 1;
+					} else {
+						capabilities[ val ] = 0;
+					}
 				}
 			} );
 			return capabilities;
@@ -793,8 +837,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $( root_prefix + '-meta-add input#' + prefix + '-meta-new' ).val();
 			var item = $( root_prefix + '-meta-add #' + prefix + '-meta-template' ).html().toString();
-			item = item.replace( /vaa_new_item/g, val.replace( / /g, '_' ) );
-			$( root_prefix + '-meta-select > .ab-item' ).prepend( item );
+			val = val.replace( / /g, '_' );
+			item = item.replace( /vaa_new_item/g, val );
+			if ( $( root_prefix + '-meta-select input[value="' + val + '"]' ).length ) {
+				VAA_View_Admin_As.item_notice( $(this).parent(), VAA_View_Admin_As.__key_already_exists, 'error', 2000 );
+			} else {
+				$( root_prefix + '-meta-select > .ab-item' ).prepend( item );
+			}
 		} );
 
 		// @since  1.6.3  Update meta.
@@ -1071,11 +1120,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
+			var existing = VAA_View_Admin_As.get_selected_capabilities();
 			var val = $( caps_root_prefix + '-new-cap input#' + caps_prefix + '-new-cap' ).val();
 			var item = $( caps_root_prefix + '-new-cap #' + caps_prefix + '-cap-template' ).html().toString();
-			item = item.replace( /vaa_new_item/g, val.replace( / /g, '_' ) );
-			console.log( item );
-			$( VAA_View_Admin_As.root + '-caps-select-options > .ab-item' ).prepend( item );
+			val = val.replace( / /g, '_' );
+			item = item.replace( /vaa_new_item/g, val );
+			if ( 'undefined' !== typeof existing[ val ] ) {
+				VAA_View_Admin_As.item_notice( $(this).parent(), VAA_View_Admin_As.__key_already_exists, 'error', 2000 );
+			} else {
+				$( VAA_View_Admin_As.root + '-caps-select-options > .ab-item' ).prepend( item );
+			}
 		} );
 	};
 

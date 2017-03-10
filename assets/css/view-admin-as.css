@@ -26,6 +26,7 @@
 #vaa-overlay.success {background-color: rgba(70, 180, 80, 0.85);}
 */
 #wpadminbar .vaa-notice {padding: 0 10px; background: #fff;}
+#wpadminbar .vaa-notice .remove {cursor: pointer;}
 #wpadminbar .vaa-notice.vaa-message {display: inline-block; color: #0075B3 !important;}
 #wpadminbar .vaa-notice.vaa-message .ab-icon:before {color: #0075B3 !important;}
 #wpadminbar .vaa-notice.vaa-warning {display: inline-block; color: #C8730C !important;}
@@ -34,7 +35,7 @@
 #wpadminbar .vaa-notice.vaa-error .ab-icon:before {color: #dc3232 !important;}
 #wpadminbar .vaa-notice.vaa-success {display: inline-block; color: #46b450 !important;}
 #wpadminbar .vaa-notice.vaa-success .ab-icon:before {color: #46b450 !important;}
-#wpadminbar #wp-admin-bar-vaa .vaa-notice {width: 100%;}
+#wpadminbar #wp-admin-bar-vaa .vaa-notice {display: block; clear: both;}
 
 #wpadminbar #wp-admin-bar-vaa ul li,
 #wpadminbar #wp-admin-bar-vaa .ab-item {clear: both;}
@@ -124,7 +125,7 @@
 
 #wpadminbar #wp-admin-bar-vaa .ab-item > .remove {float: right; font-size: 16px; cursor: pointer;}
 
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-search #vaa-searchuser-results {margin: 0; padding: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-vaa-results {margin: 0; padding: 0;}
 
 #wpadminbar #wp-admin-bar-vaa .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
 #wpadminbar #wp-admin-bar-vaa button {float: none; text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle; cursor: pointer;}
