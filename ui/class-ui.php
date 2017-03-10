@@ -8,8 +8,6 @@
 
 ! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
 
-if ( ! class_exists( 'VAA_View_Admin_As_UI' ) ) {
-
 /**
  * UI hooks for View Admin As.
  *
@@ -412,5 +410,3 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 	}
 
 } // end class.
-
-} // end if class_exists.

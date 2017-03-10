@@ -12,7 +12,7 @@ if ( ! class_exists( 'WP_Admin_Bar' ) && file_exists( ABSPATH . WPINC . '/class-
 	require_once( ABSPATH . WPINC . '/class-wp-admin-bar.php' );
 }
 
-if ( class_exists( 'WP_Admin_Bar' ) && ! class_exists( 'VAA_View_Admin_As_Toolbar' ) ) {
+if ( class_exists( 'WP_Admin_Bar' ) ) {
 
 /**
  * Toolbar UI for View Admin As.
