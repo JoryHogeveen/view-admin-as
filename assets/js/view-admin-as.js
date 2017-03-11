@@ -392,11 +392,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show notice for an item node.
 	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {object}  element  The HTML element to add the notice to (selector or jQuery object)
-	 * @param  {string}  notice   The notice text
-	 * @param  {string}  type     The notice type (error, notice, etc)
-	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` to stop auto-removal
-	 * @return {null}  Nothing
+	 * @param  {object}  element  The HTML element to add the notice to (selector or jQuery object).
+	 * @param  {string}  notice   The notice text.
+	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
+	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` to prevent auto-removal.
+	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.item_notice = function( element, notice, type, timeout ) {
 		var root = '.vaa-notice',
@@ -418,10 +418,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show global notice.
 	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {string}  notice  The notice text
-	 * @param  {string}  type    The notice type (error, notice, etc)
-	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` to stop auto-removal
-	 * @return {null}  Nothing
+	 * @param  {string}  notice  The notice text.
+	 * @param  {string}  type    The notice type (notice, error, message, warning, success).
+	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` to prevent auto-removal.
+	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.notice = function( notice, type, timeout ) {
 		var root = '#wpadminbar .vaa-notice',
@@ -455,9 +455,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show popup with return content.
 	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {object}  data  Data to use
-	 * @param  {string}  type  The notice/overlay type (error, notice, etc)
-	 * @return {null}  Nothing
+	 * @param  {object}  data  Data to use.
+	 * @param  {string}  type  The notice/overlay type (notice, error, message, warning, success).
+	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.popup = function( data, type ) {
 		var root = 'body #vaa-overlay',
@@ -526,7 +526,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * SETTINGS.
 	 * @since  1.5
-	 * @return {null}  nothing
+	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.init_settings = function() {
 
@@ -594,7 +594,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * USERS.
 	 * Extra functions for user views.
 	 * @since  1.2
-	 * @return {null}  nothing
+	 * @return {null}  Nothing.
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
@@ -638,7 +638,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * CAPABILITIES.
 	 * @since  1.3
-	 * @return {null}  nothing
+	 * @return {null}  Nothing.
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
@@ -680,7 +680,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		};
 
-		// Since  1.6.x  Get the selected capabilities
+		// Since  1.6.x  Get the selected capabilities.
 		VAA_View_Admin_As.get_selected_capabilities = function() {
 			var capabilities = {};
 			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
@@ -696,7 +696,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return capabilities;
 		};
 
-		// Since  1.6.x  Set the selected capabilities
+		// Since  1.6.x  Set the selected capabilities.
 		VAA_View_Admin_As.set_selected_capabilities = function( capabilities ) {
 			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
 				if ( capabilities.hasOwnProperty( $(this).attr('value') ) ) {
@@ -792,7 +792,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Defaults.
 	 * @since  1.4
-	 * @return {null}  nothing
+	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
@@ -1014,7 +1014,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Manager.
 	 * @since  1.6.x
-	 * @return {null}  nothing
+	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_manager = function() {
 
@@ -1036,7 +1036,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		prefix = 'vaa-role-manager';
 		root_prefix = VAA_View_Admin_As.prefix + root;
 
-		// Apply current view capabilities to role
+		// @since  1.6.x  Apply current view capabilities to role.
 		$document.on( 'click touchend', root_prefix + '-apply-view-apply button#' + prefix + '-apply-view-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -1051,7 +1051,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// Clone role
+		// @since  1.6.x  Clone role.
 		$document.on( 'click touchend', root_prefix + '-clone-apply button#' + prefix + '-clone-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -1066,7 +1066,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// Delete role
+		// @since  1.6.x  Delete role.
 		$document.on( 'click touchend', root_prefix + '-delete-apply button#' + prefix + '-delete-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -1081,13 +1081,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		/**
-		 * Capability functions
+		 * Capability functions.
 		 */
 		var caps_root = VAA_View_Admin_As.root + '-caps-manager-role-manager',
 			caps_prefix = 'vaa-caps-manager-role-manager',
 			caps_root_prefix = VAA_View_Admin_As.prefix + caps_root;
 
-		// Update capabilities when selecting a role
+		// @since  1.6.x  Update capabilities when selecting a role.
 		$document.on( 'change', caps_root_prefix + ' select#' + caps_prefix + '-edit-role', function() {
 			var $this = $(this),
 				role  = $this.val(),
@@ -1097,7 +1097,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				caps = JSON.parse( selectedRoleElement.attr('data-caps') );
 			}
 
-			// Reset role filters
+			// Reset role filters.
 			VAA_View_Admin_As.caps_filter_settings.selectedRole = 'default';
 			VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = {};
 			VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = false;
@@ -1106,7 +1106,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			VAA_View_Admin_As.set_selected_capabilities( caps );
 		} );
 
-		// Add/Modify roles
+		// @since  1.6.x  Add/Modify roles.
 		$document.on( 'click touchend', caps_root_prefix + ' button#' + caps_prefix + '-save-role', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -1129,7 +1129,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return false;
 		} );
 
-		// Add new capabilities.
+		// @since  1.6.x  Add new capabilities.
 		$document.on( 'click touchend', caps_root_prefix + '-new-cap button#' + caps_prefix + '-add-cap', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -1149,9 +1149,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
-	 * Auto resize max height elements
+	 * Auto resize max height elements.
 	 * @since  1.6.x
-	 * @return {null}  nothing
+	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.autoMaxHeight = function() {
 		setTimeout( function() {
