@@ -237,7 +237,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					);
 				} else {
 					$args = (array) $data[ $key ];
-					if ( is_array( $val['values'] ) ) {
+					if ( VAA_API::array_has( $val, 'values', array( 'validation' => 'is_array' ) ) ) {
 						// Make sure the arguments are in the right order.
 						$args = array_merge( $val['values'], $args );
 					}
