@@ -390,7 +390,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
-	 * Show notice in the admin bar.
+	 * Show notice for an item node.
 	 * @see    VAA_View_Admin_As.ajax
 	 * @param  {object}  element  The HTML element to add the notice to (selector or jQuery object)
 	 * @param  {string}  notice   The notice text
@@ -408,16 +408,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
 		$( $element ).append( html );
-		$( root + ' .remove', $element ).click( function() { $(this).parent().slideUp('fast').remove(); } );
+		$( root + ' .remove', $element ).click( function() { $(this).parent().slideUp( 'fast', function() { $(this).remove(); } ); } );
 
 		// Remove it after # seconds
 		if ( timeout ) {
-			setTimeout( function(){ $( root, $element ).slideUp('fast', function() { $(this).remove(); } ); }, timeout );
+			setTimeout( function(){ $( root, $element ).slideUp( 'fast', function() { $(this).remove(); } ); }, timeout );
 		}
 	};
 
 	/**
-	 * Show notice in the admin bar.
+	 * Show global notice.
 	 * @see    VAA_View_Admin_As.ajax
 	 * @param  {string}  notice  The notice text
 	 * @param  {string}  type    The notice type (error, notice, etc)
@@ -432,15 +432,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		timeout = ( 'undefined' === typeof timeout ) ? 5000 : timeout;
 
 		if ( VAA_View_Admin_As._mobile ) {
+			// Notice in VAA bar.
 			html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
 			$( VAA_View_Admin_As.prefix + '> .ab-sub-wrapper').prepend( html );
 			$( 'html, body' ).animate( { scrollTop: '0' } );
-			$( root + ' .remove' ).click( function() { $(this).parent().slideUp('fast').remove(); } );
+			$( root + ' .remove' ).click( function() { $(this).parent().slideUp( 'fast', function() { $(this).remove(); } ); } );
 			// Remove it after 5 seconds
 			if ( timeout ) {
 				setTimeout( function () { $( root ).slideUp( 'fast', function () { $( this ).remove(); } ); }, timeout );
 			}
 		} else {
+			// Notice in top level admin bar.
 			html = '<li class="vaa-notice vaa-' + type + '">' + html + '</li>';
 			$('#wp-admin-bar-top-secondary').append( html );
 			$( root + ' .remove' ).click( function() { $(this).parent().remove(); } );
