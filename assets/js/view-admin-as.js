@@ -1177,7 +1177,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		}, 100 );
 	};
-	$document.on( 'resize', VAA_View_Admin_As.autoMaxHeight );
+	$window.on( 'resize', VAA_View_Admin_As.autoMaxHeight );
 
 	// We require a nonce to use this plugin.
 	if ( 'undefined' !== typeof VAA_View_Admin_As._vaa_nonce ) {
