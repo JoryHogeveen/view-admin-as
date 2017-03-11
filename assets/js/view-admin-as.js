@@ -33,7 +33,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
-	VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + ' .auto-height' );
+	VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
 	VAA_View_Admin_As._mobile = false;
 
 	if ( ! VAA_View_Admin_As.hasOwnProperty( '_debug' ) ) {

@@ -58,7 +58,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			'title'  => $caps_items,
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-multipleselect auto-height',
+				'class' => 'ab-vaa-multipleselect vaa-auto-max-height',
 			),
 		)
 	);
