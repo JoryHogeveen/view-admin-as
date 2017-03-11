@@ -406,8 +406,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		type    = ( 'undefined' === typeof type ) ? 'notice' : type;
 		timeout = ( 'undefined' === typeof timeout ) ? 5000 : timeout;
 
-		html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
-		$( $element ).append( html );
+		html = '<div class="vaa-notice vaa-' + type + '" style="display: none;">' + html + '</div>';
+		$element.append( html ).children('.vaa-notice').slideDown( 'fast' );
 
 		// Remove it after # seconds
 		if ( timeout ) {
@@ -432,8 +432,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		if ( VAA_View_Admin_As._mobile ) {
 			// Notice in VAA bar.
-			html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
-			$( VAA_View_Admin_As.prefix + '> .ab-sub-wrapper').prepend( html );
+			html = '<div class="vaa-notice vaa-' + type + '" style="display: none;">' + html + '</div>';
+			$( VAA_View_Admin_As.prefix + '> .ab-sub-wrapper').prepend( html ).children('.vaa-notice').slideDown( 'fast' );
 			$( 'html, body' ).animate( { scrollTop: '0' } );
 			// Remove it after # seconds
 			if ( timeout ) {
