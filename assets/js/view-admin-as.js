@@ -1119,7 +1119,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			if ( '__new__' === role ) {
 				role = $( caps_root_prefix + ' input#' + caps_prefix + '-new-role' ).val();
-				//refresh = true;
+				refresh = true;
 			}
 			var data = {
 				role: role,
