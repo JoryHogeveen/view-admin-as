@@ -186,12 +186,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.6.3  Removable items.
-		$document.on( 'click touchend', VAA_View_Admin_As.prefix + '.ab-item > .remove', function( e ) {
+		$document.on( 'click touchend', VAA_View_Admin_As.prefix + '.remove', function( e ) {
 			e.preventDefault();
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
-			$(this).parent('.ab-item').slideUp('fast', function() { $(this).remove(); } );
+			$(this).parent().slideUp( 'fast', function() { $(this).remove(); } );
 		} );
 	};
 
@@ -408,7 +408,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
 		$( $element ).append( html );
-		$( root + ' .remove', $element ).click( function() { $(this).parent().slideUp( 'fast', function() { $(this).remove(); } ); } );
 
 		// Remove it after # seconds
 		if ( timeout ) {
@@ -436,8 +435,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			html = '<div class="vaa-notice vaa-' + type + '">' + html + '</div>';
 			$( VAA_View_Admin_As.prefix + '> .ab-sub-wrapper').prepend( html );
 			$( 'html, body' ).animate( { scrollTop: '0' } );
-			$( root + ' .remove' ).click( function() { $(this).parent().slideUp( 'fast', function() { $(this).remove(); } ); } );
-			// Remove it after 5 seconds
+			// Remove it after # seconds
 			if ( timeout ) {
 				setTimeout( function () { $( root ).slideUp( 'fast', function () { $( this ).remove(); } ); }, timeout );
 			}
@@ -446,7 +444,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			html = '<li class="vaa-notice vaa-' + type + '">' + html + '</li>';
 			$('#wp-admin-bar-top-secondary').append( html );
 			$( root + ' .remove' ).click( function() { $(this).parent().remove(); } );
-			// Remove it after 5 seconds
+			// Remove it after # seconds
 			if ( timeout ) {
 				setTimeout( function () { $( root ).fadeOut( 'fast', function () { $( this ).remove(); } ); }, timeout );
 			}
