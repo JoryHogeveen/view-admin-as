@@ -460,51 +460,66 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return {null}  Nothing
 	 */
 	VAA_View_Admin_As.popup = function( data, type ) {
-		var root = 'body #vaa-overlay';
+		var root = 'body #vaa-overlay',
+			$overlay = $( root );
 		type = ( 'undefined' === typeof type ) ? 'notice' : type;
 
-		$( root ).html(
+		$overlay.html(
 			'<div class="vaa-overlay-container vaa-' + type + '"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>'
 		);
+		var $overlayContainer = $( root + ' .vaa-overlay-container' );
+		var $popupResponse = $( root + ' .vaa-response-data' );
 
 		if ( 'object' !== typeof data ) {
 			data = { text: data };
 		}
 		if ( data.hasOwnProperty( 'text' ) ) {
-			$( root + ' .vaa-response-data' ).append('<p>' + String( data.text ) + '</p>');
+			$popupResponse.append( '<p>' + String( data.text ) + '</p>' );
 		}
 
 		if ( data.hasOwnProperty( 'list' ) ) {
-			$( root + ' .vaa-response-data' ).append('<ul></ul>');
+			$popupResponse.append( '<ul></ul>' );
 			data.list.forEach( function( item ) {
-				$( root + ' .vaa-response-data ul' ).append('<li>' + String( item ) + '</li>');
+				$( 'ul', $popupResponse ).append( '<li>' + String( item ) + '</li>' );
 			} );
 		}
 
+		var textarea = false;
 		if ( data.hasOwnProperty( 'textarea' ) ) {
-			$( root + ' .vaa-response-data' ).append('<textarea style="width: 100%;" readonly>' + String( data.textarea ) + '</textarea>');
-			// Auto height.
-			/*$('body #vaa-overlay .vaa-response-data textarea').each(function(){
-				var maxTextareaHeight = $('body #vaa-overlay .vaa-response-data').height();
-				var fullTextareaHeight = this.scrollHeight;
-				$(this).css({'height': 'auto', 'max-height': maxTextareaHeight}).height( fullTextareaHeight );
-			} );*/
+			$popupResponse.append( '<textarea style="width: 100%;" readonly>' + String( data.textarea ) + '</textarea>' );
+			textarea = $( 'textarea', $popupResponse );
 			// Select full text on click.
-			$( root + ' .vaa-response-data textarea' ).click( function() { $(this).select(); } );
+			textarea.on( 'click', function() { $(this).select(); } );
 		}
 
 		$( root + ' .vaa-overlay-container .remove' ).click( function() {
-			$( root ).fadeOut( 'fast', function() { $(this).remove(); } );
+			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
 		} );
 
 		// Remove overlay on click outside of container.
-		$document.mouseup( function( e ){
+		$document.on( 'mouseup', function( e ){
 			$( root + ' .vaa-overlay-container' ).each( function(){
 				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
-					$( root ).fadeOut( 'fast', function() { $(this).remove(); } );
+					$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
 				}
 			} );
 		} );
+
+		var popupMaxHeight = function() {
+			if ( textarea ) {
+				textarea.each( function() {
+					$( this ).css( { 'height': 'auto', 'overflow-y': 'hidden' } ).height( this.scrollHeight );
+				});
+			}
+			// 80% of screen height - padding + border;
+			var maxHeight = ( $overlay.height() * .8 ) - 24;
+			$overlayContainer.css( 'max-height', maxHeight );
+			$popupResponse.css( 'max-height', maxHeight );
+		};
+		popupMaxHeight();
+		$window.on( 'resize', function() {
+			popupMaxHeight();
+		});
 	};
 
 
