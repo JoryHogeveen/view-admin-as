@@ -11,12 +11,13 @@
 
 #vaa-overlay {position: fixed; top: 0; left: 0; height: 100%; width: 100%; background: rgba(255,255,255,0.85); display: none; z-index: 999999999;}
 #vaa-overlay .vaa-loader-icon {position: fixed; width: 40px; height: 40px; top: 50%; left: 50%; margin: -20px 0 0 -20px; display: block;}
-#vaa-overlay .vaa-overlay-container {max-width: 75%; min-width: 50%; max-height: 50%; min-height: 20px; margin: 5% 25%; background: #fff; box-shadow: 0 0 5px #aaa; padding: 10px; border-radius: 3px; position: relative;}
+#vaa-overlay .vaa-overlay-container {max-width: 75%; min-width: 50%; max-height: 50%; min-height: 20px; margin: 0 25%; top: 10%; background: #fff; box-shadow: 0 0 5px #aaa; padding: 10px; border-radius: 3px; position: relative;}
 #vaa-overlay .vaa-overlay-container > .remove {position: absolute; right: -10px; top: -10px; background: #FFF; width: 20px; height: 20px; cursor: pointer;}
+#vaa-overlay .vaa-overlay-container .vaa-response-data {overflow: hidden; overflow-y: auto;}
 #vaa-overlay .vaa-overlay-container .vaa-response-data ul li {margin-left: 20px; list-style: disc outside;}
 #vaa-overlay .vaa-overlay-container.vaa-message {border: 2px solid #0075b3;}
 #vaa-overlay .vaa-overlay-container.vaa-warning {border: 2px solid #C8730C;}
-#vaa-overlay .vaa-overlay-container.vaa-error {border: 2px solid #dc3232;}
+#vaa-overlay .vaa-overlay-container.vaa-error   {border: 2px solid #dc3232;}
 #vaa-overlay .vaa-overlay-container.vaa-success {border: 2px solid #46b450;}
 
 #vaa-overlay.inner,
@@ -28,12 +29,12 @@
 #wpadminbar .vaa-notice {padding: 0 10px; background: #fff;}
 #wpadminbar .vaa-notice .remove {cursor: pointer;}
 #wpadminbar .vaa-notice.vaa-message {display: inline-block; color: #0075B3 !important;}
-#wpadminbar .vaa-notice.vaa-message .ab-icon:before {color: #0075B3 !important;}
 #wpadminbar .vaa-notice.vaa-warning {display: inline-block; color: #C8730C !important;}
-#wpadminbar .vaa-notice.vaa-warning .ab-icon:before {color: #C8730C !important;}
-#wpadminbar .vaa-notice.vaa-error {display: inline-block; color: #dc3232 !important;}
-#wpadminbar .vaa-notice.vaa-error .ab-icon:before {color: #dc3232 !important;}
+#wpadminbar .vaa-notice.vaa-error   {display: inline-block; color: #dc3232 !important;}
 #wpadminbar .vaa-notice.vaa-success {display: inline-block; color: #46b450 !important;}
+#wpadminbar .vaa-notice.vaa-message .ab-icon:before {color: #0075B3 !important;}
+#wpadminbar .vaa-notice.vaa-warning .ab-icon:before {color: #C8730C !important;}
+#wpadminbar .vaa-notice.vaa-error   .ab-icon:before {color: #dc3232 !important;}
 #wpadminbar .vaa-notice.vaa-success .ab-icon:before {color: #46b450 !important;}
 #wpadminbar #wp-admin-bar-vaa .vaa-notice {display: block; clear: both;}
 
