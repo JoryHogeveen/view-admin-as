@@ -66,11 +66,11 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		parent::__construct( $vaa );
 
 		/**
-		 * Only allow module for admin users or users with the correct capabilities.
+		 * Only allow module for admin users.
 		 *
 		 * @since  1.6.x
 		 */
-		if ( is_network_admin() || ! $this->current_user_can( 'view_admin_as_role_manager' ) ) {
+		if ( is_network_admin() || ! VAA_API::is_super_admin() ) {
 			return;
 		}
 

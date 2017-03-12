@@ -666,7 +666,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 
 			// The data is an array, most likely from the database.
 			$data = array_map( 'absint', $data );
-			ksort( $data ); // Sort the new caps the same way we sort the existing caps.
+			// Sort the new caps the same way we sort the existing caps.
+			ksort( $data );
 
 			// Only allow assigned capabilities if it isn't a super admin
 			if ( ! VAA_API::is_super_admin() ) {
