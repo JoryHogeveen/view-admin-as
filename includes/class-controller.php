@@ -87,7 +87,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 * @since    1.2  Only check for key
 		 * @example  http://www.your.domain/wp-admin/?reset-view
 		 */
-		if ( isset( $_GET['reset-view'] ) ) {
+		if ( VAA_API::is_request( 'reset-view', 'get' ) ) {
 			$this->reset_view();
 		}
 		/**
@@ -96,20 +96,20 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 * @since    1.3.4
 		 * @example  http://www.your.domain/wp-admin/?reset-all-views
 		 */
-		if ( isset( $_GET['reset-all-views'] ) ) {
+		if ( VAA_API::is_request( 'reset-all-views', 'get' ) ) {
 			$this->reset_all_views();
 		}
 
-		// Reset hook
+		// Reset hook.
 		add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
 
-		// Validation hooks
+		// Validation hooks.
 		add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
 		add_filter( 'view_admin_as_validate_view_data_caps', array( $this, 'validate_view_data_caps' ), 10, 2 );
 		add_filter( 'view_admin_as_validate_view_data_role', array( $this, 'validate_view_data_role' ), 10, 2 );
 		add_filter( 'view_admin_as_validate_view_data_user', array( $this, 'validate_view_data_user' ), 10, 2 );
 
-		// Update hooks
+		// Update hooks.
 		add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 3 );
 		add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 3 );
 		add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 3 );
@@ -591,16 +591,13 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			return array();
 		}
 
-		$allowed_keys = array( 'setting', 'user_setting', 'reset' );
-
-		// Add module keys to the allowed keys.
-		foreach ( $this->vaa->get_modules() as $key => $val ) {
-			$allowed_keys[] = $key;
-		}
-
 		$allowed_keys = array_unique( array_merge(
+		    // View types.
 			$this->get_view_types(),
-			$allowed_keys
+			// Module keys.
+		    array_keys( $this->vaa->get_modules() ),
+		    // VAA core keys.
+			array( 'setting', 'user_setting', 'reset' )
 		) );
 
 		$data = array_intersect_key( $data, array_flip( $allowed_keys ) );
