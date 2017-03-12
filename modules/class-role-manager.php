@@ -80,14 +80,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'instance' => self::$_instance,
 		) );
 
-		/**
-		 * Add capabilities for this module.
-		 *
-		 * @since 1.6.x
-		 */
-		$this->capabilities = array( 'view_admin_as_role_manager' );
-		add_filter( 'view_admin_as_add_capabilities', array( $this, 'add_capabilities' ) );
-
 		// Load data.
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
 
