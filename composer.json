@@ -1,0 +1,43 @@
+{
+	"name": "JoryHogeveen/view-admin-as",
+	"type": "wordpress-plugin",
+	"description": "View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.",
+	"keywords": [
+		"view",
+		"admin",
+		"view",
+		"roles",
+		"users",
+		"switch",
+		"user switching",
+		"role switching",
+		"capabilities",
+		"caps",
+		"screen settings",
+		"defaults", 
+		"visitor"
+	],
+	"homepage": "https://github.com/JoryHogeveen/view-admin-as/",
+	"license": "GPL-2.0+",
+	"authors": [
+		{
+			"name": "Jory Hogeveen",
+			"email": "info@keraweb.nl",
+			"homepage": "https://www.keraweb.nl/",
+			"role": "Owner"
+		}
+	],
+	"require": {
+		"composer/installers": "1.2.*",
+		"php": ">=5.2.4"
+	},
+	"require-dev": {
+		"phpmd/phpmd": "@stable",
+		"phpunit/phpunit": "4.8.*",
+		"mockery/mockery": "0.9.*",
+		"squizlabs/php_codesniffer": "2.*"
+	},
+	"extra": {
+		"installer-name": "view-admin-as"
+	}
+}
