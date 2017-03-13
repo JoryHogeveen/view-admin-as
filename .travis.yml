@@ -45,8 +45,8 @@ matrix:
       env: WP_VERSION=3.7 WP_MULTISITE=0
     
 before_script:
-  # Install composer packages before trying to activate themes or plugins
-  # - composer install
+# Install composer packages before trying to activate themes or plugins
+  - composer install
 
 #  - git clone https://github.com/Seravo/wordpress-test-template wp-tests
   - bash bin/install-wp-tests.sh test root '' localhost $WP_VERSION
