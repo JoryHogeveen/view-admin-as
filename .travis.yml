@@ -16,7 +16,7 @@ env:
 #    - WP_VERSION=bleeding-maintenance WP_MULTISITE=0
     - WP_VERSION=latest WP_MULTISITE=0
     - WP_VERSION=latest WP_MULTISITE=1
-    
+
 #    - WP_VERSION=latest WP_MULTISITE=0
 #    - WP_VERSION=latest WP_MULTISITE=1
 #    - WP_VERSION=3.7 WP_MULTISITE=0
@@ -43,16 +43,27 @@ matrix:
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.2
       env: WP_VERSION=4.1 WP_MULTISITE=0
-    
+
+## Cache composer bits
+cache:
+  apt: true
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
 before_script:
-  # Install composer packages before trying to activate themes or plugins
-  # - composer install
+  - if [[ $TRAVIS_PHP_VERSION != 'hhvm' ]]; then phpenv config-rm xdebug.ini; fi
+
+# Install composer packages before trying to activate themes or plugins
+  - composer self-update
+  - composer install --no-interaction --prefer-source
 
 #  - git clone https://github.com/Seravo/wordpress-test-template wp-tests
   - bash bin/install-wp-tests.sh test root '' localhost $WP_VERSION
 
 script:
-  - phpunit
+# Use phpunit from composer
+  - vendor/bin/phpunit
 #  - cd tests/spec && bundle exec rspec test.rb
 
 addons:

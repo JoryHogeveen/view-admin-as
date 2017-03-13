@@ -16,6 +16,9 @@ $GLOBALS['wp_tests_options'] = array(
 
 require_once $_tests_dir . '/includes/functions.php';
 
+// Error reporting
+error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
+
 function _manually_load_plugin() {
 	require dirname( __DIR__ ) . '/'.PLUGIN_NAME;
 }
