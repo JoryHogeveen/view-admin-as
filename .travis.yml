@@ -55,8 +55,8 @@ before_script:
   - if [[ $TRAVIS_PHP_VERSION != 'hhvm' && $TRAVIS_PHP_VERSION != 'nightly' ]]; then phpenv config-rm xdebug.ini; fi
   
 # Install composer packages before trying to activate themes or plugins
-  - if [[ $TRAVIS_PHP_VERSION >= 5.3 ]]; then composer self-update; fi
-  - if [[ $TRAVIS_PHP_VERSION >= 5.3 ]]; then composer install --no-interaction --prefer-source; fi
+  - if [[ $TRAVIS_PHP_VERSION != 5.2 ]]; then composer self-update; fi
+  - if [[ $TRAVIS_PHP_VERSION != 5.2 ]]; then composer install --no-interaction --prefer-source; fi
 
 #  - git clone https://github.com/Seravo/wordpress-test-template wp-tests
   - bash bin/install-wp-tests.sh test root '' localhost $WP_VERSION
