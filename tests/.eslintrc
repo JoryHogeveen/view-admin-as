@@ -52,7 +52,7 @@ rules:
   dot-notation: 0
   eqeqeq: 2
   guard-for-in: 2
-  no-alert: 0
+  no-alert: 1
   no-caller: 2
   no-case-declarations: 2
   no-div-regex: 2
@@ -149,7 +149,7 @@ rules:
   max-len: 0
   max-nested-callbacks: 0
   max-params: 0
-  max-statements: [2, 30]
+  max-statements: [2, 40]
   new-cap: 0
   new-parens: 0
   newline-after-var: 0

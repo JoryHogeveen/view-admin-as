@@ -264,22 +264,37 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 	};
 
+	/**
+	 * Add an overlay.
+	 *
+	 * @param   {string}  html     The content to show in the overlay
+	 * @return  {null}  Nothing.
+	 */
+	VAA_View_Admin_As.overlay = function( html ) {
+		var $overlay = $( '#vaa-overlay' );
+		if ( ! $overlay.length ) {
+			html = '<div id="vaa-overlay">' + html + '</div>';
+			$body.append( html );
+			$overlay = $( 'body #vaa-overlay' );
+		} else if ( html.length ) {
+			$overlay.html( html );
+		}
+		$overlay.fadeIn('fast');
+	};
 
 	/**
 	 * Apply the selected view.
 	 *
 	 * @param   {object}   data     The data to send, view format: { VIEW_TYPE : VIEW_TYPE_DATA }
 	 * @param   {boolean}  refresh  Reload/redirect the page?
-	 * @return  {null}     nothing
+	 * @return  {null}  Nothing.
 	 */
 	VAA_View_Admin_As.ajax = function( data, refresh ) {
 
-		var body = $('body');
-
 		$( '.vaa-notice', '#wpadminbar' ).remove();
 		// @todo dashicon loader?
-		body.append('<div id="vaa-overlay"><span class="vaa-loader-icon" style="background: transparent url('+VAA_View_Admin_As.siteurl+'/wp-includes/images/spinner-2x.gif) center center no-repeat; background-size: contain;"></span></div>');
-		$('body #vaa-overlay').fadeIn('fast');
+		var loader_icon = VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif';
+		VAA_View_Admin_As.overlay( '<span class="vaa-loader-icon" style="background-image: url('+loader_icon+')"></span>' );
 
 		var post_data = {
 			'action': 'view_admin_as',
@@ -302,7 +317,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
  		 */
 		if ( $( VAA_View_Admin_As.prefix + '#vaa-settings-view-mode-single' ).is(':checked') && isView ) {
 
-			body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
+			$body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
 			var form = $('#vaa_single_mode_form');
 			form.append('<input type="hidden" name="action" value="' + post_data.action + '">');
 			form.append('<input type="hidden" name="_vaa_nonce" value="' + post_data._vaa_nonce + '">');
@@ -392,16 +407,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show notice for an item node.
 	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {object}  element  The HTML element to add the notice to (selector or jQuery object).
+	 * @param  {string}  parent   The HTML element selector to add the notice to (selector or jQuery object).
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
-	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` to prevent auto-removal.
+	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
 	 * @return {null}  Nothing.
 	 */
-	VAA_View_Admin_As.item_notice = function( element, notice, type, timeout ) {
+	VAA_View_Admin_As.item_notice = function( parent, notice, type, timeout ) {
 		var root = '.vaa-notice',
-			html = '<span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice,
-			$element = $( element );
+			html = notice + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
+			$element = $( parent );
 
 		type    = ( 'undefined' === typeof type ) ? 'notice' : type;
 		timeout = ( 'undefined' === typeof timeout ) ? 5000 : timeout;
@@ -418,14 +433,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show global notice.
 	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {string}  notice  The notice text.
-	 * @param  {string}  type    The notice type (notice, error, message, warning, success).
-	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` to prevent auto-removal.
+	 * @param  {string}  notice   The notice text.
+	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
+	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
 	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.notice = function( notice, type, timeout ) {
 		var root = '#wpadminbar .vaa-notice',
-			html = '<span class="remove ab-icon dashicons dashicons-dismiss" style="top: 2px;"></span>' + notice;
+			html = notice + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>';
 
 		type    = ( 'undefined' === typeof type ) ? 'notice' : type;
 		timeout = ( 'undefined' === typeof timeout ) ? 5000 : timeout;
@@ -451,6 +466,20 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}
 	};
 
+	/**
+	 * Show confirm warning.
+	 * Returns a jQuery confirm element selector to add your own confirm actions.
+	 * @param  {string}  parent  The HTML element selector to add the notice to (selector or jQuery object).
+	 * @param  {string}  text    The confirm text.
+	 * @return {object}  jQuery confirm element.
+	 */
+	VAA_View_Admin_As.item_confirm = function( parent, text ) {
+		$( parent ).find( '.vaa-notice' ).slideUp( 'fast', function() { $(this).remove(); } );
+		text = '<button class="vaa-confirm button"><span class="ab-icon dashicons dashicons-warning"></span>' + text + '</button>';
+		VAA_View_Admin_As.item_notice( parent, text, 'warning', 0 );
+		return $( parent ).find( '.vaa-confirm' );
+	};
+
 
 	/**
 	 * Show popup with return content.
@@ -460,15 +489,18 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.popup = function( data, type ) {
-		var root = 'body #vaa-overlay',
-			$overlay = $( root );
 		type = ( 'undefined' === typeof type ) ? 'notice' : type;
 
-		$overlay.html(
+		// @todo Build HTML inline and append as total instead of using jQuery handlers.
+
+		VAA_View_Admin_As.overlay(
 			'<div class="vaa-overlay-container vaa-' + type + '"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>'
 		);
-		var $overlayContainer = $( root + ' .vaa-overlay-container' );
-		var $popupResponse = $( root + ' .vaa-response-data' );
+
+		var root = 'body #vaa-overlay',
+			$overlay = $( root ),
+			$overlayContainer = $( root + ' .vaa-overlay-container' ),
+			$popupResponse = $( root + ' .vaa-response-data' );
 
 		if ( 'object' !== typeof data ) {
 			data = { text: data };
@@ -988,7 +1020,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					VAA_View_Admin_As.ajax( view_data, false );
 				} catch ( err ) {
 					// @todo Improve error message.
-					alert( err );
+					VAA_View_Admin_As.popup( '<pre>' + err + '</pre>', 'error' );
 				}
 			}
 			return false;
@@ -1002,10 +1034,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $( root_prefix + '-clear-roles-select select#' + prefix + '-clear-roles-select' ).val();
 			if ( val && '' !== val ) {
-				var view_data = { role_defaults : { clear_role_defaults : val } };
-				if ( confirm( VAA_View_Admin_As.__confirm ) ) {
+				var view_data = { role_defaults : { clear_role_defaults : val } },
+					confirm = VAA_View_Admin_As.item_confirm( $(this).parent(), VAA_View_Admin_As.__confirm );
+				$( confirm ).on( 'click', function() {
 					VAA_View_Admin_As.ajax( view_data, false );
-				}
+				} );
 			}
 			return false;
 		} );
@@ -1074,8 +1107,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			var val = $( root_prefix + '-delete-select select#' + prefix + '-delete-select' ).val();
 			if ( val && '' !== val ) {
-				var view_data = { role_manager : { delete_role : val } };
-				VAA_View_Admin_As.ajax( view_data, true );
+				var view_data = { role_manager : { delete_role : val } },
+					confirm = VAA_View_Admin_As.item_confirm( $(this).parent(), VAA_View_Admin_As.__confirm );
+				$( confirm ).on( 'click', function() {
+					VAA_View_Admin_As.ajax( view_data, true );
+				} );
 			}
 			return false;
 		} );
