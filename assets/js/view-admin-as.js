@@ -491,39 +491,52 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.popup = function( data, type ) {
 		type = ( 'undefined' === typeof type ) ? 'notice' : type;
 
-		// @todo Build HTML inline and append as total instead of using jQuery handlers.
+		/*
+		 * Build overlay HTML
+		 */
+		var html = '';
 
-		VAA_View_Admin_As.overlay(
-			'<div class="vaa-overlay-container vaa-' + type + '"><span class="remove dashicons dashicons-dismiss"></span><div class="vaa-response-data"></div></div>'
-		);
+		html += '<div class="vaa-overlay-container vaa-' + type + '">';
+		html += '<span class="remove dashicons dashicons-dismiss"></span>';
+		html += '<div class="vaa-response-data">';
 
+		// If it's not an object assume it's a string and convert it to the proper object form.
+		if ( 'object' !== typeof data ) {
+			data = { text: data };
+		}
+
+		// Simple text
+		if ( data.hasOwnProperty( 'text' ) ) {
+			html += '<p>' + String( data.text ) + '</p>';
+		}
+		// List items
+		if ( data.hasOwnProperty( 'list' ) ) {
+			html +=  '<ul>';
+			data.list.forEach( function( item ) {
+				html +=  '<li>' + String( item ) + '</li>';
+			} );
+			html +=  '</ul>';
+		}
+		// Textarea
+		if ( data.hasOwnProperty( 'textarea' ) ) {
+			html += '<textarea style="width: 100%;" readonly>' + String( data.textarea ) + '</textarea>';
+		}
+
+		// End: .vaa-response-data & .vaa-overlay-container
+		html += '</div></div>';
+
+		// Trigger the overlay
+		VAA_View_Admin_As.overlay( html );
+
+		/*
+		 * Overlay handlers
+		 */
 		var root = 'body #vaa-overlay',
 			$overlay = $( root ),
 			$overlayContainer = $( root + ' .vaa-overlay-container' ),
 			$popupResponse = $( root + ' .vaa-response-data' );
 
-		if ( 'object' !== typeof data ) {
-			data = { text: data };
-		}
-		if ( data.hasOwnProperty( 'text' ) ) {
-			$popupResponse.append( '<p>' + String( data.text ) + '</p>' );
-		}
-
-		if ( data.hasOwnProperty( 'list' ) ) {
-			$popupResponse.append( '<ul></ul>' );
-			data.list.forEach( function( item ) {
-				$( 'ul', $popupResponse ).append( '<li>' + String( item ) + '</li>' );
-			} );
-		}
-
-		var textarea = false;
-		if ( data.hasOwnProperty( 'textarea' ) ) {
-			$popupResponse.append( '<textarea style="width: 100%;" readonly>' + String( data.textarea ) + '</textarea>' );
-			textarea = $( 'textarea', $popupResponse );
-			// Select full text on click.
-			textarea.on( 'click', function() { $(this).select(); } );
-		}
-
+		// Remove overlay
 		$( root + ' .vaa-overlay-container .remove' ).click( function() {
 			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
 		} );
@@ -537,8 +550,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		} );
 
+		var textarea = $( 'textarea', $popupResponse );
+		if ( textarea.length ) {
+			// Select full text on click.
+			textarea.on( 'click', function() { $(this).select(); } );
+		}
+
 		var popupMaxHeight = function() {
-			if ( textarea ) {
+			if ( textarea.length ) {
 				textarea.each( function() {
 					$( this ).css( { 'height': 'auto', 'overflow-y': 'hidden' } ).height( this.scrollHeight );
 				});
