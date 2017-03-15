@@ -71,7 +71,7 @@ abstract class VAA_View_Admin_As_Class_Base
 		if ( ! is_object( $vaa ) || 'VAA_View_Admin_As' !== get_class( $vaa ) ) {
 			$this->vaa = view_admin_as();
 		}
-		if ( $this->vaa ) {
+		if ( $this->vaa && 'VAA_View_Admin_As_Store' !== get_class( $this ) ) {
 			$this->store = $this->vaa->store();
 		}
 	}

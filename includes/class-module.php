@@ -16,6 +16,7 @@
  * @package View_Admin_As
  * @since   1.5
  * @version 1.6.x
+ * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 {

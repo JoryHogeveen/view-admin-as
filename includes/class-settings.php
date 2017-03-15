@@ -17,8 +17,9 @@
  * @package View_Admin_As
  * @since   1.6.x
  * @version 1.6.x
+ * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
-class VAA_View_Admin_As_Settings {
+class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 
 	/**
 	 * The main VAA settings instance.
@@ -125,6 +126,7 @@ class VAA_View_Admin_As_Settings {
 	 * @param   string  $id  Identifier for this settings instance.
 	 */
 	protected function __construct( $id ) {
+		parent::__construct();
 
 		if ( empty( $id ) || ! is_string( $id ) ) {
 			return null;
