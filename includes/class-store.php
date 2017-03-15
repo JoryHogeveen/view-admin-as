@@ -578,12 +578,12 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			 */
 			if ( is_multisite() ) {
 				$network_caps = array(
-					'manage_network' => 1,
-					'manage_sites' => 1,
-					'manage_network_users' => 1,
-					'manage_network_plugins' => 1,
-					'manage_network_themes' => 1,
-					'manage_network_options' => 1,
+					'manage_network' => 0,
+					'manage_sites' => 0,
+					'manage_network_users' => 0,
+					'manage_network_plugins' => 0,
+					'manage_network_themes' => 0,
+					'manage_network_options' => 0,
 				);
 				$caps = array_merge( $network_caps, $caps );
 			}
