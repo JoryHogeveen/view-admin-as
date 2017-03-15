@@ -267,7 +267,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			$this->update_role_caps( $role, $capabilities );
 		} else {
 			// Add new role.
-			$role_name = ucfirst( $role );
+			$role_name = ucfirst( strip_tags( $role ) );
 			$role = str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $role ) );
 			$capabilities = array_filter( $capabilities );
 			$this->wp_roles->add_role( $role, $role_name, $capabilities );
@@ -312,8 +312,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	public function clone_role( $role, $new_role ) {
 		$role = $this->store->get_roles( $role );
 		if ( $role ) {
-			$new_role = str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $new_role ) );
-			$this->wp_roles->add_role( $new_role, ucfirst( $new_role ), $role->capabilities );
+			$this->save_role( $new_role, $role->capabilities );
 			return true;
 		}
 		return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
