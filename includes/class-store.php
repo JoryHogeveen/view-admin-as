@@ -156,19 +156,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Get the current user.
 		$this->set_curUser( wp_get_current_user() );
 
-		// Get the current user session.
-		if ( function_exists( 'wp_get_session_token' ) ) {
-			// WP 4.0+.
-			$this->set_curUserSession( (string) wp_get_session_token() );
-		} else {
-			$cookie = wp_parse_auth_cookie( '', 'logged_in' );
-			if ( ! empty( $cookie['token'] ) ) {
-				$this->set_curUserSession( (string) $cookie['token'] );
-			} else {
-				// Fallback. This disables the use of multiple views in different sessions.
-				$this->set_curUserSession( $this->get_curUser()->ID );
-			}
-		}
+		// Get the current user session (WP 4.0+).
+		$this->set_curUserSession( (string) wp_get_session_token() );
 
 		if ( is_super_admin( $this->get_curUser()->ID ) ) {
 			self::$isCurUserSuperAdmin = true;
