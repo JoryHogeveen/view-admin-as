@@ -557,15 +557,17 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 			$all_caps = array_unique( $all_caps );
 
+			$add_caps = array();
 			// Add new capabilities to the capability array as disabled.
 			foreach ( $all_caps as $cap_key => $cap_val ) {
-				if ( is_string( $cap_val ) && ! is_numeric( $cap_val ) && ! array_key_exists( $cap_val, $caps ) ) {
-					$caps[ $cap_val ] = 0;
-				}
-				if ( is_string( $cap_key ) && ! is_numeric( $cap_key ) && ! array_key_exists( $cap_key, $caps ) ) {
-					$caps[ $cap_key ] = 0;
+				if ( is_numeric( $cap_key ) ) {
+					// Try to convert numeric (faulty) keys. Some developers just don't get it..
+					$add_caps[ (string) $cap_val ] = 0;
+				} else {
+					$add_caps[ (string) $cap_key ] = 0;
 				}
 			}
+			$caps = array_merge( $add_caps, $caps );
 
 			/**
 			 * Add network capabilities.
@@ -588,9 +590,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		}
 
 		// Remove role names.
-		foreach ( $wp_roles->roles as $role_key => $role ) {
-			unset( $caps[ $role_key ] );
-		}
+		$caps = array_diff_key( $caps, $wp_roles->roles );
+		// And sort alphabetical.
 		ksort( $caps );
 
 		$this->set_caps( $caps );
