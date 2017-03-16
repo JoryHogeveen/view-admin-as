@@ -13,6 +13,7 @@
  *
  * Tested from RUA version: 0.12.4
  * Official RUA compat release: 0.13 (https://github.com/intoxstudio/restrict-user-access/pull/8)
+ * Checked version: 0.14
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
