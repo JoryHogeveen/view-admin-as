@@ -14,7 +14,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.x
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
@@ -50,7 +50,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * You can add custom view data with VAA_View_Admin_As_Store::set_data().
 	 *
 	 * @see    VAA_View_Admin_As_Store::set_data()
-	 * @since  1.6.x
+	 * @since  1.7
 	 * @var    array {
 	 *     Default view data.
 	 *     @type  array  $caps       Since 1.3    Array of available capabilities.
@@ -637,7 +637,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get view data (meta).
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   string  $key  Key for array.
 	 * @return  mixed
 	 */
@@ -653,14 +653,14 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  mixed
 	 */
 	public function get_viewAs( $key = null ) {
-		_deprecated_function( __METHOD__, '1.6.x', 'VAA_View_Admin_As_Store::get_view()' );
+		_deprecated_function( __METHOD__, '1.7', 'VAA_View_Admin_As_Store::get_view()' );
 		return $this->get_view( $key );
 	}
 
 	/**
 	 * Get view type data
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   string  $type  Type key.
 	 * @param   string  $key   (optional) Type data key.
 	 * @return  mixed
@@ -794,14 +794,14 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_viewAs( $val, $key = null, $append = false ) {
-		_deprecated_function( __METHOD__, '1.6.x', 'VAA_View_Admin_As_Store::set_view()' );
+		_deprecated_function( __METHOD__, '1.7', 'VAA_View_Admin_As_Store::set_view()' );
 		$this->set_view( $val, $key, $append );
 	}
 
 	/**
 	 * Set view type data
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   string  $type
 	 * @param   mixed   $val
 	 * @param   string  $key

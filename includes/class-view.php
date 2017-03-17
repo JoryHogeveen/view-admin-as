@@ -14,7 +14,8 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.x
+ * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base

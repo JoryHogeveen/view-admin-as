@@ -15,7 +15,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.6.x
+ * @version 1.7
  */
 abstract class VAA_View_Admin_As_Class_Base
 {
@@ -91,7 +91,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Check if the AJAX call is ok.
 	 * Must always be used before AJAX data is processed
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @return  bool
 	 */
@@ -106,7 +106,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Extender function for WP current_user_can().
 	 * Also checks if VAA is enabled.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   string  $capability  (optional) The capability to check when the user isn't a super admin.
 	 * @return  bool
 	 */

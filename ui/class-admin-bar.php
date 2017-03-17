@@ -21,7 +21,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.6.4
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
@@ -614,7 +614,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Add items at the before of the caps selection options.
 		 *
-		 * @since   1.6.x
+		 * @since   1.7
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -637,7 +637,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Add items at the before of the caps actions.
 		 *
-		 * @since   1.6.x
+		 * @since   1.7
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -652,7 +652,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Add items at the after of the caps actions.
 		 *
-		 * @since   1.6.x
+		 * @since   1.7
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -1288,7 +1288,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Update label and description attributes to enable auto show/hide functionality
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   string  $target      The target element.
 	 * @param   array   $label_attr  Label attributes.
 	 * @param   array   $desc_attr   Description attributes.
@@ -1305,7 +1305,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 * Converts an array of attributes to a HTML string format starting with a space.
 	 *
 	 * @since   1.6.1
-	 * @since   1.6.x   Renamed from `parse_attr_to_html`
+	 * @since   1.7     Renamed from `parse_attr_to_html`
 	 * @static
 	 * @param   array   $array  Array to parse. (attribute => value pairs)
 	 * @return  string

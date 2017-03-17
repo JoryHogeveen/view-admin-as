@@ -18,7 +18,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.6.x
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
@@ -220,7 +220,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Validate data for this view type
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
 	 * @return  mixed
@@ -236,7 +236,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * View update handler (Ajax probably), called from main handler.
 	 *
 	 * @since   1.6.4
-	 * @since   1.6.x  Renamed from `ajax_handler`
+	 * @since   1.7    Renamed from `ajax_handler`
 	 * @access  public
 	 * @param   null    $null    Null.
 	 * @param   array   $data    The ajax data for this module.

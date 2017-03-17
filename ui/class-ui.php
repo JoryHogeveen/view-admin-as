@@ -14,8 +14,8 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @since   1.6.x  Renamed to VAA_View_Admin_As_UI (previously VAA_View_Admin_As_Admin)
- * @version 1.6.x
+ * @since   1.7  Renamed to VAA_View_Admin_As_UI (previously VAA_View_Admin_As_Admin)
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
@@ -254,7 +254,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 	 * Add necessary scripts and styles.
 	 *
 	 * @since   0.1
-	 * @since   1.6.x  Moved to this class from main class.
+	 * @since   1.7  Moved to this class from main class.
 	 * @access  public
 	 * @return  void
 	 */
@@ -285,7 +285,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Add data to the VAA script localization.
-		 * @since   1.6.x
+		 * @since   1.7
 		 * @param   array  $array  Empty array (Will be overwritten with VAA core data so use unique keys).
 		 * @return  array
 		 */
@@ -319,7 +319,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 	 * @since   1.3
 	 * @since   1.5.1   Check for SSL.
 	 * @since   1.6     More options and better description.
-	 * @since   1.6.x   Moved to this class from main class.
+	 * @since   1.7     Moved to this class from main class.
 	 * @access  public
 	 *
 	 * @param   string  $function_name  function callback.

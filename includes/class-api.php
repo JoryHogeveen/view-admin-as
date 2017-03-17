@@ -14,7 +14,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.x
+ * @version 1.7
  */
 final class VAA_API
 {
@@ -91,7 +91,7 @@ final class VAA_API
 	 * Is any toolbar showing?
 	 * Do not use this before the `init` hook.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @static
 	 * @api
@@ -257,7 +257,7 @@ final class VAA_API
 	/**
 	 * Check if two arrays are the same.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @static
 	 * @api
@@ -277,7 +277,7 @@ final class VAA_API
 	/**
 	 * Check if an array has a key and optional compare or validate the value.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @static
 	 * @api
@@ -318,7 +318,7 @@ final class VAA_API
 	 * Does a string starts with a given string?
 	 *
 	 * @since   1.4
-	 * @since   1.6.x  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults
 	 * @access  public
 	 * @static
 	 * @api
@@ -336,7 +336,7 @@ final class VAA_API
 	 * Does a string ends with a given string?
 	 *
 	 * @since   1.4
-	 * @since   1.6.x  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults
 	 * @access  public
 	 * @static
 	 * @api
@@ -375,7 +375,7 @@ final class VAA_API
 	 * AJAX Request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
@@ -393,7 +393,7 @@ final class VAA_API
 	 * AJAX Request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
@@ -411,7 +411,7 @@ final class VAA_API
 	 * Request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
@@ -435,7 +435,7 @@ final class VAA_API
 	/**
 	 * AJAX Request check.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
@@ -451,7 +451,7 @@ final class VAA_API
 	/**
 	 * Normal Request check.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
@@ -467,7 +467,7 @@ final class VAA_API
 	/**
 	 * Check if there is a request made.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $key    The key to check.
 	 * @param   string  $type   The type of request.

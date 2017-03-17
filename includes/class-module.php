@@ -14,8 +14,8 @@
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.5
- * @version 1.6.x
+ * @since   1.5  (This was one class with VAA_View_Admin_As_Class_Base)
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
@@ -88,7 +88,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	 * Helper function for ajax return data.
 	 * Merges second param with data defaults.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   bool    $success  Success return.
 	 * @param   array   $data     Array of detailed info.
@@ -113,7 +113,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	 * Helper function for ajax notice return data.
 	 * Merges second param with data defaults.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   bool    $success  Success return.
 	 * @param   array   $data     Array of detailed info.
@@ -129,7 +129,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	 * Helper function for ajax popup return data.
 	 * Merges second param with data defaults.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   bool    $success  Success return.
 	 * @param   array   $data     Array of detailed info.
@@ -145,7 +145,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 	 * Simple data validation.
 	 * Meant to be overwritten by subclass.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   null   $null  Null.
 	 * @param   mixed  $data  The view data.

@@ -20,7 +20,7 @@ if ( class_exists( 'WP_Admin_Bar' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.4
+ * @version 1.7
  * @see     wp-includes/class-wp-admin-bar.php
  * @uses    WP_Admin_Bar Extends class
  */

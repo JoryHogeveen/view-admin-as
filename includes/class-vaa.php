@@ -14,7 +14,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.6.x
+ * @version 1.7
  */
 final class VAA_View_Admin_As
 {
@@ -265,7 +265,7 @@ final class VAA_View_Admin_As
 	 * Helper function to include files. Checks class existence and throws an error if needed.
 	 * Also adds the class to a supplied group if available.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  private
 	 * @param   array  $includes
 	 * @param   array  $group
@@ -327,8 +327,6 @@ final class VAA_View_Admin_As
 	 * Load the modules.
 	 *
 	 * @since   1.5
-	 * @since   1.5.1   Added notice on class name conflict (removed in 1.6.2).
-	 * @since   1.6.2   Generic loading of modules.
 	 * @access  private
 	 * @return  void
 	 */
@@ -421,7 +419,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Get the controller class.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @return  VAA_View_Admin_As_Controller
 	 */

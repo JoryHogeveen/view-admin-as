@@ -19,7 +19,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4
- * @version 1.6.x
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
@@ -460,7 +460,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
-		// @since  1.6.x  Copy
+		// @since  1.7  Copy
 		if ( VAA_API::array_has( $data, 'copy_role_defaults', array( 'validation' => 'is_array' ) ) ) {
 			if ( isset( $data['copy_role_defaults']['from'] ) && isset( $data['copy_role_defaults']['to'] ) ) {
 				$method = ( ! empty( $data['copy_role_defaults_method'] ) ) ? (string) $data['copy_role_defaults_method'] : '';
@@ -687,7 +687,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Iterates over each role and sets the new values with an optional method.
 	 * By default it fully overwrites the previous values.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  private
 	 * @param   array   $new_defaults  New role defaults (requires a full array of roles with data).
 	 * @param   string  $method        Method to be used (overwrite, append or default)
@@ -743,7 +743,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Copy defaults from one role to another (or multiple).
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  private
 	 *
 	 * @param   string        $from_role  The source role defaults.
@@ -1148,7 +1148,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.6.x  Separated the tools from the main function.
+	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
 	 * @see     admin_bar_menu()
 	 *

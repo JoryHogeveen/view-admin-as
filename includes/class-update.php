@@ -14,7 +14,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.4
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base

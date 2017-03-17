@@ -2,7 +2,7 @@
 /**
  * Add user items.
  *
- * @since  1.6.x
+ * @since  1.7
  *
  * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string        $root       The current root item.
@@ -61,5 +61,5 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	}
 
 } else {
-	_doing_it_wrong( __FILE__, esc_html__( 'No toolbar resources found.', VIEW_ADMIN_AS_DOMAIN ), '1.6.x' );
+	_doing_it_wrong( __FILE__, esc_html__( 'No toolbar resources found.', VIEW_ADMIN_AS_DOMAIN ), '1.7' );
 }

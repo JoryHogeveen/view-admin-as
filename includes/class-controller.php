@@ -13,8 +13,8 @@
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.6.x
- * @version 1.6.x
+ * @since   1.7
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
@@ -178,7 +178,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * AJAX handler.
 	 * Applies the data input.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   array  $data  Post data.
 	 * @return  array|bool
 	 */
@@ -200,7 +200,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 * @see     view_admin_as_update_view_{$key}
 		 * @see     view_admin_as_handle_ajax_{$key}
 		 *
-		 * @since   1.6.x
+		 * @since   1.7
 		 * @param   null    $null    Null.
 		 * @param   mixed   $value   View data value.
 		 * @param   string  $key     View data key.
@@ -256,7 +256,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Update regular view types
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   null    $null    Null.
 	 * @param   mixed   $data    The view data.
 	 * @param   string  $type    The view type.
@@ -282,7 +282,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Handles the caps view since it's a bit more complex
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   null    $null    Null.
 	 * @param   mixed   $data    The view data.
@@ -339,7 +339,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @todo Improve this..
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   array  $data
 	 * @return  bool
 	 */
@@ -365,7 +365,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Is it a view type?
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   string  $type  View type name to check
 	 * @return  bool
 	 */
@@ -376,7 +376,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Get the available view types
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @return  array
 	 */
@@ -409,7 +409,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * @since   1.3.4
 	 * @since   1.5     Single mode.
 	 * @since   1.6     Moved to this class from main class.
-	 * @since   1.6.x   Private method. Use store.
+	 * @since   1.7     Private method. Use store.
 	 * @access  private
 	 * @return  array
 	 */
@@ -595,7 +595,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Remove all unsupported keys.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   array  $data  Input data.
 	 * @return  mixed
 	 */
@@ -623,8 +623,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * Validate data before changing the view.
 	 *
 	 * @since   1.5
-	 * @since   1.6     Moved to this class from main class.
-	 * @since   1.6.x   Changed name to `validate_view_data` from `validate_view_as_data`
+	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.7    Changed name to `validate_view_data` from `validate_view_as_data`
 	 * @access  public
 	 *
 	 * @param   array  $data  Unvalidated data.
@@ -647,7 +647,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			 * Hook is required!
 			 *
 			 * @since  1.6.2
-			 * @since  1.6.x   Added third $key parameter
+			 * @since  1.7     Added third $key parameter
 			 * @param  null    $null   Ensures a validation filter is required.
 			 * @param  mixed   $value  Unvalidated view data.
 			 * @param  string  $key    The data key.
@@ -665,7 +665,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Validate data for role view type
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
@@ -693,7 +693,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Validate data for role view type
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
@@ -710,7 +710,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Validate data for user view type
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data

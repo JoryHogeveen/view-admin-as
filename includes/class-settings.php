@@ -15,8 +15,8 @@
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.6.x
- * @version 1.6.x
+ * @since   1.7
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
@@ -24,7 +24,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	/**
 	 * The main VAA settings instance.
 	 *
-	 * @since  1.6.x
+	 * @since  1.7
 	 * @static
 	 * @var    VAA_View_Admin_As_Settings
 	 */
@@ -36,8 +36,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Keys are parsed with underscores as spacing.
 	 *
 	 * @since  1.4
-	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.6.x  Moved to this class from store class.
+	 * @since  1.6  Moved to this class from main class.
+	 * @since  1.7  Moved to this class from store class.
 	 * @var    string
 	 */
 	protected $optionKey = null;
@@ -46,8 +46,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Database option data.
 	 *
 	 * @since  1.4
-	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.6.x  Moved to this class from store class.
+	 * @since  1.6  Moved to this class from main class.
+	 * @since  1.7  Moved to this class from store class.
 	 * @var    array
 	 */
 	protected $optionData = array();
@@ -59,7 +59,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 *
 	 * @since  1.3.4
 	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.6.x  Moved to this class from store class.
+	 * @since  1.7    Moved to this class from store class.
 	 * @var    bool
 	 */
 	protected $userMetaKey = null;
@@ -68,8 +68,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * User meta value for settings ans views.
 	 *
 	 * @since  1.5
-	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.6.x  Moved to this class from store class.
+	 * @since  1.6  Moved to this class from main class.
+	 * @since  1.7  Moved to this class from store class.
 	 * @var    array
 	 */
 	protected $userMeta = array();
@@ -78,8 +78,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Array of default settings.
 	 *
 	 * @since  1.5
-	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.6.x  Moved to this class from store class.
+	 * @since  1.6  Moved to this class from main class.
+	 * @since  1.7  Moved to this class from store class.
 	 * @var    array
 	 */
 	protected $defaultSettings = array();
@@ -88,8 +88,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Array of allowed settings.
 	 *
 	 * @since  1.5
-	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.6.x  Moved to this class from store class.
+	 * @since  1.6  Moved to this class from main class.
+	 * @since  1.7  Moved to this class from store class.
 	 * @var    array
 	 */
 	protected $allowedSettings = array();
@@ -101,7 +101,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * @since  1.5.2  Added force_group_users.
 	 * @since  1.6    Moved to this class from main class.
 	 * @since  1.6.1  Added freeze_locale.
-	 * @since  1.6.x  Moved to this class from store class.
+	 * @since  1.7    Moved to this class from store class.
 	 * @var    array
 	 */
 	protected $defaultUserSettings = array();
@@ -114,14 +114,14 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * @since  1.5.2  Added force_group_users.
 	 * @since  1.6    Moved to this class from main class.
 	 * @since  1.6.1  Added freeze_locale.
-	 * @since  1.6.x  Moved to this class from store class.
+	 * @since  1.7    Moved to this class from store class.
 	 * @var    array
 	 */
 	protected $allowedUserSettings = array();
 
 	/**
 	 * Sets the default data.
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  protected
 	 * @param   string  $id  Identifier for this settings instance.
 	 */
@@ -202,7 +202,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 		/**
 		 * Set the default global settings.
 		 *
-		 * @since  1.6.x
+		 * @since  1.7
 		 * @param  array
 		 * @return array
 		 */
@@ -211,7 +211,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 		/**
 		 * Set the allowed global settings.
 		 *
-		 * @since  1.6.x
+		 * @since  1.7
 		 * @param  array {
 		 *     Settings array (key = setting name).
 		 *     @type  array  Array of allowed values.
@@ -223,7 +223,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 		/**
 		 * Set the default settings for users.
 		 *
-		 * @since  1.6.x
+		 * @since  1.7
 		 * @param  array
 		 * @return array
 		 */
@@ -232,7 +232,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 		/**
 		 * Set the allowed settings for users.
 		 *
-		 * @since  1.6.x
+		 * @since  1.7
 		 * @param  array {
 		 *     Settings array (key = setting name).
 		 *     @type  array  Array of allowed values.
@@ -246,7 +246,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	/**
 	 * Validate hook for settings.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   null    $null  Default return (invalid).
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $key   The data key.
@@ -267,7 +267,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	/**
 	 * Validate hook for settings.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   null    $null  Default return (invalid).
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $key   The data key.
@@ -290,8 +290,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Will also merge with the default settings unless third $merge parameter is false.
 	 *
 	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.6.x  Moved to this class from store class. Added third $merge parameter.
+	 * @since   1.6  Moved to this class from main class.
+	 * @since   1.7  Moved to this class from store class. Added third $merge parameter.
 	 * @access  public
 	 *
 	 * @param   array       $settings  The new settings.
@@ -328,8 +328,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Also merges with the default settings.
 	 *
 	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.6.x  Moved to this class from store class.
+	 * @since   1.6  Moved to this class from main class.
+	 * @since   1.7  Moved to this class from store class.
 	 * @access  public
 	 *
 	 * @param   array   $settings  The new settings.
@@ -377,7 +377,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Checks if the setting exists, removes it otherwise.
 	 * Checks if the setting is allowed, otherwise sets it to the default value.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @param   array  $settings  The new settings
 	 * @param   array  $defaults  The default settings
 	 * @param   array  $allowed   The allowed settings
@@ -403,7 +403,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class.
 	 * @since   1.6.2  Option to remove the VAA metadata for all users.
-	 * @since   1.6.x  Moved to this class from store class.
+	 * @since   1.7    Moved to this class from store class.
 	 * @access  public
 	 *
 	 * @param   int|string  $user_id     ID of the user being deleted/removed (pass `all` for all users).
@@ -453,7 +453,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	/**
 	 * Delete or reset all View Admin As metadata for all users.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 *
 	 * @see    https://developer.wordpress.org/reference/classes/wpdb/update/

@@ -13,8 +13,8 @@
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.6.x
- * @version 1.6.x
+ * @since   1.7
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
@@ -22,7 +22,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.6.x
+	 * @since  1.7
 	 * @static
 	 * @var    VAA_View_Admin_As_Role_Manager
 	 */
@@ -31,7 +31,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Option key.
 	 *
-	 * @since  1.6.x
+	 * @since  1.7
 	 * @var    string
 	 */
 	protected $optionKey = 'vaa_role_manager';
@@ -39,7 +39,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * The WP_Roles object.
 	 *
-	 * @since  1.6.x
+	 * @since  1.7
 	 * @var    WP_Roles
 	 */
 	public $wp_roles = null;
@@ -48,7 +48,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * Protected roles.
 	 * These roles cannot be removed.
 	 *
-	 * @since  1.6.x
+	 * @since  1.7
 	 * @var    array
 	 */
 	private $protected_roles = array();
@@ -57,7 +57,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * Construct function.
 	 * Protected to make sure it isn't declared elsewhere.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  protected
 	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -68,7 +68,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		/**
 		 * Only allow module for admin users.
 		 *
-		 * @since  1.6.x
+		 * @since  1.7
 		 */
 		if ( is_network_admin() || ! VAA_API::is_super_admin() ) {
 			return;
@@ -86,7 +86,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		/**
 		 * Checks if the management part of module should be enabled.
 		 *
-		 * @since  1.6.x
+		 * @since  1.7
 		 */
 		if ( $this->get_optionData( 'enable' ) ) {
 			$this->enable = true;
@@ -100,7 +100,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Init function for global functions (not user dependent).
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  private
 	 * @global  WP_Roles  $wp_roles
 	 * @return  void
@@ -137,7 +137,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * init function to store data from the main class and enable functionality based on the current view.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @return  void
 	 */
@@ -168,7 +168,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   null   $null  Null.
 	 * @param   array  $data  The ajax data for this module.
@@ -247,7 +247,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * Save a role.
 	 * Can also add a new role when it doesn't exist.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $role          The role name (ID).
 	 * @param   array   $capabilities  The new role capabilities.
@@ -278,7 +278,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Update a role with new capabilities.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   WP_Role  $role          The role object.
 	 * @param   array    $capabilities  The new role capabilities.
@@ -303,7 +303,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Clone a role.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $role      The role name.
 	 * @param   string  $new_role  The new role name.
@@ -321,7 +321,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Delete a role from the database.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @param   string  $role  The role name.
 	 * @return  mixed
@@ -340,7 +340,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Add admin bar setting items.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @see     'vaa_admin_bar_settings_after' action
 	 *
@@ -381,7 +381,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Add admin bar menu's.
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 *
@@ -428,7 +428,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.6.x  Separated the tools from the main function.
+	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
 	 * @see     admin_bar_menu()
 	 *
@@ -636,7 +636,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.6.x
+	 * @since   1.7
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 *
