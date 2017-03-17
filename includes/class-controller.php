@@ -152,7 +152,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 
 		define( 'VAA_DOING_AJAX', true );
 
-		$data = $this->validate_data_keys( json_decode( stripslashes( $data ), true ) );
+		$data = $this->validate_data_keys( $data );
 
 		$success = false;
 		if ( ! empty( $data ) ) {
@@ -403,7 +403,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		// Static actions.
 		$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as', 'get' );
 		if ( $request && 'browse' === $view_mode ) {
-			$view = $this->validate_view_data( json_decode( stripcslashes( html_entity_decode( $request ) ), true ) );
+			$view = $this->validate_view_data( $request );
 			$this->update_view( $view );
 			if ( is_network_admin() ) {
 				wp_redirect( network_admin_url() );
@@ -415,7 +415,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		// Single mode.
 		$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as' );
 		if ( $request && 'single' === $view_mode ) {
-			return $this->validate_view_data( json_decode( stripcslashes( $request ), true ) );
+			return $this->validate_view_data( $request );
 		}
 
 		// Browse mode.

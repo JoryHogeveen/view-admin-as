@@ -421,7 +421,11 @@ final class VAA_API
 		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
 		// @codingStandardsIgnoreEnd
 		if ( isset( $data[ $key ] ) && isset( $data['_vaa_nonce'] ) && wp_verify_nonce( $data['_vaa_nonce'], $nonce ) ) {
-			return VAA_API::get_array_data( $data, $key );
+			$request = VAA_API::get_array_data( $data, $key );
+			if ( is_string( $request ) ) {
+				$request = json_decode( stripcslashes( html_entity_decode( $request ) ), true );
+			}
+			return $request;
 		}
 		return null;
 	}
