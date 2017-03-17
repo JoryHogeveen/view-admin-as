@@ -244,9 +244,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				// Checkboxes
 				e.preventDefault();
 				if ( $this.is(':checked') ) {
-					$this.attr( 'checked', false );
+					$this.prop( 'checked', false );
 				} else {
-					$this.attr( 'checked', 'checked' );
+					$this.prop( 'checked', true );
 				}
 				$this.trigger('change');
 				return false;
@@ -254,7 +254,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				// Radio
 				e.preventDefault();
 				$('input[name="' + $this.attr['name'] + '"]').removeAttr('checked');
-				$this.attr( 'checked', 'checked' );
+				$this.prop( 'checked', true );
 				$this.trigger('change');
 				return false;
 			}
