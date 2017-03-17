@@ -192,7 +192,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				e.preventDefault();
 				var $this = $(this);
 				// Fix for responsive views (first click triggers show child items).
-				if ( $this.parent().hasClass('menupop') && ! $this.next().is(':visible') ) {
+				if ( VAA_View_Admin_As._mobile && $this.parent().hasClass('menupop') && ! $this.next().is(':visible') ) {
 					$this.next().show().parent().addClass('active');
 					return;
 				}
