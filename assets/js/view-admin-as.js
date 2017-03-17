@@ -55,6 +55,23 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	} );
 
 	/**
+	 * Safely try to parse as JSON. If it isn't JSON it will return the original string.
+	 * @since   1.7
+	 * @param   {string}  val  The string the decode.
+	 * @return  {string|object}  Parsed JSON object or original string.
+	 */
+	VAA_View_Admin_As.json_decode = function( val ) {
+		if ( val.startsWith("{") ) {
+			try {
+				val = JSON.parse( val );
+			} catch ( err ) {
+				// Just leave it.
+			}
+		}
+		return val;
+	};
+
+	/**
 	 * BASE INIT.
 	 * @return  {null}  nothing
 	**/
@@ -184,12 +201,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					view_data[ type ] = String( $this.attr('rel') );
 					// Check if it contains a combination of view types parsed as JSON.
 					if ( view_data[ type ].startsWith("{") ) {
-						try {
-							view_data = JSON.parse( view_data[ type ] );
-						} catch ( err ) {
 							// Just leave it.
-						}
 					}
+					view_data[ type ] = VAA_View_Admin_As.json_decode( val );
 					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
 				}
