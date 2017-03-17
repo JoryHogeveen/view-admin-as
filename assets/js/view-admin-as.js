@@ -128,10 +128,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$( VAA_View_Admin_As.prefix + '.ab-vaa-conditional[data-condition-target]' ).each( function() {
 				var $this    = $( this ),
 					$target  = $( $this.attr( 'data-condition-target' ) ),
-					$compare = $this.attr( 'data-condition' );
+					compare  = $this.attr( 'data-condition' ),
+					checkbox = $target.is(':checkbox');
 				$this.hide();
 				$target.on( 'change', function() {
-					if ( $compare === $target.val() ) {
+					if ( checkbox && $target.is(':checked') ) {
+						$this.slideDown('fast');
+					} else if ( ! checkbox && compare === $target.val() ) {
 						$this.slideDown('fast');
 					} else {
 						$this.slideUp('fast');
