@@ -469,7 +469,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 			// Reset
 			return (bool) $wpdb->update(
 				$wpdb->usermeta, // table.
-				array( 'meta_value', false ), // data.
+				array( 'meta_value' => '' ), // data.
 				array( 'meta_key' => $this->get_userMetaKey() ) // where.
 			);
 		} else {
