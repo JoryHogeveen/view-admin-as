@@ -250,7 +250,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		}
 
 		if ( is_numeric( $data ) && $this->get_levels( (int) $data ) ) {
-			$this->store->set_view( $this->viewKey, (int) $data, true );
+			$this->store->set_view( (int) $data, $this->viewKey, true );
 			return true;
 		}
 		return false;
