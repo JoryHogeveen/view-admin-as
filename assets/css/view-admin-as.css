@@ -51,12 +51,16 @@
 
 #wpadminbar #wp-admin-bar-vaa > .ab-item > .ab-label {float: left;} /* IE fix */
 #wpadminbar #wp-admin-bar-vaa > .ab-item > .ab-icon {float: right; margin-right: 0; margin-left: 6px; top: 2px;}
-#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {float: none; font-size: 16px; vertical-align: text-bottom; font-weight: normal; padding: 0;}
+#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {float: none; font-size: 16px; line-height: 16px; vertical-align: text-bottom; font-weight: normal; padding: 0;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before {display: none;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 10px; padding-right: 10px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon {font-size: 18px; margin: 0 5px 0 -1px;}
 
 #wpadminbar #wp-admin-bar-vaa button > .ab-icon {margin: 0 5px 0 -5px; padding: 0; top: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-item > label + button {margin: 0 0 0 12px; vertical-align: baseline;}
+
+#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-item > span {line-height: 26px;}
+#wpadminbar #wp-admin-bar-vaa .ab-item > span.remove {font-size: 16px; line-height: 16px; top: 1px;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-bold > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-bold > .ab-item * {font-weight: bold !important;}
@@ -66,12 +70,7 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent > * {opacity: 0.5; transition: opacity 0.2s;}
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent:hover > * {opacity: 1;}
 
-#wpadminbar #wp-admin-bar-vaa .ab-item > .remove {font-size: 16px;}
-
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-vaa-results {margin: 0; padding: 0;}
-
-#wpadminbar #wp-admin-bar-vaa .ab-item .user-role,
-#wpadminbar #wp-admin-bar-vaa .ab-item .user-count {font-style: italic; line-height: 26px; font-weight: normal;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-results {margin: 6px 0; padding: 0;}
 
 #wpadminbar #wp-admin-bar-vaa.menupop ul.ab-sub-secondary {position: static;}
 #wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {top: 1px;}
@@ -116,8 +115,10 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item select + button.input-overlay,
 #wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {position: absolute; right: 10px; margin: 5px 0;}
 
+#wpadminbar #wp-admin-bar-vaa input.checkbox,
+#wpadminbar #wp-admin-bar-vaa input.radio {display: inline-block; height: 16px; width: 16px; vertical-align: text-bottom; box-sizing: border-box;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox,
-#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {display: inline-block; height: 16px; width: 16px; margin: 0 5px 0 0; vertical-align: text-bottom; box-sizing: border-box;}
+#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {margin: 0 5px 0 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label *,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label,
@@ -125,15 +126,19 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label:hover,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label:hover {cursor: pointer;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox:first-child,
-#wpadminbar #wp-admin-bar-vaa .ab-item input.radio:first-child {margin: 0 5px 0 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-item input.radio:first-child {margin: 0 6px 0 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio {border-radius:  100%;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label + br {line-height: 0;}
+
+#wpadminbar #wp-admin-bar-vaa input.checkbox.vaa-right,
+#wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {position: absolute; top: 5px; right: 1em; z-index: 99;}
 
 /* Multipleselect */
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 6px 0; padding: 0; border: solid transparent; border-width: 0 10px; transition: max-height .3s;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-empty-item {height: auto; overflow: hidden; margin: 0; padding: 5px 10px; background-color: #fff;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-empty-item .ab-item {color: #333;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect.vaa-small {max-height: 100px;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .remove:before {color: #333;}
 
 /**
  * Node columns

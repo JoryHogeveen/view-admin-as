@@ -21,7 +21,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$parent = $root;
 		$href   = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-user-item';
-		$title  = $user->display_name;
+		$title  = VAA_View_Admin_As_Admin_Bar::do_view_title( $user->display_name, 'user', $user->ID );
 		// Check if this user is the current view.
 		if ( $this->store->get_view( 'user' ) && (int) $this->store->get_view( 'user' ) === (int) $user->ID ) {
 			$class .= ' current';
@@ -55,7 +55,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			foreach ( $user->roles as $role ) {
 				$user_roles[] = $this->store->get_rolenames( $role );
 			}
-			$user_node['title'] = $title . ' &nbsp; <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
+			$user_node['title'] = $title . ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
 			$admin_bar->add_node( $user_node );
 		}
 	}

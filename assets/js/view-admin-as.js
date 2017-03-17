@@ -197,11 +197,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					return;
 				}
 				if ( ! $this.parent().hasClass('not-a-view') ) {
-					var view_data = {};
-					view_data[ type ] = String( $this.attr('rel') );
-					// Check if it contains a combination of view types parsed as JSON.
-					if ( view_data[ type ].startsWith("{") ) {
-							// Just leave it.
+					var view_data = {},
+						val = $this.attr('rel');
+					if ( ! val ) {
+						val = $this.find('.vaa-view-data').attr('data-view-value');
 					}
 					view_data[ type ] = VAA_View_Admin_As.json_decode( val );
 					VAA_View_Admin_As.ajax( view_data, true );

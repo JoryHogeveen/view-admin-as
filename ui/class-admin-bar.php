@@ -813,9 +813,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				'parent' => $root,
 				'title'  => __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
-				'meta'   => array(
-					'tabindex' => '0',
-				),
 			) );
 		}
 
@@ -889,7 +886,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		$admin_bar->add_node( array(
 			'id'     => $main_root . '-visitor-view',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-universal-access' ) . __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => self::do_icon( 'dashicons-universal-access' )
+			            . self::do_view_title( __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ), 'visitor', true ),
 			'href'   => '#',
 			'meta'   => array(
 				'title' => esc_attr__( 'View as site visitor', VIEW_ADMIN_AS_DOMAIN ),
@@ -899,6 +897,28 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		) );
 
 		$done = true;
+	}
+
+	/**
+	 * Generate a view type title.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @static
+	 * @param   string  $title  The title content.
+	 * @param   string  $type   The view type.
+	 * @param   string  $value  The view value.
+	 * @param   array   $attr   (optional) Array of other attributes.
+	 * @return  string
+	 */
+	public static function do_view_title( $title, $type, $value, $attr = array() ) {
+		$attr = (array) $attr;
+		$class = ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '' );
+		$attr['class'] = 'vaa-view-data' . $class;
+		$attr['data-view-type'] = $type;
+		$attr['data-view-value'] = $value;
+		$attr = self::parse_to_html_attr( $attr );
+		return '<span ' . $attr . '>' . $title . '</span>';
 	}
 
 	/**

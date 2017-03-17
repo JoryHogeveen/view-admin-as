@@ -370,9 +370,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			if ( $role ) {
 				$view_data['role'] = $role;
 			}
-			$href      = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
-			$class     = 'vaa-' . $this->viewKey . '-item';
-			$title     = $level->post_title;
+			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
+			$class = 'vaa-' . $this->viewKey . '-item';
+			$title = VAA_View_Admin_As_Admin_Bar::do_view_title( $level->post_title, $this->viewKey, ( $role ) ? wp_json_encode( $view_data ) : $level->ID );
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->viewKey ) ) {
 				if ( (int) $this->store->get_view( $this->viewKey ) === (int) $level->ID ) {
