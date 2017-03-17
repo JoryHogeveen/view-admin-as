@@ -110,10 +110,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		add_filter( 'view_admin_as_validate_view_data_user', array( $this, 'validate_view_data_user' ), 10, 2 );
 
 		// Update hooks.
-		add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 4 );
-		add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 4 );
-		add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 4 );
-		add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 4 );
+		add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 3 );
+		add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 3 );
+		add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 3 );
+		add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
 
 		// Get the current view (returns false if not found).
 		$this->store->set_view( $this->get_view() );
@@ -184,6 +184,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 */
 	private function ajax_handler( $data ) {
 		$success = false;
+		$view_types = array();
 
 		// Stop selecting the same view!
 		if ( $this->is_current_view( $data ) ) {
@@ -191,16 +192,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 				'type' => 'message',
 				'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
 			) );
-		}
-
-		// Are there multiple view types? If so, make sure we combine them.
-		// @todo Currently there is a query for the reset + every view type. Find a way to combine them.
-		$append = false;
-		$view_types = array_intersect_key( $data, array_flip( $this->get_view_types() ) );
-		if ( 1 < count( $view_types ) ) {
-			// Reset the view first in order to safely parse the multiple view types.
-			$this->reset_view();
-			$append = true;
 		}
 
 		/**
@@ -213,7 +204,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 * @param   null    $null    Null.
 		 * @param   mixed   $value   View data value.
 		 * @param   string  $key     View data key.
-		 * @param   bool    $append  Combine with the current view? Only used for view_admin_as_update_view_{$key}.
 		 * @return  bool|array {
 		 *     In case of array. Uses wp_json_return() structure.
 		 *     @type  bool   $success  Send JSON success or error?
@@ -235,13 +225,29 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 */
 		foreach ( $data as $key => $value ) {
 			if ( $this->is_view_type( $key ) ) {
-				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key, $append );
+				$view_types[] = $key;
+				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
 			} else {
 				$success = apply_filters( 'view_admin_as_handle_ajax_' . $key, null, $value, $key );
 			}
 			if ( true !== $success ) {
 				break;
 			}
+		}
+
+		if ( empty( $view_types ) ) {
+			return $success;
+		}
+
+		// Update the view on success.
+		if ( true === $success || ( isset( $success['success'] ) && true === $success['success'] ) ) {
+
+			// Remove view type keys that are not in the new view anymore.
+			$view = $this->store->get_view();
+			$view = array_intersect_key( $view, array_flip( $view_types ) );
+			$this->store->set_view( $view );
+
+			$this->update_view();
 		}
 
 		return $success;
@@ -254,13 +260,13 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * @param   null    $null    Null.
 	 * @param   mixed   $data    The view data.
 	 * @param   string  $type    The view type.
-	 * @param   bool    $append  Combine with the current view?
 	 * @return  mixed
 	 */
-	public function filter_update_view( $null, $data, $type, $append = false ) {
+	public function filter_update_view( $null, $data, $type ) {
 		$success = $null;
 		if ( ! empty( $data ) && ! empty( $type ) ) {
-			$success = $this->update_view( array( $type => $data ), $append );
+			$this->store->set_view( $data, $type, true );
+			$success = true;
 		}
 		if ( $success && 'visitor' === $type ) {
 			$success = array(
@@ -281,10 +287,9 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * @param   null    $null    Null.
 	 * @param   mixed   $data    The view data.
 	 * @param   string  $type    The view type.
-	 * @param   bool    $append  Combine with the current view?
 	 * @return  bool
 	 */
-	public function filter_update_view_caps( $null, $data, $type, $append = false ) {
+	public function filter_update_view_caps( $null, $data, $type ) {
 		$success = $null;
 		if ( ! is_array( $data ) || 'caps' !== $type ) {
 			return $success;
@@ -322,7 +327,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 					),
 				);
 			} else {
-				$success = $this->update_view( array( 'caps' => $new_caps ), $append );
+				$this->store->set_view( $data, $type, true );
+				$success = true;
 			}
 		}
 		return $success;
@@ -414,8 +420,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		// Static actions.
 		$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as', 'get' );
 		if ( $request && 'browse' === $view_mode ) {
-			$view = $this->validate_view_data( $request );
-			$this->update_view( $view );
+			$this->store->set_view( $this->validate_view_data( $request ) );
+			$this->update_view();
 			// Trigger page refresh
 			// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See VAA_API.
 			if ( is_network_admin() ) {
@@ -449,20 +455,15 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class.
 	 * @access  public
 	 *
-	 * @param   array  $data    The view data.
-	 * @param   bool   $append  Combine with the current view?
 	 * @return  bool
 	 */
-	public function update_view( $data, $append = false ) {
-		$data = $this->validate_view_data( $data );
+	private function update_view() {
+		$data = $this->validate_view_data( $this->store->get_view() );
 		if ( $data ) {
 			$meta = $this->store->get_userMeta( 'views' );
 			// Make sure it is an array (no array means no valid data so we can safely clear it).
 			if ( ! is_array( $meta ) ) {
 				$meta = array();
-			}
-			if ( $append && ! empty( $meta[ $this->store->get_curUserSession() ]['view'] ) ) {
-				$data = array_merge( $meta[ $this->store->get_curUserSession() ]['view'], $data );
 			}
 			// Add the new view metadata and expiration date.
 			$meta[ $this->store->get_curUserSession() ] = array(
@@ -679,7 +680,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			// Sort the new caps the same way we sort the existing caps.
 			ksort( $data );
 
-			// Only allow assigned capabilities if it isn't a super admin
+			// Only allow assigned capabilities if it isn't a super admin.
 			if ( ! VAA_API::is_super_admin() ) {
 				$data = array_intersect_key( $data, $this->store->get_caps() );
 			}

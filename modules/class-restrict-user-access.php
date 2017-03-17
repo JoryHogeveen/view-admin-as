@@ -121,7 +121,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 
 			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
-			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 4 );
+			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
 		}
 	}
 
@@ -241,17 +241,16 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   null    $null    Null.
 	 * @param   array   $data    The ajax data for this module.
 	 * @param   string  $type    The view type.
-	 * @param   bool    $append  Combine with the current view?
 	 * @return  bool
 	 */
-	public function update_view( $null, $data, $type, $append = false ) {
+	public function update_view( $null, $data, $type ) {
 
 		if ( ! $this->is_valid_ajax() || $type !== $this->viewKey ) {
 			return $null;
 		}
 
 		if ( is_numeric( $data ) && $this->get_levels( (int) $data ) ) {
-			$this->vaa->controller()->update_view( array( $this->viewKey => (int) $data ), $append );
+			$this->store->set_view( $this->viewKey, (int) $data, true );
 			return true;
 		}
 		return false;
@@ -367,7 +366,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
-			$view_data = ( $role ) ? array( $this->viewKey => $level->ID, 'role' => $role ) : array( $this->viewKey => $level->ID );
+			$view_data = array( $this->viewKey => $level->ID );
+			if ( $role ) {
+				$view_data['role'] = $role;
+			}
 			$href      = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class     = 'vaa-' . $this->viewKey . '-item';
 			$title     = $level->post_title;
