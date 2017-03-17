@@ -19,7 +19,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 	foreach ( $this->store->get_roles() as $role_key => $role ) {
 		$parent = $root;
-		$href   = '#';
+		$href   = VAA_API::get_vaa_action_link( array( 'role' => $role_key ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-role-item';
 		$title  = $this->store->get_rolenames( $role_key );
 		// Check if the users need to be grouped under their roles.

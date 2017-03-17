@@ -19,7 +19,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 	foreach ( $this->store->get_users() as $user ) {
 		$parent = $root;
-		$href   = '#';
+		$href   = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-user-item';
 		$title  = $user->display_name;
 		// Check if this user is the current view.

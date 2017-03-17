@@ -227,7 +227,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 					'label' => __( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary',
 				) ),
-				'href'   => false,
+				'href'   => VAA_API::get_reset_link(),
 				'meta'   => array(
 					'title' => esc_attr__( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'vaa-reset-item vaa-button-container',

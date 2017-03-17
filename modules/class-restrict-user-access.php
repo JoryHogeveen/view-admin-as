@@ -18,7 +18,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.6.4
+ * @version 1.6.x
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
@@ -121,7 +121,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 
 			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
-			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 2 );
+			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 4 );
 		}
 	}
 
@@ -226,20 +226,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @return  mixed
 	 */
 	public function validate_view_data( $null, $data ) {
-		$level = $data;
-
-		if ( is_string( $data ) && false !== strpos( $data, '|' ) ) {
-			$data = explode( '|', $data );
-			$level = (int) $data[0];
-			// @todo Activate role validation when hook is in use
-			/*if ( ! empty( $data[1] ) ) {
-				$data[1] = apply_filters( 'view_admin_as_validate_view_data_role', null, $data[1] );
-			}*/
-			$data = implode( '|', $data );
-		}
-
-		//
-		if ( is_numeric( $level ) && $this->get_levels( (int) $level ) ) {
+		if ( is_numeric( $data ) && $this->get_levels( (int) $data ) ) {
 			return $data;
 		}
 		return $null;
@@ -251,34 +238,20 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6.4
 	 * @since   1.6.x  Renamed from `ajax_handler`
 	 * @access  public
-	 * @param   null   $null  Null.
-	 * @param   array  $data  The ajax data for this module.
+	 * @param   null    $null    Null.
+	 * @param   array   $data    The ajax data for this module.
+	 * @param   string  $type    The view type.
+	 * @param   bool    $append  Combine with the current view?
 	 * @return  bool
 	 */
-	public function update_view( $null, $data ) {
+	public function update_view( $null, $data, $type, $append = false ) {
 
-		if ( ! $this->is_valid_ajax() ) {
+		if ( ! $this->is_valid_ajax() || $type !== $this->viewKey ) {
 			return $null;
 		}
 
-		$level = $data;
-
-		if ( is_string( $data ) && false !== strpos( $data, '|' ) ) {
-			$data = explode( '|', $data );
-			$level = (int) $data[0];
-			if ( ! empty( $data[1] ) ) {
-				$role = (string) $data[1];
-			}
-		}
-
-		if ( is_numeric( $level ) && $this->get_levels( (int) $level ) ) {
-			$view = array(
-				$this->viewKey => (int) $level,
-			);
-			if ( ! empty( $role ) && $this->store->get_roles( $role ) ) {
-				$view['role'] = $role;
-			}
-			$this->vaa->controller()->update_view( $view );
+		if ( is_numeric( $data ) && $this->get_levels( (int) $data ) ) {
+			$this->vaa->controller()->update_view( array( $this->viewKey => (int) $data ), $append );
 			return true;
 		}
 		return false;
@@ -394,9 +367,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
-			$href = '#';
-			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = $level->post_title;
+			$view_data = ( $role ) ? array( $this->viewKey => $level->ID, 'role' => $role ) : array( $this->viewKey => $level->ID );
+			$href      = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
+			$class     = 'vaa-' . $this->viewKey . '-item';
+			$title     = $level->post_title;
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->viewKey ) ) {
 				if ( (int) $this->store->get_view( $this->viewKey ) === (int) $level->ID ) {
@@ -424,7 +398,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
 					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
-					'rel'       => $level->ID . ( ( $role ) ? '|' . $role : '' ),
+					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $level->ID,
 				),
 			) );
 		}

@@ -110,10 +110,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		add_filter( 'view_admin_as_validate_view_data_user', array( $this, 'validate_view_data_user' ), 10, 2 );
 
 		// Update hooks.
-		add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
+		add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 4 );
+		add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 4 );
+		add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 4 );
+		add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 4 );
 
 		// Get the current view (returns false if not found).
 		$this->store->set_view( $this->get_view() );
@@ -193,6 +193,16 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			) );
 		}
 
+		// Are there multiple view types? If so, make sure we combine them.
+		// @todo Currently there is a query for the reset + every view type. Find a way to combine them.
+		$append = false;
+		$view_types = array_intersect_key( $data, array_flip( $this->get_view_types() ) );
+		if ( 1 < count( $view_types ) ) {
+			// Reset the view first in order to safely parse the multiple view types.
+			$this->reset_view();
+			$append = true;
+		}
+
 		/**
 		 * Ajax return filters.
 		 *
@@ -200,9 +210,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 * @see     view_admin_as_handle_ajax_{$key}
 		 *
 		 * @since   1.6.x
-		 * @param   null    $null   Null.
-		 * @param   mixed   $value  View data value.
-		 * @param   string  $key    View data key.
+		 * @param   null    $null    Null.
+		 * @param   mixed   $value   View data value.
+		 * @param   string  $key     View data key.
+		 * @param   bool    $append  Combine with the current view? Only used for view_admin_as_update_view_{$key}.
 		 * @return  bool|array {
 		 *     In case of array. Uses wp_json_return() structure.
 		 *     @type  bool   $success  Send JSON success or error?
@@ -224,7 +235,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 */
 		foreach ( $data as $key => $value ) {
 			if ( $this->is_view_type( $key ) ) {
-				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
+				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key, $append );
 			} else {
 				$success = apply_filters( 'view_admin_as_handle_ajax_' . $key, null, $value, $key );
 			}

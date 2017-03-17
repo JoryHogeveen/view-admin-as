@@ -179,6 +179,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				if ( ! $this.parent().hasClass('not-a-view') ) {
 					var view_data = {};
 					view_data[ type ] = String( $this.attr('rel') );
+					// Check if it contains a combination of view types parsed as JSON.
+					if ( view_data[ type ].startsWith("{") ) {
+						try {
+							view_data = JSON.parse( view_data[ type ] );
+						} catch ( err ) {
+							// Just leave it.
+						}
+					}
 					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
 				}
