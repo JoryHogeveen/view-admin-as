@@ -376,8 +376,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->viewKey ) ) {
 				if ( (int) $this->store->get_view( $this->viewKey ) === (int) $level->ID ) {
-					$class .= ' current';
-					if ( 1 === count( $this->store->get_view() ) ) {
+					// @todo Use is_current_view() from vaa controller?
+					if ( 1 === count( $this->store->get_view() ) && empty( $role ) ) {
+						$class .= ' current';
+						$href = false;
+					} elseif ( ! empty( $role ) && $role === $this->store->get_view( 'role' ) ) {
+						$class .= ' current';
 						$href = false;
 					}
 				}
