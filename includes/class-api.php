@@ -126,6 +126,41 @@ final class VAA_API
 	}
 
 	/**
+	 * Generate a VAA action link.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array   $data   View type data.
+	 * @param   string  $nonce  The nonce.
+	 * @param   string  $url    (optional) A URL. Of not passed it will generate a link from the current URL.
+	 * @return  string
+	 */
+	public static function get_vaa_action_link( $data, $nonce, $url = null ) {
+
+		$params = array(
+			'action'        => 'view_admin_as',
+			'view_admin_as' => $data, // wp_json_encode( array( $type, $data ) ),
+			'_vaa_nonce'   => (string) $nonce,
+		);
+
+		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
+		if ( empty( $url ) ) {
+			if ( is_network_admin() ) {
+				$url = network_admin_url();
+			} else {
+				$url = admin_url();
+			}
+		}
+
+		$url = add_query_arg( $params, ( $url ) ? $url : false );
+
+		return esc_url( $url, array( 'http', 'https' ) );
+	}
+
+	/**
 	 * Appends the "reset-view" parameter to the current URL.
 	 *
 	 * @since   1.6
@@ -137,23 +172,13 @@ final class VAA_API
 	 * @param   bool    $all  (optional) Reset all views link?
 	 * @return  string
 	 */
-	public static function get_reset_link( $url = '', $all = false ) {
-
-		if ( empty( $url ) ) {
-			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			// Check protocol.
-			$url = ( is_ssl() ? 'https://' : 'http://' ) . $url;
-		}
-
-		// Check for existing query vars.
-		$url_comp = parse_url( $url );
-
-		$reset = 'reset-view';
+	public static function get_reset_link( $url = null, $all = false ) {
+		$params = 'reset-view';
 		if ( $all ) {
-			$reset = 'reset-all-views';
+			$params = 'reset-all-views';
 		}
-
-		return esc_url( $url . ( ( isset( $url_comp['query'] ) ) ? '&' : '?' ) . $reset, array( 'http', 'https' ) );
+		$url = add_query_arg( $params, '', ( $url ) ? $url : false );
+		return esc_url( $url, array( 'http', 'https' ) );
 	}
 
 	/**
@@ -168,30 +193,7 @@ final class VAA_API
 	 * @return  string
 	 */
 	public static function remove_reset_link( $url = '' ) {
-
-		if ( empty( $url ) ) {
-			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			// Check protocol
-			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
-		}
-
-		if ( false !== strpos( $url, '?' ) ) {
-			$url = explode( '?', $url );
-
-			if ( ! empty( $url[1] ) ) {
-
-				$url[1] = explode( '&', $url[1] );
-				foreach ( $url[1] as $key => $val ) {
-					if ( in_array( $val, array( 'reset-view', 'reset-all-views' ), true ) ) {
-						unset( $url[1][ $key ] );
-					}
-				}
-				$url[1] = implode( '&', $url[1] );
-
-			}
-			$url = implode( '?', $url );
-		}
-
+		$url = remove_query_arg( array( 'reset-view', 'reset-all-views' ), ( $url ) ? $url : false );
 		return esc_url( $url, array( 'http', 'https' ) );
 	}
 

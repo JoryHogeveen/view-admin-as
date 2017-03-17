@@ -405,6 +405,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		if ( $request && 'browse' === $view_mode ) {
 			$view = $this->validate_view_data( $request );
 			$this->update_view( $view );
+			// Trigger page refresh
+			// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See VAA_API.
 			if ( is_network_admin() ) {
 				wp_redirect( network_admin_url() );
 			} else {
