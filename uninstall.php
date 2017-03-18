@@ -36,7 +36,7 @@ if ( is_multisite() ) {
 function vaa_uninstall( $blog_id = false ) {
 
 	// Delete all View Admin As options
-	$option_keys = array( 'vaa_view_admin_as', 'vaa_role_defaults' );
+	$option_keys = array( 'vaa_view_admin_as', 'vaa_role_defaults', 'vaa_role_manager' );
 
 	if ( $blog_id ) {
 
