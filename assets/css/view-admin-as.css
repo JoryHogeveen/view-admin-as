@@ -118,7 +118,7 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {position: absolute; right: 10px; margin: 5px 0;}
 
 #wpadminbar #wp-admin-bar-vaa input.checkbox,
-#wpadminbar #wp-admin-bar-vaa input.radio {display: inline-block; height: 16px; width: 16px; vertical-align: text-bottom; box-sizing: border-box;}
+#wpadminbar #wp-admin-bar-vaa input.radio {display: inline-block; height: 16px; width: 16px; vertical-align: text-bottom; box-sizing: border-box; cursor: pointer;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio {margin: 0 5px 0 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label,
@@ -236,6 +236,7 @@
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item {padding: 8px 44px; white-space: normal; height: auto;}
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item > .ab-item {padding: 8px 0;}
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper:last-child .ab-item.description {margin-bottom: 0;}
+	#wpadminbar #wp-admin-bar-vaa .ab-item > span.remove,
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon .ab-item .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: text-top;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon > .ab-item > .ab-icon {font-size: 30px !important; margin-left: -6px; margin-top: -1px; vertical-align: top;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 12px; padding-right: 12px;}
@@ -264,6 +265,9 @@
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {border-width: 0 44px; max-height: 300px !important;}
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-vaa-multipleselect > .ab-item {padding: 8px 16px;}
 
-	#wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox,
-	#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {width: 24px; height: 24px;}
+	#wpadminbar #wp-admin-bar-vaa input.checkbox,
+	#wpadminbar #wp-admin-bar-vaa input.radio {width: 24px; height: 24px;}
+
+	#wpadminbar #wp-admin-bar-vaa input.checkbox.vaa-right,
+	#wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {top: 9px; right: 11px;}
 }
