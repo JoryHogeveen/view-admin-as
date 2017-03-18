@@ -267,10 +267,17 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function array_equal( $array1, $array2 ) {
+		if ( ! is_array( $array1 ) || ! is_array( $array2 ) ) {
+			return false;
+		}
+		$arr1 = array_filter( $array1, 'is_scalar' );
+		$arr2 = array_filter( $array2, 'is_scalar' );
+		if ( $array1 !== $arr1 || $array2 !== $arr2 ) {
+			return false;
+		}
 		return (
-			is_array( $array1 ) && is_array( $array2 ) &&
-			count( $array1 ) === count( $array2 ) &&
-			array_diff_assoc( $array1, $array2 ) === array_diff_assoc( $array2, $array1 )
+			count( $arr1 ) === count( $arr2 ) &&
+			array_diff_assoc( $arr1, $arr2 ) === array_diff_assoc( $arr2, $arr1 )
 		);
 	}
 

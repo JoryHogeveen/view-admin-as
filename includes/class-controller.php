@@ -337,29 +337,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Check if the provided data is the same as the current view.
 	 *
-	 * @todo Improve this..
-	 *
 	 * @since   1.7
 	 * @param   array  $data
 	 * @return  bool
 	 */
 	private function is_current_view( $data ) {
-		if ( 1 !== count( $this->store->get_view() ) ) {
-			return false;
-		}
-		// Check role view
-		if ( isset( $data['role'] ) ) {
-			return (bool) ( $this->store->get_view( 'role' ) && $this->store->get_view( 'role' ) === $data['role'] );
-		}
-		// Check user view
-		if ( isset( $data['user'] ) ) {
-			return (bool) ( $this->store->get_view( 'user' ) && (int) $this->store->get_view( 'user' ) === (int) $data['user'] );
-		}
-		// Check visitor view
-		if ( isset( $data['visitor'] ) ) {
-			return (bool) ( $this->store->get_view( 'visitor' ) );
-		}
-		return false;
+		return VAA_API::array_equal( $data, $this->store->get_view() );
 	}
 
 	/**
