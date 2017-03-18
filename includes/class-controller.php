@@ -115,7 +115,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 3 );
 		add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
 
-		// Get the current view (returns false if not found).
+		// Get the current view.
 		$this->store->set_view( $this->get_view() );
 
 		// Short circuit needed for visitor view (BEFORE the current user is set).
@@ -428,7 +428,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			}
 		}
 
-		return null;
+		return array();
 	}
 
 	/**
