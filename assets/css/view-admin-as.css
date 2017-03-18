@@ -71,6 +71,7 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent:hover > * {opacity: 1;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results {margin: 6px 0; padding: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-results:empty {display: none;}
 
 #wpadminbar #wp-admin-bar-vaa.menupop ul.ab-sub-secondary {position: static;}
 #wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {top: 1px;}
@@ -82,6 +83,7 @@
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description:first-child {margin-bottom: 0;}
 
 #wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item,

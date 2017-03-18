@@ -53,14 +53,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	private $groupUserRoles = false;
 
 	/**
-	 * Enable search bar for users?
-	 *
-	 * @since  1.5
-	 * @var    bool
-	 */
-	private $searchUsers = false;
-
-	/**
 	 * Construct function.
 	 * Protected to make sure it isn't declared elsewhere.
 	 *
@@ -92,7 +84,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		if ( "yes" === $this->store->get_userSettings( 'force_group_users' )
 			 || 15 < ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) ) ) {
 			$this->groupUserRoles = true;
-			$this->searchUsers = true;
 		}
 
 		// There are no roles to group users on network pages.
@@ -806,21 +797,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
 
-		// Notice for users location.
 		if ( true === $this->groupUserRoles ) {
-			$admin_bar->add_node( array(
-				'id'     => $root . '-notice',
-				'parent' => $root,
-				'title'  => __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ),
-				'href'   => false,
-			) );
-		}
-
-		if ( true === $this->searchUsers ) {
 			$admin_bar->add_node( array(
 				'id'     => $root . '-searchusers',
 				'parent' => $root,
-				'title'  => self::do_input( array(
+				'title'  => self::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) )
+				. self::do_input( array(
 					'name' => $root . '-searchusers',
 					'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
 				) ),
