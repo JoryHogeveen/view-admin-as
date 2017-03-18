@@ -214,6 +214,10 @@ final class VAA_View_Admin_As
 
 		if ( $this->is_enabled() ) {
 
+			if ( VAA_View_Admin_As_Update::$fresh_install ) {
+				$this->welcome_notice();
+			}
+
 			// Fix some compatibility issues, more to come!
 			VAA_View_Admin_As_Compat::get_instance( $this )->init();
 
@@ -483,6 +487,24 @@ final class VAA_View_Admin_As
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Add a welcome notice for new users
+	 *
+	 * @since   1.7
+	 * @access  private
+	 */
+	private function welcome_notice() {
+		$this->add_notice( 'vaa-welcome', array(
+			'type' => 'notice-success',
+			'message' => '<strong>' . __( 'Thank you for installing View Admin As!', VIEW_ADMIN_AS_DOMAIN ) . '</strong> '
+	            . sprintf(
+	                // Translators: %s stands for `Dashboard` (link element).
+	                __( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
+					'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
+				),
+		) );
 	}
 
 	/**

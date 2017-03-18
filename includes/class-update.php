@@ -29,6 +29,15 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
+	 * Is this a new installation?
+	 *
+	 * @since  1.7
+	 * @static
+	 * @var    bool
+	 */
+	public static $fresh_install = false;
+
+	/**
 	 * Populate the instance.
 	 *
 	 * @since   1.6
@@ -51,7 +60,10 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 	 */
 	public function maybe_db_update() {
 		$db_version = strtolower( $this->store->get_optionData( 'db_version' ) );
-		if ( version_compare( $db_version, $this->store->get_dbVersion(), '<' ) ) {
+		if ( empty( $db_version ) ) {
+			self::$fresh_install = true;
+		}
+		if ( self::$fresh_install || version_compare( $db_version, $this->store->get_dbVersion(), '<' ) ) {
 			$this->db_update();
 		}
 	}

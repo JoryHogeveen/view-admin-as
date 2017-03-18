@@ -256,20 +256,22 @@ final class VAA_API
 
 	/**
 	 * Check if two arrays are the same.
+	 * Does NOT support recursive arrays!
 	 *
 	 * @since   1.7
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   array  $array1  Array one
-	 * @param   array  $array2  Array two
+	 * @param   array  $array1  Array one.
+	 * @param   array  $array2  Array two.
 	 * @return  bool
 	 */
 	public static function array_equal( $array1, $array2 ) {
 		if ( ! is_array( $array1 ) || ! is_array( $array2 ) ) {
 			return false;
 		}
+		// Check for recursive arrays.
 		$arr1 = array_filter( $array1, 'is_scalar' );
 		$arr2 = array_filter( $array2, 'is_scalar' );
 		if ( $array1 !== $arr1 || $array2 !== $arr2 ) {
