@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ruleset name="Jory Hogeveen - View Admin As">
+    <description>Customization for PHP Code Sniffer based on the WordPress Extra ruleset</description>
+
+    <exclude-pattern>tests/*</exclude-pattern>
+    <exclude-pattern>bin/*</exclude-pattern>
+
+    <arg name="extensions" value="php" />
+
+    <rule ref="WordPress-Extra">
+        <!-- Member variable "" is not in valid snake_case format -->
+        <exclude name="WordPress.NamingConventions.ValidVariableName.MemberNotSnakeCase" />
+        <!-- Object property "" is not in valid snake_case format -->
+        <exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar" />
+        <!-- Method name "" in class "" is not in snake case format, try "" -->
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid" />
+        <!-- Opening brace should be on the same line as the declaration for class -->
+        <exclude name="WordPress.Classes.ClassOpeningStatement.BraceOnNewLine" />
+        <!-- Overriding WordPress globals is prohibited -->
+        <exclude name="WordPress.Variables.GlobalVariables.OverrideProhibited" />
+        <!-- Expected # space before "!"; # found -->
+        <exclude name="WordPress.WhiteSpace.OperatorSpacing.SpacingBefore" />
+        <!-- Blank line found after control structure -->
+        <exclude name="WordPress.WhiteSpace.ControlStructureSpacing.BlankLineAfterEnd" />
+        <!-- The $domain arg should be single a string literal, not "". -->
+        <exclude name="WordPress.WP.I18n.NonSingularStringLiteralDomain" />
+        <!-- Expected next thing to be an escaping function (see Codex for 'Data Validation'), not '' -->
+        <exclude name="WordPress.XSS.EscapeOutput.OutputNotEscaped" />
+        <!-- The use of function "" is discouraged -->
+        <exclude name="WordPress.PHP.DiscouragedFunctions.Discouraged" />
+        <!--  -->
+        <exclude name="WordPress.XSS.EscapeOutput" />
+        <!-- Expected # spaces after parameter type; # found -->
+        <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType" />
+        <!-- Expected 1 space after closing brace; newline found -->
+        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace" />
+        <!-- This comment is #% valid code; is this commented out code? -->
+        <exclude name="Squiz.PHP.CommentedOutCode.Found" />
+        <!-- String "" does not require double quotes; use single quotes instead -->
+        <exclude name="Squiz.Strings.DoubleQuoteUsage.NotRequired" />
+        <!-- There must be exactly one blank line before the tags in a doc comment -->
+        <exclude name="Generic.Commenting.DocComment.SpacingBeforeTags" />
+        <!-- Inline control structures are not allowed -->
+        <exclude name="Generic.ControlStructures.InlineControlStructure.NotAllowed" />
+        <!-- Line indented incorrectly; expected at least # tabs, found # -->
+        <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
+        <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
+    </rule>
+</ruleset>
