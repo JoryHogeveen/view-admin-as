@@ -13,11 +13,11 @@ View the WordPress admin as a different role or visitor, switch between users, t
 ## Description
 This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin without the need to login with a user that has this role!
 
-If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages.
+If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages. You can also switch to a role or temporarily change your own capabilities.
 
-You can also switch to a role or temporarily change your own capabilities.
+With the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
 
-Through the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
+It also features a "Role manager" module to add, edit or remove roles and grant or deny them capabilities.
 
 ### Overview / Features
 *	Switch between user accounts
@@ -36,6 +36,12 @@ Through the "Role defaults" module you can set default screen settings for roles
 *	Import/Export role defaults
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
+### Module: Role manager (role editor)
+*	Add, edit or delete roles
+*	Grant and/or add capabilities to roles
+*	Clone roles
+*	Update role capabilities from current view
+
 ## Compatibility
 
 This plugin will work with most other plugins but these are tested:
@@ -53,12 +59,12 @@ This plugin will work with most other plugins but these are tested:
 
 Full list of tested plugins and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)
 
-
 ## Translations
-Please help translating this plugin on https://translate.wordpress.org/projects/wp-plugins/view-admin-as!
+Please help translating this plugin on [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/view-admin-as)!
 
 ## Actions and Filters
-[Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)
+*	[Click here for Action documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions)
+*	[Click here for Filter documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters)
 
 ### Plugin capabilities
 [Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Custom-capabilities)
@@ -115,4 +121,3 @@ You can find me here:
 *	[Keraweb](http://www.keraweb.nl/ "Keraweb")
 *	[Keraweb @ Slack](https://keraweb.slack.com/ "Keraweb") (User `keraweb`)
 *	[LinkedIn](https://nl.linkedin.com/in/joryhogeveen "LinkedIn profile")
-*	[Plugin page](https://viewadminas.wordpress.com/ "Plugin page")

@@ -3,8 +3,8 @@ Contributors: keraweb
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
-Tested up to: 4.7
-Stable tag: 1.6.4
+Tested up to: 4.8
+Stable tag: 1.7
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -14,7 +14,9 @@ This plugin will add a menu item to your admin bar where you can change your vie
 
 If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages. You can also switch to a role or temporarily change your own capabilities.
 
-Through the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
+With the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
+
+It also features a "Role manager" module to add, edit or remove roles and grant or deny them capabilities.
 
 = Overview / Features =
 
@@ -34,6 +36,13 @@ Through the "Role defaults" module you can set default screen settings for roles
 *	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
 *	Import/Export role defaults
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
+
+= Module: Role manager (role editor) =
+
+*	Add, edit or delete roles
+*	Grant and/or add capabilities to roles
+*	Clone roles
+*	Update role capabilities from current view
 
 = Compatibility & Integrations =
 
@@ -114,7 +123,7 @@ And if even that doesn't work just add "?reset-view" in the address bar and you'
 Example: http://www.your.domain/wp-admin/?reset-view
 
 = 4. What data is stored for role defaults and how can I change this? =
-Please see the `view_admin_as_role_defaults_meta` filter at [Actions & Filters](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)!
+Please see the `view_admin_as_role_defaults_meta` filter at [Wiki: Filters](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters#view_admin_as_role_defaults_meta)!
 
 The meta manager (since 1.6.3) provides a UI to edit the meta keys.
 Please follow these guidelines:
@@ -128,7 +137,7 @@ Could it be that this user is an equal user to your's? Example: you are both Adm
 If so, these are filtered. Viewing Admins can only be done when you are a Super Admin within a network installation.
 
 Why? To protect your fellow admin! You have no power over equal users..
-*Unless you are a superior admin... [Read more](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters#view_admin_as_superior_admins)*
+*Unless you are a superior admin... [Read more](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters#view_admin_as_superior_admins)*
 
 If this is not the case, please make sure you aren't overlooking something.
 If that is not the case, please contact me! See next item.
@@ -152,11 +161,29 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 3. Search users
 4. Quickly (de)select capabilities
 5. Large popup for better overview of capabilities
-6. Module Role defaults window (tabs are normally closed)
+6. Admin bar when a view is selected + the reset button location
 7. Settings window
-8. Admin bar when a view is selected + the reset button location
+8. Module Role defaults window (tabs are normally closed)
+9. Module Role manager main window (tabs are normally closed)
+10. Module Role manager capability window (tabs is normally closed)
+11. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.7 =
+
+*	Feature: New module Role manager. Add, edit and/or remove roles and grant or deny them capabilities. [#43](https://github.com/JoryHogeveen/view-admin-as/issues/43)
+*	Feature: Module Role Defaults: Added the option to copy defaults from one role to another (or multiple). [#44](https://github.com/JoryHogeveen/view-admin-as/issues/44)
+*	Enhancement/UI: Enable and Improve responsive styles/a11y. [#16](https://github.com/JoryHogeveen/view-admin-as/issues/16)
+*	Enhancement/UI: Improved the autoHeight calculation (submenu and popup).
+*	Enhancement: View combinations now working in code (No UI yet). [#18](https://github.com/JoryHogeveen/view-admin-as/issues/18)
+*	Enhancement: Major code refactoring for better standards en easier development.
+*	Maintenance: Validated compatibility with "Restrict User Access" (RUA) plugin v0.14. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
+*	Fix: Fixed all major CodeClimate issues. All green now!
+*	[Wiki (documentation) updated](https://github.com/JoryHogeveen/view-admin-as/wiki).
+*	Screenshots & Banners updated for the new plugin directory.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/42)
 
 = 1.6.4 =
 
@@ -232,9 +259,10 @@ You can find me here:
 
 Please help translating this plugin on [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/view-admin-as)!
 
-= Actions and Filters =
+= Actions & Filters =
 
-[Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters)
+*	[Click here for Action documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions)
+*	[Click here for Filter documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters)
 
 = Plugin capabilities =
 
@@ -246,5 +274,8 @@ Please let me know on [GitHub](https://github.com/JoryHogeveen/view-admin-as/iss
 
 == Upgrade Notice ==
 
+= 1.7 =
+Version 1.7 introduces some radical code changes to the plugin and requires WordPress 4.1 or higher. Please clear your cache after updating.
+
 = 1.5 =
-Version 1.5 introduces some radical code changes to the plugin. Please clear your cache after updating
+Version 1.5 introduces some radical code changes to the plugin. Please clear your cache after updating.
