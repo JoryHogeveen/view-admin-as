@@ -204,6 +204,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						val = $this.find('.vaa-view-data').attr('data-view-value');
 					}
 					view_data[ type ] = VAA_View_Admin_As.json_decode( val );
+					view_data = ( 'object' === typeof view_data[ type ] ) ? view_data[ type ] : view_data;
 					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
 				}
