@@ -73,6 +73,22 @@ class VAA_UnitTest extends WP_UnitTestCase {
 		$this->vaa_set_current_user( 'Administrator', 'administrator' );
 
 		// Tests
+		if ( is_multisite() ) {
+			$this->vaa_assert_enabled( false );
+			$this->vaa_assert_super_admin( false );
+		} else {
+			$this->vaa_assert_enabled( true );
+			$this->vaa_assert_super_admin( true );
+		}
+	}
+
+	/**
+	 * Tests for when the current user is an administrator.
+	 */
+	function test_vaa_user_super_admin() {
+		$user = $this->vaa_set_current_user( 'Super Admin', 'administrator', array(), true );
+
+		// Tests
 		$this->vaa_assert_enabled( true );
 		$this->vaa_assert_super_admin( true );
 	}
@@ -109,7 +125,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	 * @param       $role
 	 * @param array $capabilities
 	 */
-	function vaa_set_current_user( $name, $role, $capabilities = array() ) {
+	function vaa_set_current_user( $name, $role, $capabilities = array(), $super_admin = false ) {
 		$id = wp_create_user( sanitize_user( $name, true ), 'test' );
 
 		global $current_user;
@@ -126,9 +142,15 @@ class VAA_UnitTest extends WP_UnitTestCase {
 		}
 		$current_user->display_name = $name;
 
-		echo 'User set: ' . $current_user->display_name . ' | ID: ' . $current_user->ID . ' | username: ' . $current_user->user_login . PHP_EOL;
+		if ( $super_admin && is_multisite() ) {
+			grant_super_admin( $current_user->ID );
+		}
+
+		echo PHP_EOL . 'User set: ' . $current_user->display_name . ' | ID: ' . $current_user->ID . ' | username: ' . $current_user->user_login . PHP_EOL;
 
 		$this->vaa_reinit();
+
+		return $current_user;
 	}
 
 	/**
@@ -156,7 +178,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 			$this->vaa_store->store_caps();
 		}
 
-		echo 'View Admin As re-init done.' . PHP_EOL;
+		echo PHP_EOL . 'View Admin As re-init done.' . PHP_EOL;
 	}
 
 }
