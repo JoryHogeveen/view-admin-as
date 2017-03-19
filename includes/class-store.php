@@ -159,6 +159,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Get the current user session (WP 4.0+).
 		$this->set_curUserSession( (string) wp_get_session_token() );
 
+		self::$isCurUserSuperAdmin = false;
 		if ( is_super_admin( $this->get_curUser()->ID ) ) {
 			self::$isCurUserSuperAdmin = true;
 		}

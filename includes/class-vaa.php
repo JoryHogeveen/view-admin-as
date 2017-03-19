@@ -173,14 +173,15 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
+	 * @param   bool  $redo  (optional) Force re-init?
 	 */
-	public function init() {
-		static $done;
+	public function init( $redo = false ) {
+		static $done = false;
+		if ( $done && ! $redo ) return;
 
-		if ( ! $done ) {
-			$this->run();
-			$done = true;
-		}
+		$this->run();
+
+		$done = true;
 	}
 
 	/**
@@ -253,9 +254,13 @@ final class VAA_View_Admin_As
 	 *                 capability (of not the edit_users will return false).
 	 * @since   1.5.3  Enable on network pages for superior admins.
 	 * @since   1.6.3  Created this function.
-	 * @access  private
+	 * @access  public
+	 *
+	 * @return  bool
 	 */
-	private function validate_user() {
+	public function validate_user() {
+		$this->enable = false;
+
 		if ( ( VAA_API::is_super_admin()
 		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
 		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
@@ -263,6 +268,8 @@ final class VAA_View_Admin_As
 		) {
 			$this->enable = true;
 		}
+
+		return $this->enable;
 	}
 
 	/**
@@ -271,8 +278,12 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.7
 	 * @access  private
-	 * @param   array  $includes
-	 * @param   array  $group
+	 * @param   array  $includes {
+	 *     An array of files to include.
+	 *     @type  string  $file   The file to include. Directory starts from the plugin folder.
+	 *     @type  string  $class  The class name.
+	 * }
+	 * @param   array  $group     A reference array.
 	 * @return  array  $group
 	 */
 	private function include_files( $includes, &$group = null ) {
@@ -280,11 +291,10 @@ final class VAA_View_Admin_As
 		$group = (array) $group;
 
 		foreach ( $includes as $key => $inc ) {
+
+			// Load file.
 			if ( empty( $inc['class'] ) || ! class_exists( $inc['class'] ) ) {
-				include( VIEW_ADMIN_AS_DIR . $inc['file'] );
-				if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
-					$group[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
-				}
+				include_once( VIEW_ADMIN_AS_DIR . $inc['file'] );
 			} else {
 				$this->add_notice( 'class-error-' . $key, array(
 					'type' => 'notice-error',
@@ -292,6 +302,11 @@ final class VAA_View_Admin_As
 					             . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
 					             . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
 				) );
+			}
+
+			// If it's a class file, add the class instance to the group.
+			if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
+				$group[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
 			}
 		}
 		return $group;
