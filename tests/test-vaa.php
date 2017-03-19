@@ -128,33 +128,42 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	 * Set the current user.
 	 *
 	 * @param   string  $name
-	 * @param   string  $role
-	 * @param   array   $capabilities
-	 * @param   bool    $super_admin
+	 * @param   string  $role          (optional) Only needed for a new user.
+	 * @param   array   $capabilities  (optional) Only needed for a new user.
+	 * @param   bool    $super_admin   (optional) Only needed for a new user.
 	 * @return  WP_User
 	 */
-	function vaa_set_current_user( $name, $role, $capabilities = array(), $super_admin = false ) {
-		$id = wp_create_user( sanitize_user( $name, true ), 'test' );
-
+	function vaa_set_current_user( $name, $role = '', $capabilities = array(), $super_admin = false ) {
 		global $current_user;
-		$current_user = new WP_User( $id, $name );
-		$current_user->set_role( $role );
-		if ( ! empty( $capabilities ) ) {
-			foreach( $capabilities as $cap => $grant ) {
-				if ( is_string( $grant ) ) {
-					$cap = $grant;
-					$grant = true;
+		$username = strtolower( preg_replace( "/[^a-zA-Z0-9]+/", "", $name ) );
+
+		$user = get_user_by( 'login', $username );
+		if ( ! $user ) {
+
+			$id = wp_create_user( $username, 'test' );
+			$current_user = new WP_User( $id );
+
+			$current_user->set_role( $role );
+			if ( ! empty( $capabilities ) ) {
+				foreach( $capabilities as $cap => $grant ) {
+					if ( is_string( $grant ) ) {
+						$cap = $grant;
+						$grant = true;
+					}
+					$current_user->add_cap( $cap, $grant );
+					// WP 4.1 issue
+					$current_user->get_role_caps();
 				}
-				$current_user->add_cap( $cap, $grant );
-				// WP 4.1 issue
-				$current_user->get_role_caps();
 			}
-		}
-		$current_user->display_name = $name;
+			$current_user->display_name = $name;
 
 
-		if ( $super_admin && $role === 'administrator' && is_multisite() ) {
-			grant_super_admin( $current_user->ID );
+			if ( $super_admin && $role === 'administrator' && is_multisite() ) {
+				grant_super_admin( $current_user->ID );
+			}
+
+		} else {
+			$current_user = $user;
 		}
 
 		echo PHP_EOL . 'User set: ' . $current_user->display_name . ' | ID: ' . $current_user->ID . ' | username: ' . $current_user->user_login . PHP_EOL;

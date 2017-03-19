@@ -82,6 +82,9 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 
 		$arr = array( 'no_key', 'key' => 'test', 'key2' => true, 'key3' => array( 'yay' ) );
 
+		$this->assertEquals( 'no_array', VAA_API::get_array_data( 'no_array' ) );
+		$this->assertNull( VAA_API::get_array_data( 'no_array', 'test' ) );
+
 		$this->assertEquals( $arr, VAA_API::get_array_data( $arr ) );
 		$this->assertEquals( 'test', VAA_API::get_array_data( $arr, 'key' ) );
 		$this->assertEquals( true, VAA_API::get_array_data( $arr, 'key2' ) );
@@ -92,8 +95,17 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 
 		$this->assertNull( VAA_API::get_array_data( $arr, 'should_not_exist' ) );
 		$this->assertNull( VAA_API::get_array_data( $arr, true ) );
-		//$this->assertNull( VAA_API::get_array_data( $arr, array() ) );
-		//$this->assertNull( VAA_API::get_array_data( $arr, $arr ) );
+
+		try {
+			$this->assertNull( VAA_API::get_array_data( $arr, array() ) );
+			$this->assertNull( VAA_API::get_array_data( $arr, $arr ) );
+
+			// The above didn't cause an error :(
+			$this->assertTrue( false );
+		} catch ( Exception $e ) {
+			// Above caused an error!
+			$this->assertTrue( true );
+		}
 
 	}
 
@@ -103,18 +115,26 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 	 */
 	function test_set_array_data() {
 
+		// No is_callable check needed.
+		remove_action( 'doing_it_wrong_run', array( $this, 'doing_it_wrong_run' ) );
+
 		$arr = array( 'key' => 'test' );
 
 		$this->assertEquals( $arr, VAA_API::set_array_data( $arr, array( 'key' => 'test' ) ) );
 		$this->assertEquals( $arr, VAA_API::set_array_data( $arr, 'test', 'key' ) );
 		$this->assertNotEquals( $arr, VAA_API::set_array_data( $arr, 'test2', 'key' ) ); // Change value
-		//$this->assertEquals( $arr, VAA_API::set_array_data( $arr, 'test', 'test2' ) ); // No changes (no append)
 		$this->assertNotEquals( $arr, VAA_API::set_array_data( $arr, 'test2', 'key', true ) ); // Append key
 
 		$this->assertEquals( array( 'test' ), VAA_API::set_array_data( array(), array( 'test' ) ) );
 		$this->assertEquals( array( 'test' ), VAA_API::set_array_data( array(), 'test', 0, true ) );
 		$this->assertEquals( array( 'key' => 'test' ), VAA_API::set_array_data( array(), 'test', 'key', true ) );
 
+		// Trigger _doing_it_wrong().
+		$this->assertEquals( $arr, VAA_API::set_array_data( $arr, 'test', 'test2' ) ); // No changes (no append)
+
+		if ( is_callable( array( $this, 'doing_it_wrong_run' ) ) ) {
+			add_action( 'doing_it_wrong_run', array( $this, 'doing_it_wrong_run' ) );
+		}
 	}
 
 	/**
@@ -169,10 +189,29 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 
 		$this->assertTrue( VAA_API::array_has( $arr, 'key' ) );
 		$this->assertTrue( VAA_API::array_has( $arr, 'key', array( 'validation' => 'is_string' ) ) );
-		$this->assertFalse( VAA_API::array_has( $arr, 'key', array( 'validation' => 'is_bool' ) ) );
-		$this->assertFalse( VAA_API::array_has( $arr, 'key', array( 'compare', 'not the same' ) ) );
 		$this->assertTrue( VAA_API::array_has( $arr, 'key', array( 'compare' => 'test' ) ) );
 
-		// @todo More enhanced validation checks
+		$this->assertTrue( VAA_API::array_has( $arr, 'key' ) );
+		$this->assertFalse( VAA_API::array_has( $arr, 'key', array( 'validation' => 'is_bool' ) ) );
+		$this->assertFalse( VAA_API::array_has( $arr, 'key', array( 'compare', 'not the same' ) ) );
+		$this->assertFalse( VAA_API::array_has( $arr, 'key', array( 'compare', 'test' ) ) );
+
+		// Custom Callbacks
+		$this->assertTrue( VAA_API::array_has( $arr, 'key', array( 'validation' => array( $this, 'vaa_callback_array_has' ) ) ) );
+		$arr = array( 'key' => false );
+		$this->assertFalse( VAA_API::array_has( $arr, 'key', array( 'validation' => array( $this, 'vaa_callback_array_has' ) ) ) );
+
+		// Invalid callback
+		$this->assertFalse( VAA_API::array_has( $arr, 'key', array( 'validation' => array( $this, 'vaa_invalid_callback_array_has' ) ) ) );
+	}
+
+	/**
+	 * Validation callback helper for test_array_has()
+	 * @see test_array_has()
+	 * @param $val
+	 * @return bool
+	 */
+	function vaa_callback_array_has( $val ) {
+		return (bool) $val;
 	}
 }
