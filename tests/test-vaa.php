@@ -59,7 +59,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	 * @todo Network installations?
 	 * Tests for when the current user is an editor with VAA capabilities.
 	 */
-	function test_vaa_user_editor_plus() {
+	function test_vaa_user_editor_vaa() {
 		$this->vaa_set_current_user( 'VAA Editor', 'editor', array( 'view_admin_as', 'edit_users' ) );
 
 		// Tests
@@ -93,7 +93,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	 * Tests for when the current user is an administrator.
 	 */
 	function test_vaa_user_super_admin() {
-		$user = $this->vaa_set_current_user( 'Super Admin', 'administrator', array(), true );
+		$this->vaa_set_current_user( 'Super Admin', 'administrator', array(), true );
 
 		// Tests
 		$this->vaa_assert_enabled( true );
@@ -127,9 +127,11 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	/**
 	 * Set the current user.
 	 *
-	 * @param       $name
-	 * @param       $role
-	 * @param array $capabilities
+	 * @param   string  $name
+	 * @param   string  $role
+	 * @param   array   $capabilities
+	 * @param   bool    $super_admin
+	 * @return  WP_User
 	 */
 	function vaa_set_current_user( $name, $role, $capabilities = array(), $super_admin = false ) {
 		$id = wp_create_user( sanitize_user( $name, true ), 'test' );
@@ -144,11 +146,14 @@ class VAA_UnitTest extends WP_UnitTestCase {
 					$grant = true;
 				}
 				$current_user->add_cap( $cap, $grant );
+				// WP 4.1 issue
+				$current_user->get_role_caps();
 			}
 		}
 		$current_user->display_name = $name;
 
-		if ( $super_admin && is_multisite() ) {
+
+		if ( $super_admin && $role === 'administrator' && is_multisite() ) {
 			grant_super_admin( $current_user->ID );
 		}
 
