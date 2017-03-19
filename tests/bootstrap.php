@@ -9,6 +9,10 @@
 if ( function_exists( 'xdebug_disable' ) ) {
 	xdebug_disable();
 }
+// PHP < 5.3
+if ( ! defined( '__DIR__' ) ) {
+	define( '__DIR__', dirname( __FILE__ ) );
+}
 
 // Error reporting
 error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
