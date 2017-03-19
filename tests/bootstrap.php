@@ -1,28 +1,42 @@
 <?php
+/**
+ * View Admin As - Unit tests bootstrap
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ */
+
+if ( function_exists( 'xdebug_disable' ) ) {
+	xdebug_disable();
+}
+
+// Error reporting
+error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 if ( ! $_tests_dir ) {
 	$_tests_dir = '/tmp/wordpress-tests-lib';
 }
 
-define( 'PLUGIN_NAME'   , 'view-admin-as.php' );
-define( 'PLUGIN_FOLDER' , basename( dirname( __DIR__ ) ) );
-define( 'PLUGIN_PATH'   , PLUGIN_FOLDER.'/'.PLUGIN_NAME );
+define( 'TEST_VAA_PLUGIN_NAME'   , 'view-admin-as.php' );
+define( 'TEST_VAA_PLUGIN_FOLDER' , basename( dirname( __DIR__ ) ) );
+define( 'TEST_VAA_PLUGIN_PATH'   , TEST_VAA_PLUGIN_FOLDER . '/' . TEST_VAA_PLUGIN_NAME );
+
 
 // Activates this plugin in WordPress so it can be tested.
 $GLOBALS['wp_tests_options'] = array(
-  'active_plugins' => array( PLUGIN_PATH ),
+  'active_plugins' => array( TEST_VAA_PLUGIN_PATH ),
 );
 
 require_once $_tests_dir . '/includes/functions.php';
 
-// Error reporting
-error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
-
 function _manually_load_plugin() {
-	require dirname( __DIR__ ) . '/'.PLUGIN_NAME;
+	require dirname( __DIR__ ) . '/' . TEST_VAA_PLUGIN_NAME;
 }
-
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
+
+echo 'Installing View Admin As' . PHP_EOL;
+
+activate_plugin( TEST_VAA_PLUGIN_PATH );
