@@ -212,7 +212,7 @@ final class VAA_API
 	 */
 	public static function get_array_data( $array, $key = null ) {
 		if ( null !== $key ) {
-			if ( isset( $array[ $key ] ) ) {
+			if ( is_array( $array ) && isset( $array[ $key ] ) ) {
 				return $array[ $key ];
 			}
 			return null; // return null if key is not found
@@ -240,7 +240,7 @@ final class VAA_API
 			if ( true === $append && ! is_array( $array ) ) {
 				$array = array();
 			}
-			if ( true === $append || isset( $array[ $key ] ) ) {
+			if ( is_array( $array ) && ( true === $append || isset( $array[ $key ] ) ) ) {
 				$array[ $key ] = $var;
 				return $array;
 			}
