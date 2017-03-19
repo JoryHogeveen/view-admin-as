@@ -110,8 +110,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	 * @param bool $bool
 	 */
 	function vaa_assert_super_admin( $bool ) {
-		$store = $this->vaa_store;
-		$this->assertEquals( $bool, $store::is_super_admin() );
+		$this->assertEquals( $bool, VAA_View_Admin_As_Store::is_super_admin() );
 	}
 
 ///////////////////////////////////////////////
