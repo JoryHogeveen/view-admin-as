@@ -56,14 +56,21 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * @todo Network installations?
 	 * Tests for when the current user is an editor with VAA capabilities.
 	 */
 	function test_vaa_user_editor_plus() {
-		$this->vaa_set_current_user( 'VAA Editor', 'editor', array( 'view_admin_as', 'edit_users', 'manage_network_users' ) );
+		$this->vaa_set_current_user( 'VAA Editor', 'editor', array( 'view_admin_as', 'edit_users' ) );
 
 		// Tests
-		$this->vaa_assert_enabled( true );
-		$this->vaa_assert_super_admin( false );
+		if ( is_multisite() ) {
+			// Requires 'edit_users' && 'manage_network_users'.
+			$this->vaa_assert_enabled( false );
+			$this->vaa_assert_super_admin( false );
+		} else {
+			$this->vaa_assert_enabled( true );
+			$this->vaa_assert_super_admin( false );
+		}
 	}
 
 	/**
