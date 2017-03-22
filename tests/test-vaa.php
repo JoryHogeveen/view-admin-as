@@ -19,7 +19,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	public $vaa_store = null;
 
 ///////////////////////////////////////////////
-//            VAA TESTS
+//           VAA TESTS
 ///////////////////////////////////////////////
 
 	/**
@@ -101,7 +101,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	}
 
 ///////////////////////////////////////////////
-//            VAA ASSERT HELPERS
+//           VAA ASSERT HELPERS
 ///////////////////////////////////////////////
 
 	/**
@@ -117,11 +117,11 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	 * @param bool $bool
 	 */
 	function vaa_assert_super_admin( $bool ) {
-		$this->assertEquals( $bool, VAA_View_Admin_As_Store::is_super_admin() );
+		$this->assertEquals( $bool, VAA_API::is_super_admin() );
 	}
 
 ///////////////////////////////////////////////
-//            HELPER FUNCTIONS
+//           HELPER FUNCTIONS
 ///////////////////////////////////////////////
 
 	/**
