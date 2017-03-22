@@ -17,7 +17,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		view: false,
 		view_types: [ 'user', 'role', 'caps', 'visitor' ],
 		_debug: false,
-		_vaa_nonce: '',
 		__no_users_found: 'No users found.',
 		__key_already_exists: 'Key already exists.',
 		__success: 'Success',
@@ -431,33 +430,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
-	 * Show notice for an item node.
-	 * @since  1.7
-	 * @see    VAA_View_Admin_As.ajax
-	 * @param  {string}  parent   The HTML element selector to add the notice to (selector or jQuery object).
-	 * @param  {string}  notice   The notice text.
-	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
-	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {null}  Nothing.
-	 */
-	VAA_View_Admin_As.item_notice = function( parent, notice, type, timeout ) {
-		var root = '.vaa-notice',
-			html = notice + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
-			$element = $( parent );
-
-		type    = ( 'undefined' === typeof type ) ? 'notice' : type;
-		timeout = ( 'undefined' === typeof timeout ) ? 5000 : timeout;
-
-		html = '<div class="vaa-notice vaa-' + type + '" style="display: none;">' + html + '</div>';
-		$element.append( html ).children('.vaa-notice').slideDown( 'fast' );
-
-		// Remove it after # seconds
-		if ( timeout ) {
-			setTimeout( function(){ $( root, $element ).slideUp( 'fast', function() { $(this).remove(); } ); }, timeout );
-		}
-	};
-
-	/**
 	 * Show global notice.
 	 * @since  1.0
 	 * @see    VAA_View_Admin_As.ajax
@@ -491,6 +463,33 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( timeout ) {
 				setTimeout( function () { $( root ).fadeOut( 'fast', function () { $( this ).remove(); } ); }, timeout );
 			}
+		}
+	};
+
+	/**
+	 * Show notice for an item node.
+	 * @since  1.7
+	 * @see    VAA_View_Admin_As.ajax
+	 * @param  {string}  parent   The HTML element selector to add the notice to (selector or jQuery object).
+	 * @param  {string}  notice   The notice text.
+	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
+	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
+	 * @return {null}  Nothing.
+	 */
+	VAA_View_Admin_As.item_notice = function( parent, notice, type, timeout ) {
+		var root = '.vaa-notice',
+			html = notice + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
+			$element = $( parent );
+
+		type    = ( 'undefined' === typeof type ) ? 'notice' : type;
+		timeout = ( 'undefined' === typeof timeout ) ? 5000 : timeout;
+
+		html = '<div class="vaa-notice vaa-' + type + '" style="display: none;">' + html + '</div>';
+		$element.append( html ).children('.vaa-notice').slideDown( 'fast' );
+
+		// Remove it after # seconds
+		if ( timeout ) {
+			setTimeout( function(){ $( root, $element ).slideUp( 'fast', function() { $(this).remove(); } ); }, timeout );
 		}
 	};
 
@@ -1265,7 +1264,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	$window.on( 'resize', VAA_View_Admin_As.autoMaxHeight );
 
 	// We require a nonce to use this plugin.
-	if ( 'undefined' !== typeof VAA_View_Admin_As._vaa_nonce ) {
+	if ( VAA_View_Admin_As.hasOwnProperty( '_vaa_nonce' ) ) {
 		VAA_View_Admin_As.init();
 	}
 
