@@ -341,7 +341,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * @param   array  $data
 	 * @return  bool
 	 */
-	private function is_current_view( $data ) {
+	public function is_current_view( $data ) {
 		return VAA_API::array_equal( $data, $this->store->get_view() );
 	}
 
