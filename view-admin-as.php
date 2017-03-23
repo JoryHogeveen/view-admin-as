@@ -1,23 +1,28 @@
 <?php
 /**
- * Plugin Name: View Admin As
- * Description: View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
- * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.7
- * Author:      Jory Hogeveen
- * Author URI:  https://www.keraweb.nl
- * Text Domain: view-admin-as
- * Domain Path: /languages/
- * License:     GPLv2
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
  * @version 1.7
+ * @licence GPL-2.0+
+ * @link    https://github.com/JoryHogeveen/view-admin-as
+ *
+ * @wordpress-plugin
+ * Plugin Name:       View Admin As
+ * Plugin URI:        https://wordpress.org/plugins/view-admin-as/
+ * Description:       View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
+ * Version:           1.7
+ * Author:            Jory Hogeveen
+ * Author URI:        https://www.keraweb.nl
+ * Text Domain:       view-admin-as
+ * Domain Path:       /languages/
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * GitHub Plugin URI: https://github.com/JoryHogeveen/view-admin-as
  */
 
 /*
- * Copyright 2015-2016 Jory Hogeveen
+ * Copyright 2015-2017 Jory Hogeveen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
