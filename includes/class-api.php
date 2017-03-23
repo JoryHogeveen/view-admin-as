@@ -356,6 +356,7 @@ final class VAA_API
 	 */
 	public static function ends_with( $haystack, $needle ) {
 		// search forward starting from end minus needle length characters.
+		// @codingStandardsIgnoreLine >> yeah yeah, I know...
 		return '' === $needle || ( ( $temp = strlen( $haystack ) - strlen( $needle ) ) >= 0 && strpos( $haystack, $needle, $temp ) !== false);
 	}
 

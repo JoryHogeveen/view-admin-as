@@ -184,6 +184,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 				_doing_it_wrong(
 					__METHOD__,
 					sprintf(
+						// Translators: %1$s stands for an option key and %2$s stands for a class name.
 						__( 'The setting key %1$s is reserved for class %2$s', VIEW_ADMIN_AS_DOMAIN ),
 						$id, 'VAA_View_Admin_As_Store'
 					),
@@ -197,7 +198,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 
 			// Append underscore to the identifier for the filters.
 			$id = '_' . $id;
-		}
+		} // End if().
 
 		/**
 		 * Set the default global settings.
