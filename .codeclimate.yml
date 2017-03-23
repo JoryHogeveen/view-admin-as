@@ -75,6 +75,9 @@ engines:
       # Disable: Expected # spaces after parameter type; # found
       Squiz Commenting FunctionComment SpacingAfterParamType:
         enabled: false
+      # Disable: Code after EXIT statement cannot be executed (This test doesn't work correctly)
+      Squiz PHP NonExecutableCode Unreachable:
+        enabled: false
       # Disable: This comment is #% valid code; is this commented out code?
       Squiz PHP CommentedOutCode Found:
         enabled: false

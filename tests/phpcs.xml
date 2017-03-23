@@ -34,6 +34,8 @@
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType" />
         <!-- Expected 1 space after closing brace; newline found -->
         <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace" />
+        <!-- Code after EXIT statement cannot be executed (This test doesn't work correctly) -->
+        <exclude name="Squiz.PHP.NonExecutableCode.Unreachable" />
         <!-- This comment is #% valid code; is this commented out code? -->
         <exclude name="Squiz.PHP.CommentedOutCode.Found" />
         <!-- String "" does not require double quotes; use single quotes instead -->
