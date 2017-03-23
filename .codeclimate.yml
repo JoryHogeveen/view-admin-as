@@ -42,6 +42,9 @@ engines:
     config:
       standard: "Wordpress-Extra"
     checks:
+      # Disable: Class file names should be based on the class name with "class-" prepended.
+      WordPress Files FileName InvalidClassFileName:
+        enabled: false
       # Disable: When an array uses associative keys, each value should start on a new line.
       WordPress Arrays ArrayDeclarationSpacing AssociativeKeyFound:
         enabled: false
