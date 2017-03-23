@@ -42,6 +42,8 @@
         <exclude name="Squiz.PHP.CommentedOutCode.Found" />
         <!-- String "" does not require double quotes; use single quotes instead -->
         <exclude name="Squiz.Strings.DoubleQuoteUsage.NotRequired" />
+        <!-- Opening brace should be on the same line as the declaration for class -->
+        <exclude name="Generic.Classes.OpeningBraceSameLine.BraceOnNewLine" />
         <!-- There must be exactly one blank line before the tags in a doc comment -->
         <exclude name="Generic.Commenting.DocComment.SpacingBeforeTags" />
         <!-- Inline control structures are not allowed -->
