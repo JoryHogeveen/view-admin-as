@@ -8,6 +8,8 @@
     <arg name="extensions" value="php" />
 
     <rule ref="WordPress-Extra">
+        <!-- When an array uses associative keys, each value should start on a new line. -->
+        <exclude name="WordPress.Arrays.ArrayDeclarationSpacing.AssociativeKeyFound" />
         <!-- Member variable "" is not in valid snake_case format -->
         <exclude name="WordPress.NamingConventions.ValidVariableName.MemberNotSnakeCase" />
         <!-- Object property "" is not in valid snake_case format -->

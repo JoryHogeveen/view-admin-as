@@ -42,6 +42,9 @@ engines:
     config:
       standard: "Wordpress-Extra"
     checks:
+      # Disable: When an array uses associative keys, each value should start on a new line.
+      WordPress Arrays ArrayDeclarationSpacing AssociativeKeyFound:
+        enabled: false
       # Disable: Member variable "" is not in valid snake_case format
       WordPress NamingConventions ValidVariableName MemberNotSnakeCase:
         enabled: false
