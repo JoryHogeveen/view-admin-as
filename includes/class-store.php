@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Store class that stores the VAA data for use.
@@ -367,6 +367,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 				// Turn query results into WP_User objects.
 				foreach ( $users_results as $user ) {
+					// @codingStandardsIgnoreLine >> unserialize() required since WP stores it this way.
 					$user->roles = unserialize( $user->roles );
 					$users[ $user->ID ] = new WP_User( $user );
 				}
@@ -394,7 +395,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 			// Sort users by role and filter them on available roles.
 			$users = $this->filter_sort_users_by_role( $users );
-		}
+		} // End if().
 
 		// @todo Maybe $userids isn't needed anymore
 		$userids = array();
@@ -461,6 +462,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			$roles = $this->get_users( $user_id )->roles;
 			if ( is_string( $roles ) ) {
 				// It is still raw DB data, unserialize it.
+				// @codingStandardsIgnoreLine >> unserialize() required since WP stores it this way.
 				$roles = unserialize( $roles );
 			}
 
@@ -577,7 +579,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 				);
 				$caps = array_merge( $network_caps, $caps );
 			}
-		}
+		} // End if().
 
 		// Remove role names.
 		$caps = array_diff_key( $caps, $wp_roles->roles );
@@ -939,4 +941,4 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Store.

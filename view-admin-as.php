@@ -35,7 +35,7 @@
  * MA 02110-1301, USA.
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+! defined( 'ABSPATH' ) && die();
 
 if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
@@ -73,9 +73,10 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	function view_admin_as_conflict_admin_notice() {
 		echo '<div class="notice-error notice is-dismissible"><p><strong>' . esc_html__( 'View Admin As', 'view-admin-as' ) . ':</strong> '
 			. esc_html__( 'Plugin not activated because of a conflict with an other plugin or theme', 'view-admin-as' )
+		    // Translators: %s stands for the class name.
 			. ' <code>(' . sprintf( esc_html__( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')</code></p></div>';
 	}
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	deactivate_plugins( plugin_basename( __FILE__ ) );
 
-}
+} // End if().

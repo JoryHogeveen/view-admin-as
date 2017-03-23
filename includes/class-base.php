@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Base class that gets the VAA data from the main class.
@@ -194,4 +194,4 @@ abstract class VAA_View_Admin_As_Class_Base
 		return null;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Class_Base.

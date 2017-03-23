@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Settings class that stores the VAA settings for use.
@@ -719,4 +719,4 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 		return update_user_meta( get_current_user_id(), $this->get_userMetaKey(), $this->get_userMeta() );
 	}
 
-}
+} // End class VAA_View_Admin_As_Settings.

@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * View controller class. Handles all view data.
@@ -725,4 +725,4 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Controller.

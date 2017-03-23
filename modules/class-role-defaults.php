@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Set default screen settings for roles and apply them on users through various bulk actions.
@@ -308,9 +308,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( is_array( $metas ) ) {
 			foreach ( $metas as $meta_key => $meta_value ) {
 				// Remove forbidden or invalid meta keys.
-				if (   in_array( $meta_key, $this->meta_forbidden, true )
-					|| strpos( $meta_key, ' ' ) !== false
-					|| ! is_string( $meta_key )
+				if ( in_array( $meta_key, $this->meta_forbidden, true ) ||
+					 strpos( $meta_key, ' ' ) !== false ||
+					 ! is_string( $meta_key )
 				) {
 					unset( $metas[ $meta_key ] );
 					continue;
@@ -1317,8 +1317,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'class' => 'vaa-button-container',
 					),
 				) );
-			}
-		}
+			} // End if().
+		} // End if().
 
 		/**
 		 * Copy / Import / Export
@@ -1546,7 +1546,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				),
 			) );
 
-		}
+		} // End if().
 
 		/*
 		 * Clear actions
@@ -1644,4 +1644,4 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Role_Defaults.

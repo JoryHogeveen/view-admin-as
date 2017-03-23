@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Add or remove roles and grant or deny them capabilities.
@@ -536,7 +536,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'title'  => __( 'No view selected', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 			) );
-		}
+		} // End if().
 
 		/*
 		 * Clone role.
@@ -807,4 +807,4 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Role_Manager.

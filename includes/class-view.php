@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * View handler class.
@@ -194,9 +194,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 */
 		$accessible = false;
 		$public_props = get_object_vars( $user );
-		if (    array_key_exists( 'caps', $public_props )
-		     && array_key_exists( 'allcaps', $public_props )
-			 && is_callable( array( $user, 'get_role_caps' ) )
+		if ( array_key_exists( 'caps', $public_props ) &&
+		     array_key_exists( 'allcaps', $public_props ) &&
+			 is_callable( array( $user, 'get_role_caps' ) )
 		) {
 			$accessible = true;
 		}
@@ -460,4 +460,4 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_View.

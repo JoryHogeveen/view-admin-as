@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 if ( ! class_exists( 'WP_Admin_Bar' ) && file_exists( ABSPATH . WPINC . '/class-wp-admin-bar.php' ) ) {
 	require_once( ABSPATH . WPINC . '/class-wp-admin-bar.php' );
@@ -156,6 +156,6 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Toolbar.
 
-} // end if class_exists.
+} // End if().

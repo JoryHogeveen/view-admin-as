@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Base class for modules that use option data etc.
@@ -224,4 +224,4 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
 		return update_option( $this->get_optionKey(), $this->optionData );
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Module.

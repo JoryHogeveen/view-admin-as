@@ -9,7 +9,7 @@
  * @var  string        $main_root  The main VAA root item.
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root ) ) {
 
@@ -128,4 +128,4 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 } else {
 	_doing_it_wrong( __FILE__, esc_html__( 'No toolbar resources found.', VIEW_ADMIN_AS_DOMAIN ), '1.7' );
-}
+} // End if().

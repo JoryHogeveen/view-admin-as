@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Admin Bar UI for View Admin As.
@@ -1112,8 +1112,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 
 				$label_attr = array();
 				$desc_attr = array();
-				if (   ( ! empty( $args['auto_showhide_desc'] ) )
-					|| ( ! isset( $args['auto_showhide_desc'] ) && ! empty( $data['auto_showhide_desc'] ) )
+				if ( ( ! empty( $args['auto_showhide_desc'] ) ) ||
+					 ( ! isset( $args['auto_showhide_desc'] ) && ! empty( $data['auto_showhide_desc'] ) )
 				) {
 					self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
 				}
@@ -1126,11 +1126,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 				if ( ! empty( $args['description'] ) ) {
 					$html .= self::do_description( $args['description'], $desc_attr );
 				}
-			}
+			} // End foreach().
 			if ( ! empty( $data['description'] ) ) {
 				$html .= self::do_description( $data['description'] );
 			}
-		}
+		} // End if().
 		return $html;
 	}
 
@@ -1213,7 +1213,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			if ( ! empty( $data['description'] ) ) {
 				$html .= self::do_description( $data['description'], $desc_attr );
 			}
-		}
+		} // End if().
 		return $html;
 	}
 
@@ -1321,4 +1321,4 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Admin_Bar.

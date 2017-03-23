@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Plugin initializer class.
@@ -122,6 +122,7 @@ final class VAA_View_Admin_As
 				'type' => 'notice-error',
 				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
 					. __( 'Plugin not loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+				    // Translators: %s stands for the class name.
 					. ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), 'VAA_View_Admin_As_Class_Base' ) . ')</code>',
 			) );
 
@@ -299,8 +300,9 @@ final class VAA_View_Admin_As
 				$this->add_notice( 'class-error-' . $key, array(
 					'type' => 'notice-error',
 					'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-					             . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-					             . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
+					    . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+					    // Translators: %s stands for the class name.
+					    . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
 				) );
 			}
 
@@ -495,8 +497,8 @@ final class VAA_View_Admin_As
 	 * @return  bool
 	 */
 	public function register_module( $data ) {
-		if (    ! empty( $data['id'] )       && is_string( $data['id'] )
-		     && ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
+		     ! empty( $data['instance'] ) && is_object( $data['instance'] )
 		) {
 			$this->modules[ $data['id'] ] = $data['instance'];
 			return true;
@@ -582,8 +584,8 @@ final class VAA_View_Admin_As
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
-				             // Translators, %1$s stands for "WordPress", %2$s stands for version 3.5
-				             . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
+				    // Translators: %1$s stands for "WordPress", %2$s stands for version 3.5.
+				    . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
 			) );
 			$valid = false;
 		}
@@ -674,4 +676,4 @@ final class VAA_View_Admin_As
 		return null;
 	}
 
-} // end class
+} // End class VAA_View_Admin_As.

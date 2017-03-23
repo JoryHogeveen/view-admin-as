@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * UI hooks for View Admin As.
@@ -199,7 +199,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 					'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
 				),
 			);
-		}
+		} // End if().
 
 		return $this->links;
 	}
@@ -405,4 +405,4 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_UI.

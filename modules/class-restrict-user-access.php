@@ -6,7 +6,7 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
 
 /**
  * Compatibility class for the Restrict User Access plugin.
@@ -276,6 +276,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				$view_label = $this->levelPostType->labels->name;
 			}
 
+			// Translators: %s stands for the view type label.
 			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $view_label ) . ': ';
 			$title .= $this->get_levels( $this->selectedLevel )->post_title;
 			// Is there also a role selected?
@@ -352,7 +353,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 			$root = $root . '-rua-levels';
 
-		}
+		} // End if().
 
 		/**
 		 * Add items at the beginning of the rua group.
@@ -401,13 +402,14 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				'title'     => $title,
 				'href'      => $href,
 				'meta'      => array(
+					// Translators: %s stands for the view type name.
 					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
 					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
 					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $level->ID,
 				),
 			) );
-		}
+		} // End foreach().
 
 		/**
 		 * Add items at the end of the rua group.
@@ -548,4 +550,4 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_RUA.
