@@ -260,17 +260,42 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'data' => __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ),
 			);
 		}
-		$capabilities = array_map( 'boolval', $capabilities );
-		$existing_role = $this->wp_roles->get_role( $role );
+
+		// @see wp-includes/capabilities.php
+		$existing_role = get_role( $role );
+		// Build role name. (Only used for adding a new role).
+		// @todo Rename role functionality?
+		$role_name     = ucfirst( strip_tags( $role ) );
+		// Sanitize capabilities.
+		$capabilities  = array_map( 'boolval', $capabilities );
+
+		if ( ! $existing_role ) {
+			// Sanitize role key.
+			$role = str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $role ) );
+			// Recheck for an existing role.
+			$existing_role = get_role( $role );
+		}
+
 		if ( $existing_role ) {
+			// Update role.
 			$role = $existing_role;
 			$this->update_role_caps( $role, $capabilities );
 		} else {
 			// Add new role.
-			$role_name = ucfirst( strip_tags( $role ) );
-			$role = str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $role ) );
+			// Only leave granted capabilities.
+			// @todo Option to deny capability (like Members).
 			$capabilities = array_filter( $capabilities );
-			$this->wp_roles->add_role( $role, $role_name, $capabilities );
+			// @see wp-includes/capabilities.php
+			$new_role = add_role( $role, $role_name, $capabilities );
+
+			if ( $new_role ) {
+				return true;
+			}
+			// Very unlikely that this will happen but still..
+			return array(
+				'success' => false,
+				'data' => __( 'Role already exists', VIEW_ADMIN_AS_DOMAIN ),
+			);
 		}
 		return true;
 	}
@@ -310,6 +335,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @return  mixed
 	 */
 	public function clone_role( $role, $new_role ) {
+		// Do not use WP's get_role() because one can only clone a role it's allowed to see.
 		$role = $this->store->get_roles( $role );
 		if ( $role ) {
 			$this->save_role( $new_role, $role->capabilities );
@@ -329,7 +355,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	public function delete_role( $role ) {
 		if ( $this->store->get_roles( $role ) ) {
 			if ( ! in_array( $role, $this->protected_roles, true ) ) {
-				$this->wp_roles->remove_role( $role );
+				remove_role( $role );
 				return true;
 			}
 			return __( 'This role cannot be removed', VIEW_ADMIN_AS_DOMAIN );
