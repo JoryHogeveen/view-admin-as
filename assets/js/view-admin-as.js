@@ -4,7 +4,7 @@
  * https://wordpress.org/plugins/view-admin-as/
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
+ * @package View_Admin_As
  * @since   0.1
  * @version 1.7
  * @preserve
@@ -12,16 +12,26 @@
 /* eslint-enable no-extra-semi */
 
 if ( 'undefined' === typeof VAA_View_Admin_As ) {
-	var VAA_View_Admin_As = {
-		siteurl: '',
-		view: false,
-		view_types: [ 'user', 'role', 'caps', 'visitor' ],
-		_debug: false,
-		__no_users_found: 'No users found.',
-		__key_already_exists: 'Key already exists.',
-		__success: 'Success',
-		__confirm: 'Are you sure?'
-	};
+	/**
+	 * Property reference to script localization from plugin.
+	 * Only the properties from script localization are documented here.
+	 *
+	 * @see  VAA_View_Admin_As_UI::enqueue_scripts()
+	 *
+	 * @property  {string}   ajaxurl        Current site/blog ajax callback (/wp-admin/admin-ajax.php).
+	 * @property  {string}   siteurl        Current site/blog url.
+	 * @property  {array}    settings       The global settings.
+	 * @property  {array}    settings_user  The user settings.
+	 * @property  {array}    view           The current view (empty if no view is active).
+	 * @property  {array}    view_types     The available view types.
+	 * @property  {string}   _vaa_nonce
+	 * @property  {boolean}  _debug
+	 * @property  {string}   __no_users_found      'No users found.'.
+	 * @property  {string}   __key_already_exists: 'Key already exists.'.
+	 * @property  {string}   __success             'Success'.
+	 * @property  {string}   __confirm             'Are you sure?'.
+	 */
+	var VAA_View_Admin_As = {};
 }
 
 ( function( $ ) {
@@ -36,9 +46,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As._mobile = false;
 
 	if ( ! VAA_View_Admin_As.hasOwnProperty( '_debug' ) ) {
-		VAA_View_Admin_As._debug = 0;
+		VAA_View_Admin_As._debug = false;
 	}
-	VAA_View_Admin_As._debug = parseInt( VAA_View_Admin_As._debug, 10 );
+	VAA_View_Admin_As._debug = Boolean( parseInt( VAA_View_Admin_As._debug, 10 ) );
 
 	if ( ! VAA_View_Admin_As.hasOwnProperty( 'ajaxurl' ) && 'undefined' !== typeof ajaxurl ) {
 		VAA_View_Admin_As.ajaxurl = ajaxurl;
@@ -60,11 +70,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return  {string|object}  Parsed JSON object or original string.
 	 */
 	VAA_View_Admin_As.json_decode = function( val ) {
-		if ( val.startsWith("{") ) {
+		if ( 0 === val.indexOf("{") ) {
 			try {
 				val = JSON.parse( val );
 			} catch ( err ) {
-				// Just leave it.
+				// No JSON data.
 			}
 		}
 		return val;
@@ -357,7 +367,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					data = {},
 					display = false;
 
-				if ( 1 === VAA_View_Admin_As._debug ) {
+				if ( true === VAA_View_Admin_As._debug ) {
 					// Show debug info in console.
 					console.log( response );
 				}
