@@ -9,7 +9,9 @@
  * @var  string        $main_root  The main VAA root item.
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) && die();
+if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
+	die();
+}
 
 if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root ) ) {
 

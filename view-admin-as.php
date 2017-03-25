@@ -40,7 +40,9 @@
  * MA 02110-1301, USA.
  */
 
-! defined( 'ABSPATH' ) && die();
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
