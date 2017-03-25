@@ -319,7 +319,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 	 * Add options to the access denied page when the user has selected a view and did something this view is not allowed.
 	 *
 	 * @since   1.3
-	 * @since   1.5.1   Check for SSL.
+	 * @since   1.5.1   Check for SSL (Moved to VAA_API).
 	 * @since   1.6     More options and better description.
 	 * @since   1.7     Moved to this class from main class.
 	 * @access  public
@@ -329,7 +329,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 	 */
 	public function die_handler( $function_name ) {
 
-		// only do something if a view is selected.
+		// Only do something if a view is selected.
 		if ( ! $this->store->get_view() ) {
 			return $function_name;
 		}
@@ -337,16 +337,14 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 		$options = array();
 
 		if ( is_network_admin() ) {
-			$dashboard_url = network_admin_url();
 			$options[] = array(
 				'text' => __( 'Go to network dashboard', VIEW_ADMIN_AS_DOMAIN ),
-				'url' => $dashboard_url,
+				'url' => network_admin_url(),
 			);
 		} else {
-			$dashboard_url = admin_url();
 			$options[] = array(
 				'text' => __( 'Go to dashboard', VIEW_ADMIN_AS_DOMAIN ),
-				'url' => $dashboard_url,
+				'url' => admin_url(),
 			);
 			$options[] = array(
 				'text' => __( 'Go to homepage', VIEW_ADMIN_AS_DOMAIN ),

@@ -62,11 +62,11 @@ Full list of tested plugins and details: [Compatibility & Integrations](https://
 ## Translations
 Please help translating this plugin on [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/view-admin-as)!
 
-## Actions and Filters
+## Actions & Filters
 *	[Click here for Action documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Actions)
 *	[Click here for Filter documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters)
 
-### Plugin capabilities
+## Plugin capabilities
 [Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Custom-capabilities)
 
 ## Ideas?

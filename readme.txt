@@ -176,12 +176,12 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 *	Feature: Module Role Defaults: Added the option to copy defaults from one role to another (or multiple). [#44](https://github.com/JoryHogeveen/view-admin-as/issues/44)
 *	Enhancement/UI: Enable and Improve responsive styles/a11y. [#16](https://github.com/JoryHogeveen/view-admin-as/issues/16)
 *	Enhancement/UI: Improved the autoHeight calculation (submenu and popup).
-*	Enhancement: View combinations now working in code (No UI yet). [#18](https://github.com/JoryHogeveen/view-admin-as/issues/18)
+*	Enhancement: View combinations now working in code (No UI). [#18](https://github.com/JoryHogeveen/view-admin-as/issues/18)
 *	Enhancement: Major code refactoring for better standards en easier development.
 *	Maintenance: Validated compatibility with "Restrict User Access" (RUA) plugin v0.14. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
-*	Fix: Fixed all major CodeClimate issues. All green now!
+*	Fix: Fixed all major [CodeClimate](https://codeclimate.com/github/JoryHogeveen/view-admin-as) issues. All green now!
 *	[Wiki (documentation) updated](https://github.com/JoryHogeveen/view-admin-as/wiki).
-*	Screenshots & Banners updated for the new plugin directory.
+*	Screenshots & Banners updated.
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/42)
 
