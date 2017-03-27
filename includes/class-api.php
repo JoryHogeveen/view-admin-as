@@ -431,9 +431,8 @@ final class VAA_API
 	 * @return  mixed
 	 */
 	public static function get_request( $nonce, $key = null, $type = 'post' ) {
-		// @codingStandardsIgnoreStart
+		// @codingStandardsIgnoreLine >> Ignore $_GET and $_POST issues.
 		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
-		// @codingStandardsIgnoreEnd
 		if ( isset( $data[ $key ] ) && isset( $data['_vaa_nonce'] ) && wp_verify_nonce( $data['_vaa_nonce'], $nonce ) ) {
 			$request = VAA_API::get_array_data( $data, $key );
 			if ( is_string( $request ) ) {
@@ -486,9 +485,8 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function is_request( $key = null, $type = 'post' ) {
-		// @codingStandardsIgnoreStart
+		// @codingStandardsIgnoreLine >> Ignore $_GET and $_POST issues.
 		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
-		// @codingStandardsIgnoreEnd
 		if ( isset( $data[ $key ] ) ) {
 			return true;
 		}

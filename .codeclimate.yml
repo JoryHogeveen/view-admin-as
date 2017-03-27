@@ -21,13 +21,20 @@ engines:
         enabled: false
       box-model:
         enabled: false
+      # Disable: "The box-sizing property isn't supported in IE6 and IE7". I don't care for IE6 and IE7.
+      box-sizing:
+        enabled: false
       ids:
         enabled: false
+      # Disable: I need this for WP admin bar overwrites in some cases.
       important:
         enabled: false
       order-alphabetical:
         enabled: false
       unqualified-attributes:
+        enabled: false
+      # Disable: "The universal selector (*) is known to be slow". This is only for ancient browsers..
+      universal-selector:
         enabled: false
   eslint:
     enabled: true
