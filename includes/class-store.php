@@ -6,17 +6,20 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
+	die();
+}
 
 /**
- * Store class that stores the VAA data for use
+ * Store class that stores the VAA data for use.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.4
+ * @version 1.7
+ * @uses    VAA_View_Admin_As_Settings Extends class
  */
-final class VAA_View_Admin_As_Store
+final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 {
 	/**
 	 * The single instance of the class.
@@ -45,142 +48,27 @@ final class VAA_View_Admin_As_Store
 	private $nonce_parsed = '';
 
 	/**
-	 * Database option key.
+	 * View type data.
+	 * You can add custom view data with VAA_View_Admin_As_Store::set_data().
 	 *
-	 * @since  1.4
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    string
+	 * @see    VAA_View_Admin_As_Store::set_data()
+	 * @since  1.7
+	 * @var    array {
+	 *     Default view data.
+	 *     @type  array  $caps       Since 1.3    Array of available capabilities.
+	 *     @type  array  $roles      Since 0.1    Array of available roles (WP_Role objects).
+	 *     @type  array  $rolenames  Since 1.6.4  Array of role names (used for role translations).
+	 *     @type  array  $users      Since 0.1    Array of available users (WP_User objects).
+	 *     @type  array  $userids    Since 0.1    Array of available user ID's (key) and display names (value).
+	 * }
 	 */
-	private $optionKey = 'vaa_view_admin_as';
-
-	/**
-	 * Database option data.
-	 *
-	 * @since  1.4
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $optionData = array(
-		'db_version',
+	private $data = array(
+		'caps' => array(),
+		'roles' => array(),
+		'rolenames' => array(),
+		'users' => array(),
+		'userids' => array(),
 	);
-
-	/**
-	 * User meta key for settings ans views.
-	 *
-	 * @since  1.3.4
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    bool
-	 */
-	private $userMetaKey = 'vaa-view-admin-as';
-
-	/**
-	 * User meta value for settings ans views.
-	 *
-	 * @since  1.5
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $userMeta = array(
-		'settings',
-		'views',
-	);
-
-	/**
-	 * Array of default settings.
-	 *
-	 * @since  1.5
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $defaultSettings = array();
-
-	/**
-	 * Array of allowed settings.
-	 *
-	 * @since  1.5
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $allowedSettings = array();
-
-	/**
-	 * Array of default settings.
-	 *
-	 * @since  1.5
-	 * @since  1.5.2  Added force_group_users.
-	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.6.1  Added freeze_locale.
-	 * @var    array
-	 */
-	private $defaultUserSettings = array(
-		'admin_menu_location' => 'top-secondary',
-		'force_group_users'   => 'no',
-		'freeze_locale'       => 'no',
-		'hide_front'          => 'no',
-		'view_mode'           => 'browse',
-	);
-
-	/**
-	 * Array of allowed settings.
-	 * Setting name (key) => array( values ).
-	 *
-	 * @since  1.5
-	 * @since  1.5.2  Added force_group_users.
-	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.6.1  Added freeze_locale.
-	 * @var    array
-	 */
-	private $allowedUserSettings = array(
-		'admin_menu_location' => array( 'top-secondary', 'my-account' ),
-		'force_group_users'   => array( 'yes', 'no' ),
-		'freeze_locale'       => array( 'yes', 'no' ),
-		'hide_front'          => array( 'yes', 'no' ),
-		'view_mode'           => array( 'browse', 'single' ),
-	);
-
-	/**
-	 * Array of available capabilities.
-	 *
-	 * @since  1.3
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $caps = array();
-
-	/**
-	 * Array of available roles (WP_Role objects).
-	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $roles = array();
-
-	/**
-	 * Array of translated role names.
-	 *
-	 * @since  1.6.4
-	 * @var    array
-	 */
-	private $rolenames = array();
-
-	/**
-	 * Array of available users (WP_User objects).
-	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $users = array();
-
-	/**
-	 * Array of available user ID's (key) and display names (value).
-	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
-	 * @var    array
-	 */
-	private $userids = array();
 
 	/**
 	 * Current user object.
@@ -218,14 +106,14 @@ final class VAA_View_Admin_As_Store
 	private static $isCurUserSuperAdmin = false;
 
 	/**
-	 * Selected view mode.
+	 * Selected view data as stored in the user meta.
 	 * Format: array( VIEW_TYPE => VIEW_DATA ).
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class.
 	 * @var    array
 	 */
-	private $viewAs = array();
+	private $view = array();
 
 	/**
 	 * The selected user object (if a view is selected).
@@ -249,7 +137,8 @@ final class VAA_View_Admin_As_Store
 	 * Populate the instance.
 	 * @since  1.6
 	 */
-	private function __construct() {
+	protected function __construct() {
+		parent::__construct( 'view-admin-as' );
 		self::$_instance = $this;
 	}
 
@@ -262,27 +151,17 @@ final class VAA_View_Admin_As_Store
 	 */
 	public function init( $redo = false ) {
 		static $done = false;
-		if ( ( $done && ! $redo ) ) return;
+		if ( $done && ! $redo ) return;
 
 		$this->set_nonce( 'view-admin-as' );
 
 		// Get the current user.
 		$this->set_curUser( wp_get_current_user() );
 
-		// Get the current user session.
-		if ( function_exists( 'wp_get_session_token' ) ) {
-			// WP 4.0+.
-			$this->set_curUserSession( (string) wp_get_session_token() );
-		} else {
-			$cookie = wp_parse_auth_cookie( '', 'logged_in' );
-			if ( ! empty( $cookie['token'] ) ) {
-				$this->set_curUserSession( (string) $cookie['token'] );
-			} else {
-				// Fallback. This disables the use of multiple views in different sessions.
-				$this->set_curUserSession( $this->get_curUser()->ID );
-			}
-		}
+		// Get the current user session (WP 4.0+).
+		$this->set_curUserSession( (string) wp_get_session_token() );
 
+		self::$isCurUserSuperAdmin = false;
 		if ( is_super_admin( $this->get_curUser()->ID ) ) {
 			self::$isCurUserSuperAdmin = true;
 		}
@@ -415,7 +294,7 @@ final class VAA_View_Admin_As_Store
 			foreach ( $users as $key => $user_login ) {
 				$user = get_user_by( 'login', $user_login );
 				// Compare user ID with superior admins array.
-				if ( $user && ! in_array( (int) $user->ID, $superior_admins, true ) ) {
+				if ( isset( $user->ID ) && ! in_array( (int) $user->ID, $superior_admins, true ) ) {
 					$users[ $key ] = $user;
 				} else {
 					unset( $users[ $key ] );
@@ -477,6 +356,7 @@ final class VAA_View_Admin_As_Store
 			}
 
 			// Run query (OBJECT_K to set the user ID as key).
+			// @codingStandardsIgnoreLine >> $wpdb->prepare() not needed
 			$users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K );
 
 			if ( $users_results ) {
@@ -489,6 +369,7 @@ final class VAA_View_Admin_As_Store
 
 				// Turn query results into WP_User objects.
 				foreach ( $users_results as $user ) {
+					// @codingStandardsIgnoreLine >> unserialize() required since WP stores it this way.
 					$user->roles = unserialize( $user->roles );
 					$users[ $user->ID ] = new WP_User( $user );
 				}
@@ -516,7 +397,7 @@ final class VAA_View_Admin_As_Store
 
 			// Sort users by role and filter them on available roles.
 			$users = $this->filter_sort_users_by_role( $users );
-		}
+		} // End if().
 
 		// @todo Maybe $userids isn't needed anymore
 		$userids = array();
@@ -583,6 +464,7 @@ final class VAA_View_Admin_As_Store
 			$roles = $this->get_users( $user_id )->roles;
 			if ( is_string( $roles ) ) {
 				// It is still raw DB data, unserialize it.
+				// @codingStandardsIgnoreLine >> unserialize() required since WP stores it this way.
 				$roles = unserialize( $roles );
 			}
 
@@ -669,15 +551,17 @@ final class VAA_View_Admin_As_Store
 
 			$all_caps = array_unique( $all_caps );
 
+			$add_caps = array();
 			// Add new capabilities to the capability array as disabled.
 			foreach ( $all_caps as $cap_key => $cap_val ) {
-				if ( is_string( $cap_val ) && ! is_numeric( $cap_val ) && ! array_key_exists( $cap_val, $caps ) ) {
-					$caps[ $cap_val ] = 0;
-				}
-				if ( is_string( $cap_key ) && ! is_numeric( $cap_key ) && ! array_key_exists( $cap_key, $caps ) ) {
-					$caps[ $cap_key ] = 0;
+				if ( is_numeric( $cap_key ) ) {
+					// Try to convert numeric (faulty) keys. Some developers just don't get it..
+					$add_caps[ (string) $cap_val ] = 0;
+				} else {
+					$add_caps[ (string) $cap_key ] = 0;
 				}
 			}
+			$caps = array_merge( $add_caps, $caps );
 
 			/**
 			 * Add network capabilities.
@@ -688,175 +572,23 @@ final class VAA_View_Admin_As_Store
 			 */
 			if ( is_multisite() ) {
 				$network_caps = array(
-					'manage_network' => 1,
-					'manage_sites' => 1,
-					'manage_network_users' => 1,
-					'manage_network_plugins' => 1,
-					'manage_network_themes' => 1,
-					'manage_network_options' => 1,
+					'manage_network' => 0,
+					'manage_sites' => 0,
+					'manage_network_users' => 0,
+					'manage_network_plugins' => 0,
+					'manage_network_themes' => 0,
+					'manage_network_options' => 0,
 				);
 				$caps = array_merge( $network_caps, $caps );
 			}
-		}
+		} // End if().
 
 		// Remove role names.
-		foreach ( $wp_roles->roles as $role_key => $role ) {
-			unset( $caps[ $role_key ] );
-		}
+		$caps = array_diff_key( $caps, $wp_roles->roles );
+		// And sort alphabetical.
 		ksort( $caps );
 
 		$this->set_caps( $caps );
-	}
-
-	/**
-	 * Store settings based on allowed settings.
-	 * Also merges with the default settings.
-	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
-	 * @access  public
-	 *
-	 * @param   array   $settings  The new settings.
-	 * @param   string  $type      The type of settings (global / user).
-	 * @return  bool
-	 */
-	public function store_settings( $settings, $type ) {
-		if ( 'global' === $type ) {
-			$current  = $this->get_settings();
-			$defaults = $this->get_defaultSettings();
-			$allowed  = $this->get_allowedSettings();
-		} elseif ( 'user' === $type ) {
-			$current  = $this->get_userSettings();
-			$defaults = $this->get_defaultUserSettings();
-			$allowed  = $this->get_allowedUserSettings();
-		} else {
-			return false;
-		}
-		if ( ! is_array( $current ) ) {
-			$current = $defaults;
-		}
-		foreach ( $settings as $setting => $value ) {
-			// Only allow the settings when it exists in the defaults and the value exists in the allowed settings.
-			if ( array_key_exists( $setting, $defaults ) && in_array( $value, $allowed[ $setting ], true ) ) {
-				$current[ $setting ] = $value;
-				// Some settings need a reset.
-				if ( in_array( $setting, array( 'view_mode' ), true ) ) {
-					view_admin_as( $this )->view()->reset_view();
-				}
-			}
-		}
-		if ( 'global' === $type ) {
-			$new = $this->validate_settings( wp_parse_args( $current, $defaults ), 'global' );
-			return $this->update_optionData( $new, 'settings', true );
-		} elseif ( 'user' === $type ) {
-			$new = $this->validate_settings( wp_parse_args( $current, $defaults ), 'user' );
-			return $this->update_userMeta( $new, 'settings', true );
-		}
-		return false;
-	}
-
-	/**
-	 * Validate setting data based on allowed settings.
-	 * Also merges with the default settings.
-	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
-	 * @access  public
-	 *
-	 * @param   array       $settings  The new settings.
-	 * @param   string      $type      The type of settings (global / user).
-	 * @return  array|bool  $settings / false
-	 */
-	public function validate_settings( $settings, $type ) {
-		if ( 'global' === $type ) {
-			$defaults = $this->get_defaultSettings();
-			$allowed  = $this->get_allowedSettings();
-		} elseif ( 'user' === $type ) {
-			$defaults = $this->get_defaultUserSettings();
-			$allowed  = $this->get_allowedUserSettings();
-		} else {
-			return false;
-		}
-		$settings = wp_parse_args( $settings, $defaults );
-		foreach ( $settings as $setting => $value ) {
-			if ( ! array_key_exists( $setting, $defaults ) ) {
-				// We don't have such a setting.
-				unset( $settings[ $setting ] );
-			} elseif ( ! in_array( $value, $allowed[ $setting ], true ) ) {
-				// Set it to default.
-				$settings[ $setting ] = $defaults[ $setting ];
-			}
-		}
-		return $settings;
-	}
-
-	/**
-	 * Delete all View Admin As metadata for this user.
-	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.6.2  Option to remove the VAA metadata for all users.
-	 * @access  public
-	 *
-	 * @global  wpdb        $wpdb
-	 * @param   int|string  $user_id     ID of the user being deleted/removed (pass `all` for all users).
-	 * @param   object      $user        User object provided by the wp_login hook.
-	 * @param   bool        $reset_only  Only reset (not delete) the user meta.
-	 * @return  bool
-	 */
-	public function delete_user_meta( $user_id = null, $user = null, $reset_only = true ) {
-		global $wpdb;
-
-		/**
-		 * Set the first parameter to `all` to remove the meta value for all users.
-		 *
-		 * @since  1.6.2
-		 * @see    https://developer.wordpress.org/reference/classes/wpdb/update/
-		 * @see    https://developer.wordpress.org/reference/classes/wpdb/delete/
-		 */
-		if ( 'all' === $user_id ) {
-			if ( $reset_only ) {
-				return (bool) $wpdb->update(
-					$wpdb->usermeta, // table.
-					array( 'meta_value', false ), // data.
-					array( 'meta_key' => $this->get_userMetaKey() ) // where.
-				);
-			} else {
-				return (bool) $wpdb->delete(
-					$wpdb->usermeta, // table.
-					array( 'meta_key' => $this->get_userMetaKey() ) // where.
-				);
-			}
-		}
-
-		$id = false;
-		if ( is_numeric( $user_id ) ) {
-			// Delete hooks.
-			$id = (int) $user_id;
-		} elseif ( isset( $user->ID ) ) {
-			// Login/Logout hooks.
-			$id = (int) $user->ID;
-		}
-		if ( $id ) {
-			$success = true;
-			if ( $reset_only ) {
-				// Reset db metadata (returns: true on success, false on failure).
-				if ( get_user_meta( $id, $this->get_userMetaKey() ) ) {
-					$success = update_user_meta( $id, $this->get_userMetaKey(), false );
-				}
-			} else {
-				// Remove db metadata (returns: true on success, false on failure).
-				$success = delete_user_meta( $id, $this->get_userMetaKey() );
-			}
-			// Update current metadata if it is the current user.
-			if ( $success && (int) $this->get_curUser()->ID === $id ) {
-				$this->set_userMeta( false );
-			}
-
-			return $success;
-		}
-		// No user or metadata found, no deletion needed
-		return true;
 	}
 
 	/**
@@ -910,11 +642,39 @@ final class VAA_View_Admin_As_Store
 
 	/**
 	 * Get view data (meta).
+	 * @since   1.7
+	 * @param   string  $key  Key for array.
+	 * @return  mixed
+	 */
+	public function get_view( $key = null ) {
+		return VAA_API::get_array_data( $this->view, $key );
+	}
+
+	/**
+	 * Get view data (meta).
+	 * @todo    Remove in future.
+	 * @deprecated
 	 * @param   string  $key  Key for array.
 	 * @return  mixed
 	 */
 	public function get_viewAs( $key = null ) {
-		return VAA_API::get_array_data( $this->viewAs, $key );
+		_deprecated_function( __METHOD__, '1.7', 'VAA_View_Admin_As_Store::get_view()' );
+		return $this->get_view( $key );
+	}
+
+	/**
+	 * Get view type data
+	 *
+	 * @since   1.7
+	 * @param   string  $type  Type key.
+	 * @param   string  $key   (optional) Type data key.
+	 * @return  mixed
+	 */
+	public function get_data( $type, $key = null ) {
+		if ( isset( $this->data[ $type ] ) ) {
+			return VAA_API::get_array_data( $this->data[ $type ], $key );
+		}
+		return null;
 	}
 
 	/**
@@ -923,7 +683,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  mixed   Array of capabilities or a single capability value.
 	 */
 	public function get_caps( $key = null ) {
-		return VAA_API::get_array_data( $this->caps, $key );
+		return $this->get_data( 'caps', $key );
 	}
 
 	/**
@@ -932,7 +692,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  mixed   Array of role objects or a single role object.
 	 */
 	public function get_roles( $key = null ) {
-		return VAA_API::get_array_data( $this->roles, $key );
+		return $this->get_data( 'roles', $key );
 	}
 
 	/**
@@ -944,7 +704,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  array|string
 	 */
 	public function get_rolenames( $key = null, $translate = true ) {
-		$val = VAA_API::get_array_data( $this->rolenames, $key );
+		$val = $this->get_data( 'rolenames', $key );
 		if ( ! $val ) {
 			return ( $key ) ? $key : $val;
 		}
@@ -964,7 +724,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  mixed   Array of user objects or a single user object.
 	 */
 	public function get_users( $key = null ) {
-		return VAA_API::get_array_data( $this->users, $key );
+		return $this->get_data( 'users', $key );
 	}
 
 	/**
@@ -973,7 +733,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  mixed   Array of user display names or a single user display name.
 	 */
 	public function get_userids( $key = null ) {
-		return VAA_API::get_array_data( $this->userids, $key );
+		return $this->get_data( 'userids', $key );
 	}
 
 	/**
@@ -994,112 +754,12 @@ final class VAA_View_Admin_As_Store
 	}
 
 	/**
-	 * Get the option key as used in the options table.
-	 * @return  string
-	 */
-	public function get_optionKey() {
-		return (string) $this->optionKey;
-	}
-
-	/**
-	 * Get the option data as used in the options table.
-	 * @param   string  $key  Key in the option array.
-	 * @return  mixed
-	 */
-	public function get_optionData( $key = null ) {
-		return VAA_API::get_array_data( $this->optionData, $key );
-	}
-
-	/**
-	 * Get the user meta key as used in the usermeta table.
-	 * @return  string
-	 */
-	public function get_userMetaKey() {
-		return (string) $this->userMetaKey;
-	}
-
-	/**
-	 * Get the user metadata as used in the usermeta table.
-	 * @param   string  $key  Key in the meta array.
-	 * @return  mixed
-	 */
-	public function get_userMeta( $key = null ) {
-		return VAA_API::get_array_data( $this->userMeta, $key );
-	}
-
-	/**
-	 * Get the default settings.
-	 * @param   string  $key  Setting key.
-	 * @return  mixed
-	 */
-	public function get_defaultSettings( $key = null ) {
-		return VAA_API::get_array_data( $this->defaultSettings, $key );
-	}
-
-	/**
-	 * Get the default user settings.
-	 * @param   string  $key  Setting key.
-	 * @return  mixed
-	 */
-	public function get_defaultUserSettings( $key = null ) {
-		return VAA_API::get_array_data( $this->defaultUserSettings, $key );
-	}
-
-	/**
-	 * Get the allowed settings.
-	 * @param   string  $key  Setting key.
-	 * @return  mixed
-	 */
-	public function get_allowedSettings( $key = null ) {
-		return (array) VAA_API::get_array_data( $this->allowedSettings, $key );
-	}
-
-	/**
-	 * Get the allowed user settings.
-	 * @param   string  $key  Setting key.
-	 * @return  mixed
-	 */
-	public function get_allowedUserSettings( $key = null ) {
-		return (array) VAA_API::get_array_data( $this->allowedUserSettings, $key );
-	}
-
-	/**
 	 * Get the nonce.
 	 * @param   string  $parsed  Return parsed nonce?
 	 * @return  string
 	 */
 	public function get_nonce( $parsed = null ) {
 		return ( $parsed ) ? $this->nonce_parsed : $this->nonce;
-	}
-
-	/**
-	 * Get the settings.
-	 * @param   string  $key  Setting key.
-	 * @return  mixed
-	 */
-	public function get_settings( $key = null ) {
-		return VAA_API::get_array_data(
-			$this->validate_settings(
-				$this->get_optionData( 'settings' ),
-				'global'
-			),
-			$key
-		);
-	}
-
-	/**
-	 * Get the user settings.
-	 * @param   string  $key  Setting key.
-	 * @return  mixed
-	 */
-	public function get_userSettings( $key = null ) {
-		return VAA_API::get_array_data(
-			$this->validate_settings(
-				$this->get_userMeta( 'settings' ),
-				'user'
-			),
-			$key
-		);
 	}
 
 	/**
@@ -1125,8 +785,42 @@ final class VAA_View_Admin_As_Store
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
+	public function set_view( $val, $key = null, $append = false ) {
+		$this->view = (array) VAA_API::set_array_data( $this->view, $val, $key, $append );
+	}
+
+	/**
+	 * Set the view data.
+	 * @todo    Remove in future.
+	 * @deprecated
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) View key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
 	public function set_viewAs( $val, $key = null, $append = false ) {
-		$this->viewAs = VAA_API::set_array_data( $this->viewAs, $val, $key, $append );
+		_deprecated_function( __METHOD__, '1.7', 'VAA_View_Admin_As_Store::set_view()' );
+		$this->set_view( $val, $key, $append );
+	}
+
+	/**
+	 * Set view type data
+	 *
+	 * @since   1.7
+	 * @param   string  $type
+	 * @param   mixed   $val
+	 * @param   string  $key
+	 * @param   bool    $append
+	 * @return  void
+	 */
+	public function set_data( $type, $val, $key = null, $append = false ) {
+		if ( is_callable( array( $this, 'set_' . $type ) ) ) {
+			$method = 'set_' . $type;
+			$this->$method( $val, $key, $append );
+			return;
+		}
+		$current = ( isset( $this->data[ $type ] ) ) ? $this->data[ $type ] : array();
+		$this->data[ $type ] = (array) VAA_API::set_array_data( $current, $val, $key, $append );
 	}
 
 	/**
@@ -1137,7 +831,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_caps( $val, $key = null, $append = false ) {
-		$this->caps = VAA_API::set_array_data( $this->caps, $val, $key, $append );
+		$this->data['caps'] = (array) VAA_API::set_array_data( $this->data['caps'], $val, $key, $append );
 	}
 
 	/**
@@ -1148,7 +842,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_roles( $val, $key = null, $append = false ) {
-		$this->roles = VAA_API::set_array_data( $this->roles, $val, $key, $append );
+		$this->data['roles'] = (array) VAA_API::set_array_data( $this->data['roles'], $val, $key, $append );
 	}
 
 	/**
@@ -1160,7 +854,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_rolenames( $val, $key = null, $append = false ) {
-		$this->rolenames = VAA_API::set_array_data( $this->rolenames, $val, $key, $append );
+		$this->data['rolenames'] = (array) VAA_API::set_array_data( $this->data['rolenames'], $val, $key, $append );
 	}
 
 	/**
@@ -1172,7 +866,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_users( $val, $key = null, $append = false ) {
-		$this->users = VAA_API::set_array_data( $this->users, $val, $key, $append );
+		$this->data['users'] = (array) VAA_API::set_array_data( $this->data['users'], $val, $key, $append );
 	}
 
 	/**
@@ -1181,7 +875,7 @@ final class VAA_View_Admin_As_Store
 	 * @return  void
 	 */
 	public function set_userids( $val ) {
-		$this->userids = array_map( 'strval', (array) $val );
+		$this->data['userids'] = array_map( 'strval', (array) $val );
 	}
 
 	/**
@@ -1221,24 +915,6 @@ final class VAA_View_Admin_As_Store
 	}
 
 	/**
-	 * Set the default settings.
-	 * @param   array  $val  Settings.
-	 * @return  void
-	 */
-	public function set_defaultSettings( $val ) {
-		$this->defaultSettings = array_map( 'strval', (array) $val );
-	}
-
-	/**
-	 * Set the default user settings.
-	 * @param   array  $val  Settings.
-	 * @return  void
-	 */
-	public function set_defaultUserSettings( $val ) {
-		$this->defaultUserSettings = array_map( 'strval', (array) $val );
-	}
-
-	/**
 	 * Set the nonce.
 	 * Also sets a parsed version of the nonce with wp_create_nonce()
 	 * @param   string  $val  Nonce.
@@ -1247,110 +923,6 @@ final class VAA_View_Admin_As_Store
 	public function set_nonce( $val ) {
 		$this->nonce = (string) $val;
 		$this->nonce_parsed = wp_create_nonce( (string) $val );
-	}
-
-	/**
-	 * Set the allowed settings.
-	 * @param   mixed   $val     Settings.
-	 * @param   string  $key     (optional) Setting key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
-	 */
-	public function set_allowedSettings( $val, $key = null, $append = false ) {
-		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $val, $key, $append );
-	}
-
-	/**
-	 * Set the allowed user settings.
-	 * @param   mixed   $val     Settings.
-	 * @param   string  $key     (optional) Setting key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
-	 */
-	public function set_allowedUserSettings( $val, $key = null, $append = false ) {
-		$this->allowedUserSettings = VAA_API::set_array_data( $this->allowedUserSettings, $val, $key, $append );
-	}
-
-	/**
-	 * Set the settings.
-	 * @param   mixed   $val     Settings.
-	 * @param   string  $key     (optional) Setting key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
-	 */
-	public function set_settings( $val, $key = null, $append = false ) {
-		$this->set_optionData(
-			$this->validate_settings(
-				VAA_API::set_array_data( $this->get_settings(), $val, $key, $append ),
-				'global'
-			),
-			'settings',
-			true
-		);
-	}
-
-	/**
-	 * Set the user settings.
-	 * @param   mixed   $val     Settings.
-	 * @param   string  $key     (optional) Setting key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
-	 */
-	public function set_userSettings( $val, $key = null, $append = false ) {
-		$this->set_userMeta(
-			$this->validate_settings(
-				VAA_API::set_array_data( $this->get_userSettings(), $val, $key, $append ),
-				'user'
-			),
-			'settings',
-			true
-		);
-	}
-
-	/**
-	 * Set the plugin option data.
-	 * @param   mixed   $val     Data.
-	 * @param   string  $key     (optional) Data key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
-	 */
-	public function set_optionData( $val, $key = null, $append = false ) {
-		$this->optionData = VAA_API::set_array_data( $this->optionData, $val, $key, $append );
-	}
-
-	/**
-	 * Set the user metadata.
-	 * @param   mixed   $val     Data.
-	 * @param   string  $key     (optional) Data key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
-	 */
-	public function set_userMeta( $val, $key = null, $append = false ) {
-		$this->userMeta = VAA_API::set_array_data( $this->userMeta, $val, $key, $append );
-	}
-
-	/**
-	 * Update the plugin option data.
-	 * @param   mixed   $val     Data.
-	 * @param   string  $key     (optional) Data key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  bool
-	 */
-	public function update_optionData( $val, $key = null, $append = false ) {
-		$this->set_optionData( $val, $key, $append );
-		return update_option( $this->get_optionKey(), $this->get_optionData() );
-	}
-
-	/**
-	 * Update the user metadata.
-	 * @param   mixed   $val     Data.
-	 * @param   string  $key     (optional) Data key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  bool
-	 */
-	public function update_userMeta( $val, $key = null, $append = false ) {
-		$this->set_userMeta( $val, $key, $append );
-		return update_user_meta( $this->get_curUser()->ID, $this->get_userMetaKey(), $this->get_userMeta() );
 	}
 
 	/**
@@ -1365,73 +937,10 @@ final class VAA_View_Admin_As_Store
 	 * @return  VAA_View_Admin_As_Store
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
-			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self( $caller );
-			}
-			return self::$_instance;
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self( $caller );
 		}
-		return null;
+		return self::$_instance;
 	}
 
-	/**
-	 * Magic method to output a string if trying to use the object as a string.
-	 *
-	 * @since  1.6
-	 * @access public
-	 * @return string
-	 */
-	public function __toString() {
-		return get_class( $this );
-	}
-
-	/**
-	 * Magic method to keep the object from being cloned.
-	 *
-	 * @since  1.6
-	 * @access public
-	 * @return void
-	 */
-	public function __clone() {
-		_doing_it_wrong(
-			__FUNCTION__,
-			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ) ),
-			null
-		);
-	}
-
-	/**
-	 * Magic method to keep the object from being unserialized.
-	 *
-	 * @since  1.6
-	 * @access public
-	 * @return void
-	 */
-	public function __wakeup() {
-		_doing_it_wrong(
-			__FUNCTION__,
-			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ) ),
-			null
-		);
-	}
-
-	/**
-	 * Magic method to prevent a fatal error when calling a method that doesn't exist.
-	 *
-	 * @since  1.6
-	 * @access public
-	 * @param  string  $method  The method name.
-	 * @param  array   $args    The method arguments.
-	 * @return null
-	 */
-	public function __call( $method = '', $args = array() ) {
-		_doing_it_wrong(
-			esc_html( get_class( $this ) . "::{$method}" ),
-			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
-			null
-		);
-		unset( $method, $args );
-		return null;
-	}
-
-} // end class.
+} // End class VAA_View_Admin_As_Store.

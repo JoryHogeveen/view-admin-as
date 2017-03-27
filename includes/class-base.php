@@ -6,51 +6,21 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
+	die();
+}
 
 /**
- * Base class that gets the VAA data from the main class
- * Use this class as an extender for other classes
+ * Base class that gets the VAA data from the main class.
+ * Use this class as an extender for other classes.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.6.4
+ * @version 1.7
  */
 abstract class VAA_View_Admin_As_Class_Base
 {
-	/**
-	 * Option key.
-	 *
-	 * @since  1.5
-	 * @var    string
-	 */
-	protected $optionKey = '';
-
-	/**
-	 * Option data.
-	 *
-	 * @since  1.5
-	 * @var    mixed
-	 */
-	protected $optionData = false;
-
-	/**
-	 * Enable functionalities?
-	 *
-	 * @since  1.5
-	 * @var    bool
-	 */
-	protected $enable = false;
-
-	/**
-	 * Custom capabilities.
-	 *
-	 * @since  1.6
-	 * @var    array
-	 */
-	protected $capabilities = array();
-
 	/**
 	 * View Admin As object.
 	 *
@@ -68,12 +38,12 @@ abstract class VAA_View_Admin_As_Class_Base
 	protected $store = null;
 
 	/**
-	 * Script localization data.
+	 * Custom capabilities.
 	 *
 	 * @since  1.6
 	 * @var    array
 	 */
-	protected $scriptLocalization = array();
+	protected $capabilities = array();
 
 	/**
 	 * Construct function.
@@ -101,9 +71,9 @@ abstract class VAA_View_Admin_As_Class_Base
 	final public function load_vaa( $vaa = null ) {
 		$this->vaa = $vaa;
 		if ( ! is_object( $vaa ) || 'VAA_View_Admin_As' !== get_class( $vaa ) ) {
-			$this->vaa = view_admin_as( $this );
+			$this->vaa = view_admin_as();
 		}
-		if ( $this->vaa ) {
+		if ( $this->vaa && 'VAA_View_Admin_As_Store' !== get_class( $this ) ) {
 			$this->store = $this->vaa->store();
 		}
 	}
@@ -120,35 +90,34 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Is enabled?
+	 * Check if the AJAX call is ok.
+	 * Must always be used before AJAX data is processed
 	 *
-	 * @since   1.5
+	 * @since   1.7
 	 * @access  public
 	 * @return  bool
 	 */
-	public function is_enabled() {
-		return (bool) $this->enable;
+	public function is_valid_ajax() {
+		if ( defined( 'VAA_DOING_AJAX' ) && VAA_DOING_AJAX && $this->is_vaa_enabled() ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
-	 * Set plugin enabled true/false.
+	 * Extender function for WP current_user_can().
+	 * Also checks if VAA is enabled.
 	 *
-	 * @since   1.5.1
-	 * @since   1.6.2  Make database update optional.
-	 * @access  protected
-	 * @param   bool  $bool    Enable or disable?
-	 * @param   bool  $update  Do database update? (default true).
+	 * @since   1.7
+	 * @param   string  $capability  (optional) The capability to check when the user isn't a super admin.
 	 * @return  bool
 	 */
-	protected function set_enable( $bool = false, $update = true ) {
-		$success = true;
-		if ( $update && $this->get_optionKey() ) {
-			$success = $this->update_optionData( (bool) $bool, 'enable', true );
+	public function current_user_can( $capability = null ) {
+		if ( $capability ) {
+			return ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can( $capability ) ) );
+		} else {
+			return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
 		}
-		if ( $success ) {
-			$this->enable = (bool) $bool;
-		}
-		return $success;
 	}
 
 	/**
@@ -165,72 +134,6 @@ abstract class VAA_View_Admin_As_Class_Base
 			$caps[ $cap ] = $cap;
 		}
 		return $caps;
-	}
-
-	/**
-	 * Get the option key as used in the options table.
-	 * @return  string
-	 */
-	public function get_optionKey() {
-		return (string) $this->optionKey;
-	}
-
-	/**
-	 * Get the class option data.
-	 * @param   string  $key  (optional) Data key.
-	 * @return  mixed
-	 */
-	public function get_optionData( $key = null ) {
-		return VAA_API::get_array_data( $this->optionData, $key );
-	}
-
-	/**
-	 * Get the class localisation strings
-	 * @param   string  $key  (optional) Data key.
-	 * @return  mixed
-	 */
-	public function get_scriptLocalization( $key = null ) {
-		return VAA_API::get_array_data( $this->scriptLocalization, $key );
-	}
-
-	/**
-	 * Set the option key as used in the options table.
-	 * @param   string  $val  Option key.
-	 */
-	protected function set_optionKey( $val ) {
-		$this->optionKey = (string) $val;
-	}
-
-	/**
-	 * Set the class option data.
-	 * @param   mixed   $val     Data.
-	 * @param   string  $key     (optional) Data key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 */
-	protected function set_optionData( $val, $key = null, $append = false ) {
-		$this->optionData = VAA_API::set_array_data( $this->optionData, $val, $key, $append );
-	}
-
-	/**
-	 * Set the class localisation strings
-	 * @param   mixed   $val     Data.
-	 * @param   string  $key     (optional) Data key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 */
-	protected function set_scriptLocalization( $val, $key = null, $append = false ) {
-		$this->scriptLocalization = (array) VAA_API::set_array_data( $this->scriptLocalization, $val, $key, $append );
-	}
-
-	/**
-	 * Update the class option data.
-	 * @param   mixed   $val     Data.
-	 * @param   string  $key     (optional) Data key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  bool
-	 */
-	protected function update_optionData( $val, $key = null, $append = false ) {
-		$this->set_optionData( $val, $key, $append );
-		return update_option( $this->get_optionKey(), $this->optionData );
 	}
 
 	/**
@@ -293,4 +196,4 @@ abstract class VAA_View_Admin_As_Class_Base
 		return null;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Class_Base.

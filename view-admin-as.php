@@ -1,23 +1,28 @@
 <?php
 /**
- * Plugin Name: View Admin As
- * Description: View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
- * Plugin URI:  https://wordpress.org/plugins/view-admin-as/
- * Version:     1.6.4
- * Author:      Jory Hogeveen
- * Author URI:  https://www.keraweb.nl
- * Text Domain: view-admin-as
- * Domain Path: /languages/
- * License:     GPLv2
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.6.4
+ * @version 1.7
+ * @licence GPL-2.0+
+ * @link    https://github.com/JoryHogeveen/view-admin-as
+ *
+ * @wordpress-plugin
+ * Plugin Name:       View Admin As
+ * Plugin URI:        https://wordpress.org/plugins/view-admin-as/
+ * Description:       View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
+ * Version:           1.7
+ * Author:            Jory Hogeveen
+ * Author URI:        https://www.keraweb.nl
+ * Text Domain:       view-admin-as
+ * Domain Path:       /languages/
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * GitHub Plugin URI: https://github.com/JoryHogeveen/view-admin-as
  */
 
 /*
- * Copyright 2015-2016 Jory Hogeveen
+ * Copyright 2015-2017 Jory Hogeveen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,12 +40,14 @@
  * MA 02110-1301, USA.
  */
 
-! defined( 'ABSPATH' ) and die( 'You shall not pass!' );
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
-	define( 'VIEW_ADMIN_AS_VERSION',    '1.6.4' );
-	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.6' );
+	define( 'VIEW_ADMIN_AS_VERSION',    '1.7' );
+	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.7' );
 	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
 	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
 	define( 'VIEW_ADMIN_AS_DIR',        plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
@@ -52,22 +59,18 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
 	/**
 	 * Main instance of View Admin As.
-	 *
 	 * Returns the main instance of VAA_View_Admin_As to prevent the need to use globals.
-	 * Only for internal use. If the $caller parameter passes an unknown object it will return null.
 	 *
 	 * @since   1.4.1
-	 * @since   1.6     $caller parameter.
 	 * @since   1.6.4   Changed to lowercase (style fix).
-	 * @param   object  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As
 	 */
-	function view_admin_as( $caller ) {
-		return VAA_View_Admin_As::get_instance( $caller );
+	function view_admin_as() {
+		return VAA_View_Admin_As::get_instance();
 	}
 
 	// Instantiate View Admin As.
-	VAA_View_Admin_As::instantiate();
+	view_admin_as();
 
 // end if class_exists.
 } else {
@@ -77,9 +80,10 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	function view_admin_as_conflict_admin_notice() {
 		echo '<div class="notice-error notice is-dismissible"><p><strong>' . esc_html__( 'View Admin As', 'view-admin-as' ) . ':</strong> '
 			. esc_html__( 'Plugin not activated because of a conflict with an other plugin or theme', 'view-admin-as' )
+		    // Translators: %s stands for the class name.
 			. ' <code>(' . sprintf( esc_html__( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')</code></p></div>';
 	}
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 	deactivate_plugins( plugin_basename( __FILE__ ) );
 
-}
+} // End if().

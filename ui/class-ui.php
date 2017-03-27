@@ -1,25 +1,26 @@
 <?php
 /**
- * View Admin As - Admin UI
+ * View Admin As - Main UI class
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
-
-if ( ! class_exists( 'VAA_View_Admin_As_Admin' ) ) {
+if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
+	die();
+}
 
 /**
- * Admin UI hooks for View Admin As
+ * UI hooks for View Admin As.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.6.4
+ * @since   1.7  Renamed to VAA_View_Admin_As_UI (previously VAA_View_Admin_As_Admin)
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
-final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 {
 	/**
 	 * Plugin links.
@@ -34,7 +35,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Admin
+	 * @var    VAA_View_Admin_As_UI
 	 */
 	private static $_instance = null;
 
@@ -56,6 +57,11 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 		add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
 		add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
 		add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+		add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 
 		/**
 		 * Compat with front and WP version lower than 4.2.0.
@@ -87,19 +93,14 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 
 		if ( $user->ID === $this->store->get_curUser()->ID ) {
 			// Add reset link if it is the current user and a view is selected.
-			if ( $this->store->get_viewAs() ) {
+			if ( $this->store->get_view() ) {
 				$link = VAA_API::get_reset_link( $link );
 			} else {
 				$link = false;
 			}
 		}
 		elseif ( $this->store->get_userids( $user->ID ) ) {
-			$params = array(
-				'action'        => 'view_admin_as',
-				'view_admin_as' => htmlentities( json_encode( array( 'user' => $user->ID ) ) ),
-				'_vaa_nonce'    => $this->store->get_nonce( true ),
-			);
-			$link .= '?' . http_build_query( $params );
+			$link = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ), $link );
 		} else {
 			$link = false;
 		}
@@ -117,7 +118,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 */
 	public function action_wp_meta() {
-		if ( ! is_admin_bar_showing() && $this->store->get_viewAs() ) {
+		if ( ! VAA_API::is_toolbar_showing() && $this->store->get_view() ) {
 			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
 			$url = VAA_API::get_reset_link();
 			echo '<li id="vaa_reset_view"><a href="' . esc_url( $url ) . '">' . esc_html( $link ) . '</a></li>';
@@ -200,7 +201,7 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 					'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
 				),
 			);
-		}
+		} // End if().
 
 		return $this->links;
 	}
@@ -252,6 +253,141 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * Add necessary scripts and styles.
+	 *
+	 * @since   0.1
+	 * @since   1.7  Moved to this class from main class.
+	 * @access  public
+	 * @return  void
+	 */
+	public function enqueue_scripts() {
+		// Only enqueue scripts if the admin bar is enabled otherwise they have no use.
+		if ( ! VAA_API::is_toolbar_showing() ) {
+			return;
+		}
+
+		// Use non-minified versions.
+		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+		// Prevent browser cache.
+		$version = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? time() : $this->store->get_version();
+
+		wp_enqueue_style(
+			'vaa_view_admin_as_style',
+			VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css',
+			array(),
+			$version
+		);
+		wp_enqueue_script(
+			'vaa_view_admin_as_script',
+			VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js',
+			array( 'jquery' ),
+			$version,
+			true // load in footer.
+		);
+
+		/**
+		 * Add data to the VAA script localization.
+		 * @since   1.7
+		 * @param   array  $array  Empty array (Will be overwritten with VAA core data so use unique keys).
+		 * @return  array
+		 */
+		$script_localization = array_merge(
+			(array) apply_filters( 'view_admin_as_script_localization', array() ),
+			array(
+				// Data.
+				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'siteurl'       => get_site_url(),
+				'settings'      => $this->store->get_settings(),
+				'settings_user' => $this->store->get_userSettings(),
+				'view'          => $this->store->get_view(),
+				'view_types'    => $this->vaa->controller()->get_view_types(),
+				// Other.
+				'_debug'     => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
+				'_vaa_nonce' => $this->store->get_nonce( true ),
+				// i18n.
+				'__no_users_found'     => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
+				'__key_already_exists' => esc_html__( 'Key already exists.', VIEW_ADMIN_AS_DOMAIN ),
+				'__success'            => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
+				'__confirm'            => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
+			)
+		);
+
+		wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', $script_localization );
+	}
+
+	/**
+	 * Add options to the access denied page when the user has selected a view and did something this view is not allowed.
+	 *
+	 * @since   1.3
+	 * @since   1.5.1   Check for SSL (Moved to VAA_API).
+	 * @since   1.6     More options and better description.
+	 * @since   1.7     Moved to this class from main class.
+	 * @access  public
+	 *
+	 * @param   string  $function_name  function callback.
+	 * @return  string  $function_name  function callback.
+	 */
+	public function die_handler( $function_name ) {
+
+		// Only do something if a view is selected.
+		if ( ! $this->store->get_view() ) {
+			return $function_name;
+		}
+
+		$options = array();
+
+		if ( is_network_admin() ) {
+			$options[] = array(
+				'text' => __( 'Go to network dashboard', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => network_admin_url(),
+			);
+		} else {
+			$options[] = array(
+				'text' => __( 'Go to dashboard', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => admin_url(),
+			);
+			$options[] = array(
+				'text' => __( 'Go to homepage', VIEW_ADMIN_AS_DOMAIN ),
+				'url' => get_bloginfo( 'url' ),
+			);
+		}
+
+		// Reset url.
+		$options[] = array(
+			'text' => __( 'Reset the view', VIEW_ADMIN_AS_DOMAIN ),
+			'url' => VAA_API::get_reset_link(),
+		);
+
+		/**
+		 * Add or remove options to the die/error handler pages.
+		 *
+		 * @since  1.6.2
+		 * @param  array  $options {
+		 *     Required array of arrays.
+		 *     @type  array {
+		 *         @type  string  $text  The text to show.
+		 *         @type  string  $url   The link.
+		 *     }
+		 * }
+		 * @return array
+		 */
+		$options = apply_filters( 'view_admin_as_error_page_options', $options );
+		?>
+		<div>
+			<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) ?>:</h3>
+			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ) ?>
+			<ul>
+				<?php foreach ( $options as $option ) { ?>
+					<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
+				<?php } ?>
+			</ul>
+		</div>
+		<hr>
+		<?php
+		return $function_name;
+	}
+
+	/**
 	 * Main Instance.
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
@@ -260,18 +396,13 @@ final class VAA_View_Admin_As_Admin extends VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Admin
+	 * @return  VAA_View_Admin_As_UI
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
-			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self( $caller );
-			}
-			return self::$_instance;
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self( $caller );
 		}
-		return null;
+		return self::$_instance;
 	}
 
-} // end class.
-
-} // end if class_exists.
+} // End class VAA_View_Admin_As_UI.

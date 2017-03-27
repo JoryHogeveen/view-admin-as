@@ -6,22 +6,21 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
+	die();
+}
 
-if ( ! class_exists( 'VAA_View_Admin_As_RUA' ) ) {
-
-add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_RUA', 'get_instance' ) );
-
-/** *
- * Compatibility class for the Restrict User Access plugin
+/**
+ * Compatibility class for the Restrict User Access plugin.
  *
  * Tested from RUA version: 0.12.4
  * Official RUA compat release: 0.13 (https://github.com/intoxstudio/restrict-user-access/pull/8)
+ * Checked version: 0.14
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.6.4
+ * @version 1.7
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
@@ -122,6 +121,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_roles_after' ), 10, 2 );
 
 			add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
+
+			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
+			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
 		}
 	}
 
@@ -133,9 +135,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 */
 	public function do_view() {
 
-		if ( $this->get_levels( $this->store->get_viewAs( $this->viewKey ) ) ) {
+		if ( $this->get_levels( $this->store->get_view( $this->viewKey ) ) ) {
 
-			$this->selectedLevel     = $this->store->get_viewAs( $this->viewKey );
+			$this->selectedLevel     = $this->store->get_view( $this->viewKey );
 			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
 
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
@@ -146,7 +148,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
 			// Administrators can see all restricted content in RUA.
-			if ( $this->store->get_viewAs() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
+			if ( $this->store->get_view() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
 				// Not a view with administrator capability == no global access.
 				add_filter( 'rua/user/global-access', '__return_false' );
 			}
@@ -164,7 +166,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		$caps = (array) $this->selectedLevelCaps;
 
-		if ( $this->store->get_viewAs( 'role' ) || ! $accessible ) {
+		if ( $this->store->get_view( 'role' ) || ! $accessible ) {
 			// Merge the caps with the current selected caps, overwrite existing.
 			// Also do the same when WP_User parameters aren't accessible.
 			$caps = array_merge( $this->store->get_selectedCaps(), $caps );
@@ -218,40 +220,39 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Ajax handler, called from main ajax handler.
+	 * Validate data for this view type
+	 *
+	 * @since   1.7
+	 * @param   null   $null  Default return (invalid)
+	 * @param   mixed  $data  The view data
+	 * @return  mixed
+	 */
+	public function validate_view_data( $null, $data ) {
+		if ( is_numeric( $data ) && $this->get_levels( (int) $data ) ) {
+			return $data;
+		}
+		return $null;
+	}
+
+	/**
+	 * View update handler (Ajax probably), called from main handler.
 	 *
 	 * @since   1.6.4
+	 * @since   1.7    Renamed from `ajax_handler`
 	 * @access  public
-	 * @param   array  $data  The ajax data for this module.
+	 * @param   null    $null    Null.
+	 * @param   array   $data    The ajax data for this module.
+	 * @param   string  $type    The view type.
 	 * @return  bool
 	 */
-	public function ajax_handler( $data ) {
+	public function update_view( $null, $data, $type ) {
 
-		if ( ! defined( 'VAA_DOING_AJAX' )
-		  || ! VAA_DOING_AJAX
-		  || ! $this->is_vaa_enabled()
-		) {
-			return false;
+		if ( ! $this->is_valid_ajax() || $type !== $this->viewKey ) {
+			return $null;
 		}
 
-		$level = $data;
-
-		if ( is_string( $data ) && false !== strpos( $data, '|' ) ) {
-			$data = explode( '|', $data );
-			$level = (int) $data[0];
-			if ( ! empty( $data[1] ) ) {
-				$role = (string) $data[1];
-			}
-		}
-
-		if ( is_numeric( $level ) && $this->get_levels( (int) $level ) ) {
-			$view = array(
-				$this->viewKey => (int) $level,
-			);
-			if ( ! empty( $role ) && $this->store->get_roles( $role ) ) {
-				$view['role'] = $role;
-			}
-			$this->vaa->view()->update_view( $view );
+		if ( is_numeric( $data ) && $this->get_levels( (int) $data ) ) {
+			$this->store->set_view( (int) $data, $this->viewKey, true );
 			return true;
 		}
 		return false;
@@ -277,12 +278,13 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				$view_label = $this->levelPostType->labels->name;
 			}
 
+			// Translators: %s stands for the view type label.
 			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $view_label ) . ': ';
 			$title .= $this->get_levels( $this->selectedLevel )->post_title;
 			// Is there also a role selected?
-			if ( $this->store->get_viewAs( 'role' ) && $this->store->get_roles( $this->store->get_viewAs( 'role' ) ) ) {
+			if ( $this->store->get_view( 'role' ) && $this->store->get_roles( $this->store->get_view( 'role' ) ) ) {
 				$title .= ' <span class="user-role">('
-				          . $this->store->get_rolenames( $this->store->get_viewAs( 'role' ) )
+				          . $this->store->get_rolenames( $this->store->get_view( 'role' ) )
 				          . ')</span>';
 			}
 		}
@@ -291,6 +293,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Add the RUA admin bar items.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
 	 *
 	 * @since   1.6.4
 	 * @access  public
@@ -348,7 +355,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 			$root = $root . '-rua-levels';
 
-		}
+		} // End if().
 
 		/**
 		 * Add items at the beginning of the rua group.
@@ -362,14 +369,22 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
-			$href = '#';
+			$view_data = array( $this->viewKey => $level->ID );
+			if ( $role ) {
+				$view_data['role'] = $role;
+			}
+			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = $level->post_title;
+			$title = VAA_View_Admin_As_Admin_Bar::do_view_title( $level->post_title, $this->viewKey, ( $role ) ? wp_json_encode( $view_data ) : $level->ID );
 			// Check if this level is the current view.
-			if ( $this->store->get_viewAs( $this->viewKey ) ) {
-				if ( (int) $this->store->get_viewAs( $this->viewKey ) === (int) $level->ID ) {
-					$class .= ' current';
-					if ( 1 === count( $this->store->get_viewAs() ) ) {
+			if ( $this->store->get_view( $this->viewKey ) ) {
+				if ( (int) $this->store->get_view( $this->viewKey ) === (int) $level->ID ) {
+					// @todo Use is_current_view() from vaa controller?
+					if ( 1 === count( $this->store->get_view() ) && empty( $role ) ) {
+						$class .= ' current';
+						$href = false;
+					} elseif ( ! empty( $role ) && $role === $this->store->get_view( 'role' ) ) {
+						$class .= ' current';
 						$href = false;
 					}
 				}
@@ -389,13 +404,14 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				'title'     => $title,
 				'href'      => $href,
 				'meta'      => array(
+					// Translators: %s stands for the view type name.
 					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
 					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
-					'rel'       => $level->ID . ( ( $role ) ? '|' . $role : '' ),
+					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $level->ID,
 				),
 			) );
-		}
+		} // End foreach().
 
 		/**
 		 * Add items at the end of the rua group.
@@ -530,15 +546,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @return  VAA_View_Admin_As_RUA
 	 */
 	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && 'VAA_View_Admin_As' === get_class( $caller ) ) {
-			if ( is_null( self::$_instance ) ) {
-				self::$_instance = new self( $caller );
-			}
-			return self::$_instance;
+		if ( is_null( self::$_instance ) ) {
+			self::$_instance = new self( $caller );
 		}
-		return null;
+		return self::$_instance;
 	}
 
-} // end class.
-
-} // end if class_exists.
+} // End class VAA_View_Admin_As_RUA.

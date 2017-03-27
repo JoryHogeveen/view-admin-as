@@ -14,14 +14,25 @@ engines:
     enabled: true
   csslint:
     enabled: true
-    # See .csslintr for config
-  eslink:
-    enabled: true
-    check:
-      complexity:
-        error: 15
-      wrap-iife:
+    config:
+      config: tests/.csslintrc
+    checks:
+      adjoining-classes:
         enabled: false
+      box-model:
+        enabled: false
+      ids:
+        enabled: false
+      important:
+        enabled: false
+      order-alphabetical:
+        enabled: false
+      unqualified-attributes:
+        enabled: false
+  eslint:
+    enabled: true
+    config:
+      config: tests/.eslintrc
   phpmd:
     enabled: true
     config:
@@ -31,6 +42,12 @@ engines:
     config:
       standard: "Wordpress-Extra"
     checks:
+      # Disable: Class file names should be based on the class name with "class-" prepended.
+      WordPress Files FileName InvalidClassFileName:
+        enabled: false
+      # Disable: When an array uses associative keys, each value should start on a new line.
+      WordPress Arrays ArrayDeclarationSpacing AssociativeKeyFound:
+        enabled: false
       # Disable: Member variable "" is not in valid snake_case format
       WordPress NamingConventions ValidVariableName MemberNotSnakeCase:
         enabled: false
@@ -64,6 +81,9 @@ engines:
       # Disable: Expected # spaces after parameter type; # found
       Squiz Commenting FunctionComment SpacingAfterParamType:
         enabled: false
+      # Disable: Code after EXIT statement cannot be executed (This test doesn't work correctly)
+      Squiz PHP NonExecutableCode Unreachable:
+        enabled: false
       # Disable: This comment is #% valid code; is this commented out code?
       Squiz PHP CommentedOutCode Found:
         enabled: false
@@ -72,6 +92,9 @@ engines:
         enabled: false
       # Disable: Expected 1 space after closing brace; newline found
       Squiz ControlStructures ControlSignature SpaceAfterCloseBrace:
+        enabled: false
+      # Disable: Opening brace should be on the same line as the declaration for class
+      Generic Classes OpeningBraceSameLine BraceOnNewLine:
         enabled: false
       # Disable: There must be exactly one blank line before the tags in a doc comment
       Generic Commenting DocComment SpacingBeforeTags:
@@ -88,9 +111,9 @@ ratings:
   paths:
   - "**.css"
   - "**.js"
-  - "**.jsx"
-  - "**.module"
   - "**.php"
 exclude_paths:
 - tests/*
 - bin/*
+# Local
+- vendor/*

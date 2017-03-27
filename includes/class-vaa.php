@@ -6,15 +6,17 @@
  * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
+	die();
+}
 
 /**
- * Plugin initializer class
+ * Plugin initializer class.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.6.4
+ * @version 1.7
  */
 final class VAA_View_Admin_As
 {
@@ -26,16 +28,6 @@ final class VAA_View_Admin_As
 	 * @var    VAA_View_Admin_As
 	 */
 	private static $_instance = null;
-
-	/**
-	 * Classes that are allowed to access this class directly.
-	 *
-	 * @since  1.6
-	 * @static
-	 * @see    get_instance()
-	 * @var    array
-	 */
-	private static $vaa_class_names = array();
 
 	/**
 	 * Enable functionalities for this user?
@@ -60,6 +52,14 @@ final class VAA_View_Admin_As
 	 * @var    VAA_View_Admin_As_Store
 	 */
 	private $store = null;
+
+	/**
+	 * VAA Controller.
+	 *
+	 * @since  1.6
+	 * @var    VAA_View_Admin_As_Controller
+	 */
+	private $controller = null;
 
 	/**
 	 * VAA View handler.
@@ -104,7 +104,9 @@ final class VAA_View_Admin_As
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
-		add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
+		if ( is_admin() ) {
+			add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
+		}
 
 		// Returns false on conflict.
 		if ( ! (boolean) $this->validate_versions() ) {
@@ -112,9 +114,6 @@ final class VAA_View_Admin_As
 		}
 
 		if ( (boolean) $this->load() ) {
-
-			$this->store = VAA_View_Admin_As_Store::get_instance( $this );
-			$this->view  = VAA_View_Admin_As_View::get_instance( $this );
 
 			// Lets start!
 			add_action( 'plugins_loaded', array( $this, 'init' ), 0 );
@@ -125,6 +124,7 @@ final class VAA_View_Admin_As
 				'type' => 'notice-error',
 				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
 					. __( 'Plugin not loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+				    // Translators: %s stands for the class name.
 					. ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), 'VAA_View_Admin_As_Class_Base' ) . ')</code>',
 			) );
 
@@ -140,32 +140,35 @@ final class VAA_View_Admin_As
 	 */
 	private function load() {
 
-		if (    ! class_exists( 'VAA_API' )
-		     && ! class_exists( 'VAA_View_Admin_As_Class_Base' )
-		     && ! class_exists( 'VAA_View_Admin_As_Store' )
-		     && ! class_exists( 'VAA_View_Admin_As_View' )
-		     && ! class_exists( 'VAA_View_Admin_As_Update' )
-		     && ! class_exists( 'VAA_View_Admin_As_Compat' )
-		) {
+		$classes = array(
+			'VAA_API',
+			'VAA_View_Admin_As_Class_Base',
+			'VAA_View_Admin_As_Settings',
+			'VAA_View_Admin_As_Store',
+			'VAA_View_Admin_As_Controller',
+			'VAA_View_Admin_As_View',
+			'VAA_View_Admin_As_Update',
+			'VAA_View_Admin_As_Compat',
+			'VAA_View_Admin_As_Module',
+		);
 
-			self::$vaa_class_names[] = 'VAA_API';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Class_Base';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Store';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_View';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Update';
-			self::$vaa_class_names[] = 'VAA_View_Admin_As_Compat';
-
-			require( VIEW_ADMIN_AS_DIR . 'includes/class-api.php' );
-			require( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
-			require( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
-			require( VIEW_ADMIN_AS_DIR . 'includes/class-view.php' );
-			require( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
-			require( VIEW_ADMIN_AS_DIR . 'includes/class-compat.php' );
-
-			return true;
+		foreach ( $classes as $class ) {
+			if ( class_exists( $class ) ) {
+				return false;
+			}
 		}
 
-		return false;
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-api.php' );
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-base.php' );
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-settings.php' );
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-store.php' );
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-controller.php' );
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-view.php' );
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-update.php' );
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-compat.php' );
+		require( VIEW_ADMIN_AS_DIR . 'includes/class-module.php' );
+
+		return true;
 	}
 
 	/**
@@ -173,14 +176,15 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
+	 * @param   bool  $redo  (optional) Force re-init?
 	 */
-	public function init() {
-		static $done;
+	public function init( $redo = false ) {
+		static $done = false;
+		if ( $done && ! $redo ) return;
 
-		if ( ! $done ) {
-			$this->run();
-			$done = true;
-		}
+		$this->run();
+
+		$done = true;
 	}
 
 	/**
@@ -198,6 +202,10 @@ final class VAA_View_Admin_As
 			return;
 		}
 
+		$this->store      = VAA_View_Admin_As_Store::get_instance( $this );
+		$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
+		$this->view       = VAA_View_Admin_As_View::get_instance( $this );
+
 		$this->store->init();
 
 		// Sets enabled.
@@ -210,6 +218,10 @@ final class VAA_View_Admin_As
 
 		if ( $this->is_enabled() ) {
 
+			if ( VAA_View_Admin_As_Update::$fresh_install ) {
+				$this->welcome_notice();
+			}
+
 			// Fix some compatibility issues, more to come!
 			VAA_View_Admin_As_Compat::get_instance( $this )->init();
 
@@ -217,21 +229,16 @@ final class VAA_View_Admin_As
 			$this->store->store_roles();
 			$this->store->store_users();
 
+			$this->controller->init();
 			$this->view->init();
 
 			$this->load_ui();
-
-			// Dúh..
-			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-
-			add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 
 			/**
 			 * Init is finished. Hook is used for other classes related to View Admin As.
 			 *
 			 * @since  1.5
-			 * @param  object  $this  VAA_View_Admin_As.
+			 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
 			 */
 			do_action( 'vaa_view_admin_as_init', $this );
 
@@ -250,9 +257,13 @@ final class VAA_View_Admin_As
 	 *                 capability (of not the edit_users will return false).
 	 * @since   1.5.3  Enable on network pages for superior admins.
 	 * @since   1.6.3  Created this function.
-	 * @access  private
+	 * @access  public
+	 *
+	 * @return  bool
 	 */
-	private function validate_user() {
+	public function validate_user() {
+		$this->enable = false;
+
 		if ( ( VAA_API::is_super_admin()
 		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
 		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
@@ -260,6 +271,49 @@ final class VAA_View_Admin_As
 		) {
 			$this->enable = true;
 		}
+
+		return $this->enable;
+	}
+
+	/**
+	 * Helper function to include files. Checks class existence and throws an error if needed.
+	 * Also adds the class to a supplied group if available.
+	 *
+	 * @since   1.7
+	 * @access  private
+	 * @param   array  $includes {
+	 *     An array of files to include.
+	 *     @type  string  $file   The file to include. Directory starts from the plugin folder.
+	 *     @type  string  $class  The class name.
+	 * }
+	 * @param   array  $group     A reference array.
+	 * @return  array  $group
+	 */
+	private function include_files( $includes, &$group = null ) {
+
+		$group = (array) $group;
+
+		foreach ( $includes as $key => $inc ) {
+
+			// Load file.
+			if ( empty( $inc['class'] ) || ! class_exists( $inc['class'] ) ) {
+				include_once( VIEW_ADMIN_AS_DIR . $inc['file'] );
+			} else {
+				$this->add_notice( 'class-error-' . $key, array(
+					'type' => 'notice-error',
+					'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+					    . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+					    // Translators: %s stands for the class name.
+					    . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
+				) );
+			}
+
+			// If it's a class file, add the class instance to the group.
+			if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
+				$group[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
+			}
+		}
+		return $group;
 	}
 
 	/**
@@ -273,221 +327,62 @@ final class VAA_View_Admin_As
 	 */
 	private function load_ui() {
 
-		$include = array(
-			'admin' => array(
-				'file'  => 'class-admin.php',
-				'class' => 'VAA_View_Admin_As_Admin',
+		$includes = array(
+			'ui' => array(
+				'file'  => 'ui/class-ui.php',
+				'class' => 'VAA_View_Admin_As_UI',
 			),
-			'admin-bar' => array(
-				'file'  => 'class-admin-bar.php',
+			'admin_bar' => array(
+				'file'  => 'ui/class-admin-bar.php',
 				'class' => 'VAA_View_Admin_As_Admin_Bar',
 			),
 			'toolbar' => array(
-				'file'  => 'class-toolbar.php',
+				'file'  => 'ui/class-toolbar.php',
 				'class' => 'VAA_View_Admin_As_Toolbar',
 			),
 		);
 
-		foreach ( $include as $key => $inc ) {
-			if ( empty( $inc['class'] ) || ! class_exists( $inc['class'] ) ) {
-				require( VIEW_ADMIN_AS_DIR . 'ui/' . $inc['file'] );
-				if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
-					self::$vaa_class_names[] = $inc['class'];
-					$this->ui[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
-				}
-			} else {
-				$this->add_notice( 'class-error-' . $key, array(
-					'type' => 'notice-error',
-					'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-					    . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-					    . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
-				) );
-			}
-		}
+		// Include UI files and add them to the `ui` property.
+		$this->include_files( $includes, $this->ui );
 	}
 
 	/**
 	 * Load the modules.
 	 *
 	 * @since   1.5
-	 * @since   1.5.1   Added notice on class name conflict (removed in 1.6.2).
-	 * @since   1.6.2   Generic loading of modules.
 	 * @access  private
 	 * @return  void
 	 */
 	private function load_modules() {
 
-		$files = scandir( VIEW_ADMIN_AS_DIR . 'modules' );
+		$includes = array(
+			'role_defaults' => array(
+				'file'  => 'modules/class-role-defaults.php',
+				'class' => 'VAA_View_Admin_As_Role_Defaults',
+			),
+			'role_manager' => array(
+				'file'  => 'modules/class-role-manager.php',
+				'class' => 'VAA_View_Admin_As_Role_Manager',
+			),
+		);
 
-		foreach ( $files as $file ) {
-			if ( ! in_array( $file, array( '.', '..', 'index.php' ), true ) ) {
-				$file_info = pathinfo( $file );
-
-				// Single file modules.
-				if ( ! empty( $file_info['extension'] ) ) {
-					if ( 'php' === $file_info['extension'] && is_file( VIEW_ADMIN_AS_DIR . 'modules/' . $file ) ) {
-						include( VIEW_ADMIN_AS_DIR . 'modules/' . $file );
-					}
-				}
-				// Directory modules.
-				elseif ( is_file( VIEW_ADMIN_AS_DIR . 'modules/' . $file . '/' . $file . '.php' ) ) {
-					include( VIEW_ADMIN_AS_DIR . 'modules/' . $file . '/' . $file . '.php' );
-				}
-			}
+		if ( is_callable( array( 'RUA_App', 'instance' ) ) ) {
+			$includes['rua_level'] = array(
+				'file'  => 'modules/class-restrict-user-access.php',
+				'class' => 'VAA_View_Admin_As_RUA',
+			);
 		}
+
+		// Run include code but do not register modules yet (leave that to the modules).
+		$this->include_files( $includes );
 
 		/**
 		 * Modules loaded. Hook is used for other modules related to View Admin As.
 		 *
 		 * @since  1.6.2
-		 * @param  VAA_View_Admin_As  $this  The main VAA object.
+		 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
 		 */
 		do_action( 'vaa_view_admin_as_modules_loaded', $this );
-	}
-
-	/**
-	 * Add options to the access denied page when the user has selected a view and did something this view is not allowed.
-	 *
-	 * @since   1.3
-	 * @since   1.5.1   Check for SSL.
-	 * @since   1.6     More options and better description.
-	 * @access  public
-	 *
-	 * @param   string  $function_name  function callback.
-	 * @return  string  $function_name  function callback.
-	 */
-	public function die_handler( $function_name ) {
-
-		// only do something if a view is selected.
-		if ( ! $this->store->get_viewAs() ) {
-			return $function_name;
-		}
-
-		$options = array();
-
-		if ( is_network_admin() ) {
-			$dashboard_url = network_admin_url();
-			$options[] = array(
-				'text' => __( 'Go to network dashboard', VIEW_ADMIN_AS_DOMAIN ),
-				'url' => $dashboard_url,
-			);
-		} else {
-			$dashboard_url = admin_url();
-			$options[] = array(
-				'text' => __( 'Go to dashboard', VIEW_ADMIN_AS_DOMAIN ),
-				'url' => $dashboard_url,
-			);
-			$options[] = array(
-				'text' => __( 'Go to homepage', VIEW_ADMIN_AS_DOMAIN ),
-				'url' => get_bloginfo( 'url' ),
-			);
-		}
-
-		// Reset url.
-		$options[] = array(
-			'text' => __( 'Reset the view', VIEW_ADMIN_AS_DOMAIN ),
-			'url' => VAA_API::get_reset_link(),
-		);
-
-		/**
-		 * Add or remove options to the die/error handler pages.
-		 *
-		 * @since  1.6.2
-		 * @param  array  $options {
-		 *     Required array of arrays.
-		 *     @type  array {
-		 *         @type  string  $text  The text to show.
-		 *         @type  string  $url   The link.
-		 *     }
-		 * }
-		 * @return array
-		 */
-		$options = apply_filters( 'view_admin_as_error_page_options', $options );
-?>
-<div>
-	<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) ?>:</h3>
-	<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ) ?>
-	<ul>
-		<?php foreach ( $options as $option ) { ?>
-		<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
-		<?php } ?>
-	</ul>
-</div>
-<hr>
-<?php
-		return $function_name;
-	}
-
-	/**
-	 * Add necessary scripts and styles.
-	 *
-	 * @since   0.1
-	 * @access  public
-	 * @return  void
-	 */
-	public function enqueue_scripts() {
-		// Only enqueue scripts if the admin bar is enabled otherwise they have no use.
-		if ( ( is_admin_bar_showing() || VAA_API::is_vaa_toolbar_showing() ) && $this->is_enabled() ) {
-
-			// Use non-minified versions.
-			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			// Prevent browser cache.
-			$version = defined( 'WP_DEBUG' ) && WP_DEBUG ? time() : $this->store->get_version();
-
-			wp_enqueue_style(
-				'vaa_view_admin_as_style',
-				VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css',
-				array(),
-				$version
-			);
-			wp_enqueue_script(
-				'vaa_view_admin_as_script',
-				VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js',
-				array( 'jquery' ),
-				$version,
-				true // load in footer.
-			);
-
-			$script_localization = array(
-				// Data.
-				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
-				'siteurl'       => get_site_url(),
-				'settings'      => $this->store->get_settings(),
-				'settings_user' => $this->store->get_userSettings(),
-				'view_as'       => $this->store->get_viewAs(),
-				// Other.
-				'_debug'     => ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? (bool) WP_DEBUG : false,
-				'_vaa_nonce' => $this->store->get_nonce( true ),
-				// i18n.
-				'__no_users_found' => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
-				'__success'        => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
-				'__confirm'        => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
-			);
-
-			/**
-			 * Add basic view types for automated use in JS.
-			 *
-			 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key).
-			 * - Menu items require the rel attribute for the view data to be send (string or numeric).
-			 * - Menu items require the href attribute (the node needs to be an <a> element), I'd set it to '#'.
-			 *
-			 * @since  1.6.2
-			 * @param  array  $array  Empty array.
-			 * @return array  An array of strings (view types).
-			 */
-			$script_localization['view_types'] = array_unique( array_merge(
-				array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
-				array( 'user', 'role', 'caps', 'visitor' )
-			) );
-
-			foreach ( $this->get_modules() as $name => $module ) {
-				if ( is_callable( array( $module, 'get_scriptLocalization' ) ) ) {
-					$script_localization[ 'settings_' . $name ] = $module->get_scriptLocalization();
-				}
-			}
-
-			wp_localize_script( 'vaa_view_admin_as_script', 'VAA_View_Admin_As', $script_localization );
-		}
 	}
 
 	/**
@@ -545,6 +440,17 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Get the controller class.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @return  VAA_View_Admin_As_Controller
+	 */
+	public function controller() {
+		return $this->controller;
+	}
+
+	/**
 	 * Get the view class.
 	 *
 	 * @since   1.6
@@ -593,13 +499,31 @@ final class VAA_View_Admin_As
 	 * @return  bool
 	 */
 	public function register_module( $data ) {
-		if (    ! empty( $data['id'] )       && is_string( $data['id'] )
-		     && ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
+		     ! empty( $data['instance'] ) && is_object( $data['instance'] )
 		) {
 			$this->modules[ $data['id'] ] = $data['instance'];
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Add a welcome notice for new users
+	 *
+	 * @since   1.7
+	 * @access  private
+	 */
+	private function welcome_notice() {
+		$this->add_notice( 'vaa-welcome', array(
+			'type' => 'notice-success',
+			'message' => '<strong>' . __( 'Thank you for installing View Admin As!', VIEW_ADMIN_AS_DOMAIN ) . '</strong> '
+	            . sprintf(
+	                // Translators: %s stands for `Dashboard` (link element).
+	                __( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
+					'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
+				),
+		) );
 	}
 
 	/**
@@ -654,6 +578,7 @@ final class VAA_View_Admin_As
 	 */
 	private function validate_versions() {
 		global $wp_version;
+		// Start positive!
 		$valid = true;
 
 		// Validate WP
@@ -661,12 +586,16 @@ final class VAA_View_Admin_As
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
-				             // Translators, %1$s stands for "WordPress", %2$s stands for version 3.5
-				             . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
+				    // Translators: %1$s stands for "WordPress", %2$s stands for version 3.5.
+				    . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
 			) );
+			$valid = false;
+		}
+
+		if ( ! $valid ) {
+			// Too bad..
 			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
-			$valid = false;
 		}
 
 		return $valid;
@@ -674,37 +603,19 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Main View Admin As instance.
-	 *
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *
 	 * @since   1.4.1
-	 * @since   1.6    Restrict direct access to known classes.
 	 * @access  public
 	 * @static
 	 * @see     View_Admin_As()
-	 * @param   object  $caller  The referrer class.
 	 * @return  VAA_View_Admin_As
 	 */
-	public static function get_instance( $caller = null ) {
-		if ( is_object( $caller ) && in_array( get_class( $caller ), self::$vaa_class_names, true ) ) {
-			return self::$_instance;
-		}
-		return null;
-	}
-
-	/**
-	 * Populate the instance with this class.
-	 *
-	 * @since   1.6
-	 * @access  public
-	 * @static
-	 * @return  void
-	 */
-	public static function instantiate() {
+	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
-			// First init, returns nothing.
 			self::$_instance = new self();
 		}
+		return self::$_instance;
 	}
 
 	/**
@@ -767,4 +678,4 @@ final class VAA_View_Admin_As
 		return null;
 	}
 
-} // end class
+} // End class VAA_View_Admin_As.

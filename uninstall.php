@@ -7,7 +7,7 @@
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.3.4
- * @version 1.6.4
+ * @version 1.7
  */
 
 //if uninstall not called from WordPress exit
@@ -36,7 +36,7 @@ if ( is_multisite() ) {
 function vaa_uninstall( $blog_id = false ) {
 
 	// Delete all View Admin As options
-	$option_keys = array( 'vaa_view_admin_as', 'vaa_role_defaults' );
+	$option_keys = array( 'vaa_view_admin_as', 'vaa_role_defaults', 'vaa_role_manager' );
 
 	if ( $blog_id ) {
 
