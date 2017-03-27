@@ -374,7 +374,9 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		 *
 		 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key).
 		 * - Menu items require the rel attribute for the view data to be send (string or numeric).
-		 * - Menu items require the href attribute (the node needs to be an <a> element), I'd set it to '#'.
+		 * - Menu items require the href attribute (the node needs to be an <a> element).
+		 * @see VAA_API::get_vaa_action_link()
+		 * @see VAA_View_Admin_As_Admin_Bar::do_view_title()
 		 *
 		 * @since  1.6.2
 		 * @param  array  $array  Empty array.
