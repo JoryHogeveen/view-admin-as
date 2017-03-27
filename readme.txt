@@ -179,6 +179,7 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 *	Enhancement: View combinations now working in code (No UI). [#18](https://github.com/JoryHogeveen/view-admin-as/issues/18)
 *	Enhancement: Major code refactoring for better standards en easier development.
 *	Maintenance: Validated compatibility with "Restrict User Access" (RUA) plugin v0.14. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
+*	Compatibility: Tested with WordPress 4.8 (alpha) and requires WordPress 4.1 or higher (was 3.5).
 *	Fix: Fixed all major [CodeClimate](https://codeclimate.com/github/JoryHogeveen/view-admin-as) issues. All green now!
 *	[Wiki (documentation) updated](https://github.com/JoryHogeveen/view-admin-as/wiki).
 *	Screenshots & Banners updated.
