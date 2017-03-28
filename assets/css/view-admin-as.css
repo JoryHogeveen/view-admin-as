@@ -54,7 +54,7 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {float: none; font-size: 16px; line-height: 16px; vertical-align: text-bottom; font-weight: normal; padding: 0;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before {display: none;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 10px; padding-right: 10px;}
-#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon {font-size: 18px; margin: 0 5px 0 -1px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon {font-size: 18px; line-height: 20px; margin: 0 5px 0 -1px;}
 
 #wpadminbar #wp-admin-bar-vaa button > .ab-icon {margin: 0 5px 0 -5px; padding: 0; top: 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item > label + button {margin: 0 0 0 12px; vertical-align: baseline;}
