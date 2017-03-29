@@ -20,7 +20,7 @@ vaa_uninstall();
 if ( is_multisite() ) {
 	global $wp_version;
 	if ( version_compare( $wp_version, '4.5.999', '<' ) ) {
-		// Sadly does not work for large networks -> return false
+		// @codingStandardsIgnoreLine >> Backwards compat (Sadly does not work for large networks -> return false).
 		$blogs = wp_get_sites();
 	} else {
 		$blogs = get_sites();
