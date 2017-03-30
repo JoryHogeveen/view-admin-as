@@ -514,6 +514,10 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		/*
 		 * Apply current view capabilities to role.
 		 */
+		$icon = 'dashicons-hidden';
+		if ( $this->store->get_view() ) {
+			$icon = 'dashicons-visibility';
+		}
 		$admin_bar->add_group( array(
 			'id'     => $root . '-apply-view',
 			'parent' => $root,
@@ -524,7 +528,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-apply-view-title',
 			'parent' => $root . '-apply-view',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-welcome-view-site' ) . __( 'Apply current view capabilities to role', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( $icon ) . __( 'Apply current view capabilities to role', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
