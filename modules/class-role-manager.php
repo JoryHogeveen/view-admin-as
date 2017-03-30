@@ -472,9 +472,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			// Translators: %s stands for "Capabilities".
 			'title'  => sprintf( __( 'You can add/edit roles under "%s"', VIEW_ADMIN_AS_DOMAIN ), __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ) ),
 			'href'   => false,
-			'meta'   => array(
-				'tabindex' => '0',
-			),
 		) );
 
 		$this->admin_bar_menu_bulk_actions( $admin_bar, $root );
