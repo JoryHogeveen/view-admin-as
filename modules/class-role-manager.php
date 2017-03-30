@@ -211,6 +211,11 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'values'     => array( 'role' => '', 'capabilities' => '' ),
 				'callback'   => 'save_role',
 			),
+			'rename_role' => array(
+				'validation' => 'is_array',
+				'values'     => array( 'role' => '', 'new_name' => '' ),
+				'callback'   => 'rename_role',
+			),
 			'clone_role' => array(
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'new_role' => '' ),
@@ -347,12 +352,40 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	}
 
 	/**
+	 * Rename a role.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   string  $role          The source role slug/ID.
+	 * @param   string  $new_name      The new role label.
+	 * @return  bool|string
+	 */
+	public function rename_role( $role, $new_name ) {
+		$slug = $role;
+		// Do not use WP's get_role() because one can only clone a role it's allowed to see.
+		$role = $this->store->get_roles( $role );
+		if ( $role ) {
+			// @todo Check https://core.trac.wordpress.org/ticket/40320.
+			$new_name = ucfirst( strip_tags( $new_name ) );
+
+			$this->wp_roles->role_objects[ $slug ]->name = $new_name;
+			$this->wp_roles->role_names[ $slug ] = $new_name;
+			$this->wp_roles->roles[ $slug ]['name'] = $new_name;
+
+			update_option( $this->wp_roles->role_key, $this->wp_roles->roles );
+
+			return true;
+		}
+		return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+	}
+
+	/**
 	 * Delete a role from the database.
 	 *
 	 * @since   1.7
 	 * @access  public
 	 * @param   string  $role  The role name.
-	 * @return  mixed
+	 * @return  bool|string
 	 */
 	public function delete_role( $role ) {
 		if ( $this->store->get_roles( $role ) ) {
@@ -539,6 +572,70 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'href'   => false,
 			) );
 		} // End if().
+
+		/*
+		 * Rename role.
+		 */
+		$admin_bar->add_group( array(
+			'id'     => $root . '-rename',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-rename-title',
+			'parent' => $root . '-rename',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-edit' ) . __( 'Rename role', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
+				'tabindex' => '0',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-rename-select',
+			'parent' => $root . '-rename',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_select(
+				array(
+					'name'   => $root . '-rename-select',
+					'values' => $role_select_options,
+				)
+			),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-vaa-select select-role',
+				'tabindex' => '0',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-rename-input',
+			'parent' => $root . '-rename',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_input(
+				array(
+					'name'   => $root . '-rename-input',
+					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
+				)
+			),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-vaa-input rename-role',
+				'tabindex' => '0',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-rename-apply',
+			'parent' => $root . '-rename',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'name'  => $root . '-rename-apply',
+				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-primary',
+			) ),
+			'href'   => false,
+				'meta'   => array(
+				'class' => 'vaa-button-container',
+			),
+		) );
 
 		/*
 		 * Clone role.

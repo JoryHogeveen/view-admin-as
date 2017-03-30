@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7
+ * @version 1.7.1
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -1137,6 +1137,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var capabilities = JSON.parse( $(this).attr('data-view-caps') );
 			if ( role && '' !== role && capabilities ) {
 				var view_data = { role_manager : { apply_view_to_role : { role: role, capabilities: capabilities } } };
+				VAA_View_Admin_As.ajax( view_data, true );
+			}
+			return false;
+		} );
+
+		// @since  1.7.1  Rename role.
+		$document.on( 'click touchend', root_prefix + '-rename-apply button#' + prefix + '-rename-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var role = $( root_prefix + '-rename-select select#' + prefix + '-rename-select' ).val();
+			var new_name = $( root_prefix + '-rename-input input#' + prefix + '-rename-input' ).val();
+			if ( role && '' !== role && new_name && '' !== new_name ) {
+				var view_data = { role_manager : { rename_role : { role : role, new_name : new_name } } };
 				VAA_View_Admin_As.ajax( view_data, true );
 			}
 			return false;
