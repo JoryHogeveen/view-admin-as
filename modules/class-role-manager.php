@@ -574,7 +574,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'ab-vaa-select select-role',
-					'tabindex' => '0',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -634,7 +633,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-vaa-select select-role',
-				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -649,7 +647,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-vaa-input rename-role',
-				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -698,7 +695,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-vaa-select select-role',
-				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -713,7 +709,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-vaa-input clone-role',
-				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -763,7 +758,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-vaa-select select-role',
-				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -866,7 +860,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'ab-vaa-select',
-				'tabindex' => '0',
 			),
 		) );
 
