@@ -277,8 +277,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$capabilities  = array_map( 'boolval', $capabilities );
 
 		if ( ! $existing_role ) {
-			// Sanitize role key.
-			$role = str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $role ) );
+			// Sanitize role slug/key.
+			$role = self::sanitize_role_slug( $role );
 			// Recheck for an existing role.
 			$existing_role = get_role( $role );
 		}
@@ -396,6 +396,22 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			return __( 'This role cannot be removed', VIEW_ADMIN_AS_DOMAIN );
 		}
 		return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+	}
+
+	/**
+	 * Convert role name/label into a role slug.
+	 * Similar to sanitize_key but it converts spaces and dashed to underscores.
+	 *
+	 * @since   1.7.1
+	 * @access  public
+	 * @param   string  $role_name  The role name/label.
+	 * @return  string
+	 */
+	public static function sanitize_role_slug( $role_name ) {
+		$role_name = sanitize_title_with_dashes( $role_name );
+		$role_name = str_replace( array( ' ', '-' ), '_', $role_name );
+		//$role_name = sanitize_key( $role_name );
+		return $role_name;
 	}
 
 	/**
