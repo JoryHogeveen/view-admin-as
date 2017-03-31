@@ -147,11 +147,6 @@
 /**
  * Node columns
  */
-#wpadminbar #wp-admin-bar-vaa ul li.vaa-column-one-half {width: 50%; display: block; float: left; clear: none;}
-#wpadminbar #wp-admin-bar-vaa ul li.vaa-column-one-half .ab-item {min-width: 0;}
-#wpadminbar #wp-admin-bar-vaa ul li.vaa-column-one-half.vaa-column-first .ab-item {padding-right: 1px;}
-#wpadminbar #wp-admin-bar-vaa ul li.vaa-column-one-half.vaa-column-last .ab-item {padding-left: 1px;}
-#wpadminbar #wp-admin-bar-vaa ul li.vaa-clear-float {clear: both;}
 
 /**
  * Buttons
@@ -161,7 +156,11 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-icon {padding: 0 2px 1px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-icon .ab-icon {margin: 0;}
 #wpadminbar #wp-admin-bar-vaa button.vaa-icon .ab-icon {padding: 0;}
-#wpadminbar #wp-admin-bar-vaa button#reset-view {margin: 0 0 5px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-column-one-half {width: 50%; display: block; float: left; clear: none;}
+#wpadminbar #wp-admin-bar-vaa .vaa-column-one-half .ab-item {min-width: 0;}
+#wpadminbar #wp-admin-bar-vaa .vaa-column-one-half.vaa-column-first .ab-item {padding-right: 1px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-column-one-half.vaa-column-last .ab-item {padding-left: 1px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-clear-float {clear: both;}
 
 /**
  * Toggle
