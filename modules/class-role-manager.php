@@ -518,6 +518,18 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			),
 		);
 		foreach ( $this->store->get_rolenames() as $role_key => $role_name ) {
+			// Add the default role names/keys for reference.
+			$desc = array();
+			$org_name = $this->store->get_rolenames( $role_key, false );
+			if ( $org_name !== $role_name ) {
+				$desc[] = $org_name;
+			}
+			if ( self::sanitize_role_slug( $org_name ) !== $role_key ) {
+				$desc[] = $role_key;
+			}
+			if ( $desc ) {
+				$role_name .= ' &nbsp; (' . implode( ', ', $desc ) . ')';
+			}
 			$role_select_options[ $role_key ] = array(
 				'value' => esc_attr( $role_key ),
 				'label' => esc_html( $role_name ),
