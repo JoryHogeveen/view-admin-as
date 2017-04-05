@@ -342,17 +342,16 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			 *
 			 * @since  1.6.3
 			 */
-			if ( is_multisite() && ! $is_superior_admin ) {
-				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
+			if ( is_multisite() && ! $is_superior_admin &&
+			     is_array( $super_admins ) && ! empty( $super_admins[0] )
+			) {
+				// Escape usernames just to be sure.
+				$super_admins = array_filter( $super_admins, 'validate_username' );
+				// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4.
+				$super_admins = array_filter( $super_admins );
 
-					// Escape usernames just to be sure.
-					$super_admins = array_filter( $super_admins, 'validate_username' );
-					// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4.
-					$super_admins = array_filter( $super_admins );
-
-					$exclude_siblings = "'" . implode( "','", $super_admins ) . "'";
-					$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
-				}
+				$exclude_siblings = "'" . implode( "','", $super_admins ) . "'";
+				$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
 			}
 
 			// Run query (OBJECT_K to set the user ID as key).
