@@ -882,8 +882,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
-		var root = VAA_View_Admin_As.root + '-settings',
-			prefix = 'vaa-settings',
+		var root = VAA_View_Admin_As.root + '-modules',
+			prefix = 'vaa-modules',
 			root_prefix = VAA_View_Admin_As.prefix + root;
 
 		// Enable module.
@@ -1105,8 +1105,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.init_module_role_manager = function() {
 
-		var root = VAA_View_Admin_As.root + '-settings',
-			prefix = 'vaa-settings',
+		var root = VAA_View_Admin_As.root + '-modules',
+			prefix = 'vaa-modules',
 			root_prefix = VAA_View_Admin_As.prefix + root;
 
 		// Enable module.

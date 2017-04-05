@@ -100,6 +100,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		// Add the global nodes to the admin bar.
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_info' ), 1 );
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_settings' ), 2 );
+		add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_modules' ), 1, 2 );
 
 		// Add the caps nodes to the admin bar.
 		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_caps' ), 10 );
@@ -505,6 +506,52 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 * @param   string        self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_settings_after', $admin_bar, $root, self::$root );
+	}
+
+	/**
+	 * Add admin bar menu modules items.
+	 *
+	 * @since   1.7.1
+	 * @access  public
+	 * @see     'vaa_admin_bar_menu' action
+	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string        $root       The current root item.
+	 * @return  void
+	 */
+	public function admin_bar_menu_modules( $admin_bar, $root ) {
+
+		$admin_bar->add_group( array(
+			'id'     => self::$root . '-modules',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+
+		$root = self::$root . '-modules';
+
+		$admin_bar->add_node( array(
+			'id'     => $root . '-title',
+			'parent' => $root,
+			'title'  => self::do_icon( 'dashicons-admin-plugins' ) . __( 'Modules', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'vaa-has-icon ab-vaa-title', // ab-vaa-toggle active.
+				'tabindex' => '0',
+			),
+		) );
+
+		/**
+		 * Add items to the modules group.
+		 *
+		 * @since   1.7.1
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string        $root        The current root item.
+		 * @param   string        self::$root  The main root item.
+		 */
+		do_action( 'vaa_admin_bar_modules', $admin_bar, $root, self::$root );
 	}
 
 	/**
