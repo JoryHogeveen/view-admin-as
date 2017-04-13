@@ -478,6 +478,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *
 	 * @since   1.1
 	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.7.1  User ID as array key.
 	 * @access  public
 	 *
 	 * @see     store_users()
@@ -496,7 +497,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 				// Only one key is needed to add the user to the list of available users.
 				reset( $user->roles );
 				if ( current( $user->roles ) === $role ) {
-					$tmp_users[] = $user;
+					$tmp_users[ $user->ID ] = $user;
 				}
 			}
 		}
@@ -685,7 +686,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get available users.
-	 * @todo Key as user ID.
 	 * @param   string  $key  User key.
 	 * @return  mixed   Array of user objects or a single user object.
 	 */
@@ -695,6 +695,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get available users.
+	 * @todo    Remove in future.
+	 * @deprecated
 	 * @param   string  $key  User key.
 	 * @return  mixed   Array of user display names or a single user display name.
 	 */
@@ -825,7 +827,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the available users.
-	 * @todo Key as user ID.
 	 * @param   mixed   $val     Value.
 	 * @param   string  $key     (optional) User key.
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
@@ -837,6 +838,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the available user display names.
+	 * @todo    Remove in future.
+	 * @deprecated
 	 * @param   array  $val  Array of available user ID's (key) and display names (value).
 	 * @return  void
 	 */

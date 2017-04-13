@@ -705,7 +705,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 */
 	public function validate_view_data_user( $null, $data ) {
 		// User data must be a number and exists in the loaded array of user id's.
-		if ( is_numeric( $data ) && array_key_exists( (int) $data, $this->store->get_userids() ) ) {
+		if ( is_numeric( $data ) && array_key_exists( $data, $this->store->get_users() ) ) {
 			return $data;
 		}
 		return $null;
