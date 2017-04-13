@@ -562,24 +562,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			}
 			$caps = array_merge( $add_caps, $caps );
 
-			/**
-			 * Add network capabilities.
-			 *
-			 * @since  1.5.3
-			 * @see    https://codex.wordpress.org/Roles_and_Capabilities
-			 * @todo   Move this to VAA_View_Admin_As_Compat?
-			 */
-			if ( is_multisite() ) {
-				$network_caps = array(
-					'manage_network' => 0,
-					'manage_sites' => 0,
-					'manage_network_users' => 0,
-					'manage_network_plugins' => 0,
-					'manage_network_themes' => 0,
-					'manage_network_options' => 0,
-				);
-				$caps = array_merge( $network_caps, $caps );
-			}
 		} // End if().
 
 		// Remove role names.

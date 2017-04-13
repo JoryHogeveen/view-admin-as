@@ -114,6 +114,23 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 		// To support Members filters
 
+		/**
+		 * Network capabilities.
+		 * @since  1.5.3
+		 * @see    https://codex.wordpress.org/Roles_and_Capabilities
+		 */
+		if ( is_multisite() ) {
+			$network_caps = array(
+				'manage_network',
+				'manage_sites',
+				'manage_network_users',
+				'manage_network_plugins',
+				'manage_network_themes',
+				'manage_network_options',
+			);
+			$caps = array_merge( $network_caps, $caps );
+		}
+
 		// @since  1.7.1  Gravity Forms.
 		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
 			$caps = array_merge( GFCommon::all_caps(), $caps );
