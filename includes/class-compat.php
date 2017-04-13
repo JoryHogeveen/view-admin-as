@@ -70,6 +70,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Add our caps to the User Role Editor plugin (URE).
 		 * @since  1.6.4
+		 * @todo Filter `ure_full_capabilites`?
 		 */
 		add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
 		add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
@@ -124,6 +125,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 			$caps = array_merge( URE_Own_Capabilities::get_caps(), $caps );
 		}
 		$caps = apply_filters( 'ure_full_capabilites', $caps );
+
+		// @since  1.7.1  User Roles and Capabilities.
+		if ( is_callable( array( 'Solvease_Roles_Capabilities_User_Caps', 'solvease_roles_capabilities_caps' ) ) ) {
+			$caps = array_merge( Solvease_Roles_Capabilities_User_Caps::solvease_roles_capabilities_caps(), $caps );
+		}
 
 		// @since  1.7.1  bbPress.
 		if ( function_exists( 'bbp_get_caps_for_role' ) ) {
