@@ -548,8 +548,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			 */
 			$all_caps = apply_filters( 'view_admin_as_get_capabilities', $all_caps );
 
-			$all_caps = array_unique( $all_caps );
-
 			$add_caps = array();
 			// Add new capabilities to the capability array as disabled.
 			foreach ( $all_caps as $cap_key => $cap_val ) {
@@ -560,6 +558,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 					$add_caps[ (string) $cap_key ] = 0;
 				}
 			}
+
 			$caps = array_merge( $add_caps, $caps );
 
 		} // End if().
