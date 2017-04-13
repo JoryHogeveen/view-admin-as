@@ -510,13 +510,9 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since   1.4.1
 	 * @since   1.6    Moved to this class from main class.
 	 * @access  public
-	 * @global  WP_Roles  $wp_roles
 	 * @return  void
 	 */
 	public function store_caps() {
-
-		// Get all available roles and capabilities.
-		global $wp_roles;
 
 		// Get current user capabilities.
 		$caps = self::get_originalUserData( 'allcaps' );
@@ -528,25 +524,15 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Only allow to add capabilities for an admin (or super admin).
 		if ( self::is_super_admin() ) {
 
-			// Store available capabilities.
-			$all_caps = array();
-			foreach ( $wp_roles->role_objects as $key => $role ) {
-				if ( is_array( $role->capabilities ) ) {
-					foreach ( $role->capabilities as $cap => $grant ) {
-						$all_caps[ $cap ] = $cap;
-					}
-				}
-			}
-
 			/**
 			 * Add compatibility for other cap managers.
 			 *
 			 * @since  1.5
 			 * @see    VAA_View_Admin_As_Compat->init()
-			 * @param  array  $all_caps  All capabilities found in the existing roles.
+			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
 			 * @return array
 			 */
-			$all_caps = apply_filters( 'view_admin_as_get_capabilities', $all_caps );
+			$all_caps = apply_filters( 'view_admin_as_get_capabilities', array() );
 
 			$add_caps = array();
 			// Add new capabilities to the capability array as disabled.
@@ -564,7 +550,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		} // End if().
 
 		// Remove role names.
-		$caps = array_diff_key( $caps, $wp_roles->roles );
+		$caps = array_diff_key( $caps, $this->get_roles() );
 		// And sort alphabetical.
 		ksort( $caps );
 

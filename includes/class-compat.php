@@ -157,6 +157,15 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 		$caps = array();
 
+		// @since  1.7.1  Store available capabilities existing in roles.
+		foreach ( $this->store->get_roles() as $key => $role ) {
+			if ( is_array( $role->capabilities ) ) {
+				foreach ( $role->capabilities as $cap => $grant ) {
+					$caps[ $cap ] = $cap;
+				}
+			}
+		}
+
 		// @since  1.7.1  Add post type and taxonomy caps.
 		$wp_objects = array_merge(
 			(array) get_post_types( array(), 'objects' ),
