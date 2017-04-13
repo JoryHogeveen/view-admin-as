@@ -118,6 +118,12 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
 			$caps = array_merge( GFCommon::all_caps(), $caps );
 		}
+
+		// @since  1.7.1  User Role Editor.
+		if ( is_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
+			$caps = array_merge( URE_Own_Capabilities::get_caps(), $caps );
+		}
+		$caps = apply_filters( 'ure_full_capabilites', $caps );
 		$caps = apply_filters( 'members_get_capabilities', $caps );
 		// To support Pods filters
 		$caps = apply_filters( 'pods_roles_get_capabilities', $caps );
