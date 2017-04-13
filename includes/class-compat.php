@@ -124,6 +124,16 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 			$caps = array_merge( URE_Own_Capabilities::get_caps(), $caps );
 		}
 		$caps = apply_filters( 'ure_full_capabilites', $caps );
+
+		// @since  1.7.1  bbPress.
+		if ( function_exists( 'bbp_get_caps_for_role' ) ) {
+			if ( function_exists( 'bbp_get_keymaster_role' ) ) {
+				$bbp_keymaster_role = bbp_get_keymaster_role();
+			} else {
+				$bbp_keymaster_role = apply_filters( 'bbp_get_keymaster_role', 'bbp_keymaster' );
+			}
+			$caps = bbp_get_caps_for_role( $bbp_keymaster_role );
+		}
 		$caps = apply_filters( 'members_get_capabilities', $caps );
 		// To support Pods filters
 		$caps = apply_filters( 'pods_roles_get_capabilities', $caps );
