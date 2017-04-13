@@ -112,34 +112,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function get_capabilities( $caps = array() ) {
 
-		// @since  1.7.1  Add post type and taxonomy caps.
-		$wp_objects = array_merge(
-			(array) get_post_types( array(), 'objects' ),
-			(array) get_taxonomies( array(), 'objects' )
-		);
-		foreach ( $wp_objects as $obj ) {
-			if ( isset( $obj->cap ) ) {
-				// WP stores the object caps as general_cap_name => actual_cap.
-				$caps = array_merge( array_combine( (array) $obj->cap, (array) $obj->cap ), $caps );
-			}
-		}
-
-		/**
-		 * Network capabilities.
-		 * @since  1.5.3
-		 * @see    https://codex.wordpress.org/Roles_and_Capabilities
-		 */
-		if ( is_multisite() ) {
-			$network_caps = array(
-				'manage_network',
-				'manage_sites',
-				'manage_network_users',
-				'manage_network_plugins',
-				'manage_network_themes',
-				'manage_network_options',
-			);
-			$caps = array_merge( $network_caps, $caps );
-		}
+		$caps = array_merge( $this->get_wordpress_capabilities(), $caps );
 
 		// @since  1.7.1  Gravity Forms.
 		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
@@ -170,6 +143,48 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 		// Pods.
 		$caps = apply_filters( 'pods_roles_get_capabilities', $caps );
+
+		return $caps;
+	}
+
+	/**
+	 * Get all capabilities from WP core or WP objects.
+	 *
+	 * @since   1.7.1
+	 * @return  array
+	 */
+	public function get_wordpress_capabilities() {
+
+		$caps = array();
+
+		// @since  1.7.1  Add post type and taxonomy caps.
+		$wp_objects = array_merge(
+			(array) get_post_types( array(), 'objects' ),
+			(array) get_taxonomies( array(), 'objects' )
+		);
+		foreach ( $wp_objects as $obj ) {
+			if ( isset( $obj->cap ) ) {
+				// WP stores the object caps as general_cap_name => actual_cap.
+				$caps = array_merge( array_combine( (array) $obj->cap, (array) $obj->cap ), $caps );
+			}
+		}
+
+		/**
+		 * Network capabilities.
+		 * @since  1.5.3
+		 * @see    https://codex.wordpress.org/Roles_and_Capabilities
+		 */
+		if ( is_multisite() ) {
+			$network_caps = array(
+				'manage_network',
+				'manage_sites',
+				'manage_network_users',
+				'manage_network_plugins',
+				'manage_network_themes',
+				'manage_network_options',
+			);
+			$caps = array_merge( $network_caps, $caps );
+		}
 
 		return $caps;
 	}
