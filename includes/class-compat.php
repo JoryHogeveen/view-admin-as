@@ -68,7 +68,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
 
 		/**
-		 * Add our caps to the User Role Editor plugin (URE)
+		 * Add our caps to the User Role Editor plugin (URE).
 		 * @since  1.6.4
 		 */
 		add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
@@ -110,7 +110,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @param   array  $caps  The capabilities.
 	 * @return  array
 	 */
-	public function get_capabilities( $caps ) {
+	public function get_capabilities( $caps = array() ) {
 
 		// @since  1.7.1  Add post type and taxonomy caps.
 		$wp_objects = array_merge(
@@ -186,7 +186,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function add_capabilities( $caps = array() ) {
 
-		// Allow VAA modules to add their capabilities
+		// Allow VAA modules to add their capabilities.
 		$vaa_caps = apply_filters( 'view_admin_as_add_capabilities', array( 'view_admin_as' ) );
 		foreach ( $vaa_caps as $cap ) {
 			$caps[ $cap ] = $cap;
