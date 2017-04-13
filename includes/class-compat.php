@@ -113,6 +113,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	public function get_capabilities( $caps ) {
 
 		// To support Members filters
+
+		// @since  1.7.1  Gravity Forms.
+		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
+			$caps = array_merge( GFCommon::all_caps(), $caps );
+		}
 		$caps = apply_filters( 'members_get_capabilities', $caps );
 		// To support Pods filters
 		$caps = apply_filters( 'pods_roles_get_capabilities', $caps );
