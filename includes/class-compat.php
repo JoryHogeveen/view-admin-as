@@ -112,7 +112,17 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function get_capabilities( $caps ) {
 
-		// To support Members filters
+		// @since  1.7.1  Add post type and taxonomy caps.
+		$wp_objects = array_merge(
+			(array) get_post_types( array(), 'objects' ),
+			(array) get_taxonomies( array(), 'objects' )
+		);
+		foreach ( $wp_objects as $obj ) {
+			if ( isset( $obj->cap ) ) {
+				// WP stores the object caps as general_cap_name => actual_cap.
+				$caps = array_merge( array_combine( (array) $obj->cap, (array) $obj->cap ), $caps );
+			}
+		}
 
 		/**
 		 * Network capabilities.
