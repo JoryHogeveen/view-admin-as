@@ -58,8 +58,9 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Add our caps to the members plugin.
 		 * Hook `members_get_capabilities` also used by:
-		 *  - User Role Editor (URE)
+		 *  - User Role Editor (URE) >> Own filter: `ure_full_capabilites`
 		 *  - WPFront User Role Editor
+		 *  - Capability Manager Enhanced >> Own filter: `capsman_get_capabilities`
 		 *  - Pods
 		 *
 		 * @since  1.6
@@ -70,7 +71,6 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Add our caps to the User Role Editor plugin (URE).
 		 * @since  1.6.4
-		 * @todo Filter `ure_full_capabilites`?
 		 */
 		add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
 		add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
@@ -115,20 +115,23 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 
 		$caps = array_merge( $this->get_wordpress_capabilities(), $caps );
 
+		// WooCommerce caps are not accessible but are assigned to roles on install.
+		// get_wordpress_capabilities() will find them.
+
 		// @since  1.7.1  Gravity Forms.
 		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
-			$caps = array_merge( GFCommon::all_caps(), $caps );
+			$caps = array_merge( (array) GFCommon::all_caps(), $caps );
 		}
 
 		// @since  1.7.1  User Role Editor.
 		if ( is_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
-			$caps = array_merge( URE_Own_Capabilities::get_caps(), $caps );
+			$caps = array_merge( (array) URE_Own_Capabilities::get_caps(), $caps );
 		}
 		$caps = apply_filters( 'ure_full_capabilites', $caps );
 
 		// @since  1.7.1  User Roles and Capabilities.
 		if ( is_callable( array( 'Solvease_Roles_Capabilities_User_Caps', 'solvease_roles_capabilities_caps' ) ) ) {
-			$caps = array_merge( Solvease_Roles_Capabilities_User_Caps::solvease_roles_capabilities_caps(), $caps );
+			$caps = array_merge( (array) Solvease_Roles_Capabilities_User_Caps::solvease_roles_capabilities_caps(), $caps );
 		}
 
 		// @since  1.7.1  bbPress.
@@ -138,12 +141,12 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 			} else {
 				$bbp_keymaster_role = apply_filters( 'bbp_get_keymaster_role', 'bbp_keymaster' );
 			}
-			$caps = bbp_get_caps_for_role( $bbp_keymaster_role );
+			$caps = array_merge( (array) bbp_get_caps_for_role( $bbp_keymaster_role ), $caps );
 		}
 
 		// Members.
 		if ( function_exists( 'members_get_plugin_capabilities' ) ) {
-			$caps = array_merge( members_get_plugin_capabilities(), $caps );
+			$caps = array_merge( (array) members_get_plugin_capabilities(), $caps );
 		}
 		$caps = apply_filters( 'members_get_capabilities', $caps );
 
