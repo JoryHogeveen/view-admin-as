@@ -99,7 +99,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 				$link = false;
 			}
 		}
-		elseif ( $this->store->get_userids( $user->ID ) ) {
+		elseif ( $this->store->get_users( $user->ID ) ) {
 			$link = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ), $link );
 		} else {
 			$link = false;
