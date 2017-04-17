@@ -79,7 +79,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		 * Get caps from other plugins.
 		 * @since  1.5
 		 */
-		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ) );
+		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
 
 	}
 
@@ -109,54 +109,20 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @see     init()
 	 *
 	 * @param   array  $caps  The capabilities.
+	 * @param   bool   $all   Get all or only VAA related capabilities?
 	 * @return  array
 	 */
-	public function get_capabilities( $caps = array() ) {
+	public function get_capabilities( $caps = array(), $all = true ) {
+
+		$caps = $this->add_capabilities( $caps );
+
+		if ( ! $all ) {
+			return $caps;
+		}
 
 		$caps = array_merge( $this->get_wordpress_capabilities(), $caps );
 
-		// WooCommerce caps are not accessible but are assigned to roles on install.
-		// get_wordpress_capabilities() will find them.
-
-		// @since  1.7.1  Gravity Forms.
-		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
-			$caps = array_merge( (array) GFCommon::all_caps(), $caps );
-		}
-
-		// @since  1.7.1  User Role Editor.
-		if ( is_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
-			$caps = array_merge( (array) URE_Own_Capabilities::get_caps(), $caps );
-		}
-		$caps = apply_filters( 'ure_full_capabilites', $caps );
-
-		// @since  1.7.1  WPFront User Role Editor.
-		if ( class_exists( 'WPFront_User_Role_Editor' ) && isset( WPFront_User_Role_Editor::$ROLE_CAPS ) ) {
-			$caps = array_merge( (array) WPFront_User_Role_Editor::$ROLE_CAPS, $caps );
-		}
-
-		// @since  1.7.1  User Roles and Capabilities.
-		if ( is_callable( array( 'Solvease_Roles_Capabilities_User_Caps', 'solvease_roles_capabilities_caps' ) ) ) {
-			$caps = array_merge( (array) Solvease_Roles_Capabilities_User_Caps::solvease_roles_capabilities_caps(), $caps );
-		}
-
-		// @since  1.7.1  bbPress.
-		if ( function_exists( 'bbp_get_caps_for_role' ) ) {
-			if ( function_exists( 'bbp_get_keymaster_role' ) ) {
-				$bbp_keymaster_role = bbp_get_keymaster_role();
-			} else {
-				$bbp_keymaster_role = apply_filters( 'bbp_get_keymaster_role', 'bbp_keymaster' );
-			}
-			$caps = array_merge( (array) bbp_get_caps_for_role( $bbp_keymaster_role ), $caps );
-		}
-
-		// Members.
-		if ( function_exists( 'members_get_plugin_capabilities' ) ) {
-			$caps = array_merge( (array) members_get_plugin_capabilities(), $caps );
-		}
-		$caps = apply_filters( 'members_get_capabilities', $caps );
-
-		// Pods.
-		$caps = apply_filters( 'pods_roles_get_capabilities', $caps );
+		$caps = array_merge( $this->get_plugin_capabilities(), $caps );
 
 		return $caps;
 	}
@@ -209,6 +175,108 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Get all capabilities from other plugins.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
+	 * @since   1.7.1
+	 * @param   array  $caps  The capabilities.
+	 * @return  array
+	 */
+	public function get_plugin_capabilities( $caps = array() ) {
+
+		// WooCommerce caps are not accessible but are assigned to roles on install.
+		// get_wordpress_capabilities() will find them.
+
+		// @since  1.7.1  Gravity Forms.
+		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
+			$caps = array_merge( (array) GFCommon::all_caps(), $caps );
+		}
+
+		// @since  1.7.1  User Role Editor.
+		if ( is_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
+			$caps = array_merge( (array) URE_Own_Capabilities::get_caps(), $caps );
+		}
+		$caps = apply_filters( 'ure_full_capabilites', $caps );
+
+		// @since  1.7.1  WPFront User Role Editor.
+		if ( class_exists( 'WPFront_User_Role_Editor' ) && isset( WPFront_User_Role_Editor::$ROLE_CAPS ) ) {
+			$caps = array_merge( (array) WPFront_User_Role_Editor::$ROLE_CAPS, $caps );
+		}
+
+		// @since  1.7.1  User Roles and Capabilities.
+		if ( is_callable( array( 'Solvease_Roles_Capabilities_User_Caps', 'solvease_roles_capabilities_caps' ) ) ) {
+			$caps = array_merge( (array) Solvease_Roles_Capabilities_User_Caps::solvease_roles_capabilities_caps(), $caps );
+		}
+
+		// @since  1.7.1  bbPress.
+		if ( function_exists( 'bbp_get_caps_for_role' ) ) {
+			if ( function_exists( 'bbp_get_keymaster_role' ) ) {
+				$bbp_keymaster_role = bbp_get_keymaster_role();
+			} else {
+				$bbp_keymaster_role = apply_filters( 'bbp_get_keymaster_role', 'bbp_keymaster' );
+			}
+			$caps = array_merge( (array) bbp_get_caps_for_role( $bbp_keymaster_role ), $caps );
+		}
+
+		// @since  1.7.1  BuddyPress.
+		if ( class_exists( 'BuddyPress' ) ) {
+			$caps = array_merge(
+				array(
+					'bp_moderate',
+					'bp_xprofile_change_field_visibility',
+					// @todo Check usage of capabilities below.
+					/*
+					'throttle',
+					'keep_gate',
+					'moderate_comments',
+					'edit_cover_image',
+					'edit_avatar',
+					'edit_favorites',
+					'edit_favorites_of',
+					'add_tag_to',
+					'edit_tag_by_on',
+					'change_user_password',
+					'moderate',
+					'browse_deleted',
+					'view_by_ip',
+					'write_posts',
+					'write_topic',
+					'write_topics',
+					'move_topic',
+					'stick_topic',
+					'close_topic',
+					'edit_topic',
+					'delete_topic',
+					'delete_forum',
+					'manage_forums',
+					'manage_tags',
+					*/
+				),
+				// @see bp-core-caps.php >> bp_get_community_caps().
+				apply_filters( 'bp_get_community_caps', array() ),
+				$caps
+			);
+		} // End if().
+
+		// Members.
+		if ( function_exists( 'members_get_plugin_capabilities' ) ) {
+			$caps = array_merge( (array) members_get_plugin_capabilities(), $caps );
+		}
+		// Get caps from multiple plugins through the Members filter.
+		$caps = apply_filters( 'members_get_capabilities', $caps );
+
+		// Pods.
+		$caps = apply_filters( 'pods_roles_get_capabilities', $caps );
+
+		return $caps;
+
 	}
 
 	/**
