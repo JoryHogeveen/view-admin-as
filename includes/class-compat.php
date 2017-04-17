@@ -165,11 +165,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * Get all capabilities from WP core or WP objects.
 	 *
 	 * @since   1.7.1
+	 * @param   array  $caps  The capabilities.
 	 * @return  array
 	 */
-	public function get_wordpress_capabilities() {
-
-		$caps = array();
+	public function get_wordpress_capabilities( $caps = array() ) {
 
 		// @since  1.7.1  Store available capabilities existing in roles.
 		foreach ( $this->store->get_roles() as $key => $role ) {
