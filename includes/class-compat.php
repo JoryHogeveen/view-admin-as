@@ -129,6 +129,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		}
 		$caps = apply_filters( 'ure_full_capabilites', $caps );
 
+		// @since  1.7.1  WPFront User Role Editor.
+		if ( class_exists( 'WPFront_User_Role_Editor' ) && isset( WPFront_User_Role_Editor::$ROLE_CAPS ) ) {
+			$caps = array_merge( (array) WPFront_User_Role_Editor::$ROLE_CAPS, $caps );
+		}
+
 		// @since  1.7.1  User Roles and Capabilities.
 		if ( is_callable( array( 'Solvease_Roles_Capabilities_User_Caps', 'solvease_roles_capabilities_caps' ) ) ) {
 			$caps = array_merge( (array) Solvease_Roles_Capabilities_User_Caps::solvease_roles_capabilities_caps(), $caps );
