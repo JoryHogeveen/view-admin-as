@@ -276,11 +276,50 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Include a file. Optionally checks if the class already exists.
+	 *
+	 * @since   1.7.1
+	 * @access  public
+	 *
+	 * @param   string  $file   The file name.
+	 * @param   string  $class  (optional) The class name.
+	 * @return  bool
+	 */
+	public function include_file( $file, $class = '' ) {
+		static $loaded = array();
+
+		if ( in_array( $file, $loaded, true ) ) {
+			return true;
+		}
+
+		if ( ! file_exists( $file ) ) {
+			return false;
+		}
+
+		// Load file.
+		if ( empty( $class ) || ! class_exists( $class ) ) {
+			include_once( $file );
+		} else {
+			$this->add_notice( 'class-error-' . $class, array(
+				'type' => 'notice-error',
+				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+				             . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+				             // Translators: %s stands for the class name.
+				             . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $class ) . ')</code>',
+			) );
+			return false;
+		}
+
+		$loaded[] = $file;
+		return true;
+	}
+
+	/**
 	 * Helper function to include files. Checks class existence and throws an error if needed.
 	 * Also adds the class to a supplied group if available.
 	 *
 	 * @since   1.7
-	 * @access  private
+	 * @access  public
 	 * @param   array  $includes {
 	 *     An array of files to include.
 	 *     @type  string  $file   The file to include. Directory starts from the plugin folder.
@@ -289,28 +328,23 @@ final class VAA_View_Admin_As
 	 * @param   array  $group     A reference array.
 	 * @return  array  $group
 	 */
-	private function include_files( $includes, &$group = null ) {
+	public function load_files( $includes, &$group = null ) {
 
 		$group = (array) $group;
 
 		foreach ( $includes as $key => $inc ) {
 
-			// Load file.
-			if ( empty( $inc['class'] ) || ! class_exists( $inc['class'] ) ) {
-				include_once( VIEW_ADMIN_AS_DIR . $inc['file'] );
-			} else {
-				$this->add_notice( 'class-error-' . $key, array(
-					'type' => 'notice-error',
-					'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-					    . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-					    // Translators: %s stands for the class name.
-					    . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $inc['class'] ) . ')</code>',
-				) );
+			if ( empty( $inc['file'] ) ) {
+				continue;
 			}
 
+			$class = ( ! empty( $inc['class'] ) ) ? $inc['class'] : '';
+
+			$this->include_file( VIEW_ADMIN_AS_DIR . $inc['file'], $class );
+
 			// If it's a class file, add the class instance to the group.
-			if ( ! empty( $inc['class'] ) && is_callable( array( $inc['class'], 'get_instance' ) ) ) {
-				$group[ $key ] = call_user_func( array( $inc['class'], 'get_instance' ), $this );
+			if ( ! empty( $class ) && is_callable( array( $class, 'get_instance' ) ) ) {
+				$group[ $key ] = call_user_func( array( $class, 'get_instance' ), $this );
 			}
 		}
 		return $group;
@@ -343,7 +377,7 @@ final class VAA_View_Admin_As
 		);
 
 		// Include UI files and add them to the `ui` property.
-		$this->include_files( $includes, $this->ui );
+		$this->load_files( $includes, $this->ui );
 	}
 
 	/**
@@ -374,7 +408,7 @@ final class VAA_View_Admin_As
 		}
 
 		// Run include code but do not register modules yet (leave that to the modules).
-		$this->include_files( $includes );
+		$this->load_files( $includes );
 
 		/**
 		 * Modules loaded. Hook is used for other modules related to View Admin As.
