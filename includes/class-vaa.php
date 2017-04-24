@@ -133,8 +133,8 @@ final class VAA_View_Admin_As
 			return;
 		}
 
-		if ( ! $done ) {
-			$this->load();
+		if ( ! $done && ! $this->load() ) {
+			return;
 		}
 
 		$this->run();
