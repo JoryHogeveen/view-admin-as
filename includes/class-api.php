@@ -90,6 +90,17 @@ final class VAA_API
 	}
 
 	/**
+	 * Check if the provided data is the same as the current view.
+	 *
+	 * @since   1.7.1
+	 * @param   array  $data
+	 * @return  bool
+	 */
+	public static function is_current_view( $data ) {
+		return view_admin_as()->controller()->is_current_view( $data );
+	}
+
+	/**
 	 * Is any toolbar showing?
 	 * Do not use this before the `init` hook.
 	 *
@@ -149,6 +160,7 @@ final class VAA_API
 		);
 
 		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
+		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
 		if ( empty( $url ) ) {
 			if ( is_network_admin() ) {
 				$url = network_admin_url();
