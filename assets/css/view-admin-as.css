@@ -122,8 +122,9 @@
 
 /**
  * Auto max height
+ * Min height = height of a single node
  */
-#wpadminbar #wp-admin-bar-vaa .vaa-auto-max-height {overflow-y: auto; transition: max-height .3s;}
+#wpadminbar #wp-admin-bar-vaa .vaa-auto-max-height {min-height: 26px; overflow-y: auto; transition: max-height .3s;}
 
 /**
  * Form elements
