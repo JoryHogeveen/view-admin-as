@@ -41,8 +41,11 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 
 *	Add, edit or delete roles
 *	Grant and/or add capabilities to roles
+*	Rename roles
 *	Clone roles
 *	Update role capabilities from current view
+
+*Note: Changes made with the Role Manager are permanent!*
 
 = Compatibility & Integrations =
 
@@ -169,6 +172,15 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 11. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.7.1 =
+
+*	Feature: Module Role Manager: Rename roles [#47](https://github.com/JoryHogeveen/view-admin-as/issues/47)
+*	Enhancement/Compatibility: Improve fetching available capabilities for super admin. It now alse checks for custom post type and taxonomy capabilities and more other plugins.
+*	UI: Module Role Manager: Show original role name for reference
+*	Accessibility: Fix tabindex for some nodes that have form elements
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/48)
 
 = 1.7 =
 
