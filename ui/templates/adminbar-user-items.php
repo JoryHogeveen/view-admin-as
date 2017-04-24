@@ -46,8 +46,17 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		if ( true === $this->groupUserRoles ) {
 			// Users grouped under roles.
 			foreach ( $user->roles as $role ) {
+				if ( ! $admin_bar->get_node( $main_root . '-roles-role-' . $role . '-users' ) ) {
+					$admin_bar->add_group( array(
+						'id' => $main_root . '-roles-role-' . $role . '-users',
+						'parent' => $main_root . '-roles-role-' . $role,
+						'meta'   => array(
+							'class' => 'ab-sub-secondary vaa-auto-max-height',
+						),
+					) );
+				}
 				$user_node['id'] .= '-' . $role;
-				$user_node['parent'] = $main_root . '-roles-role-' . $role;
+				$user_node['parent'] = $main_root . '-roles-role-' . $role . '-users';
 				$admin_bar->add_node( $user_node );
 			}
 		} else {

@@ -177,6 +177,7 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 
 *	Feature: Module Role Manager: Rename roles [#47](https://github.com/JoryHogeveen/view-admin-as/issues/47)
 *	Enhancement/Compatibility: Improve fetching available capabilities for super admin. It now alse checks for custom post type and taxonomy capabilities and more other plugins.
+*	UI: Add submenu scrollbar when there are too much users under a role [#49](https://github.com/JoryHogeveen/view-admin-as/issues/49)
 *	UI: Module Role Manager: Show original role name for reference
 *	Accessibility: Fix tabindex for some nodes that have form elements
 

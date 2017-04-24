@@ -177,6 +177,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				VAA_View_Admin_As.mobile();
 			}
 
+			// @since  1.7.1  Auto max height trigger.
+			VAA_View_Admin_As.maxHeightListenerElements.each( function() {
+				$(this).parents('.menupop').on( 'mouseenter', function() {
+					VAA_View_Admin_As.autoMaxHeight();
+				} );
+			} );
+
 		} ); // End window.load.
 
 		// Process reset.
@@ -797,10 +804,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		};
 
-		// Set max height of the caps submenu.
-		$document.on( 'mouseenter', root_prefix + '-manager', function() {
-			VAA_View_Admin_As.autoMaxHeight();
-		} );
 		// Enlarge caps.
 		$document.on( 'click', root_prefix + ' #open-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
