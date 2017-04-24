@@ -599,6 +599,10 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function do_admin_notices() {
+		// Only show notices if the plugin functionalities are enabled.
+		if ( ! $this->is_enabled() ) {
+			return;
+		}
 		foreach ( $this->notices as $notice ) {
 			if ( isset( $notice['type'] ) && ! empty( $notice['message'] ) ) {
 				echo '<div class="' . $notice['type'] . ' notice is-dismissible"><p>' . $notice['message'] . '</p></div>';
