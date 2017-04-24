@@ -109,20 +109,28 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @see     init()
 	 *
 	 * @param   array  $caps  The capabilities.
-	 * @param   bool   $all   Get all or only VAA related capabilities?
+	 * @param   array  $args  Pass arguments to get only certain capabilities.
 	 * @return  array
 	 */
-	public function get_capabilities( $caps = array(), $all = true ) {
+	public function get_capabilities( $caps = array(), $args = array() ) {
 
-		$caps = $this->add_capabilities( $caps );
+		$args = wp_parse_args( $args, array(
+			'vaa'     => true, // Get VAA related capabilities?
+			'wp'      => true, // Get WP core related capabilities?
+			'plugins' => true, // Get capabilities from plugin hooks and filters?
+		) );
 
-		if ( ! $all ) {
-			return $caps;
+		if ( $args['vaa'] ) {
+			$caps = $this->add_capabilities( $caps );
 		}
 
-		$caps = array_merge( $this->get_wordpress_capabilities(), $caps );
+		if ( $args['wp'] ) {
+			$caps = array_merge( $this->get_wordpress_capabilities(), $caps );
+		}
 
-		$caps = array_merge( $this->get_plugin_capabilities(), $caps );
+		if ( $args['plugins'] ) {
+			$caps = array_merge( $this->get_plugin_capabilities(), $caps );
+		}
 
 		return $caps;
 	}
