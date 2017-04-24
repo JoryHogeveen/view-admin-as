@@ -581,12 +581,12 @@ final class VAA_View_Admin_As
 		// Start positive!
 		$valid = true;
 
-		// Validate WP
-		if ( version_compare( $wp_version, '3.5', '<' ) ) {
+		// Validate WP.
+		if ( version_compare( $wp_version, '4.1', '<' ) ) {
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
-				    // Translators: %1$s stands for "WordPress", %2$s stands for version 3.5.
+				    // Translators: %1$s stands for "WordPress", %2$s stands for the version.
 				    . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
 			) );
 			$valid = false;
