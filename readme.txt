@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
 Tested up to: 4.8
-Stable tag: 1.7
+Stable tag: 1.7.1
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -55,9 +55,11 @@ This plugin will work with most other plugins but these are tested:
 *	**bbPress**
 *	**BuddyPress**
 *	**Genesis Framework** *(and probably other theme frameworks)*
+*	**Gravity Forms**
 *	**Pods Framework 2.0+**
 *	**Members**
 *	**Restrict User Access 0.13+** *(Custom integration: adds a view type for access levels)*
+*	**User Roles and Capabilities**
 *	**User Role Editor** *(Pro version not verified)*
 *	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
 *	**WPFront User Role Editor**
@@ -175,11 +177,12 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 
 = 1.7.1 =
 
-*	Feature: Module Role Manager: Rename roles [#47](https://github.com/JoryHogeveen/view-admin-as/issues/47)
+*	Feature: Module Role Manager: Rename roles. [#47](https://github.com/JoryHogeveen/view-admin-as/issues/47)
 *	Enhancement/Compatibility: Improve fetching available capabilities for super admin. It now alse checks for custom post type and taxonomy capabilities and more other plugins.
-*	UI: Add submenu scrollbar when there are too much users under a role [#49](https://github.com/JoryHogeveen/view-admin-as/issues/49)
-*	UI: Module Role Manager: Show original role name for reference
-*	Accessibility: Fix tabindex for some nodes that have form elements
+*	UI: Add submenu scrollbar when there are too much users under a role. [#49](https://github.com/JoryHogeveen/view-admin-as/issues/49)
+*	UI: Module Role Manager: Show original role name for reference.
+*	Accessibility: Fix tabindex for some nodes that have form elements.
+*	Other minor core improvements.
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/48)
 

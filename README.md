@@ -43,6 +43,8 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Clone roles
 *	Update role capabilities from current view
 
+*Note: Changes made with the Role Manager are permanent!*
+
 ## Compatibility
 
 This plugin will work with most other plugins but these are tested:
@@ -51,9 +53,11 @@ This plugin will work with most other plugins but these are tested:
 *	**bbPress**
 *	**BuddyPress**
 *	**Genesis Framework** *(and probably other theme frameworks)*
+*	**Gravity Forms**
 *	**Pods Framework 2.0+**
 *	**Members**
 *	**Restrict User Access 0.13+** *(Custom integration: adds a view type for access levels)*
+*	**User Roles and Capabilities**
 *	**User Role Editor** *(Pro version not verified)*
 *	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
 *	**WPFront User Role Editor**

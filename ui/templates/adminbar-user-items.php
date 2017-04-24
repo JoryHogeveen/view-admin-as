@@ -2,7 +2,8 @@
 /**
  * Add user items.
  *
- * @since  1.7
+ * @since    1.7
+ * @version  1.7.1
  *
  * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string        $root       The current root item.
