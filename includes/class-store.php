@@ -219,7 +219,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			}
 		}
 
-		// @since  1.6.4  Set role names
+		// @since  1.6.4  Set role names.
 		$role_names = array();
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $wp_roles->role_names[ $role_key ] ) ) {
@@ -411,8 +411,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 				 * Reduces the amount of queries while the end result is the same.
 				 *
 				 * @since  1.5.2
-				 * @See    wp-includes/capabilities.php >> get_super_admins()
-				 * @See    wp-includes/capabilities.php >> is_super_admin()
+				 * @see    get_super_admins() >> wp-includes/capabilities.php
+				 * @see    is_super_admin() >> wp-includes/capabilities.php
 				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
 				 */
 				if ( is_multisite() && in_array( $user->user_login, (array) $super_admins, true ) ) {

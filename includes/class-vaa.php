@@ -214,7 +214,7 @@ final class VAA_View_Admin_As
 		$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
 		$this->view       = VAA_View_Admin_As_View::get_instance( $this );
 
-		$this->store->init();
+		$this->store->init( true );
 
 		// Sets enabled.
 		$this->validate_user();
