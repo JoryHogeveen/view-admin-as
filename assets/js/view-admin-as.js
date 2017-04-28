@@ -1263,25 +1263,26 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.autoMaxHeight = function() {
 		setTimeout( function() {
+			// @link  http://stackoverflow.com/questions/11193453/find-the-vertical-position-of-scrollbar-without-jquery
+			var scrollTop = ( 'undefined' !== typeof window.pageYOffset ) ? window.pageYOffset : ( document.documentElement || document.body.parentNode || document.body ).scrollTop;
+
 			VAA_View_Admin_As.maxHeightListenerElements.each( function() {
-				var element = $( this ),
-					count = 0,
-					wait = setInterval( function() {
-						var offset = element.offset(),
-							// @link  http://stackoverflow.com/questions/11193453/find-the-vertical-position-of-scrollbar-without-jquery
-							scrollTop = ( 'undefined' !== typeof window.pageYOffset ) ? window.pageYOffset : ( document.documentElement || document.body.parentNode || document.body ).scrollTop,
-							offsetTop = ( offset.top - scrollTop );
-						if ( element.is(':visible') && 0 < offsetTop ) {
-							clearInterval( wait );
-							var maxHeight = $window.height() - offsetTop - 100;
-							maxHeight = ( 100 < maxHeight ) ? maxHeight : 100;
-							element.css( { 'max-height': maxHeight + 'px' } );
-						}
-						count++;
-						if ( 5 < count ) {
-							clearInterval( wait );
-						}
-					}, 100 );
+			var $element = $(this),
+				count    = 0,
+				wait     = setInterval( function() {
+					var offset    = $element.offset(),
+						offsetTop = ( offset.top - scrollTop );
+					if ( $element.is(':visible') && 0 < offsetTop ) {
+						clearInterval( wait );
+						var maxHeight = $window.height() - offsetTop - 100;
+						maxHeight = ( 100 < maxHeight ) ? maxHeight : 100;
+						$element.css( { 'max-height': maxHeight + 'px' } );
+					}
+					count++;
+					if ( 5 < count ) {
+						clearInterval( wait );
+					}
+				}, 100 );
 			} );
 		}, 100 );
 	};
