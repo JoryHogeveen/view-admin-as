@@ -341,9 +341,21 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.7
 	 * @param   array  $data
+	 * @param   bool   $type  Only compare a single view type instead of all view data?
+	 *                        If set, the data value should be the single view type data.
 	 * @return  bool
 	 */
-	public function is_current_view( $data ) {
+	public function is_current_view( $data, $type = null ) {
+		if ( ! empty( $type ) ) {
+			$current = $this->store->get_view( $type );
+			if ( ! $current ) {
+				return false;
+			}
+			if ( is_array( $data ) ) {
+				return VAA_API::array_equal( $data, $current );
+			}
+			return ( (string) $data === (string) $current );
+		}
 		return VAA_API::array_equal( $data, $this->store->get_view() );
 	}
 

@@ -94,10 +94,16 @@ final class VAA_API
 	 *
 	 * @since   1.7.1
 	 * @param   array  $data
+	 * @param   bool   $type  Only compare a single view type instead of all view data?
+	 *                        If set, the data value should be the single view type data.
 	 * @return  bool
 	 */
-	public static function is_current_view( $data ) {
-		return view_admin_as()->controller()->is_current_view( $data );
+	public static function is_current_view( $data, $type = null ) {
+		$controller = view_admin_as()->controller();
+		if ( $controller ) {
+			return $controller->is_current_view( $data, $type );
+		}
+		return false;
 	}
 
 	/**
