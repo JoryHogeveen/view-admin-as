@@ -147,6 +147,7 @@ final class VAA_View_Admin_As
 	 * Returns false on conflict.
 	 *
 	 * @since   1.6
+	 * @access  private
 	 * @return  bool
 	 */
 	private function load() {

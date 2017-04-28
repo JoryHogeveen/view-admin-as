@@ -271,7 +271,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		// @see wp-includes/capabilities.php
 		$existing_role = get_role( $role );
 		// Build role name. (Only used for adding a new role).
-		// @todo Rename role functionality?
 		$role_name     = ucfirst( strip_tags( $role ) );
 		// Sanitize capabilities.
 		$capabilities  = array_map( 'boolval', $capabilities );

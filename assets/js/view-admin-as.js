@@ -94,7 +94,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_module_role_manager();
 
 		// Functionality that require the document to be fully loaded.
-		$window.on( "load", function() {
+		$window.on( 'load', function() {
 
 			// Toggle content with title.
 			$( VAA_View_Admin_As.prefix + '.ab-vaa-toggle' ).each( function() {
@@ -701,7 +701,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( 1 <= $(this).val().length ) {
 				var inputText = $(this).val();
 				$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
-					var name = $('.ab-item', this).text();
+					var name = $( '.ab-item', this ).text();
 					if ( -1 < name.toLowerCase().indexOf( inputText.toLowerCase() ) ) {
 						var exists = false;
 						$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results .vaa-user-item .ab-item' ).each(function() {
@@ -722,7 +722,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 				if ( '' === $.trim( $( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' ).html() ) ) {
 					$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
-						.append('<div class="ab-item ab-empty-item vaa-not-found">'+VAA_View_Admin_As.__no_users_found+'</div>');
+						.append('<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>');
 				}
 			}
 		} );
@@ -846,7 +846,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			$( root_prefix + '-select-options .vaa-cap-item' ).each( function() {
 				if ( $(this).is(':visible') ) {
-					$('input', this).prop( "checked", true );
+					$( 'input', this ).prop( "checked", true );
 				}
 			} );
 			return false;
@@ -860,7 +860,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			e.preventDefault();
 			$( root_prefix + '-select-options .vaa-cap-item' ).each( function() {
 				if ( $(this).is(':visible') ) {
-					$('input', this).prop( "checked", false );
+					$( 'input', this ).prop( "checked", false );
 				}
 			} );
 			return false;
