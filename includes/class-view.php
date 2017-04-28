@@ -164,14 +164,18 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
 		/**
-		 * Change the capabilities (map_meta_cap is better for compatibility with network admins).
+		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
 		 *
 		 * @since  0.1
 		 */
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 3 ); //4
 
-		// @todo maybe also use the user_has_cap filter?
-		//add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
+		/**
+		 * Change the capabilities.
+		 *
+		 * @since  1.7.1
+		 */
+		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
 
 		$done = true;
 	}
