@@ -47,6 +47,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		if ( true === $this->groupUserRoles ) {
 			// Users grouped under roles.
 			foreach ( $user->roles as $role ) {
+				$user_role_node = $user_node;
 				$parent = $main_root . '-roles-role-' . $role;
 				$group  = $parent . '-users';
 				if ( ! $admin_bar->get_node( $group ) ) {
@@ -58,9 +59,9 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 						),
 					) );
 				}
-				$user_node['id'] .= '-' . $role;
-				$user_node['parent'] = $group;
-				$admin_bar->add_node( $user_node );
+				$user_role_node['id'] .= '-' . $role;
+				$user_role_node['parent'] = $group;
+				$admin_bar->add_node( $user_role_node );
 			}
 		} else {
 			// Users displayed as normal.
