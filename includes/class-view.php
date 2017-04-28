@@ -400,10 +400,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function filter_user_has_cap( $allcaps, $caps, $args, $user = null ) {
 		$user_id = ( $user ) ? $user->ID : $args[1];
-		if ( ! is_numeric( $user_id ) || (int) $user_id !== (int) $this->store->get_selectedUser()->ID ) {
-			return $allcaps;
+		if ( is_numeric( $user_id ) && (int) $user_id === (int) $this->store->get_selectedUser()->ID ) {
+			return (array) $this->store->get_selectedCaps();
 		}
-		return $this->store->get_selectedCaps();
+		return $allcaps;
 	}
 
 	/**
