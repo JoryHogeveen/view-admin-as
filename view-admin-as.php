@@ -17,7 +17,7 @@
  * Text Domain:       view-admin-as
  * Domain Path:       /languages/
  * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * GitHub Plugin URI: https://github.com/JoryHogeveen/view-admin-as
  *
  * @copyright 2015-2017 Jory Hogeveen
