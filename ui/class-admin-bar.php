@@ -520,6 +520,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	 */
 	public function admin_bar_menu_modules( $admin_bar, $root ) {
 
+		// Do not render the modules group if there are no modules to show.
+		if ( ! has_action( 'vaa_admin_bar_modules' ) ) {
+			return;
+		}
+
 		$admin_bar->add_group( array(
 			'id'     => self::$root . '-modules',
 			'parent' => $root,
