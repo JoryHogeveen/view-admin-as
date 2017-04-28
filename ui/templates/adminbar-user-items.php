@@ -26,7 +26,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$class  = 'vaa-user-item';
 		$title  = VAA_View_Admin_As_Admin_Bar::do_view_title( $user->display_name, 'user', $user->ID );
 		// Check if this user is the current view.
-		if ( $this->store->get_view( 'user' ) && (int) $this->store->get_view( 'user' ) === (int) $user->ID ) {
+		if ( VAA_API::is_current_view( $user->ID, 'user' ) ) {
 			$class .= ' current';
 			if ( 1 === count( $this->store->get_view() ) ) {
 				$href = false;
