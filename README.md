@@ -37,13 +37,14 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
 ### Module: Role manager (role editor)
+
+*Note: Changes made with the Role Manager are permanent!*
+
 *	Add, edit or delete roles
 *	Grant and/or add capabilities to roles
 *	Rename roles
 *	Clone roles
 *	Update role capabilities from current view
-
-*Note: Changes made with the Role Manager are permanent!*
 
 ## Compatibility
 
