@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7
+ * @version 1.7.1
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
@@ -58,8 +58,9 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Add our caps to the members plugin.
 		 * Hook `members_get_capabilities` also used by:
-		 *  - User Role Editor (URE)
+		 *  - User Role Editor (URE) >> Own filter: `ure_full_capabilites`
 		 *  - WPFront User Role Editor
+		 *  - Capability Manager Enhanced >> Own filter: `capsman_get_capabilities`
 		 *  - Pods
 		 *
 		 * @since  1.6
@@ -68,7 +69,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
 
 		/**
-		 * Add our caps to the User Role Editor plugin (URE)
+		 * Add our caps to the User Role Editor plugin (URE).
 		 * @since  1.6.4
 		 */
 		add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
@@ -78,7 +79,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		 * Get caps from other plugins.
 		 * @since  1.5
 		 */
-		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ) );
+		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
 
 	}
 
@@ -108,16 +109,182 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 * @see     init()
 	 *
 	 * @param   array  $caps  The capabilities.
+	 * @param   array  $args  Pass arguments to get only certain capabilities.
 	 * @return  array
 	 */
-	public function get_capabilities( $caps ) {
+	public function get_capabilities( $caps = array(), $args = array() ) {
 
-		// To support Members filters
+		$args = wp_parse_args( $args, array(
+			'vaa'     => true, // Get VAA related capabilities?
+			'wp'      => true, // Get WP core related capabilities?
+			'plugins' => true, // Get capabilities from plugin hooks and filters?
+		) );
+
+		if ( $args['vaa'] ) {
+			$caps = $this->add_capabilities( $caps );
+		}
+
+		if ( $args['wp'] ) {
+			$caps = array_merge( $this->get_wordpress_capabilities(), $caps );
+		}
+
+		if ( $args['plugins'] ) {
+			$caps = array_merge( $this->get_plugin_capabilities(), $caps );
+		}
+
+		return $caps;
+	}
+
+	/**
+	 * Get all capabilities from WP core or WP objects.
+	 *
+	 * @since   1.7.1
+	 * @param   array  $caps  The capabilities.
+	 * @return  array
+	 */
+	public function get_wordpress_capabilities( $caps = array() ) {
+
+		// @since  1.7.1  Store available capabilities existing in roles.
+		foreach ( $this->store->get_roles() as $key => $role ) {
+			if ( is_array( $role->capabilities ) ) {
+				foreach ( $role->capabilities as $cap => $grant ) {
+					$caps[ $cap ] = $cap;
+				}
+			}
+		}
+
+		// @since  1.7.1  Add post type and taxonomy caps.
+		$wp_objects = array_merge(
+			(array) get_post_types( array(), 'objects' ),
+			(array) get_taxonomies( array(), 'objects' )
+		);
+		foreach ( $wp_objects as $obj ) {
+			if ( isset( $obj->cap ) ) {
+				// WP stores the object caps as general_cap_name => actual_cap.
+				$caps = array_merge( array_combine( (array) $obj->cap, (array) $obj->cap ), $caps );
+			}
+		}
+
+		/**
+		 * Network capabilities.
+		 * @since  1.5.3
+		 * @see    https://codex.wordpress.org/Roles_and_Capabilities
+		 */
+		if ( is_multisite() ) {
+			$network_caps = array(
+				'manage_network',
+				'manage_sites',
+				'manage_network_users',
+				'manage_network_plugins',
+				'manage_network_themes',
+				'manage_network_options',
+			);
+			$caps = array_merge( $network_caps, $caps );
+		}
+
+		return $caps;
+	}
+
+	/**
+	 * Get all capabilities from other plugins.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
+	 * @since   1.7.1
+	 * @param   array  $caps  The capabilities.
+	 * @return  array
+	 */
+	public function get_plugin_capabilities( $caps = array() ) {
+
+		// WooCommerce caps are not accessible but are assigned to roles on install.
+		// get_wordpress_capabilities() will find them.
+
+		// @since  1.7.1  Gravity Forms.
+		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
+			$caps = array_merge( (array) GFCommon::all_caps(), $caps );
+		}
+
+		// @since  1.7.1  User Role Editor.
+		if ( is_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
+			$caps = array_merge( (array) URE_Own_Capabilities::get_caps(), $caps );
+		}
+		$caps = apply_filters( 'ure_full_capabilites', $caps );
+
+		// @since  1.7.1  WPFront User Role Editor.
+		if ( class_exists( 'WPFront_User_Role_Editor' ) && isset( WPFront_User_Role_Editor::$ROLE_CAPS ) ) {
+			$caps = array_merge( (array) WPFront_User_Role_Editor::$ROLE_CAPS, $caps );
+		}
+
+		// @since  1.7.1  User Roles and Capabilities.
+		if ( is_callable( array( 'Solvease_Roles_Capabilities_User_Caps', 'solvease_roles_capabilities_caps' ) ) ) {
+			$caps = array_merge( (array) Solvease_Roles_Capabilities_User_Caps::solvease_roles_capabilities_caps(), $caps );
+		}
+
+		// @since  1.7.1  bbPress.
+		if ( function_exists( 'bbp_get_caps_for_role' ) ) {
+			if ( function_exists( 'bbp_get_keymaster_role' ) ) {
+				$bbp_keymaster_role = bbp_get_keymaster_role();
+			} else {
+				$bbp_keymaster_role = apply_filters( 'bbp_get_keymaster_role', 'bbp_keymaster' );
+			}
+			$caps = array_merge( (array) bbp_get_caps_for_role( $bbp_keymaster_role ), $caps );
+		}
+
+		// @since  1.7.1  BuddyPress.
+		if ( class_exists( 'BuddyPress' ) ) {
+			$caps = array_merge(
+				array(
+					'bp_moderate',
+					'bp_xprofile_change_field_visibility',
+					// @todo Check usage of capabilities below.
+					/*
+					'throttle',
+					'keep_gate',
+					'moderate_comments',
+					'edit_cover_image',
+					'edit_avatar',
+					'edit_favorites',
+					'edit_favorites_of',
+					'add_tag_to',
+					'edit_tag_by_on',
+					'change_user_password',
+					'moderate',
+					'browse_deleted',
+					'view_by_ip',
+					'write_posts',
+					'write_topic',
+					'write_topics',
+					'move_topic',
+					'stick_topic',
+					'close_topic',
+					'edit_topic',
+					'delete_topic',
+					'delete_forum',
+					'manage_forums',
+					'manage_tags',
+					*/
+				),
+				// @see bp-core-caps.php >> bp_get_community_caps().
+				apply_filters( 'bp_get_community_caps', array() ),
+				$caps
+			);
+		} // End if().
+
+		// Members.
+		if ( function_exists( 'members_get_plugin_capabilities' ) ) {
+			$caps = array_merge( (array) members_get_plugin_capabilities(), $caps );
+		}
+		// Get caps from multiple plugins through the Members filter.
 		$caps = apply_filters( 'members_get_capabilities', $caps );
-		// To support Pods filters
+
+		// Pods.
 		$caps = apply_filters( 'pods_roles_get_capabilities', $caps );
 
 		return $caps;
+
 	}
 
 	/**
@@ -132,9 +299,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	 */
 	public function add_capabilities( $caps = array() ) {
 
-		// Allow VAA modules to add their capabilities
-		$vaa_caps = apply_filters( 'view_admin_as_add_capabilities', array( 'view_admin_as' ) );
-		foreach ( $vaa_caps as $cap ) {
+		// Allow VAA modules to add their capabilities.
+		foreach ( (array) apply_filters( 'view_admin_as_add_capabilities', array( 'view_admin_as' ) ) as $cap ) {
 			$caps[ $cap ] = $cap;
 		}
 

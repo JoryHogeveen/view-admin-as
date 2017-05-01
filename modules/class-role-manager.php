@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7
+ * @version 1.7.1
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
@@ -149,7 +149,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		if ( VAA_API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section.
-			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ), 10, 2 );
+			add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
 		}
 
 		// Add adminbar menu items in role section.
@@ -211,6 +211,11 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'values'     => array( 'role' => '', 'capabilities' => '' ),
 				'callback'   => 'save_role',
 			),
+			'rename_role' => array(
+				'validation' => 'is_array',
+				'values'     => array( 'role' => '', 'new_name' => '' ),
+				'callback'   => 'rename_role',
+			),
 			'clone_role' => array(
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'new_role' => '' ),
@@ -266,14 +271,13 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		// @see wp-includes/capabilities.php
 		$existing_role = get_role( $role );
 		// Build role name. (Only used for adding a new role).
-		// @todo Rename role functionality?
 		$role_name     = ucfirst( strip_tags( $role ) );
 		// Sanitize capabilities.
 		$capabilities  = array_map( 'boolval', $capabilities );
 
 		if ( ! $existing_role ) {
-			// Sanitize role key.
-			$role = str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $role ) );
+			// Sanitize role slug/key.
+			$role = self::sanitize_role_slug( $role );
 			// Recheck for an existing role.
 			$existing_role = get_role( $role );
 		}
@@ -347,12 +351,40 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	}
 
 	/**
+	 * Rename a role.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   string  $role          The source role slug/ID.
+	 * @param   string  $new_name      The new role label.
+	 * @return  bool|string
+	 */
+	public function rename_role( $role, $new_name ) {
+		$slug = $role;
+		// Do not use WP's get_role() because one can only clone a role it's allowed to see.
+		$role = $this->store->get_roles( $role );
+		if ( $role ) {
+			// @todo Check https://core.trac.wordpress.org/ticket/40320.
+			$new_name = ucfirst( strip_tags( $new_name ) );
+
+			$this->wp_roles->role_objects[ $slug ]->name = $new_name;
+			$this->wp_roles->role_names[ $slug ] = $new_name;
+			$this->wp_roles->roles[ $slug ]['name'] = $new_name;
+
+			update_option( $this->wp_roles->role_key, $this->wp_roles->roles );
+
+			return true;
+		}
+		return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+	}
+
+	/**
 	 * Delete a role from the database.
 	 *
 	 * @since   1.7
 	 * @access  public
 	 * @param   string  $role  The role name.
-	 * @return  mixed
+	 * @return  bool|string
 	 */
 	public function delete_role( $role ) {
 		if ( $this->store->get_roles( $role ) ) {
@@ -366,33 +398,41 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	}
 
 	/**
-	 * Add admin bar setting items.
+	 * Convert role name/label into a role slug.
+	 * Similar to sanitize_key but it converts spaces and dashed to underscores.
+	 *
+	 * @since   1.7.1
+	 * @access  public
+	 * @param   string  $role_name  The role name/label.
+	 * @return  string
+	 */
+	public static function sanitize_role_slug( $role_name ) {
+		$role_name = sanitize_title_with_dashes( $role_name );
+		$role_name = str_replace( array( ' ', '-' ), '_', $role_name );
+		//$role_name = sanitize_key( $role_name );
+		return $role_name;
+	}
+
+	/**
+	 * Add admin bar module setting items.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @see     'vaa_admin_bar_settings_after' action
+	 * @see     'vaa_admin_bar_modules' action
 	 *
 	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string        $root       The root item (vaa-settings).
 	 * @return  void
 	 */
-	public function admin_bar_menu_settings( $admin_bar, $root ) {
+	public function admin_bar_menu_modules( $admin_bar, $root ) {
 
-		$admin_bar->add_group( array(
-			'id'     => $root . '-role-manager',
-			'parent' => $root,
-			'meta'   => array(
-				'class' => 'ab-sub-secondary',
-			),
-		) );
-
-		$root = $root . '-role-manager';
+		$root_prefix = $root . '-role-manager';
 
 		$admin_bar->add_node( array(
-			'id'     => $root . '-enable',
+			'id'     => $root_prefix . '-enable',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
-				'name'        => $root . '-enable',
+				'name'        => $root_prefix . '-enable',
 				'value'       => $this->get_optionData( 'enable' ),
 				'compare'     => true,
 				'label'       => __( 'Enable role manager', VIEW_ADMIN_AS_DOMAIN ),
@@ -439,9 +479,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			// Translators: %s stands for "Capabilities".
 			'title'  => sprintf( __( 'You can add/edit roles under "%s"', VIEW_ADMIN_AS_DOMAIN ), __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ) ),
 			'href'   => false,
-			'meta'   => array(
-				'tabindex' => '0',
-			),
 		) );
 
 		$this->admin_bar_menu_bulk_actions( $admin_bar, $root );
@@ -472,6 +509,18 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			),
 		);
 		foreach ( $this->store->get_rolenames() as $role_key => $role_name ) {
+			// Add the default role names/keys for reference.
+			$desc = array();
+			$org_name = $this->store->get_rolenames( $role_key, false );
+			if ( $org_name !== $role_name ) {
+				$desc[] = $org_name;
+			}
+			if ( self::sanitize_role_slug( $org_name ) !== $role_key ) {
+				$desc[] = $role_key;
+			}
+			if ( $desc ) {
+				$role_name .= ' &nbsp; (' . implode( ', ', $desc ) . ')';
+			}
 			$role_select_options[ $role_key ] = array(
 				'value' => esc_attr( $role_key ),
 				'label' => esc_html( $role_name ),
@@ -481,6 +530,10 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		/*
 		 * Apply current view capabilities to role.
 		 */
+		$icon = 'dashicons-hidden';
+		if ( $this->store->get_view() ) {
+			$icon = 'dashicons-visibility';
+		}
 		$admin_bar->add_group( array(
 			'id'     => $root . '-apply-view',
 			'parent' => $root,
@@ -491,7 +544,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-apply-view-title',
 			'parent' => $root . '-apply-view',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-welcome-view-site' ) . __( 'Apply current view capabilities to role', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( $icon ) . __( 'Apply current view capabilities to role', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
@@ -512,7 +565,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'ab-vaa-select select-role',
-					'tabindex' => '0',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -539,6 +591,68 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'href'   => false,
 			) );
 		} // End if().
+
+		/*
+		 * Rename role.
+		 */
+		$admin_bar->add_group( array(
+			'id'     => $root . '-rename',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-rename-title',
+			'parent' => $root . '-rename',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-edit' ) . __( 'Rename role', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
+				'tabindex' => '0',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-rename-select',
+			'parent' => $root . '-rename',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_select(
+				array(
+					'name'   => $root . '-rename-select',
+					'values' => $role_select_options,
+				)
+			),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-vaa-select select-role',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-rename-input',
+			'parent' => $root . '-rename',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_input(
+				array(
+					'name'   => $root . '-rename-input',
+					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
+				)
+			),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-vaa-input rename-role',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-rename-apply',
+			'parent' => $root . '-rename',
+			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'name'  => $root . '-rename-apply',
+				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-primary',
+			) ),
+			'href'   => false,
+				'meta'   => array(
+				'class' => 'vaa-button-container',
+			),
+		) );
 
 		/*
 		 * Clone role.
@@ -572,7 +686,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-vaa-select select-role',
-				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -587,7 +700,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-vaa-input clone-role',
-				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -637,7 +749,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-vaa-select select-role',
-				'tabindex' => '0',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -740,7 +851,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'ab-vaa-select',
-				'tabindex' => '0',
 			),
 		) );
 

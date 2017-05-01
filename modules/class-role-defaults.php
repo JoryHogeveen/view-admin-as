@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4
- * @version 1.7
+ * @version 1.7.1
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
@@ -220,7 +220,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( VAA_API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section.
-			add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ), 10, 2 );
+			add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
 		}
 
 		// Add adminbar menu items in role section.
@@ -926,33 +926,25 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	}
 
 	/**
-	 * Add admin bar setting items.
+	 * Add admin bar module setting items.
 	 *
 	 * @since   1.5
 	 * @access  public
-	 * @see     'vaa_admin_bar_settings_after' action
+	 * @see     'vaa_admin_bar_modules' action
 	 *
 	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string        $root       The root item (vaa-settings).
 	 * @return  void
 	 */
-	public function admin_bar_menu_settings( $admin_bar, $root ) {
+	public function admin_bar_menu_modules( $admin_bar, $root ) {
 
-		$admin_bar->add_group( array(
-			'id'     => $root . '-role-defaults',
-			'parent' => $root,
-			'meta'   => array(
-				'class' => 'ab-sub-secondary',
-			),
-		) );
-
-		$root = $root . '-role-defaults';
+		$root_prefix = $root . '-role-defaults';
 
 		$admin_bar->add_node( array(
-			'id'     => $root . '-enable',
+			'id'     => $root_prefix . '-enable',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
-				'name'        => $root . '-enable',
+				'name'        => $root_prefix . '-enable',
 				'value'       => $this->get_optionData( 'enable' ),
 				'compare'     => true,
 				'label'       => __( 'Enable role defaults', VIEW_ADMIN_AS_DOMAIN ),

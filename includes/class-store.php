@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7
+ * @version 1.7.1
  * @uses    VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
@@ -219,7 +219,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			}
 		}
 
-		// @since  1.6.4  Set role names
+		// @since  1.6.4  Set role names.
 		$role_names = array();
 		foreach ( $roles as $role_key => $role ) {
 			if ( isset( $wp_roles->role_names[ $role_key ] ) ) {
@@ -342,17 +342,16 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			 *
 			 * @since  1.6.3
 			 */
-			if ( is_multisite() && ! $is_superior_admin ) {
-				if ( is_array( $super_admins ) && ! empty( $super_admins[0] ) ) {
+			if ( is_multisite() && ! $is_superior_admin &&
+			     is_array( $super_admins ) && ! empty( $super_admins[0] )
+			) {
+				// Escape usernames just to be sure.
+				$super_admins = array_filter( $super_admins, 'validate_username' );
+				// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4.
+				$super_admins = array_filter( $super_admins );
 
-					// Escape usernames just to be sure.
-					$super_admins = array_filter( $super_admins, 'validate_username' );
-					// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4.
-					$super_admins = array_filter( $super_admins );
-
-					$exclude_siblings = "'" . implode( "','", $super_admins ) . "'";
-					$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
-				}
+				$exclude_siblings = "'" . implode( "','", $super_admins ) . "'";
+				$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
 			}
 
 			// Run query (OBJECT_K to set the user ID as key).
@@ -412,8 +411,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 				 * Reduces the amount of queries while the end result is the same.
 				 *
 				 * @since  1.5.2
-				 * @See    wp-includes/capabilities.php >> get_super_admins()
-				 * @See    wp-includes/capabilities.php >> is_super_admin()
+				 * @see    get_super_admins() >> wp-includes/capabilities.php
+				 * @see    is_super_admin() >> wp-includes/capabilities.php
 				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
 				 */
 				if ( is_multisite() && in_array( $user->user_login, (array) $super_admins, true ) ) {
@@ -479,6 +478,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *
 	 * @since   1.1
 	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.7.1  User ID as array key.
 	 * @access  public
 	 *
 	 * @see     store_users()
@@ -497,7 +497,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 				// Only one key is needed to add the user to the list of available users.
 				reset( $user->roles );
 				if ( current( $user->roles ) === $role ) {
-					$tmp_users[] = $user;
+					$tmp_users[ $user->ID ] = $user;
 				}
 			}
 		}
@@ -511,13 +511,9 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since   1.4.1
 	 * @since   1.6    Moved to this class from main class.
 	 * @access  public
-	 * @global  WP_Roles  $wp_roles
 	 * @return  void
 	 */
 	public function store_caps() {
-
-		// Get all available roles and capabilities.
-		global $wp_roles;
 
 		// Get current user capabilities.
 		$caps = self::get_originalUserData( 'allcaps' );
@@ -529,27 +525,15 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Only allow to add capabilities for an admin (or super admin).
 		if ( self::is_super_admin() ) {
 
-			// Store available capabilities.
-			$all_caps = array();
-			foreach ( $wp_roles->role_objects as $key => $role ) {
-				if ( is_array( $role->capabilities ) ) {
-					foreach ( $role->capabilities as $cap => $grant ) {
-						$all_caps[ $cap ] = $cap;
-					}
-				}
-			}
-
 			/**
 			 * Add compatibility for other cap managers.
 			 *
 			 * @since  1.5
 			 * @see    VAA_View_Admin_As_Compat->init()
-			 * @param  array  $all_caps  All capabilities found in the existing roles.
+			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
 			 * @return array
 			 */
-			$all_caps = apply_filters( 'view_admin_as_get_capabilities', $all_caps );
-
-			$all_caps = array_unique( $all_caps );
+			$all_caps = apply_filters( 'view_admin_as_get_capabilities', array() );
 
 			$add_caps = array();
 			// Add new capabilities to the capability array as disabled.
@@ -561,30 +545,13 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 					$add_caps[ (string) $cap_key ] = 0;
 				}
 			}
+
 			$caps = array_merge( $add_caps, $caps );
 
-			/**
-			 * Add network capabilities.
-			 *
-			 * @since  1.5.3
-			 * @see    https://codex.wordpress.org/Roles_and_Capabilities
-			 * @todo   Move this to VAA_View_Admin_As_Compat?
-			 */
-			if ( is_multisite() ) {
-				$network_caps = array(
-					'manage_network' => 0,
-					'manage_sites' => 0,
-					'manage_network_users' => 0,
-					'manage_network_plugins' => 0,
-					'manage_network_themes' => 0,
-					'manage_network_options' => 0,
-				);
-				$caps = array_merge( $network_caps, $caps );
-			}
 		} // End if().
 
 		// Remove role names.
-		$caps = array_diff_key( $caps, $wp_roles->roles );
+		$caps = array_diff_key( $caps, $this->get_roles() );
 		// And sort alphabetical.
 		ksort( $caps );
 
@@ -719,7 +686,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get available users.
-	 * @todo Key as user ID.
 	 * @param   string  $key  User key.
 	 * @return  mixed   Array of user objects or a single user object.
 	 */
@@ -729,6 +695,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get available users.
+	 * @todo    Remove in future.
+	 * @deprecated
 	 * @param   string  $key  User key.
 	 * @return  mixed   Array of user display names or a single user display name.
 	 */
@@ -859,7 +827,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the available users.
-	 * @todo Key as user ID.
 	 * @param   mixed   $val     Value.
 	 * @param   string  $key     (optional) User key.
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
@@ -871,6 +838,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the available user display names.
+	 * @todo    Remove in future.
+	 * @deprecated
 	 * @param   array  $val  Array of available user ID's (key) and display names (value).
 	 * @return  void
 	 */

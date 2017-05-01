@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Renamed to VAA_View_Admin_As_UI (previously VAA_View_Admin_As_Admin)
- * @version 1.7
+ * @version 1.7.1
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
@@ -99,7 +99,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 				$link = false;
 			}
 		}
-		elseif ( $this->store->get_userids( $user->ID ) ) {
+		elseif ( $this->store->get_users( $user->ID ) ) {
 			$link = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ), $link );
 		} else {
 			$link = false;

@@ -2,7 +2,8 @@
 /**
  * Add user items.
  *
- * @since  1.7
+ * @since    1.7
+ * @version  1.7.1
  *
  * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string        $root       The current root item.
@@ -25,7 +26,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$class  = 'vaa-user-item';
 		$title  = VAA_View_Admin_As_Admin_Bar::do_view_title( $user->display_name, 'user', $user->ID );
 		// Check if this user is the current view.
-		if ( $this->store->get_view( 'user' ) && (int) $this->store->get_view( 'user' ) === (int) $user->ID ) {
+		if ( VAA_API::is_current_view( $user->ID, 'user' ) ) {
 			$class .= ' current';
 			if ( 1 === count( $this->store->get_view() ) ) {
 				$href = false;
@@ -46,9 +47,21 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		if ( true === $this->groupUserRoles ) {
 			// Users grouped under roles.
 			foreach ( $user->roles as $role ) {
-				$user_node['id'] .= '-' . $role;
-				$user_node['parent'] = $main_root . '-roles-role-' . $role;
-				$admin_bar->add_node( $user_node );
+				$user_role_node = $user_node;
+				$parent = $main_root . '-roles-role-' . $role;
+				$group  = $parent . '-users';
+				if ( ! $admin_bar->get_node( $group ) ) {
+					$admin_bar->add_group( array(
+						'id' => $group,
+						'parent' => $parent,
+						'meta'   => array(
+							'class' => 'ab-sub-secondary vaa-auto-max-height',
+						),
+					) );
+				}
+				$user_role_node['id'] .= '-' . $role;
+				$user_role_node['parent'] = $group;
+				$admin_bar->add_node( $user_role_node );
 			}
 		} else {
 			// Users displayed as normal.

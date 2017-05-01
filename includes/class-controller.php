@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7
+ * @version 1.7.1
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
@@ -256,12 +256,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Update regular view types
+	 * Update regular view types.
 	 *
 	 * @since   1.7
-	 * @param   null    $null    Null.
-	 * @param   mixed   $data    The view data.
-	 * @param   string  $type    The view type.
+	 * @param   null    $null  Null.
+	 * @param   mixed   $data  The view data.
+	 * @param   string  $type  The view type.
 	 * @return  mixed
 	 */
 	public function filter_update_view( $null, $data, $type ) {
@@ -282,13 +282,13 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Handles the caps view since it's a bit more complex
+	 * Handles the caps view since it's a bit more complex.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   null    $null    Null.
-	 * @param   mixed   $data    The view data.
-	 * @param   string  $type    The view type.
+	 * @param   null    $null  Null.
+	 * @param   mixed   $data  The view data.
+	 * @param   string  $type  The view type.
 	 * @return  bool
 	 */
 	public function filter_update_view_caps( $null, $data, $type ) {
@@ -341,9 +341,21 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.7
 	 * @param   array  $data
+	 * @param   bool   $type  Only compare a single view type instead of all view data?
+	 *                        If set, the data value should be the single view type data.
 	 * @return  bool
 	 */
-	public function is_current_view( $data ) {
+	public function is_current_view( $data, $type = null ) {
+		if ( ! empty( $type ) ) {
+			$current = $this->store->get_view( $type );
+			if ( ! $current ) {
+				return false;
+			}
+			if ( is_array( $data ) ) {
+				return VAA_API::array_equal( $data, $current );
+			}
+			return ( (string) $data === (string) $current );
+		}
 		return VAA_API::array_equal( $data, $this->store->get_view() );
 	}
 
@@ -359,7 +371,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Get the available view types
+	 * Get the available view types.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -409,7 +421,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		if ( $request && 'browse' === $view_mode ) {
 			$this->store->set_view( $this->validate_view_data( $request ) );
 			$this->update_view();
-			// Trigger page refresh
+			// Trigger page refresh.
 			// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See VAA_API.
 			if ( is_network_admin() ) {
 				wp_redirect( network_admin_url() );
@@ -650,12 +662,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Validate data for role view type
+	 * Validate data for role view type.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   null   $null  Default return (invalid)
-	 * @param   mixed  $data  The view data
+	 * @param   null   $null  Default return (invalid).
+	 * @param   mixed  $data  The view data.
 	 * @return  mixed
 	 */
 	public function validate_view_data_caps( $null, $data ) {
@@ -678,12 +690,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Validate data for role view type
+	 * Validate data for role view type.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   null   $null  Default return (invalid)
-	 * @param   mixed  $data  The view data
+	 * @param   null   $null  Default return (invalid).
+	 * @param   mixed  $data  The view data.
 	 * @return  mixed
 	 */
 	public function validate_view_data_role( $null, $data ) {
@@ -695,17 +707,17 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Validate data for user view type
+	 * Validate data for user view type.
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   null   $null  Default return (invalid)
-	 * @param   mixed  $data  The view data
+	 * @param   null   $null  Default return (invalid).
+	 * @param   mixed  $data  The view data.
 	 * @return  mixed
 	 */
 	public function validate_view_data_user( $null, $data ) {
 		// User data must be a number and exists in the loaded array of user id's.
-		if ( is_numeric( $data ) && array_key_exists( (int) $data, $this->store->get_userids() ) ) {
+		if ( is_numeric( $data ) && array_key_exists( $data, $this->store->get_users() ) ) {
 			return $data;
 		}
 		return $null;

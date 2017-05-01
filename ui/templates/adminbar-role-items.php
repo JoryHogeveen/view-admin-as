@@ -2,7 +2,8 @@
 /**
  * Add role items.
  *
- * @since  1.7
+ * @since    1.7
+ * @version  1.7.1
  *
  * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string        $root       The current root item.
@@ -46,7 +47,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			}
 		}
 		// Check if this role is the current view.
-		if ( $this->store->get_view( 'role' ) === $role_key ) {
+		if ( VAA_API::is_current_view( $role_key, 'role' ) ) {
 			$class .= ' current';
 			if ( 1 === count( $this->store->get_view() ) ) {
 				$href = false;

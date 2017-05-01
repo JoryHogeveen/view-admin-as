@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7
+ * @version 1.7.1
  */
 final class VAA_API
 {
@@ -90,6 +90,23 @@ final class VAA_API
 	}
 
 	/**
+	 * Check if the provided data is the same as the current view.
+	 *
+	 * @since   1.7.1
+	 * @param   array  $data
+	 * @param   bool   $type  Only compare a single view type instead of all view data?
+	 *                        If set, the data value should be the single view type data.
+	 * @return  bool
+	 */
+	public static function is_current_view( $data, $type = null ) {
+		$controller = view_admin_as()->controller();
+		if ( $controller ) {
+			return $controller->is_current_view( $data, $type );
+		}
+		return false;
+	}
+
+	/**
 	 * Is any toolbar showing?
 	 * Do not use this before the `init` hook.
 	 *
@@ -149,6 +166,7 @@ final class VAA_API
 		);
 
 		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
+		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
 		if ( empty( $url ) ) {
 			if ( is_network_admin() ) {
 				$url = network_admin_url();

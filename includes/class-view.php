@@ -16,8 +16,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller
- * @version 1.7
+ * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
+ * @version 1.7.1
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
@@ -117,7 +117,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Force own locale on view.
-		 *
 		 * @since  1.6.1
 		 */
 		if ( 'yes' === $this->store->get_userSettings( 'freeze_locale' )
@@ -143,35 +142,34 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Make sure the $current_user view data isn't overwritten again by switch_blog functions.
-		 *
-		 * @see  This filter is documented in wp-includes/ms-blogs.php
+		 * @see    This filter is documented in wp-includes/ms-blogs.php
 		 * @since  1.6.3
 		 */
 		add_action( 'switch_blog', array( $this, 'modify_user' ) );
 
 		/**
 		 * Prevent some meta updates for the current user while in modification to the current user are active.
-		 *
 		 * @since  1.6.3
 		 */
 		add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
 
 		/**
 		 * Get capabilities and user level from current user view object instead of database.
-		 *
 		 * @since  1.6.4
 		 */
 		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
 		/**
-		 * Change the capabilities (map_meta_cap is better for compatibility with network admins).
-		 *
+		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
 		 * @since  0.1
 		 */
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 3 ); //4
 
-		// @todo maybe also use the user_has_cap filter?
-		//add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
+		/**
+		 * Change the capabilities.
+		 * @since  1.7.1
+		 */
+		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
 
 		$done = true;
 	}
@@ -336,7 +334,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			}
 			if ( $meta_key === $wpdb->get_blog_prefix() . 'user_level' ) {
 				if ( ! isset( $user->user_level ) ) {
-					// Make sure the key exists. Result will be filtered in `filter_prevent_update_user_metadata()`
+					// Make sure the key exists. Result will be filtered in `filter_prevent_update_user_metadata()`.
 					$user->update_user_level_from_caps();
 				}
 				return array( $user->user_level );
@@ -386,6 +384,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * Overwrite the user's capabilities.
 	 *
 	 * @since   1.6.3
+	 * @access  public
+	 *
 	 * @param   array    $allcaps  All the capabilities of the user.
 	 * @param   array    $caps     Actual capabilities for meta capability.
 	 * @param   array    $args     [0] Requested capability.
@@ -396,16 +396,18 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function filter_user_has_cap( $allcaps, $caps, $args, $user = null ) {
 		$user_id = ( $user ) ? $user->ID : $args[1];
-		if ( ! is_numeric( $user_id ) || (int) $user_id !== (int) $this->store->get_selectedUser()->ID ) {
-			return $allcaps;
+		if ( is_numeric( $user_id ) && (int) $user_id === (int) $this->store->get_selectedUser()->ID ) {
+			return (array) $this->store->get_selectedCaps();
 		}
-		return $this->store->get_selectedCaps();
+		return $allcaps;
 	}
 
 	/**
 	 * Similar function to current_user_can().
 	 *
 	 * @since   1.6.2
+	 * @access  public
+	 *
 	 * @param   string  $cap   The capability.
 	 * @param   array   $caps  (optional) Capabilities to compare to.
 	 *                         Defaults to the selected caps for the current view.
