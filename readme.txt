@@ -178,8 +178,8 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 = 1.7.1 =
 
 *	**Feature:** Module Role Manager: Rename roles. [#47](https://github.com/JoryHogeveen/view-admin-as/issues/47)
-*	**Enhancement:** Improve fetching available capabilities for super admin. It now alse checks for custom post type and taxonomy capabilities and more other plugins.
-*	**Compatibility:** Also use the `user_has_cap` filter besides `map_meta_cap` to further improve compatibility.
+*	**Enhancement:** Improve fetching available capabilities for a super admin. It now also checks for registered custom post type and taxonomy capabilities and more other plugins.
+*	**Compatibility:** Also use the `user_has_cap` filter besides `map_meta_cap` to further improve capability and role view compatibility.
 *	**UI:** Add submenu scrollbar when there are too much users under a role. [#49](https://github.com/JoryHogeveen/view-admin-as/issues/49)
 *	**UI:** Module Role Manager: Show original role name for reference.
 *	**Accessibility:** Fix tabindex for some nodes that have form elements.
@@ -267,7 +267,7 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 
 == Other Notes ==
 
-You can find me here:
+= You can find me here: =
 
 *	[Keraweb](http://www.keraweb.nl/)
 *	[GitHub](https://github.com/JoryHogeveen/view-admin-as/)
