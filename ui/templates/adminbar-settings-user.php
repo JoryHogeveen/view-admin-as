@@ -183,4 +183,4 @@ if ( isset( $this ) &&
 		);
 	}
 
-}
+} // End if().
