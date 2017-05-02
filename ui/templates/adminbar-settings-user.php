@@ -1,6 +1,6 @@
 <?php
 /**
- * Add uset setting items.
+ * Add user setting items.
  *
  * @since  1.7.2
  *
