@@ -13,10 +13,6 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * Form UI for View Admin As.
  *
- * Disable some PHPMD checks for this class.
- * SuppressWarnings(PHPMD.CyclomaticComplexity)
- * @todo Refactor to enable above checks?
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
@@ -135,9 +131,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 
 		$label_attr = array();
 		$desc_attr = array();
-		if ( ! empty( $args['auto_showhide_desc'] ) ) {
-			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
-		}
+		self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
 
 		$html .= self::do_label( $args, $id, $label_attr );
 		$html .= '<input ' . $attr . '/>';
@@ -194,9 +188,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 
 		$label_attr = array();
 		$desc_attr = array();
-		if ( ! empty( $args['auto_showhide_desc'] ) ) {
-			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
-		}
+		self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
 
 		$html .= '<input ' . $attr . ' ' . $checked . '/>';
 		$html .= self::do_label( $args, $id, $label_attr );
@@ -241,7 +233,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	public static function do_radio( $data ) {
 		$html = '';
 
-		if ( is_array( $data ) && ! empty( $data['values'] ) ) {
+		if ( ! empty( $data['values'] ) ) {
 			foreach ( $data['values'] as $args ) {
 
 				$id = esc_attr( ( ( ! empty( $data['id'] ) ) ? $data['id'] : $data['name'] ) . '-' . $args['compare'] );
@@ -264,6 +256,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 
 				$label_attr = array();
 				$desc_attr = array();
+				// Custom validation required.
 				if ( ( ! empty( $args['auto_showhide_desc'] ) ) ||
 					 ( ! isset( $args['auto_showhide_desc'] ) && ! empty( $data['auto_showhide_desc'] ) )
 				) {
@@ -317,15 +310,13 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	public static function do_select( $data ) {
 		$html = '';
 
-		if ( is_array( $data ) && ! empty( $data['values'] ) ) {
+		if ( ! empty( $data['values'] ) ) {
 			$id = esc_attr( ( ! empty( $data['id'] ) ) ? $data['id'] : $data['name'] );
 			$name = str_replace( '-', '_', esc_attr( $data['name'] ) );
 
 			$label_attr = array();
 			$desc_attr = array();
-			if ( ! empty( $data['auto_showhide_desc'] ) ) {
-				self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
-			}
+			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $data );
 
 			$html .= self::do_label( $data, $id, $label_attr );
 
@@ -437,8 +428,12 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * @param   string  $target      The target element.
 	 * @param   array   $label_attr  Label attributes.
 	 * @param   array   $desc_attr   Description attributes.
+	 * @param   array   $args        (optional) Pass the full arguments array for auto_show_hide key validation.
 	 */
-	public static function enable_auto_showhide_desc( $target, &$label_attr = array(), &$desc_attr = array() ) {
+	public static function enable_auto_showhide_desc( $target, &$label_attr = array(), &$desc_attr = array(), $args = array() ) {
+		if ( ! empty( $args ) && empty( $data['auto_showhide_desc'] ) ) {
+			return;
+		}
 		$label_attr = array(
 			'class' => 'ab-vaa-showhide',
 			'data-showhide' => '.' . $target,
