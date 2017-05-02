@@ -1,6 +1,6 @@
 <?php
 /**
- * Add caps items.
+ * Add uset setting items.
  *
  * @since  1.7.2
  *
