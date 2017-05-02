@@ -13,10 +13,6 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * Admin Bar UI for View Admin As.
  *
- * Disable some PHPMD checks for this class.
- * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
- * @todo Refactor to enable above checks?
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
@@ -388,124 +384,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 */
 		do_action( 'vaa_admin_bar_settings_before', $admin_bar, $root, self::$root );
 
-		$admin_bar->add_node( array(
-			'id'     => $root . '-admin-menu-location',
-			'parent' => $root,
-			'title'  => self::do_select( array(
-				'name'        => $root . '-admin-menu-location',
-				'value'       => $this->store->get_userSettings( 'admin_menu_location' ),
-				'label'       => __( 'Location', VIEW_ADMIN_AS_DOMAIN ) . ': &nbsp; ',
-				'description' => __( 'Change the location of this menu node', VIEW_ADMIN_AS_DOMAIN ),
-				'values'      => array(
-					array(
-						'compare' => 'top-secondary',
-						'label' => __( 'Default', VIEW_ADMIN_AS_DOMAIN ),
-					),
-					array(
-						'compare' => 'my-account',
-						'label' => __( 'My account', VIEW_ADMIN_AS_DOMAIN ),
-					),
-				),
-				//'auto_showhide_desc' => true
-			) ),
-			'href'   => false,
-			'meta'   => array(
-				'class' => 'auto-height',
-			),
-		) );
-
-		$admin_bar->add_node( array(
-			'id'     => $root . '-view-mode',
-			'parent' => $root,
-			'title'  => self::do_radio( array(
-				'name'     => $root . '-view-mode',
-				'value'    => $this->store->get_userSettings( 'view_mode' ),
-				'values'   => array(
-					array(
-						'compare'     => 'browse',
-						'label'       => __( 'Browse mode', VIEW_ADMIN_AS_DOMAIN ),
-						'description' => __( 'Store view and use WordPress with this view', VIEW_ADMIN_AS_DOMAIN ),
-					),
-					array(
-						'compare'     => 'single',
-						'label'       => __( 'Single switch mode', VIEW_ADMIN_AS_DOMAIN ),
-						'description' => __( 'Choose view on every pageload. This setting doesn\'t store views', VIEW_ADMIN_AS_DOMAIN ),
-					),
-				),
-				//'auto_showhide_desc' => true
-			) ),
-			'href'   => false,
-			'meta'   => array(
-				'class' => 'auto-height',
-			),
-		) );
-
-		$admin_bar->add_node( array(
-			'id'     => $root . '-hide-front',
-			'parent' => $root,
-			'title'  => self::do_checkbox( array(
-				'name'        => $root . '-hide-front',
-				'value'       => $this->store->get_userSettings( 'hide_front' ),
-				'compare'     => 'yes',
-				'label'       => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
-				'description' => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN ),
-				//'auto_showhide_desc' => true,
-			) ),
-			'href'   => false,
-			'meta'   => array(
-				'class' => 'auto-height',
-			),
-		) );
-
-		/**
-		 * Force own locale on view, WP 4.7+ only.
-		 *
-		 * @see     https://github.com/JoryHogeveen/view-admin-as/issues/21
-		 * @since   1.6.1
-		 */
-		if ( VAA_API::validate_wp_version( '4.7' ) ) {
-			$admin_bar->add_node( array(
-				'id'     => $root . '-freeze-locale',
-				'parent' => $root,
-				'title'  => self::do_checkbox( array(
-					'name'        => $root . '-freeze-locale',
-					'value'       => $this->store->get_userSettings( 'freeze_locale' ),
-					'compare'     => 'yes',
-					'label'       => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN ),
-					//'auto_showhide_desc' => true,
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'auto-height',
-				),
-			) );
-		}
-
-		/**
-		 * force_group_users setting.
-		 *
-		 * @since   1.5.2
-		 */
-		if ( true !== $this->groupUserRoles || 15 >= ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) ) ) {
-			$admin_bar->add_node( array(
-				'id'     => $root . '-force-group-users',
-				'parent' => $root,
-				'title'  => self::do_checkbox( array(
-					'name'        => $root . '-force-group-users',
-					'value'       => $this->store->get_userSettings( 'force_group_users' ),
-					'compare'     => 'yes',
-					'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
-					//'auto_showhide_desc' => true,
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class'    => 'auto-height',
-					'tabindex' => '0',
-				),
-			) );
-		}
+		// Add user setting nodes.
+		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-settings-user.php' );
 
 		/**
 		 * Add items at the end of the settings group.
