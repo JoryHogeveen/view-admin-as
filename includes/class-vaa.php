@@ -370,6 +370,10 @@ final class VAA_View_Admin_As
 	private function load_ui() {
 
 		$includes = array(
+			'form' => array(
+				'file'  => 'ui/class-form.php',
+				'class' => 'VAA_View_Admin_As_Form',
+			),
 			'ui' => array(
 				'file'  => 'ui/class-ui.php',
 				'class' => 'VAA_View_Admin_As_UI',
