@@ -15,9 +15,6 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * Disable some PHPMD checks for this class.
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @SuppressWarnings(PHPMD.CyclomaticComplexity)
- * @SuppressWarnings(PHPMD.NPathComplexity)
  * @todo Refactor to enable above checks?
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
@@ -123,24 +120,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	}
 
 	/**
-	 * Add admin bar menu items.
+	 * Get the toolbar title for the main VAA node.
 	 *
-	 * @since   1.5
-	 * @access  public
-	 * @see     'admin_bar_menu' action
-	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item ID/Name. If set it will overwrite the user setting.
-	 * @return  void
+	 * @since   1.7.2
+	 * @access  private
+	 * @see     admin_bar_menu()
+	 * @return  string
 	 */
-	public function admin_bar_menu( $admin_bar, $root = '' ) {
-
-		$icon = 'dashicons-hidden';
+	private function get_admin_bar_menu_title() {
 		$title = __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
-
-		if ( $this->store->get_view() ) {
-			$icon = 'dashicons-visibility';
-		}
 
 		if ( $this->store->get_view( 'caps' ) ) {
 			$title = __( 'Modified view', VIEW_ADMIN_AS_DOMAIN );
@@ -171,6 +159,30 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @return string
 		 */
 		$title = apply_filters( 'vaa_admin_bar_viewing_as_title', $title, $this->store->get_view() );
+
+		return $title;
+	}
+
+	/**
+	 * Add admin bar menu items.
+	 *
+	 * @since   1.5
+	 * @access  public
+	 * @see     'admin_bar_menu' action
+	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string        $root       The root item ID/Name. If set it will overwrite the user setting.
+	 * @return  void
+	 */
+	public function admin_bar_menu( $admin_bar, $root = '' ) {
+
+		$icon = 'dashicons-hidden';
+
+		if ( $this->store->get_view() ) {
+			$icon = 'dashicons-visibility';
+		}
+
+		$title = $this->get_admin_bar_menu_title();
 
 		if ( empty( $root ) ) {
 			$root = 'top-secondary';
