@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
- * @version 1.7.1
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
@@ -440,10 +440,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$caps = $this->store->get_selectedCaps();
 		}
 
-		if ( is_array( $caps )
-		    && array_key_exists( $cap, $caps )
-		    && 1 === (int) $caps[ $cap ]
-		    && 'do_not_allow' !== $caps[ $cap ]
+		if ( is_array( $caps ) &&
+		     array_key_exists( $cap, $caps ) &&
+		     1 === (int) $caps[ $cap ] &&
+		     'do_not_allow' !== $cap &&
+		     'do_not_allow' !== $caps[ $cap ]
 		) {
 			return true;
 		}
