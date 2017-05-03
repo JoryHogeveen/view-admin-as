@@ -166,7 +166,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @since  1.7.2  Changed priority to set is at the beginning instead of as last
 		 *                to allow other plugins to filter based on the modified user.
 		 */
-		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), PHP_INT_MIN, 4 );
+		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), -999999999, 4 );
 
 		/**
 		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
