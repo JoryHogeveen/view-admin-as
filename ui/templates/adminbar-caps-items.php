@@ -42,7 +42,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		// The list of capabilities.
 		$caps_items .=
 			'<div class="ab-item ' . $class . '">'
-			. VAA_View_Admin_As_Admin_Bar::do_checkbox(
+			. VAA_View_Admin_As_Form::do_checkbox(
 				array(
 					'name'           => 'vaa_cap_' . esc_attr( $cap_name ),
 					'value'          => $checked,

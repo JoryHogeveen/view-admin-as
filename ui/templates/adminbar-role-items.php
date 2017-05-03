@@ -24,7 +24,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$parent = $root;
 		$href   = VAA_API::get_vaa_action_link( array( 'role' => $role_key ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-role-item';
-		$title  = VAA_View_Admin_As_Admin_Bar::do_view_title( $this->store->get_rolenames( $role_key ), 'role', $role_key );
+		$title  = VAA_View_Admin_As_Form::do_view_title( $this->store->get_rolenames( $role_key ), 'role', $role_key );
 		// Check if the users need to be grouped under their roles.
 		if ( true === $this->groupUserRoles ) {
 			// make sure items are aligned properly when some roles don't have users.

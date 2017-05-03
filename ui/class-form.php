@@ -31,7 +31,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
-	 * Generate a view type title.
+	 * Generate a view type title and it's view related data.
+	 * The data is used in javascript to switch a view.
 	 *
 	 * @since   1.7
 	 * @since   1.7.2  Moved to this class from admin bar class.
