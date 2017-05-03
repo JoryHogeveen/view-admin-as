@@ -365,10 +365,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap.
 	 * @param   string  $cap      The capability that was requested.
 	 * @param   int     $user_id  The ID of the user.
-	 * param   array   $args     Adds the context to the cap. Typically the object ID (not used).
+	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used).
 	 * @return  array   $caps
 	 */
-	public function filter_map_meta_cap( $caps, $cap, $user_id ) {
+	public function filter_map_meta_cap( $caps, $cap, $user_id, $args = array() ) {
 
 		if ( (int) $this->store->get_selectedUser()->ID !== (int) $user_id ) {
 			return $caps;
@@ -376,12 +376,25 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		$filter_caps = (array) $this->store->get_selectedCaps();
 
+		/**
+		 * Apply user_has_cap filters to make sure we are compatible with modifications from other plugins.
+		 * @since  1.7.2
+		 * @see    WP_User::has_cap()
+		 */
+		$filter_caps = apply_filters( 'user_has_cap',
+			$filter_caps,
+			$caps,
+			// Replicate arguments for `user_has_cap`.
+			array_merge( array( $cap, $user_id ), (array) $args ),
+			$this->store->get_selectedUser()
+		);
+
 		foreach ( (array) $caps as $actual_cap ) {
 			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
 				// Regular users.
 				$caps[ $cap ] = 0;
 				// Network admins.
-				$caps[] = 'do_not_allow';
+				$caps['do_not_allow'] = 'do_not_allow';
 			}
 		}
 
