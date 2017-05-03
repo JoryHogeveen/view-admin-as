@@ -160,16 +160,24 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
 		/**
-		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
-		 * @since  0.1
+		 * Change the capabilities.
+		 *
+		 * @since  1.7.1
+		 * @since  1.7.2  Changed priority to set is at the beginning instead of as last
+		 *                to allow other plugins to filter based on the modified user.
 		 */
-		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 3 ); //4
+		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), PHP_INT_MIN, 4 );
 
 		/**
-		 * Change the capabilities.
-		 * @since  1.7.1
+		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
+		 * Filter as last to check other plugin changes as well.
+		 *
+		 * @since  0.1
+		 * @since  1.7.2  Only add this filter for multisites.
 		 */
-		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
+		if ( is_multisite() ) {
+			add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
+		}
 
 		$done = true;
 	}
