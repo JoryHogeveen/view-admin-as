@@ -76,8 +76,8 @@ Please help translating this plugin on [translate.wordpress.org](https://transla
 [Click here for documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Custom-capabilities)
 
 ## Ideas?
-Please let me know through the support page!
-https://wordpress.org/support/plugin/view-admin-as
+Please let me know by creating a new [issue](https://github.com/JoryHogeveen/view-admin-as/issues/new) and describe your idea.  
+Pull Requests are welcome!
 
 ## I can't switch back!
 When a view is selected there is a reset button available on the dropdown.
