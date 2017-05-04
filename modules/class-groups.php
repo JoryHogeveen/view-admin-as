@@ -173,6 +173,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * Update the current user's WP_User instance with the current view data.
 	 *
 	 * @since   1.7.x
+	 * @access  public
 	 * @param   WP_User  $user        User object.
 	 * @param   bool     $accessible  Are the WP_User properties accessible?
 	 */
@@ -201,7 +202,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Filter the user-group relation.
 	 *
-	 * @see  groups/lib/core/class-groups-user-group.php -> Groups_User_Group->read()
+	 * @see  Groups_User_Group::read() >> groups/lib/core/class-groups-user-group.php
 	 *
 	 * @since   1.7.x
 	 * @access  public
@@ -223,7 +224,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Filter for the current view.
 	 *
-	 * @see  Groups_User::can() >> groups/lib/core/class-groups-group.php
+	 * @see  Groups_User::can() >> groups/lib/core/class-groups-user.php
 	 *
 	 * @since   1.7.x
 	 * @access  public
@@ -356,6 +357,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Our own implementation for the Groups member shortcodes.
+	 *
+	 * @see  VAA_View_Admin_As_Groups::shortcode_groups_member()
+	 * @see  VAA_View_Admin_As_Groups::shortcode_groups_non_member()
 	 *
 	 * @since   1.7.x
 	 * @param   array   $atts
@@ -535,6 +539,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				'title'     => $title,
 				'href'      => $href,
 				'meta'      => array(
+					// Translators: %s stands for the view type name.
 					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $view_value ),
 					'class'     => $class,
 					'rel'       => $group->group_id,
