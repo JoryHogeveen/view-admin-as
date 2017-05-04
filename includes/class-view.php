@@ -386,12 +386,19 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @since  1.7.2
 		 * @see    WP_User::has_cap()
 		 */
+		$new_user = new WP_User() ;
+		// add the selected user's roles to the user we just created...
+		// this is necessary to allow other plugins that have hooked into user_has_cap
+		// with a function that acts based on a user's role.
+		foreach ( $this->store->get_selectedUser()->roles as $role ) {
+			$new_user->add_role( $role ) ;
+		}
 		$filter_caps = apply_filters( 'user_has_cap',
 			$filter_caps,
 			$caps,
 			// Replicate arguments for `user_has_cap`.
 			array_merge( array( $cap, 0 ), (array) $args ),
-			new WP_User()
+			$new_user
 		);
 
 		foreach ( (array) $caps as $actual_cap ) {
