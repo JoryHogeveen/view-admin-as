@@ -187,9 +187,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Filter for the current view.
-	 * Only use this function if the current view is a validated group object!
 	 *
-	 * @see  Groups_Group::can() >> groups/lib/core/class-groups-group.php
+	 * @see  Groups_User::can() >> groups/lib/core/class-groups-group.php
 	 *
 	 * @since   1.7.x
 	 * @access  public
@@ -221,7 +220,6 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Filter for the current view.
-	 * Only use this function if the current view is a validated group object!
 	 *
 	 * @see  Groups_Group::can() >> groups/lib/core/class-groups-group.php
 	 *
@@ -233,6 +231,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @return  bool
 	 */
 	public function groups_group_can( $result, $object = null, $cap = '' ) {
+		// Prevent loop on `groups_user_can` filter.
 		if ( $this->selectedGroup && $this->selectedGroup->group_id === $object->group_id ) {
 			return $result;
 		}
