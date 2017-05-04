@@ -1,0 +1,126 @@
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+        - javascript
+        - php
+    checks:
+      # Disable for now due to jQuery calls
+      Similar code:
+        enabled: false
+  fixme:
+    enabled: true
+  csslint:
+    enabled: true
+    config:
+      config: tests/.csslintrc
+    checks:
+      adjoining-classes:
+        enabled: false
+      box-model:
+        enabled: false
+      # Disable: "The box-sizing property isn't supported in IE6 and IE7". I don't care for IE6 and IE7.
+      box-sizing:
+        enabled: false
+      ids:
+        enabled: false
+      # Disable: I need this for WP admin bar overwrites in some cases.
+      important:
+        enabled: false
+      order-alphabetical:
+        enabled: false
+      unqualified-attributes:
+        enabled: false
+      # Disable: "The universal selector (*) is known to be slow". This is only for ancient browsers..
+      universal-selector:
+        enabled: false
+  eslint:
+    enabled: true
+    config:
+      config: tests/.eslintrc
+  phpmd:
+    enabled: true
+    config:
+      rulesets: "tests/phpmd.xml"
+  phpcodesniffer:
+    enabled: true
+    config:
+      standard: "Wordpress-Extra"
+    checks:
+      # Disable: Class file names should be based on the class name with "class-" prepended.
+      WordPress Files FileName InvalidClassFileName:
+        enabled: false
+      # Disable: When an array uses associative keys, each value should start on a new line.
+      WordPress Arrays ArrayDeclarationSpacing AssociativeKeyFound:
+        enabled: false
+      # Disable: Member variable "" is not in valid snake_case format
+      WordPress NamingConventions ValidVariableName MemberNotSnakeCase:
+        enabled: false
+      # Disable: Object property "" is not in valid snake_case format
+      WordPress NamingConventions ValidVariableName NotSnakeCaseMemberVar:
+        enabled: false
+      # Disable: Method name "" in class "" is not in snake case format, try ""
+      WordPress NamingConventions ValidFunctionName MethodNameInvalid:
+        enabled: false
+      # Disable: Opening brace should be on the same line as the declaration for class
+      WordPress Classes ClassOpeningStatement BraceOnNewLine:
+        enabled: false
+      # Disable: Overriding WordPress globals is prohibited
+      WordPress Variables GlobalVariables OverrideProhibited:
+        enabled: false
+      # Disable: Expected # space before "!"; # found
+      WordPress WhiteSpace OperatorSpacing SpacingBefore:
+        enabled: false
+      # Disable: Blank line found after control structure
+      WordPress WhiteSpace ControlStructureSpacing BlankLineAfterEnd:
+        enabled: false
+      # Disable: The $domain arg should be single a string literal, not "".
+      WordPress WP I18n NonSingularStringLiteralDomain:
+        enabled: false
+      # Disable: Expected next thing to be an escaping function (see Codex for 'Data Validation'), not ''
+      WordPress XSS EscapeOutput OutputNotEscaped:
+        enabled: false
+      # Disable: The use of function "" is discouraged
+      WordPress PHP DiscouragedFunctions Discouraged:
+        enabled: false
+      # Disable: Expected # spaces after parameter type; # found
+      Squiz Commenting FunctionComment SpacingAfterParamType:
+        enabled: false
+      # Disable: Code after EXIT statement cannot be executed (This test doesn't work correctly)
+      Squiz PHP NonExecutableCode Unreachable:
+        enabled: false
+      # Disable: This comment is #% valid code; is this commented out code?
+      Squiz PHP CommentedOutCode Found:
+        enabled: false
+      # Disable: String "" does not require double quotes; use single quotes instead
+      Squiz Strings DoubleQuoteUsage NotRequired:
+        enabled: false
+      # Disable: Expected 1 space after closing brace; newline found
+      Squiz ControlStructures ControlSignature SpaceAfterCloseBrace:
+        enabled: false
+      # Disable: Opening brace should be on the same line as the declaration for class
+      Generic Classes OpeningBraceSameLine BraceOnNewLine:
+        enabled: false
+      # Disable: There must be exactly one blank line before the tags in a doc comment
+      Generic Commenting DocComment SpacingBeforeTags:
+        enabled: false
+      # Disable: Inline control structures are not allowed
+      Generic ControlStructures InlineControlStructure NotAllowed:
+        enabled: false
+      # Disable: Line indented incorrectly; expected at least # tabs, found #
+      Generic WhiteSpace ScopeIndent Incorrect:
+        enabled: false
+      Generic WhiteSpace ScopeIndent IncorrectExact:
+        enabled: false
+ratings:
+  paths:
+  - "**.css"
+  - "**.js"
+  - "**.php"
+exclude_paths:
+- tests/*
+- bin/*
+# Local
+- vendor/*

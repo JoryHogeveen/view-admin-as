@@ -2,33 +2,61 @@
 /**
  * View Admin As - Class API
  *
- * API class that holds general functions
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
- * @since   1.6
- * @version 1.6.2
+ * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
+	die();
+}
 
+/**
+ * API class that holds general functions.
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ * @since   1.6
+ * @version 1.7.1
+ */
 final class VAA_API
 {
+	/**
+	 * Check if the original current user is a super admin
+	 *
+	 * @since   1.6.3
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   int  $user_id  (optional) Default: current user.
+	 * @return  bool
+	 */
+	public static function is_super_admin( $user_id = null ) {
+		return VAA_View_Admin_As_Store::is_super_admin( $user_id );
+	}
+
 	/**
 	 * Check if the user is a superior admin
 	 *
 	 * @since   1.5.3
 	 * @since   1.6    Moved to this class from main class
+	 * @since   1.6.3  Improve is_super_admin() check
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   int  $user_id
+	 * @param   int  $user_id  (optional) Default: current user.
 	 * @return  bool
 	 */
-	public static function is_superior_admin( $user_id ) {
+	public static function is_superior_admin( $user_id = null ) {
+
+		// If it's the current user or null, don't pass the user ID to make sure we check the original user status.
+		$is_super_admin = self::is_super_admin(
+			( null !== $user_id && (int) get_current_user_id() === (int) $user_id ) ? null : $user_id
+		);
+
 		// Is it a super admin and is it one of the manually configured superior admins?
-		return (bool) ( true === is_super_admin( $user_id ) && in_array( $user_id, self::get_superior_admins() ) );
+		return (bool) ( true === $is_super_admin && in_array( (int) $user_id, self::get_superior_admins(), true ) );
 	}
 
 	/**
@@ -43,6 +71,8 @@ final class VAA_API
 	 * @return array
 	 */
 	public static function get_superior_admins() {
+		static $superior_admins;
+		if ( ! is_null( $superior_admins ) ) return $superior_admins;
 
 		/**
 		 * Grant admins the capability to view other admins. There is no UI for this!
@@ -51,76 +81,75 @@ final class VAA_API
 		 * @param  array
 		 * @return array requires a returned array of user ID's
 		 */
-		return array_filter(
+		$superior_admins = array_unique( array_map( 'absint', array_filter(
 			(array) apply_filters( 'view_admin_as_superior_admins', array() ),
 			'is_numeric'  // Only allow numeric values (user id's)
-		);
+		) ) );
+
+		return $superior_admins;
 	}
 
 	/**
-	 * Get full array or array key
+	 * Check if the provided data is the same as the current view.
 	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class
+	 * @since   1.7.1
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   array   $array  The requested array
-	 * @param   string  $key    Return only a key of the requested array (optional)
-	 * @return  mixed
+	 * @param   array  $data
+	 * @param   bool   $type  Only compare a single view type instead of all view data?
+	 *                        If set, the data value should be the single view type data.
+	 * @return  bool
 	 */
-	final public static function get_array_data( $array, $key = null ) {
-		if ( null !== $key ) {
-			if ( isset( $array[ $key ] ) ) {
-				return $array[ $key ];
-			}
-			return false; // return false if key is not found
+	public static function is_current_view( $data, $type = null ) {
+		$controller = view_admin_as()->controller();
+		if ( $controller ) {
+			return $controller->is_current_view( $data, $type );
 		}
-		return $array;
+		return false;
 	}
 
 	/**
-	 * Set full array or array key
+	 * Is the current user modified?
 	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class
+	 * @since   1.7.2
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   array   $array   Original array
-	 * @param   mixed   $var     The new value
-	 * @param   string  $key     The array key for the value (optional)
-	 * @param   bool    $append  If the key doesn't exist in the original array, append it (optional)
-	 * @return  mixed
+	 * @return  bool
 	 */
-	final public static function set_array_data( $array, $var, $key = null, $append = false ) {
-		if ( null !== $key ) {
-			if ( true === $append && ! is_array( $array ) ) {
-				$array = array();
-			}
-			if ( true === $append || isset( $array[ $key ] ) ) {
-				$array[ $key ] = $var;
-				return $array;
-			}
-
-			// Notify user if in debug mode
-			if ( defined('WP_DEBUG') && true === WP_DEBUG ) {
-				trigger_error('View Admin As: Key does not exist', E_USER_NOTICE);
-				if ( ! defined('WP_DEBUG_DISPLAY') || ( defined('WP_DEBUG_DISPLAY') && true === WP_DEBUG_DISPLAY ) ) {
-					debug_print_backtrace();
-				}
-			}
-
-			return $array; // return no changes if key is not found or appending is not allowed
+	public static function is_user_modified() {
+		$view = view_admin_as()->view();
+		if ( $view ) {
+			return $view->is_user_modified();
 		}
-		return $var;
+		return false;
+	}
+
+	/**
+	 * Is any toolbar showing?
+	 * Do not use this before the `init` hook.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_toolbar_showing() {
+
+		if ( is_admin_bar_showing() || self::is_vaa_toolbar_showing() ) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
 	 * Is our custom toolbar showing?
-	 * Do not use this before the `init` hook
+	 * Do not use this before the `init` hook.
 	 *
 	 * @since   1.6
 	 * @access  public
@@ -138,92 +167,370 @@ final class VAA_API
 	}
 
 	/**
-	 * Whether the site is being previewed in the Customizer.
-	 * For WP < 4.0
+	 * Generate a VAA action link.
 	 *
-	 * @since   1.6.2
-	 * @see     https://developer.wordpress.org/reference/functions/is_customize_preview/
-	 * @global  WP_Customize_Manager  $wp_customize
-	 * @return  bool
+	 * @since   1.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array   $data   View type data.
+	 * @param   string  $nonce  The nonce.
+	 * @param   string  $url    (optional) A URL. Of not passed it will generate a link from the current URL.
+	 * @return  string
 	 */
-	public static function is_customize_preview() {
+	public static function get_vaa_action_link( $data, $nonce, $url = null ) {
 
-		if ( function_exists('is_customize_preview') ) {
-			return is_customize_preview();
+		$params = array(
+			'action'        => 'view_admin_as',
+			'view_admin_as' => $data, // wp_json_encode( array( $type, $data ) ),
+			'_vaa_nonce'   => (string) $nonce,
+		);
+
+		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
+		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
+		if ( empty( $url ) ) {
+			if ( is_network_admin() ) {
+				$url = network_admin_url();
+			} else {
+				$url = admin_url();
+			}
 		}
 
-		global $wp_customize;
-		return ( $wp_customize instanceof WP_Customize_Manager ) && $wp_customize->is_preview();
+		$url = add_query_arg( $params, ( $url ) ? $url : false );
+
+		return esc_url( $url, array( 'http', 'https' ) );
 	}
 
 	/**
-	 * Appends the "reset-view" parameter to the current URL
+	 * Appends the "reset-view" parameter to the current URL.
 	 *
 	 * @since   1.6
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $url  (optional) Use a defined url create the reset link
+	 * @param   string  $url  (optional) Use a defined url create the reset link.
 	 * @param   bool    $all  (optional) Reset all views link?
 	 * @return  string
 	 */
-	public static function get_reset_link( $url = '', $all = false ) {
-
-		if ( empty( $url ) ) {
-			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			// Check protocol
-			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
-		}
-
-		// Check for existing query vars
-		$url_comp = parse_url( $url );
-
-		$reset = 'reset-view';
+	public static function get_reset_link( $url = null, $all = false ) {
+		$params = 'reset-view';
 		if ( $all ) {
-			$reset = 'reset-all-views';
+			$params = 'reset-all-views';
 		}
-
-		return $url . ( ( isset ( $url_comp['query'] ) ) ? '&' : '?' ) . $reset;
+		$url = add_query_arg( $params, '', ( $url ) ? $url : false );
+		return esc_url( $url, array( 'http', 'https' ) );
 	}
 
 	/**
-	 * Removes the "reset-view" or "reset-all-views" parameter to the current URL
+	 * Removes the "reset-view" or "reset-all-views" parameter to the current URL.
 	 *
 	 * @since   1.6
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $url  (optional) Use a defined url to remove the reset link
+	 * @param   string  $url  (optional) Use a defined url to remove the reset link.
 	 * @return  string
 	 */
 	public static function remove_reset_link( $url = '' ) {
-
-		if ( empty( $url ) ) {
-			$url = $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-			// Check protocol
-			$url = ( ( is_ssl() ) ? 'https://' : 'http://' ) . $url;
-		}
-
-		if ( strpos( $url, '?' ) !== false ) {
-			$url = explode( '?', $url );
-
-			if ( ! empty( $url[1] ) ) {
-
-				$url[1] = explode( '&', $url[1] );
-				foreach ( $url[1] as $key => $val ) {
-					if ( in_array( $val, array( 'reset-view', 'reset-all-views' ) ) ) {
-						unset( $url[1][ $key ] );
-					}
-				}
-				$url[1] = implode( '&', $url[1] );
-
-			}
-			$url = implode( '?', $url );
-		}
-
-		return $url;
+		$url = remove_query_arg( array( 'reset-view', 'reset-all-views' ), ( $url ) ? $url : false );
+		return esc_url( $url, array( 'http', 'https' ) );
 	}
 
-} // end class
+	/**
+	 * Get full array or array key.
+	 *
+	 * @since   1.5
+	 * @since   1.6    Moved to this class from main class.
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array   $array  The requested array.
+	 * @param   string  $key    (optional) Return only a key of the requested array.
+	 * @return  mixed
+	 */
+	public static function get_array_data( $array, $key = null ) {
+		if ( null !== $key ) {
+			if ( is_array( $array ) && isset( $array[ $key ] ) ) {
+				return $array[ $key ];
+			}
+			return null; // return null if key is not found
+		}
+		return $array;
+	}
+
+	/**
+	 * Set full array or array key.
+	 *
+	 * @since   1.5
+	 * @since   1.6    Moved to this class from main class.
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array   $array   Original array.
+	 * @param   mixed   $var     The new value.
+	 * @param   string  $key     (optional) The array key for the value.
+	 * @param   bool    $append  (optional) If the key doesn't exist in the original array, append it.
+	 * @return  mixed
+	 */
+	public static function set_array_data( $array, $var, $key = null, $append = false ) {
+		if ( null !== $key ) {
+			if ( true === $append && ! is_array( $array ) ) {
+				$array = array();
+			}
+			if ( is_array( $array ) && ( true === $append || isset( $array[ $key ] ) ) ) {
+				$array[ $key ] = $var;
+				return $array;
+			}
+
+			// Notify user if in debug mode
+			_doing_it_wrong( __METHOD__, 'View Admin As: Key <code>' . (string) $key . '</code> does not exist', null );
+
+			// return no changes if key is not found or appending is not allowed.
+			return $array;
+		}
+		return $var;
+	}
+
+	/**
+	 * Check if two arrays are the same.
+	 * Does NOT support recursive arrays!
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array  $array1  Array one.
+	 * @param   array  $array2  Array two.
+	 * @return  bool
+	 */
+	public static function array_equal( $array1, $array2 ) {
+		if ( ! is_array( $array1 ) || ! is_array( $array2 ) ) {
+			return false;
+		}
+		// Check for recursive arrays.
+		$arr1 = array_filter( $array1, 'is_scalar' );
+		$arr2 = array_filter( $array2, 'is_scalar' );
+		if ( $array1 !== $arr1 || $array2 !== $arr2 ) {
+			return false;
+		}
+		return (
+			count( $arr1 ) === count( $arr2 ) &&
+			array_diff_assoc( $arr1, $arr2 ) === array_diff_assoc( $arr2, $arr1 )
+		);
+	}
+
+	/**
+	 * Check if an array has a key and optional compare or validate the value.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array   $array
+	 * @param   string  $key
+	 * @param   array   $args {
+	 *     Optional array of match arguments.
+	 *     @type  mixed         $compare     A value to compare against (NOTE: strict comparison!).
+	 *     @type  string|array  $validation  A variable function check, example: 'is_int' or 'MyClass::check'.
+	 * }
+	 * @return bool
+	 */
+	public static function array_has( $array, $key, $args = array() ) {
+		$isset = ( isset( $array[ $key ] ) );
+		if ( empty( $args ) || ! $isset ) {
+			return $isset;
+		}
+		$value = $array[ $key ];
+		if ( isset( $args['compare'] ) ) {
+			return ( $args['compare'] === $value );
+		}
+		if ( ! empty( $args['validation'] ) ) {
+			$validation = $args['validation'];
+			// Don't accept unavailable validation methods.
+			if ( ! is_callable( $validation ) ) {
+				return false;
+			}
+			if ( is_array( $validation ) ) {
+				return (bool) call_user_func( $validation, $value );
+			}
+			return (bool) $validation( $value );
+		}
+		return false;
+	}
+
+	/**
+	 * Does a string starts with a given string?
+	 *
+	 * @since   1.4
+	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $haystack  The string to search in.
+	 * @param   string  $needle    The string to search for.
+	 * @return  bool
+	 */
+	public static function starts_with( $haystack, $needle ) {
+		// search backwards starting from haystack length characters from the end.
+		return '' === $needle || strrpos( $haystack, $needle, -strlen( $haystack ) ) !== false;
+	}
+
+	/**
+	 * Does a string ends with a given string?
+	 *
+	 * @since   1.4
+	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $haystack  The string to search in.
+	 * @param   string  $needle    The string to search for.
+	 * @return  bool
+	 */
+	public static function ends_with( $haystack, $needle ) {
+		// search forward starting from end minus needle length characters.
+		// @codingStandardsIgnoreLine >> yeah yeah, I know...
+		return '' === $needle || ( ( $temp = strlen( $haystack ) - strlen( $needle ) ) >= 0 && strpos( $haystack, $needle, $temp ) !== false);
+	}
+
+	/**
+	 * Compare with the current WordPress version.
+	 * Returns true when it's the provided version or newer.
+	 *
+	 * @since   1.6.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @global  string      $wp_version  WordPress version.
+	 * @param   int|string  $version     The WP version to check.
+	 * @return  bool
+	 */
+	public static function validate_wp_version( $version ) {
+		global $wp_version;
+		if ( version_compare( $wp_version, $version, '<' ) ) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * AJAX Request validator. Verifies caller and nonce.
+	 * Returns the requested data.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   string  $nonce  The nonce to validate
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  mixed
+	 */
+	public static function get_ajax_request( $nonce, $key = null, $type = 'post' ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return self::get_request( $nonce, $key, $type );
+		}
+		return null;
+	}
+
+	/**
+	 * AJAX Request validator. Verifies caller and nonce.
+	 * Returns the requested data.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   string  $nonce  The nonce to validate
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  mixed
+	 */
+	public static function get_normal_request( $nonce, $key = null, $type = 'post' ) {
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
+			return self::get_request( $nonce, $key, $type );
+		}
+		return null;
+	}
+
+	/**
+	 * Request validator. Verifies caller and nonce.
+	 * Returns the requested data.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   string  $nonce  The nonce to validate
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  mixed
+	 */
+	public static function get_request( $nonce, $key = null, $type = 'post' ) {
+		// @codingStandardsIgnoreLine >> Ignore $_GET and $_POST issues.
+		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
+		if ( isset( $data[ $key ] ) && isset( $data['_vaa_nonce'] ) && wp_verify_nonce( $data['_vaa_nonce'], $nonce ) ) {
+			$request = VAA_API::get_array_data( $data, $key );
+			if ( is_string( $request ) ) {
+				$request = json_decode( stripcslashes( html_entity_decode( $request ) ), true );
+			}
+			return $request;
+		}
+		return null;
+	}
+
+	/**
+	 * AJAX Request check.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  bool
+	 */
+	public static function is_ajax_request( $key = null, $type = 'post' ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			return self::is_request( $key, $type );
+		}
+		return false;
+	}
+
+	/**
+	 * Normal Request check.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  bool
+	 */
+	public static function is_normal_request( $key = null, $type = 'post' ) {
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
+			return self::is_request( $key, $type );
+		}
+		return false;
+	}
+
+	/**
+	 * Check if there is a request made.
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @param   string  $key    The key to check.
+	 * @param   string  $type   The type of request.
+	 * @return  bool
+	 */
+	public static function is_request( $key = null, $type = 'post' ) {
+		// @codingStandardsIgnoreLine >> Ignore $_GET and $_POST issues.
+		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
+		if ( isset( $data[ $key ] ) ) {
+			return true;
+		}
+		return false;
+	}
+
+} // End class VAA_API.

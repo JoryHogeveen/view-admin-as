@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress VAA"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+	<description>VAA Standards</description>
+
+	<!-- Design -->
+	<rule ref="rulesets/design.xml">
+		<!-- Normal in WP for redirects, etc -->
+		<exclude name="ExitExpression" />
+		<!-- Disable for now due to toolbar methods -->
+		<exclude name="LongMethod" />
+	</rule>
+
+	<!-- CleanCode -->
+	<rule ref="rulesets/cleancode.xml">
+		<!-- Used all over (The method "" has a boolean flag argument "", which is a certain sign of a Single Responsibility Principle violation.) -->
+		<exclude name="BooleanArgumentFlag" />
+		<!-- In lack of real namespacing (Avoid using static access to class '' in method ''.) -->
+		<exclude name="StaticAccess" />
+		<!-- I do not agree with this, only very long if/else expressions -->
+		<exclude name="ElseExpression" />
+	</rule>
+
+	<!-- CodeSize -->
+	<rule ref="rulesets/codesize.xml">
+		<!-- Defined below for custom config -->
+		<exclude name="ExcessiveClassComplexity" />
+		<exclude name="ExcessiveMethodLength" />
+		<exclude name="ExcessiveClassLength" />
+		<exclude name="TooManyMethods" />
+		<exclude name="TooManyPublicMethods" />
+	</rule>
+	<rule ref="rulesets/codesize.xml/ExcessiveMethodLength">
+		<properties>
+			<!-- Just check the actual code ok.. CodeSniffer already checks whitespace/newline errors -->
+			<property name="ignore-whitespace" value="true" />
+		</properties>
+	</rule>
+	<rule ref="rulesets/codesize.xml/ExcessiveClassLength">
+		<properties>
+			<!-- Just check the actual code ok.. CodeSniffer already checks whitespace/newline errors -->
+			<property name="ignore-whitespace" value="true" />
+		</properties>
+	</rule>
+	<rule ref="rulesets/codesize.xml/TooManyMethods">
+		<properties>
+			<!-- Ignore magic methods, getters and setters -->
+			<property name="ignorepattern" value="(^(set|get|__))i" />
+		</properties>
+	</rule>
+	<rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+		<properties>
+			<!-- Allow more public methods because WP hooks force the use of public methods. Default: 10 -->
+			<property name="maxmethods" value="20" />
+			<!-- Ignore magic methods, getters and setters -->
+			<property name="ignorepattern" value="(^(set|get|__))i" />
+		</properties>
+	</rule>
+	<rule ref="rulesets/codesize.xml/ExcessiveClassComplexity">
+		<properties>
+			<!-- Allow higher overall class complexity. Default: 50 -->
+			<property name="maximum" value="100" />
+		</properties>
+	</rule>
+
+	<!-- Naming -->
+	<rule ref="rulesets/naming.xml">
+		<!-- Defined below for custom config -->
+		<exclude name="ShortVariable"/>
+	</rule>
+	<rule ref="rulesets/naming.xml/ShortVariable">
+		<properties>
+			<!-- common in WP and VAA -->
+			<property name="exceptions" value="id,wp,ui" />
+		</properties>
+	</rule>
+
+</ruleset>

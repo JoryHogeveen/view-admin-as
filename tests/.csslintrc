@@ -1,0 +1,2 @@
+--exclude-exts=.min.css
+--ignore=adjoining-classes,box-model,box-sizing,ids,important,order-alphabetical,unqualified-attributes,universal-selector

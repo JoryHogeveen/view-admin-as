@@ -2,53 +2,27 @@
 /**
  * View Admin As - Class Base
  *
- * Base class that gets the VAA data from the main class
- * Use this class as an extender for other classes
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
- * @package view-admin-as
- * @since   1.5
- * @version 1.6.2
+ * @package View_Admin_As
  */
 
-! defined( 'VIEW_ADMIN_AS_DIR' ) and die( 'You shall not pass!' );
+if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
+	die();
+}
 
+/**
+ * Base class that gets the VAA data from the main class.
+ * Use this class as an extender for other classes.
+ *
+ * @author  Jory Hogeveen <info@keraweb.nl>
+ * @package View_Admin_As
+ * @since   1.5
+ * @version 1.7
+ */
 abstract class VAA_View_Admin_As_Class_Base
 {
 	/**
-	 * Option key
-	 *
-	 * @since  1.5
-	 * @var    string
-	 */
-	protected $optionKey = '';
-
-	/**
-	 * Option data
-	 *
-	 * @since  1.5
-	 * @var    mixed
-	 */
-	protected $optionData = false;
-
-	/**
-	 * Enable functionalities?
-	 *
-	 * @since  1.5
-	 * @var    bool
-	 */
-	protected $enable = false;
-
-	/**
-	 * Custom capabilities
-	 *
-	 * @since  1.6
-	 * @var    array
-	 */
-	protected $capabilities = array();
-
-	/**
-	 * View Admin As object
+	 * View Admin As object.
 	 *
 	 * @since  1.5
 	 * @var    VAA_View_Admin_As
@@ -56,7 +30,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	protected $vaa = null;
 
 	/**
-	 * View Admin As store object
+	 * View Admin As store object.
 	 *
 	 * @since  1.6
 	 * @var    VAA_View_Admin_As_Store
@@ -64,21 +38,21 @@ abstract class VAA_View_Admin_As_Class_Base
 	protected $store = null;
 
 	/**
-	 * Script localization data
+	 * Custom capabilities.
 	 *
 	 * @since  1.6
 	 * @var    array
 	 */
-	protected $scriptLocalization = array();
+	protected $capabilities = array();
 
 	/**
-	 * Construct function
-	 * Protected to make sure it isn't declared elsewhere
+	 * Construct function.
+	 * Protected to make sure it isn't declared elsewhere.
 	 *
 	 * @since   1.5.3
-	 * @since   1.6    $vaa param
+	 * @since   1.6    $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object
+	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
 	 */
 	protected function __construct( $vaa = null ) {
 		// Load resources
@@ -86,20 +60,20 @@ abstract class VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * init function to store data from the main class and enable functionality based on the current view
+	 * init function to store data from the main class and enable functionality based on the current view.
 	 *
 	 * @since   1.5
-	 * @since   1.6    $vaa param
+	 * @since   1.6    $vaa param.
 	 * @access  public
-	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object
+	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
 	 * @return  void
 	 */
 	final public function load_vaa( $vaa = null ) {
 		$this->vaa = $vaa;
-		if ( ! is_object( $vaa ) || 'VAA_View_Admin_As' != get_class( $vaa ) ) {
-			$this->vaa = View_Admin_As( $this );
+		if ( ! is_object( $vaa ) || 'VAA_View_Admin_As' !== get_class( $vaa ) ) {
+			$this->vaa = view_admin_as();
 		}
-		if ( $this->vaa ) {
+		if ( $this->vaa && 'VAA_View_Admin_As_Store' !== get_class( $this ) ) {
 			$this->store = $this->vaa->store();
 		}
 	}
@@ -111,45 +85,48 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @access  public
 	 * @return  bool
 	 */
-	final public function is_vaa_enabled() { return (bool) $this->vaa->is_enabled(); }
-
-	/**
-	 * Is enabled?
-	 *
-	 * @since   1.5
-	 * @access  public
-	 * @return  bool
-	 */
-	public function is_enabled() { return (bool) $this->enable; }
-
-	/**
-	 * Set plugin enabled true/false
-	 *
-	 * @since   1.5.1
-	 * @since   1.6.2  Make database update optional
-	 * @access  protected
-	 * @param   bool
-	 * @param   bool  $update  Do database update? (default true)
-	 * @return  bool
-	 */
-	protected function set_enable( $bool = false, $update = true ) {
-		$success = true;
-		if ( $update && $this->get_optionKey() ) {
-			$success = $this->update_optionData( (bool) $bool, 'enable', true );
-		}
-		if ( $success ) {
-			$this->enable = (bool) $bool;
-		}
-		return $success;
+	final public function is_vaa_enabled() {
+		return (bool) $this->vaa->is_enabled();
 	}
 
 	/**
-	 * Add capabilities
-	 * Used for the _vaa_add_capabilities hook
+	 * Check if the AJAX call is ok.
+	 * Must always be used before AJAX data is processed
+	 *
+	 * @since   1.7
+	 * @access  public
+	 * @return  bool
+	 */
+	public function is_valid_ajax() {
+		if ( defined( 'VAA_DOING_AJAX' ) && VAA_DOING_AJAX && $this->is_vaa_enabled() ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Extender function for WP current_user_can().
+	 * Also checks if VAA is enabled.
+	 *
+	 * @since   1.7
+	 * @param   string  $capability  (optional) The capability to check when the user isn't a super admin.
+	 * @return  bool
+	 */
+	public function current_user_can( $capability = null ) {
+		if ( $capability ) {
+			return ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can( $capability ) ) );
+		} else {
+			return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
+		}
+	}
+
+	/**
+	 * Add capabilities.
+	 * Used for the _vaa_add_capabilities hook.
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @param   array  $caps
+	 * @param   array  $caps  The capabilities.
 	 * @return  array
 	 */
 	public function add_capabilities( $caps ) {
@@ -157,61 +134,6 @@ abstract class VAA_View_Admin_As_Class_Base
 			$caps[ $cap ] = $cap;
 		}
 		return $caps;
-	}
-
-	/*
-	 * VAA Store Getters
-	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
-	 * @todo Magic method __call()?
-	 */
-	protected function get_curUser()                          { return $this->store->get_curUser(); }
-	protected function get_curUserSession()                   { return $this->store->get_curUserSession(); }
-	protected function get_viewAs( $key = null )              { return $this->store->get_viewAs( $key ); }
-	protected function get_caps( $key = null )                { return $this->store->get_caps( $key ); }
-	protected function get_roles( $key = null )               { return $this->store->get_roles( $key ); }
-	protected function get_users( $key = null )               { return $this->store->get_users( $key ); }
-	protected function get_userids( $key = null )             { return $this->store->get_userids( $key ); }
-	protected function get_selectedCaps( $key = null )        { return $this->store->get_selectedCaps( $key ); }
-	protected function get_selectedUser()                     { return $this->store->get_selectedUser(); }
-	protected function get_settings( $key = null )            { return $this->store->get_settings( $key ); }
-	protected function get_userSettings( $key = null )        { return $this->store->get_userSettings( $key ); }
-	protected function get_defaultSettings( $key = null )     { return $this->store->get_defaultSettings( $key ); }
-	protected function get_allowedSettings( $key = null )     { return $this->store->get_allowedSettings( $key ); }
-	protected function get_defaultUserSettings( $key = null ) { return $this->store->get_defaultUserSettings( $key ); }
-	protected function get_allowedUserSettings( $key = null ) { return $this->store->get_allowedUserSettings( $key ); }
-	protected function get_version()                          { return $this->store->get_version(); }
-	protected function get_dbVersion()                        { return $this->store->get_dbVersion(); }
-
-	/*
-	 * VAA Getters
-	 * Make sure that you've constructed ( parent::__construct() ) this class BEFORE using these functions!
-	 */
-	protected function get_modules( $key = null ) { return $this->vaa->get_modules( $key ); }
-
-	/*
-	 * Native Getters
-	 */
-	public function get_optionKey()                       { return (string) $this->optionKey; }
-	public function get_optionData( $key = null )         { return VAA_API::get_array_data( $this->optionData, $key ); }
-	public function get_scriptLocalization( $key = null ) { return VAA_API::get_array_data( $this->scriptLocalization, $key ); }
-
-	/*
-	 * Native Setters
-	 */
-	protected function set_optionKey( $var ) { $this->optionKey = (string) $var; }
-	protected function set_optionData( $var, $key = null, $append = false ) {
-		$this->optionData = VAA_API::set_array_data( $this->optionData, $var, $key, $append );
-	}
-	protected function set_scriptLocalization( $var, $key = null, $append = false ) {
-		$this->scriptLocalization = VAA_API::set_array_data( $this->scriptLocalization, $var, $key, $append );
-	}
-
-	/*
-	 * Native Update
-	 */
-	protected function update_optionData( $var, $key = null, $append = false ) {
-		$this->set_optionData( $var, $key, $append );
-		return update_option( $this->get_optionKey(), $this->optionData );
 	}
 
 	/**
@@ -235,7 +157,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __clone() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ),
+			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to be cloned', VIEW_ADMIN_AS_DOMAIN ) ),
 			null
 		);
 	}
@@ -250,7 +172,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function __wakeup() {
 		_doing_it_wrong(
 			__FUNCTION__,
-			get_class( $this ) . ': ' . esc_html__( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ),
+			esc_html( get_class( $this ) . ': ' . __( 'This class does not want to wake up', VIEW_ADMIN_AS_DOMAIN ) ),
 			null
 		);
 	}
@@ -260,13 +182,13 @@ abstract class VAA_View_Admin_As_Class_Base
 	 *
 	 * @since  1.5.1
 	 * @access public
-	 * @param  string
-	 * @param  array
+	 * @param  string  $method  The method name.
+	 * @param  array   $args    The method arguments.
 	 * @return null
 	 */
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(
-			get_class( $this ) . "::{$method}",
+			esc_html( get_class( $this ) . "::{$method}" ),
 			esc_html__( 'Method does not exist.', VIEW_ADMIN_AS_DOMAIN ),
 			null
 		);
@@ -274,4 +196,4 @@ abstract class VAA_View_Admin_As_Class_Base
 		return null;
 	}
 
-} // end class
+} // End class VAA_View_Admin_As_Class_Base.
