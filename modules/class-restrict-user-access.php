@@ -74,6 +74,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	private $ruaApp;
 
 	/**
+	 * @since  1.7.2
+	 * @var    RUA_Level_Manager
+	 */
+	private $ruaLevelManager;
+
+	/**
 	 * @since  1.6.4
 	 * @var    string
 	 */
@@ -100,6 +106,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		self::$_instance = $this;
 		$this->ruaApp = RUA_App::instance();
+		if ( isset( $this->ruaApp->level_manager ) ) {
+			$this->ruaLevelManager = $this->ruaApp->level_manager;
+		}
 
 		$access_cap            = ( defined( RUA_App::CAPABILITY ) ) ? RUA_App::CAPABILITY : 'edit_users';
 		$this->ruaMetaPrefix   = ( defined( RUA_App::META_PREFIX ) ) ? RUA_App::META_PREFIX : '_ca_';
@@ -154,14 +163,17 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			}
 		}
 
-		if ( VAA_API::is_user_modified() && isset( $this->ruaApp->level_manager ) ) {
-			/**
-			 * Fix for when a user isn't a super admin but has access to this plugin.
-			 * @since  1.7.2
-			 * @link   https://github.com/JoryHogeveen/view-admin-as/issues/56#issuecomment-299077527
-			 * @see    RUA_Level_Manager::add_filters()
-			 */
-			remove_filter( 'user_has_cap', array( $this->ruaApp->level_manager, 'user_level_has_cap' ), 9 );
+		if ( VAA_API::is_user_modified() && isset( $this->ruaLevelManager ) ) {
+
+			if ( $this->store->get_view( 'caps' ) ) {
+				/**
+				 * Remove the whole filter when the caps view is selected.
+				 * @since  1.7.2
+				 * @link   https://github.com/JoryHogeveen/view-admin-as/issues/56#issuecomment-299077527
+				 * @see    RUA_Level_Manager::add_filters()
+				 */
+				remove_filter( 'user_has_cap', array( $this->ruaLevelManager, 'user_level_has_cap' ), 9 );
+			}
 		}
 	}
 

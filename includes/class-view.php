@@ -395,7 +395,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$filter_caps,
 			$caps,
 			// Replicate arguments for `user_has_cap`.
-			array_merge( array( $cap, $user_id ), (array) $args ),
+			array_merge( array( $cap, 0 ), (array) $args ),
 			$this->store->get_selectedUser()
 		);
 
