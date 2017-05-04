@@ -15,12 +15,12 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * Tested from RUA version: 0.12.4
  * Official RUA compat release: 0.13 (https://github.com/intoxstudio/restrict-user-access/pull/8)
- * Checked version: 0.14
+ * Checked version: 0.15
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.7.1
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
@@ -152,6 +152,16 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				// Not a view with administrator capability == no global access.
 				add_filter( 'rua/user/global-access', '__return_false' );
 			}
+		}
+
+		if ( VAA_API::is_user_modified() && isset( $this->ruaApp->level_manager ) ) {
+			/**
+			 * Fix for when a user isn't a super admin but has access to this plugin.
+			 * @since  1.7.2
+			 * @link   https://github.com/JoryHogeveen/view-admin-as/issues/56#issuecomment-299077527
+			 * @see    RUA_Level_Manager::add_filters()
+			 */
+			remove_filter( 'user_has_cap', array( $this->ruaApp->level_manager, 'user_level_has_cap' ), 9 );
 		}
 	}
 
