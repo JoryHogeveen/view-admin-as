@@ -144,7 +144,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init_user_modifications() {
 		static $done;
-		if ( $done ) return true;
+		if ( $done ) return;
 
 		$this->is_user_modified = true;
 
@@ -401,8 +401,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		foreach ( (array) $caps as $actual_cap ) {
 			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
-				// Regular users.
-				$caps[ $cap ] = 0;
+				// Regular users. Assuming this capability never exists..
+				$caps['vaa_do_not_allow'] = 'vaa_do_not_allow';
 				// Network admins.
 				$caps['do_not_allow'] = 'do_not_allow';
 			}
