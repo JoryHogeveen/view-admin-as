@@ -231,12 +231,19 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @return  bool
 	 */
 	public function groups_user_can( $result, $object = null, $cap = '' ) {
-		// Fallback PHP < 5.4 due to apply_filters_ref_array
-		// See https://codex.wordpress.org/Function_Reference/apply_filters_ref_array
+
+		/**
+		 * Fallback PHP < 5.4 due to apply_filters_ref_array
+		 * @see https://codex.wordpress.org/Function_Reference/apply_filters_ref_array
+		 */
 		if ( is_array( $result ) ) {
 			$cap = $result[2];
 			//$object = $result[1];
 			$result = $result[0];
+		}
+
+		if ( ! $this->store->get_view() ) {
+			return $result;
 		}
 
 		if ( $this->selectedGroup &&
