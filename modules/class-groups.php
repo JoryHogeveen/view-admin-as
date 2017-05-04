@@ -108,11 +108,11 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			//add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
 
 			// @see Groups_User::init_cache()
-			Groups_Cache::set(
+			/*Groups_Cache::set(
 				Groups_User::GROUP_IDS . $this->store->get_curUser()->ID,
-				$this->store->get_view( $this->viewKey ),
+				array( $this->store->get_view( $this->viewKey ) ),
 				Groups_User::CACHE_GROUP
-			);
+			);*/
 
 			/**
 			 * Filters
