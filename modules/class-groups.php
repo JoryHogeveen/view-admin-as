@@ -114,6 +114,11 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				Groups_User::CACHE_GROUP
 			);*/
 
+			remove_shortcode( 'groups_member' );
+			remove_shortcode( 'groups_non_member' );
+			add_shortcode( 'groups_member', array( $this, 'shortcode_groups_member' ) );
+			add_shortcode( 'groups_non_member', array( $this, 'shortcode_groups_non_member' ) );
+
 			/**
 			 * Filters
 			 *
@@ -212,6 +217,91 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			$result = VAA_API::current_view_can( $cap );
 		}
 		return $result;
+	}
+
+	/**
+	 * Filter for the current view.
+	 * Only use this function if the current view is a validated group object!
+	 *
+	 * @see  Groups_Group::can() >> groups/lib/core/class-groups-group.php
+	 *
+	 * @since   1.7.x
+	 * @access  public
+	 * @param   bool          $result  Current result.
+	 * @param   Groups_Group  $object  (not used) Group object.
+	 * @param   string        $cap     Capability.
+	 * @return  bool
+	 */
+	public function groups_group_can( $result, $object = null, $cap = '' ) {
+		if ( $this->selectedGroup && $this->selectedGroup->group_id === $object->group_id ) {
+			return $result;
+		}
+		return $this->groups_user_can( $result, $object, $cap );
+	}
+
+	/**
+	 * Our own implementation for the groups_member shortcode.
+	 *
+	 * @see  Groups_Access_Shortcodes::groups_member()
+	 *
+	 * @since   1.7.x
+	 * @param   array   $atts
+	 * @param   string  $content
+	 * @return  string
+	 */
+	public function shortcode_groups_member( $atts, $content ) {
+		return $this->shortcode_member( $atts, $content, false );
+	}
+
+	/**
+	 * Our own implementation for the groups_non_member shortcode.
+	 *
+	 * @see  Groups_Access_Shortcodes::groups_non_member()
+	 *
+	 * @since   1.7.x
+	 * @param   array   $atts
+	 * @param   string  $content
+	 * @return  string
+	 */
+	public function shortcode_groups_non_member( $atts, $content ) {
+		return ! $this->shortcode_member( $atts, $content, true );
+	}
+
+	/**
+	 * Our own implementation for the Groups member shortcodes.
+	 *
+	 * @since   1.7.x
+	 * @param   array   $atts
+	 * @param   string  $content
+	 * @param   bool    $reverse
+	 * @return  string
+	 */
+	public function shortcode_member( $atts, $content, $reverse = false ) {
+		$output = '';
+		$options = shortcode_atts( array( 'group' => '' ), $atts );
+		$show_content = false;
+		if ( null !== $content ) {
+			$groups = explode( ',', $options['group'] );
+			foreach ( $groups as $group ) {
+				$group = trim( $group );
+				$selected_group = $this->selectedGroup;
+				$current_group  = Groups_Group::read( $group );
+				if ( ! $current_group ) {
+					$current_group = Groups_Group::read_by_name( $group );
+				}
+				if ( $current_group && $current_group->group_id === $selected_group->group_id ) {
+					$show_content = ( $reverse ) ? false : true;
+					break;
+				}
+			}
+			if ( $show_content ) {
+				remove_shortcode( 'groups_non_member' );
+				$content = do_shortcode( $content );
+				add_shortcode( 'groups_non_member', array( __CLASS__, 'groups_non_member' ) );
+				$output = $content;
+			}
+		}
+		return $output;
 	}
 
 	/**
