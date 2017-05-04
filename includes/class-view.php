@@ -390,18 +390,25 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		$filter_caps = (array) $this->store->get_selectedCaps();
 
-		/**
-		 * Apply user_has_cap filters to make sure we are compatible with modifications from other plugins.
-		 * @since  1.7.2
-		 * @see    WP_User::has_cap()
-		 */
-		$filter_caps = apply_filters( 'user_has_cap',
-			$filter_caps,
-			$caps,
-			// Replicate arguments for `user_has_cap`.
-			array_merge( array( $cap, 0 ), (array) $args ),
-			$this->store->get_selectedUser()
-		);
+		if ( ! $this->store->get_view( 'caps' ) ) {
+			/**
+			 * Apply user_has_cap filters to make sure we are compatible with modifications from other plugins.
+			 *
+			 * Issues found:
+			 * - Restrict User Access - Overwrites our filtered capabilities.
+			 *
+			 * @since  1.7.2
+			 * @see    WP_User::has_cap()
+			 */
+			$filter_caps = apply_filters(
+				'user_has_cap',
+				$filter_caps,
+				$caps,
+				// Replicate arguments for `user_has_cap`.
+				array_merge( array( $cap, 0 ), (array) $args ),
+				$this->store->get_selectedUser()
+			);
+		}
 
 		foreach ( (array) $caps as $actual_cap ) {
 			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
