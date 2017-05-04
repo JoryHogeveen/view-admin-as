@@ -378,6 +378,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		/**
 		 * Apply user_has_cap filters to make sure we are compatible with modifications from other plugins.
+		 *
+		 * Do not supply the current user with this filter to prevent plugins from overwriting our functionality.
+		 * Issues found:
+		 * - Restrict User Access
+		 *
 		 * @since  1.7.2
 		 * @see    WP_User::has_cap()
 		 */
@@ -385,8 +390,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$filter_caps,
 			$caps,
 			// Replicate arguments for `user_has_cap`.
-			array_merge( array( $cap, $user_id ), (array) $args ),
-			$this->store->get_selectedUser()
+			array_merge( array( $cap, 0 ), (array) $args ),
+			new WP_User()
 		);
 
 		foreach ( (array) $caps as $actual_cap ) {
