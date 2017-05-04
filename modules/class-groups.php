@@ -81,11 +81,11 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
 			add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
 
-			add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
-
 			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
 			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
 		}
+
+		add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 	}
 
 	/**
@@ -101,8 +101,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
-			// Filter group capabilities.
-			add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
+			$this->vaa->view()->init_user_modifications();
+			add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
 
 			// Filter user-group relationships.
 			//add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
@@ -121,6 +121,12 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			 *     class-groups-post-access -> line 419
 			 */
 		}
+
+		// Filter group capabilities.
+		if ( VAA_API::is_user_modified() ) {
+			add_filter( 'groups_group_can', array( $this, 'groups_group_can' ), 20, 3 );
+			add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
+		}
 	}
 
 	/**
@@ -132,8 +138,15 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 */
 	public function modify_user( $user, $accessible ) {
 
-		// @todo Get group caps
 		$caps = array();
+		if ( $this->selectedGroup ) {
+			$group_caps = (array) $this->selectedGroup->capabilities_deep;
+			foreach ( $group_caps as $group_cap ) {
+				if ( isset( $group_cap->capability->capability ) ) {
+					$caps[ $group_cap->capability->capability ] = 1;
+				}
+			}
+		}
 
 		$caps = array_merge( $this->store->get_selectedCaps(), $caps );
 
@@ -171,7 +184,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * Filter for the current view.
 	 * Only use this function if the current view is a validated group object!
 	 *
-	 * @see  groups/lib/core/class-groups-group.php -> Groups_Groups->can()
+	 * @see  Groups_Group::can() >> groups/lib/core/class-groups-group.php
 	 *
 	 * @since   1.7.x
 	 * @access  public
@@ -194,6 +207,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		     ! $this->selectedGroup->can( $cap )
 		) {
 			$result = false;
+		} else {
+			// For other view types.
+			$result = VAA_API::current_view_can( $cap );
 		}
 		return $result;
 	}
