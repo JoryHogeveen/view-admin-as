@@ -108,6 +108,13 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 			add_filter( 'groups_post_access_user_can_read_post', array( $this, 'groups_post_access_user_can_read_post' ), 99, 3 );
 
+			/**
+			 * Replicate 404 page when the selected user has no access to read.
+			 * I use this since I can't hook into the `posts_where` filter from Groups.
+			 * @see VAA_View_Admin_As_Groups::groups_post_access_user_can_read_post()
+			 */
+			add_action( 'wp', array( $this, 'post_access_404' ) );
+			//add_filter( 'groups_post_access_posts_where_apply', '__return_false' );
 
 			remove_shortcode( 'groups_member' );
 			remove_shortcode( 'groups_non_member' );
@@ -299,6 +306,24 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			$result = false;
 		}
 		return $result;
+	}
+
+	/**
+	 * Replicate 404 page when the selected user has no access to read.
+	 * I use this since I can't hook into the `posts_where` filter from Groups.
+	 *
+	 * @hook    `wp`
+	 * @see     VAA_View_Admin_As_Groups::groups_post_access_user_can_read_post()
+	 *
+	 * @since   1.7.x
+	 * @access  public
+	 */
+	public function post_access_404() {
+		global $post;
+		if ( isset( $post->ID ) && ! $this->groups_post_access_user_can_read_post( true, $post->ID, $this->store->get_selectedUser()->ID ) ) {
+			global $wp_query;
+			$wp_query->set_404();
+		}
 	}
 
 	/**
