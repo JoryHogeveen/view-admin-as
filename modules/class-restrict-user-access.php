@@ -230,7 +230,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Add groups view type.
+	 * Add view type.
 	 *
 	 * @since   1.6.4
 	 * @param   array  $types  Existing view types.
@@ -391,16 +391,17 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
-			$view_data = array( $this->viewKey => $level->ID );
+			$view_value = $level->ID;
+			$view_data = array( $this->viewKey => $view_value );
 			if ( $role ) {
 				$view_data['role'] = $role;
 			}
 			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = VAA_View_Admin_As_Admin_Bar::do_view_title( $level->post_title, $this->viewKey, ( $role ) ? wp_json_encode( $view_data ) : $level->ID );
+			$title = VAA_View_Admin_As_Form::do_view_title( $level->post_title, $this->viewKey, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->viewKey ) ) {
-				if ( VAA_API::is_current_view( $level->ID, $this->viewKey ) ) {
+				if ( VAA_API::is_current_view( $view_value, $this->viewKey ) ) {
 					// @todo Use is_current_view() from vaa controller?
 					if ( 1 === count( $this->store->get_view() ) && empty( $role ) ) {
 						$class .= ' current';
@@ -411,17 +412,17 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 					}
 				}
 				elseif ( $current_parent = $this->get_levels( $this->selectedLevel ) ) {
-					if ( (int) $current_parent->post_parent === (int) $level->ID ) {
+					if ( (int) $current_parent->post_parent === (int) $view_value ) {
 						$class .= ' current-parent';
 					}
 				}
 			}
 			$parent = $root;
 			if ( ! empty( $level->post_parent ) ) {
-				$parent = $root . '-' . $this->viewKey . '-' . $level->post_parent;
+				$parent = $root . '-' . $this->viewKey . '-' . (int) $level->post_parent;
 			}
 			$admin_bar->add_node( array(
-				'id'        => $root . '-' . $this->viewKey . '-' . $level->ID,
+				'id'        => esc_attr( $root . '-' . $this->viewKey . '-' . $view_value ),
 				'parent'    => $parent,
 				'title'     => $title,
 				'href'      => $href,
@@ -430,7 +431,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
 					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
-					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $level->ID,
+					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $view_value,
 				),
 			) );
 		} // End foreach().
