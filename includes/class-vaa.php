@@ -419,6 +419,13 @@ final class VAA_View_Admin_As
 			);
 		}
 
+		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
+			$includes['groups'] = array(
+				'file'  => 'modules/class-groups.php',
+				'class' => 'VAA_View_Admin_As_Groups',
+			);
+		}
+
 		// Run include code but do not register modules yet (leave that to the modules).
 		$this->load_files( $includes );
 
