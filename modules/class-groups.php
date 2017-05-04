@@ -277,7 +277,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 */
 	public function shortcode_member( $atts, $content, $reverse = false ) {
 		$output = '';
-		$options = shortcode_atts( array( 'group' => '' ), $atts );
+		$shortcode = ( $reverse ) ? 'groups_non_member' : 'groups_member';
+		$options = shortcode_atts( array( 'group' => '' ), $atts ); //, $shortcode
 		$show_content = false;
 		if ( null !== $content ) {
 			$groups = explode( ',', $options['group'] );
@@ -294,9 +295,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				}
 			}
 			if ( $show_content ) {
-				remove_shortcode( 'groups_non_member' );
+				remove_shortcode( $shortcode );
 				$content = do_shortcode( $content );
-				add_shortcode( 'groups_non_member', array( __CLASS__, 'groups_non_member' ) );
+				add_shortcode( $shortcode, array( $this, 'shortcode_' . $shortcode ) );
 				$output = $content;
 			}
 		}
