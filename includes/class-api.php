@@ -93,6 +93,10 @@ final class VAA_API
 	 * Check if the provided data is the same as the current view.
 	 *
 	 * @since   1.7.1
+	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   array  $data
 	 * @param   bool   $type  Only compare a single view type instead of all view data?
 	 *                        If set, the data value should be the single view type data.
@@ -102,6 +106,24 @@ final class VAA_API
 		$controller = view_admin_as()->controller();
 		if ( $controller ) {
 			return $controller->is_current_view( $data, $type );
+		}
+		return false;
+	}
+
+	/**
+	 * Is the current user modified?
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_user_modified() {
+		$view = view_admin_as()->view();
+		if ( $view ) {
+			return $view->is_user_modified();
 		}
 		return false;
 	}

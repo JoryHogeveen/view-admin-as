@@ -32,6 +32,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	private static $_instance = null;
 
 	/**
+	 * Is the current user modified?
+	 *
+	 * @since  1.7.2
+	 * @var    bool
+	 */
+	private $is_user_modified = false;
+
+	/**
 	 * VAA_View_Admin_As_View constructor.
 	 *
 	 * @since   1.6
@@ -136,7 +144,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 */
 	public function init_user_modifications() {
 		static $done;
-		if ( $done ) return;
+		if ( $done ) return true;
+
+		$this->is_user_modified = true;
 
 		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_user' ), 99 );
 
@@ -449,6 +459,17 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Is the current user modified?
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @return  bool
+	 */
+	public function is_user_modified() {
+		return (bool) $this->is_user_modified;
 	}
 
 	/**
