@@ -106,8 +106,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			$this->vaa->view()->init_user_modifications();
 			add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
 
-			// Filter user-group relationships.
-			//add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
+			add_filter( 'groups_post_access_user_can_read_post', array( $this, 'groups_post_access_user_can_read_post' ), 99, 3 );
 
 
 			remove_shortcode( 'groups_member' );
@@ -115,12 +114,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			add_shortcode( 'groups_member', array( $this, 'shortcode_groups_member' ) );
 			add_shortcode( 'groups_non_member', array( $this, 'shortcode_groups_non_member' ) );
 
-			/**
-			 * Filters
-			 *
-			 * - groups_post_access_user_can_read_post
-			 *     class-groups-post-access -> line 419
-			 */
+			// Filter user-group relationships.
+			//add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
 		}
 
 		// Filter group capabilities.
@@ -276,6 +271,34 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			return $result;
 		}
 		return $this->groups_user_can( $result, $object, $cap );
+	}
+
+	/**
+	 * Filter whether the user can do something with a post.
+	 *
+	 * @see  Groups_Post_Access::user_can_read_post()
+	 *
+	 * @since   1.7.x
+	 * @access  public
+	 * @param   bool  $result
+	 * @param   int   $post_id
+	 * @param   int   $user_id
+	 * @return  bool
+	 */
+	public function groups_post_access_user_can_read_post( $result, $post_id, $user_id ) {
+		if ( $this->store->get_selectedUser()->ID !== $user_id || ! $this->selectedGroup ) {
+			return $result;
+		}
+		if ( ! is_callable( 'Groups_Post_Access', 'get_read_group_ids' ) ) {
+			return $result;
+		}
+
+		$post_access = Groups_Post_Access::get_read_group_ids( $post_id );
+		$result = true;
+		if ( ! empty( $post_access ) && ! in_array( $this->selectedGroup->group_id, $post_access, true ) ) {
+			$result = false;
+		}
+		return $result;
 	}
 
 	/**
