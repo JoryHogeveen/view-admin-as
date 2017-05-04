@@ -99,6 +99,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 			$this->selectedGroup = new Groups_Group( $this->store->get_view( $this->viewKey ) );
 
+			$this->reset_groups_user();
+
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
 			$this->vaa->view()->init_user_modifications();
@@ -107,12 +109,6 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			// Filter user-group relationships.
 			//add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
 
-			// @see Groups_User::init_cache()
-			/*Groups_Cache::set(
-				Groups_User::GROUP_IDS . $this->store->get_curUser()->ID,
-				array( $this->store->get_view( $this->viewKey ) ),
-				Groups_User::CACHE_GROUP
-			);*/
 
 			remove_shortcode( 'groups_member' );
 			remove_shortcode( 'groups_non_member' );
@@ -132,6 +128,43 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			add_filter( 'groups_group_can', array( $this, 'groups_group_can' ), 20, 3 );
 			add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
 		}
+	}
+
+	/**
+	 * Reset Groups_User data for the selected user.
+	 *
+	 * @since   1.7.x
+	 * @access  public
+	 * @param   int  $user_id
+	 */
+	public function reset_groups_user( $user_id = null ) {
+		if ( ! is_callable( array( 'Groups_User', 'clear_cache' ) ) ) {
+			return;
+		}
+
+		if ( ! $user_id ) {
+			$user_id = $this->store->get_selectedUser()->ID;
+		}
+
+		Groups_User::clear_cache( $user_id );
+
+		$capabilities_base   = array();
+		$capability_ids_base = array();
+		$groups_ids_base     = array( $this->selectedGroup->group_id );
+		$groups_base         = array( $this->selectedGroup );
+		$capabilities        = null;
+		$capability_ids      = null;
+		$groups_ids          = null;
+		$groups              = null;
+
+		Groups_Cache::set( Groups_User::CAPABILITIES_BASE . $user_id, $capabilities_base, Groups_User::CACHE_GROUP );
+		Groups_Cache::set( Groups_User::CAPABILITY_IDS_BASE . $user_id, $capability_ids_base, Groups_User::CACHE_GROUP );
+		Groups_Cache::set( Groups_User::GROUP_IDS_BASE . $user_id, $groups_ids_base, Groups_User::CACHE_GROUP );
+		Groups_Cache::set( Groups_User::GROUPS_BASE . $user_id, $groups_base, Groups_User::CACHE_GROUP );
+		//Groups_Cache::set( Groups_User::CAPABILITIES . $user_id, $capabilities, Groups_User::CACHE_GROUP );
+		//Groups_Cache::set( Groups_User::CAPABILITY_IDS . $user_id, $capability_ids, Groups_User::CACHE_GROUP );
+		//Groups_Cache::set( Groups_User::GROUP_IDS . $user_id, $groups_ids, Groups_User::CACHE_GROUP );
+		//Groups_Cache::set( Groups_User::GROUPS . $user_id, $groups, Groups_User::CACHE_GROUP );
 	}
 
 	/**
