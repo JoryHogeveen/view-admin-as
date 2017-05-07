@@ -96,6 +96,8 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 			$this->store->set_userMeta( false );
 		}
 
+		// @todo Update 1.7.2 -> yes/no settings to booleans.
+
 		// Update version, append if needed.
 		$this->store->set_optionData( $this->store->get_dbVersion(), 'db_version', true );
 		// Update option data.

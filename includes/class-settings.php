@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
@@ -157,16 +157,16 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 
 			$default_user = array(
 				'admin_menu_location' => 'top-secondary',
-				'force_group_users'   => 'no',
-				'freeze_locale'       => 'no',
-				'hide_front'          => 'no',
+				'force_group_users'   => false,
+				'freeze_locale'       => false,
+				'hide_front'          => false,
 				'view_mode'           => 'browse',
 			);
 			$allowed_user = array(
 				'admin_menu_location' => array( 'top-secondary', 'my-account' ),
-				'force_group_users'   => array( 'yes', 'no' ),
-				'freeze_locale'       => array( 'yes', 'no' ),
-				'hide_front'          => array( 'yes', 'no' ),
+				'force_group_users'   => array( true, false ),
+				'freeze_locale'       => array( true, false ),
+				'hide_front'          => array( true, false ),
 				'view_mode'           => array( 'browse', 'single' ),
 			);
 

@@ -127,7 +127,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * Force own locale on view.
 		 * @since  1.6.1
 		 */
-		if ( 'yes' === $this->store->get_userSettings( 'freeze_locale' )
+		if ( $this->store->get_userSettings( 'freeze_locale' )
 			&& (int) $this->store->get_curUser()->ID !== (int) $this->store->get_selectedUser()->ID
 		) {
 			add_action( 'init', array( $this, 'freeze_locale' ), 0 );
