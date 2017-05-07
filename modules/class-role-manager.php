@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.1
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
@@ -29,6 +29,14 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @var    VAA_View_Admin_As_Role_Manager
 	 */
 	private static $_instance = null;
+
+	/**
+	 * Module key.
+	 *
+	 * @since  1.7.2
+	 * @var    string
+	 */
+	protected $moduleKey = 'role_manager';
 
 	/**
 	 * Option key.
@@ -78,7 +86,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 		// Add this class to the modules in the main class.
 		$this->vaa->register_module( array(
-			'id'       => 'role_manager',
+			'id'       => $this->moduleKey,
 			'instance' => self::$_instance,
 		) );
 
@@ -96,7 +104,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		}
 
 		add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-		add_filter( 'view_admin_as_handle_ajax_role_manager', array( $this, 'ajax_handler' ), 10, 2 );
+		add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
 	}
 
 	/**
