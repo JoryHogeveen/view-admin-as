@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.1
+ * @version 1.7.2
  */
 final class VAA_API
 {
@@ -106,6 +106,27 @@ final class VAA_API
 		$controller = view_admin_as()->controller();
 		if ( $controller ) {
 			return $controller->is_current_view( $data, $type );
+		}
+		return false;
+	}
+
+	/**
+	 * Similar function to current_user_can().
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $cap   The capability.
+	 * @param   array   $caps  (optional) Capabilities to compare to.
+	 *                         Defaults to the selected caps for the current view.
+	 * @return  bool
+	 */
+	public static function current_view_can( $cap, $caps = array() ) {
+		$view = view_admin_as()->view();
+		if ( $view ) {
+			return $view->current_view_can( $cap, $caps );
 		}
 		return false;
 	}
