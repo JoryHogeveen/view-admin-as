@@ -957,6 +957,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Enable role defaults', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Set default screen settings for roles and apply them on users through various bulk and automatic actions', VIEW_ADMIN_AS_DOMAIN ),
+				'auto-js' => array(
+					'setting' => $this->moduleKey,
+					'key'     => 'enable',
+					'refresh' => true,
+				),
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -997,6 +1002,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 		$root = $root . '-role-defaults';
 
+		// @since  1.4  Enable apply defaults on register.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-register-enable',
 			'parent' => $root,
@@ -1005,12 +1011,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'value'   => $this->get_optionData( 'apply_defaults_on_register' ),
 				'compare' => true,
 				'label'   => __( 'Automatically apply defaults to new users', VIEW_ADMIN_AS_DOMAIN ),
+				'auto-js' => array(
+					'setting' => $this->moduleKey,
+					'key'     => 'apply_defaults_on_register',
+					'refresh' => false,
+				),
 			) ),
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'auto-height',
 			),
 		) );
+		// @since  1.5.3  Disable screen settings for users who can't access this plugin.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-disable-user-screen-options',
 			'parent' => $root,
@@ -1020,12 +1032,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Disable screen options', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( "Hide the screen options for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
+				'auto-js' => array(
+					'setting' => $this->moduleKey,
+					'key'     => 'disable_user_screen_options',
+					'refresh' => false,
+				),
 			) ),
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'auto-height',
 			),
 		) );
+		// @since  1.6  Lock meta box order and locations for users who can't access this plugin.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-lock-meta-boxes',
 			'parent' => $root,
@@ -1035,6 +1053,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Lock meta boxes', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( "Lock meta box order and locations for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
+				'auto-js' => array(
+					'setting' => $this->moduleKey,
+					'key'     => 'lock_meta_boxes',
+					'refresh' => false,
+				),
 			) ),
 			'href'   => false,
 			'meta'   => array(

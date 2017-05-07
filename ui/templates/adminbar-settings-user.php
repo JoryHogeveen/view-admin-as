@@ -51,6 +51,11 @@ if ( isset( $this ) &&
 							'label'   => __( 'My account', VIEW_ADMIN_AS_DOMAIN ),
 						),
 					),
+					'auto-js' => array(
+						'setting' => 'user_setting',
+					    'key'     => 'admin_menu_location',
+					    'refresh' => true,
+					),
 					//'auto_showhide_desc' => true
 				)
 			),
@@ -86,6 +91,11 @@ if ( isset( $this ) &&
 							'description' => __( 'Choose view on every pageload. This setting doesn\'t store views', VIEW_ADMIN_AS_DOMAIN ),
 						),
 					),
+					'auto-js' => array(
+						'setting' => 'user_setting',
+						'key'     => 'view_mode',
+						'refresh' => false,
+					),
 					//'auto_showhide_desc' => true
 				)
 			),
@@ -109,9 +119,14 @@ if ( isset( $this ) &&
 				array(
 					'name'        => $root . '-hide-front',
 					'value'       => $this->store->get_userSettings( 'hide_front' ),
-					'compare'     => 'yes',
+					'compare'     => true,
 					'label'       => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
 					'description' => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN ),
+					'auto-js' => array(
+						'setting' => 'user_setting',
+						'key'     => 'hide_front',
+						'refresh' => false,
+					),
 					//'auto_showhide_desc' => true,
 				)
 			),
@@ -138,9 +153,14 @@ if ( isset( $this ) &&
 					array(
 						'name'        => $root . '-freeze-locale',
 						'value'       => $this->store->get_userSettings( 'freeze_locale' ),
-						'compare'     => 'yes',
+						'compare'     => true,
 						'label'       => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
 						'description' => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN ),
+						'auto-js' => array(
+							'setting' => 'user_setting',
+							'key'     => 'freeze_locale',
+							'refresh' => ( $this->store->get_view( 'user' ) ) ? true : false,
+						),
 						//'auto_showhide_desc' => true,
 					)
 				),
@@ -168,9 +188,14 @@ if ( isset( $this ) &&
 					array(
 						'name'        => $root . '-force-group-users',
 						'value'       => $this->store->get_userSettings( 'force_group_users' ),
-						'compare'     => 'yes',
+						'compare'     => true,
 						'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
 						'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
+						'auto-js' => array(
+							'setting' => 'user_setting',
+							'key'     => 'force_group_users',
+							'refresh' => true,
+						),
 						//'auto_showhide_desc' => true,
 					)
 				),

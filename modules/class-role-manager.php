@@ -445,6 +445,11 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Enable role manager', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Add or remove roles and grant or deny them capabilities', VIEW_ADMIN_AS_DOMAIN ),
+				'auto-js' => array(
+					'setting' => $this->moduleKey,
+					'key'     => 'enable',
+					'refresh' => true,
+				),
 			) ),
 			'href'   => false,
 			'meta'   => array(

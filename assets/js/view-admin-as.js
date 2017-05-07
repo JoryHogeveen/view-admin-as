@@ -89,7 +89,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		VAA_View_Admin_As.init_caps();
 		VAA_View_Admin_As.init_users();
-		VAA_View_Admin_As.init_settings();
+		VAA_View_Admin_As.init_auto_js();
 		VAA_View_Admin_As.init_module_role_defaults();
 		VAA_View_Admin_As.init_module_role_manager();
 
@@ -402,11 +402,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 
 				if ( ! data.hasOwnProperty( 'type' ) ) {
-					if ( success ) {
-						data.type = 'success';
-					} else {
-						data.type = 'error';
-					}
+					data.type = ( success ) ? 'success' : 'error';
 				}
 
 				if ( 'popup' === display ) {
@@ -621,69 +617,42 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
-	 * SETTINGS.
-	 * @since  1.5
+	 * Automatic option handling.
+	 * @since  1.7.2
 	 * @return {null}  Nothing.
 	 */
-	VAA_View_Admin_As.init_settings = function() {
+	VAA_View_Admin_As.init_auto_js = function() {
 
-		var root = VAA_View_Admin_As.root + '-settings',
-			prefix = 'vaa-settings',
-			root_prefix = VAA_View_Admin_As.prefix + root;
-
-		// @since  1.5  Location.
-		$document.on( 'change', root_prefix + '-admin-menu-location select#' + prefix + '-admin-menu-location', function( e ) {
+		$document.on( 'change', VAA_View_Admin_As.root + ' [vaa-auto-js]', function( e ) {
 			e.preventDefault();
-			var val = $(this).val();
-			if ( val && '' !== val ) {
-				var view_data = { user_setting : { admin_menu_location : val } };
-				VAA_View_Admin_As.ajax( view_data, true );
+			var $this = $( this ),
+				data = VAA_View_Admin_As.json_decode( $this.attr('vaa-auto-js') );
+			if ( 'object' === typeof data ) {
+				VAA_View_Admin_As.do_auto_js( this, data );
 			}
 		} );
 
-		// @since  1.5  View mode.
-		$document.on( 'change', root_prefix + '-view-mode input.radio.' + prefix + '-view-mode', function( e ) {
-			e.preventDefault();
-			var val = $(this).val();
-			if ( val && '' !== val ) {
-				var view_data = { user_setting : { view_mode : val } };
-				VAA_View_Admin_As.ajax( view_data, false );
+		VAA_View_Admin_As.do_auto_js = function( elem, data ) {
+			var $elem   = $( elem ),
+				setting = data.setting,
+				key     = data.key,
+				val     = $elem.val(),
+				refresh = false;
+			if ( data.hasOwnProperty( 'refresh' ) ) {
+				refresh = Boolean( data.refresh );
 			}
-		} );
+			if ( 'checkbox' === $elem.attr('type') ) {
+				val = elem.checked;
+			}
+			if ( 'undefined' !== typeof val ) {
+				var val_data = {},
+					view_data = {};
+				val_data[ key ] = val;
+				view_data[ setting ] = val_data;
+				VAA_View_Admin_As.ajax( view_data, refresh );
+			}
+		}
 
-		// @since  1.5.2  Force group users.
-		$document.on( 'change', root_prefix + '-force-group-users input#' + prefix + '-force-group-users', function( e ) {
-			e.preventDefault();
-			var view_data = { user_setting : { force_group_users : "no" } };
-			if ( this.checked ) {
-				view_data = { user_setting : { force_group_users : "yes" } };
-			}
-			VAA_View_Admin_As.ajax( view_data, true );
-		} );
-
-		// @since  1.6  Enable hide front.
-		$document.on( 'change', root_prefix + '-hide-front input#' + prefix + '-hide-front', function( e ) {
-			e.preventDefault();
-			var view_data = { user_setting : { hide_front : "no" } };
-			if ( this.checked ) {
-				view_data = { user_setting : { hide_front : "yes" } };
-			}
-			VAA_View_Admin_As.ajax( view_data, false );
-		} );
-
-		// @since  1.6.1  Enable freeze locale.
-		$document.on( 'change', root_prefix + '-freeze-locale input#' + prefix + '-freeze-locale', function( e ) {
-			e.preventDefault();
-			var view_data = { user_setting : { freeze_locale : "no" } };
-			if ( this.checked ) {
-				view_data = { user_setting : { freeze_locale : "yes" } };
-			}
-			var reload = false;
-			if ( 'object' === typeof VAA_View_Admin_As.view && 'undefined' !== typeof VAA_View_Admin_As.view.user ) {
-				reload = true;
-			}
-			VAA_View_Admin_As.ajax( view_data, reload );
-		} );
 	};
 
 	/**
@@ -887,53 +856,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
-		var root = VAA_View_Admin_As.root + '-modules',
-			prefix = 'vaa-modules',
+		var root = VAA_View_Admin_As.root + '-role-defaults',
+			prefix = 'vaa-role-defaults',
 			root_prefix = VAA_View_Admin_As.prefix + root;
-
-		// Enable module.
-		$document.on( 'change', root_prefix + '-role-defaults-enable input#' + prefix + '-role-defaults-enable', function( e ) {
-			e.preventDefault();
-			var view_data = { role_defaults : { enable : 0 } };
-			if ( this.checked ) {
-				view_data = { role_defaults : { enable : true } };
-			}
-			VAA_View_Admin_As.ajax( view_data, true );
-		} );
-
-		root = VAA_View_Admin_As.root + '-role-defaults';
-		prefix = 'vaa-role-defaults';
-		root_prefix = VAA_View_Admin_As.prefix + root;
-
-		// @since  1.4  Enable apply defaults on register.
-		$document.on( 'change', root_prefix + '-setting-register-enable input#' + prefix + '-setting-register-enable', function( e ) {
-			e.preventDefault();
-			var view_data = { role_defaults : { apply_defaults_on_register : 0 } };
-			if ( this.checked ) {
-				view_data = { role_defaults : { apply_defaults_on_register : true } };
-			}
-			VAA_View_Admin_As.ajax( view_data, false );
-		} );
-
-		// @since  1.5.3  Disable screen settings for users who can't access this plugin.
-		$document.on( 'change', root_prefix + '-setting-disable-user-screen-options input#' + prefix + '-setting-disable-user-screen-options', function( e ) {
-			e.preventDefault();
-			var view_data = { role_defaults : { disable_user_screen_options : 0 } };
-			if ( this.checked ) {
-				view_data = { role_defaults : { disable_user_screen_options : true } };
-			}
-			VAA_View_Admin_As.ajax( view_data, false );
-		} );
-
-		// @since  1.6  Lock meta box order and locations for users who can't access this plugin.
-		$document.on( 'change', root_prefix + '-setting-lock-meta-boxes input#' + prefix + '-setting-lock-meta-boxes', function( e ) {
-			e.preventDefault();
-			var view_data = { role_defaults : { lock_meta_boxes : 0 } };
-			if ( this.checked ) {
-				view_data = { role_defaults : { lock_meta_boxes : true } };
-			}
-			VAA_View_Admin_As.ajax( view_data, false );
-		} );
 
 		// @since  1.6.3  Add new meta.
 		$document.on( 'click touchend', root_prefix + '-meta-add button#' + prefix + '-meta-add', function( e ) {
@@ -1110,23 +1035,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.init_module_role_manager = function() {
 
-		var root = VAA_View_Admin_As.root + '-modules',
-			prefix = 'vaa-modules',
+		var root = VAA_View_Admin_As.root + '-role-manager',
+			prefix = 'vaa-role-manager',
 			root_prefix = VAA_View_Admin_As.prefix + root;
-
-		// Enable module.
-		$document.on( 'change', root_prefix + '-role-manager-enable input#' + prefix + '-role-manager-enable', function( e ) {
-			e.preventDefault();
-			var view_data = { role_manager : { enable : 0 } };
-			if ( this.checked ) {
-				view_data = { role_manager : { enable : true } };
-			}
-			VAA_View_Admin_As.ajax( view_data, true );
-		} );
-
-		root = VAA_View_Admin_As.root + '-role-manager';
-		prefix = 'vaa-role-manager';
-		root_prefix = VAA_View_Admin_As.prefix + root;
 
 		// @since  1.7  Apply current view capabilities to role.
 		$document.on( 'click touchend', root_prefix + '-apply-view-apply button#' + prefix + '-apply-view-apply', function( e ) {

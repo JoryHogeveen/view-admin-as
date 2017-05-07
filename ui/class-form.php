@@ -84,7 +84,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 		$args['attr']['name'] = $name;
 		$args['attr']['class'] = 'button' . $class;
 
-		$attr = self::parse_to_html_attr( $args['attr'] );
+		$attr = $args['attr'];
+		$attr = self::enable_auto_js( $attr, $args );
+		$attr = self::parse_to_html_attr( $attr );
 
 		return '<' . $elem . ' ' . $attr . '>' . $label . '</' . $elem . '>';
 	}
@@ -128,7 +130,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 		$args['attr']['value'] = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
 		$args['attr']['class'] = $class;
 
-		$attr = self::parse_to_html_attr( $args['attr'] );
+		$attr = $args['attr'];
+		$attr = self::enable_auto_js( $attr, $args );
+		$attr = self::parse_to_html_attr( $attr );
 
 		$label_attr = array();
 		$desc_attr = array();
@@ -185,7 +189,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 		$args['attr']['value'] = ( ! empty( $args['checkbox_value'] ) ) ? $args['checkbox_value'] : '1';
 		$args['attr']['class'] = 'checkbox' . $class;
 
-		$attr = self::parse_to_html_attr( $args['attr'] );
+		$attr = $args['attr'];
+		$attr = self::enable_auto_js( $attr, $args );
+		$attr = self::parse_to_html_attr( $attr );
 
 		$label_attr = array();
 		$desc_attr = array();
@@ -253,7 +259,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 				$args['attr']['value'] = $args['compare'];
 				$args['attr']['class'] = 'radio' . $class;
 
-				$attr = self::parse_to_html_attr( $args['attr'] );
+				$attr = $args['attr'];
+				$attr = self::enable_auto_js( $attr, $args );
+				$attr = self::parse_to_html_attr( $attr );
 
 				$label_attr = array();
 				$desc_attr = array();
@@ -330,7 +338,10 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 			$data['attr']['id'] = $id;
 			$data['attr']['name'] = $name;
 			$data['attr']['class'] = 'selectbox' . $class;
-			$attr = self::parse_to_html_attr( $data['attr'] );
+
+			$attr = $data['attr'];
+			$attr = self::enable_auto_js( $attr, $data );
+			$attr = self::parse_to_html_attr( $attr );
 
 			$html .= '<select ' . $attr . '>';
 
@@ -422,10 +433,29 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * @since   1.7.2
+	 * @static
+	 * @param   array  $args  The form element args.
+	 * @param   array  $attr  The attributes array to append to.
+	 * @return  array
+	 */
+	public static function enable_auto_js( $attr, $args, $multi = false ) {
+		if ( ! empty( $args['auto-js'] ) ) {
+			$key = 'vaa-auto-js';
+			if ( $multi ) {
+				$key .= '-multi';
+			}
+			$attr[ $key ] = wp_json_encode( $args['auto-js'] );
+		}
+		return $attr;
+	}
+
+	/**
 	 * Update label and description attributes to enable auto show/hide functionality
 	 *
 	 * @since   1.7
 	 * @since   1.7.2   Moved to this class from admin bar class.
+	 * @static
 	 * @param   string  $target      The target element.
 	 * @param   array   $label_attr  Label attributes.
 	 * @param   array   $desc_attr   Description attributes.
@@ -445,10 +475,10 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Converts an array of attributes to a HTML string format starting with a space.
 	 *
+	 * @static
 	 * @since   1.6.1
 	 * @since   1.7     Renamed from `parse_attr_to_html`
 	 * @since   1.7.2   Support array values. (Example: CSS classes). Moved to this class from admin bar class.
-	 * @static
 	 * @param   array   $array  Array to parse. (attribute => value pairs)
 	 * @return  string
 	 */
