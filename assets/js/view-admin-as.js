@@ -639,12 +639,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			$this.on( data.event, function( e ) {
 				e.preventDefault();
-				VAA_View_Admin_As.do_auto_js( this, data );
+				VAA_View_Admin_As.do_auto_js( data, this );
 				return false;
 			} );
 		} );
 
-		VAA_View_Admin_As.do_auto_js = function( elem, data ) {
+		VAA_View_Admin_As.do_auto_js = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
 				return;
 			}
@@ -684,12 +684,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( 'object' !== typeof auto_js || null === auto_js ) {
 						auto_js = {};
 					}
-					auto_js.optional = ( auto_js.hasOwnProperty( 'optional' ) ) ? auto_js.optional : false;
+					auto_js.required = ( auto_js.hasOwnProperty( 'required' ) ) ? Boolean( auto_js.required ) : true;
 
 					var val_val = VAA_View_Admin_As.get_auto_js_values_recursive( auto_js, elem );
 
 					if ( null === val_val ) {
-						if ( ! auto_js.optional ) {
+						if ( auto_js.required ) {
 							val = null;
 							stop = true;
 							return false;
