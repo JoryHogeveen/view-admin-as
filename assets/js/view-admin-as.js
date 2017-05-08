@@ -640,6 +640,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$this.on( data.event, function( e ) {
 				e.preventDefault();
 				VAA_View_Admin_As.do_auto_js( this, data );
+				return false;
 			} );
 		} );
 
@@ -662,7 +663,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} else if ( data.hasOwnProperty( 'values' ) ) {
 				val_data = {};
 				$.each( data.values, function( option_key, auto_js ) {
-					if ( 'object' !== typeof auto_js ) {
+					if ( 'object' !== typeof auto_js || stop ) {
 						return;
 					}
 					auto_js.optional = ( auto_js.hasOwnProperty( 'optional' ) ) ? auto_js.optional : false;

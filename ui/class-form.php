@@ -85,6 +85,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 		$args['attr']['class'] = 'button' . $class;
 
 		$attr = $args['attr'];
+		if ( ! empty( $args['auto-js'] ) && empty( $args['auto-js']['event'] ) ) {
+			$args['auto-js']['event'] = 'click';
+		}
 		$attr = self::enable_auto_js( $attr, $args );
 		$attr = self::parse_to_html_attr( $attr );
 
@@ -433,6 +436,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
+	 * Auto-generate a JSON attribute for automatic JS handling.
+	 * @internal  Please do not use this yet since it's in development and subject to changes.
+	 *
 	 * @since   1.7.2
 	 * @static
 	 * @param   array  $args  The form element args.
