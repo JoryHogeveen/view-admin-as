@@ -681,7 +681,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( data.hasOwnProperty( 'values' ) ) {
 				val = {};
 				$.each( data.values, function( val_key, auto_js ) {
-					if ( null === auto_js ) {
+					if ( 'object' !== typeof auto_js || null === auto_js ) {
 						auto_js = {};
 					}
 					auto_js.optional = ( auto_js.hasOwnProperty( 'optional' ) ) ? auto_js.optional : false;
@@ -722,30 +722,32 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				case 'multi':
 					val = {};
 					$elem.each( function() {
-						var $this = $(this);
+						var $this = $(this),
+						    value = ( data.hasOwnProperty( 'attr' ) ) ? $this.attr( data.attr ) : $this.val();
 						if ( 'checkbox' === $this.attr( 'type' ) ) {
-							val[ $this.val() ] = this.checked;
+							val[ value ] = this.checked;
 						} else {
-							val[ $this.attr('name') ] = $this.val();
+							val[ $this.attr('name') ] = value;
 						}
 					} );
 					break;
 				case 'selected':
 					val = [];
 					$elem.each( function() {
-						var $this = $(this);
+						var $this = $(this),
+							value = ( data.hasOwnProperty( 'attr' ) ) ? $this.attr( data.attr ) : $this.val();
 						if ( 'checkbox' === $this.attr( 'type' ) ) {
 							if ( this.checked ) {
-								val.push( $this.val() );
+								val.push( value );
 							}
 						} else {
-							val.push( $this.val() );
+							val.push( value );
 						}
 					} );
 					break;
 				case 'json':
 					try {
-						val = JSON.parse( $elem.val() );
+						val = JSON.parse( ( ( data.hasOwnProperty( 'attr' ) ) ? $elem.attr( data.attr ) : $elem.val() ) );
 					} catch ( err ) {
 						val = null;
 						// @todo Improve error message.
@@ -762,7 +764,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( 'checkbox' === $elem.attr( 'type' ) ) {
 						val = $elem.is(':checked');
 					} else {
-						var value = $elem.val();
+						var value = ( data.hasOwnProperty( 'attr' ) ) ? $elem.attr( data.attr ) : $elem.val();
 						if ( value ) {
 							val = value;
 						}
