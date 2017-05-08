@@ -221,7 +221,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					var view_data = {},
 						val = $this.attr('rel');
 					if ( ! val ) {
-						val = $this.find('.vaa-view-data').attr('data-view-value');
+						val = $this.find('.vaa-view-data').attr('vaa-view-value');
 					}
 					view_data[ type ] = VAA_View_Admin_As.json_decode( val );
 					view_data = ( 'object' === typeof view_data[ type ] ) ? view_data[ type ] : view_data;

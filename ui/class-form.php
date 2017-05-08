@@ -48,8 +48,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 		$attr = (array) $attr;
 		$class = ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '';
 		$attr['class'] = 'vaa-view-data' . $class;
-		$attr['data-view-type'] = $type;
-		$attr['data-view-value'] = $value;
+		$attr['vaa-view-type'] = $type;
+		$attr['vaa-view-value'] = $value;
 		$attr = self::parse_to_html_attr( $attr );
 		return '<span ' . $attr . '>' . $title . '</span>';
 	}
