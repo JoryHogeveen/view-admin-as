@@ -646,13 +646,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		VAA_View_Admin_As.do_auto_js = function( elem, data ) {
 			var $elem    = $( elem ),
-				setting  = data.setting,
-				key      = data.key,
+				setting  = ( data.hasOwnProperty( 'setting' ) ) ? Boolean( data.setting ) : null,
+				key      = ( data.hasOwnProperty( 'key' ) ) ? Boolean( data.key ) : null,
 				val      = null,
 				val_data = null,
 				confirm  = ( data.hasOwnProperty( 'confirm' ) ) ? Boolean( data.confirm ) : false,
-				refresh  = ( data.hasOwnProperty( 'refresh' ) ) ? Boolean( data.refresh ) : false,
-				stop     = false;
+				refresh  = ( data.hasOwnProperty( 'refresh' ) ) ? Boolean( data.refresh ) : false;
 
 			if ( data.hasOwnProperty( 'value' ) ) {
 				if ( 'object' !== typeof data.value ) {
@@ -661,52 +660,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				val = VAA_View_Admin_As.get_auto_js_value( data.value, elem );
 
 			} else if ( data.hasOwnProperty( 'values' ) ) {
-				val_data = {};
-				$.each( data.values, function( option_key, auto_js ) {
-					if ( 'object' !== typeof auto_js || stop ) {
-						return;
-					}
-					auto_js.optional = ( auto_js.hasOwnProperty( 'optional' ) ) ? auto_js.optional : false;
-
-					if ( auto_js.hasOwnProperty( 'values' ) ) {
-						val = {};
-						$.each( auto_js.values, function( val_key, val_auto_js ) {
-							val_auto_js.optional = ( val_auto_js.hasOwnProperty( 'optional' ) ) ? val_auto_js.optional : false;
-							var val_val = VAA_View_Admin_As.get_auto_js_value( val_auto_js, elem );
-							if ( null === val_val ) {
-								val = null;
-								if ( ! val_auto_js.optional ) {
-									stop = true;
-									return false;
-								}
-							}
-							val[ val_key ] = val_val;
-						} );
-
-					} else {
-						val = VAA_View_Admin_As.get_auto_js_value( auto_js, elem );
-					}
-					if ( null === val ) {
-						val = null;
-						if ( ! auto_js.optional ) {
-							stop = true;
-							return false;
-						}
-					}
-					val_data[ option_key ] = val;
-				} );
-
+				val_data = VAA_View_Admin_As.get_auto_js_values_recursive( data, elem );
 			} else if ( 'checkbox' === $elem.attr( 'type' ) ) {
 				val = elem.checked;
 			} else {
 				val = $elem.val();
 			}
 
-			if ( stop ) {
+			if ( 'undefined' === typeof val || ! setting || ( ! view_data && ! key ) ) {
+				// @todo Notifications etc.
 				return;
 			}
 
-			if ( 'undefined' !== typeof val || val_data ) {
+			if ( null !== val || null !== val_data ) {
 				var view_data = {};
 				if ( ! val_data ) {
 					val_data = {};
@@ -723,6 +689,38 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					VAA_View_Admin_As.ajax( view_data, refresh );
 				}
 			}
+		};
+
+		VAA_View_Admin_As.get_auto_js_values_recursive = function( data, elem ) {
+			if ( 'object' !== typeof data ) {
+				return null;
+			}
+			var stop = false,
+				val = null;
+			if ( data.hasOwnProperty( 'values' ) ) {
+				val = {};
+				$.each( data.values, function( val_key, auto_js ) {
+					auto_js.optional = ( auto_js.hasOwnProperty( 'optional' ) ) ? auto_js.optional : false;
+
+					var val_val = VAA_View_Admin_As.get_auto_js_values_recursive( auto_js, elem );
+
+					if ( null === val_val && ! auto_js.optional ) {
+						val = null;
+						stop = true;
+						return false;
+					} else {
+						val[ val_key ] = val_val;
+					}
+				} );
+
+				if ( stop ) {
+					return null;
+				}
+
+			} else {
+				val = VAA_View_Admin_As.get_auto_js_value( data, elem );
+			}
+			return val;
 		};
 
 		VAA_View_Admin_As.get_auto_js_value = function( data, elem ) {
@@ -760,9 +758,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					} );
 					break;
 				case 'json':
-					val = $elem.val();
 					try {
-						val = JSON.parse( val );
+						val = JSON.parse( $elem.val() );
 					} catch ( err ) {
 						val = null;
 						// @todo Improve error message.
@@ -783,7 +780,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					break;
 			}
 			return val;
-		}
+		};
 	};
 
 	/**
