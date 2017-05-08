@@ -445,13 +445,19 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * @param   array  $attr  The attributes array to append to.
 	 * @return  array
 	 */
-	public static function enable_auto_js( $attr, $args, $multi = false ) {
+	public static function enable_auto_js( $attr, $args ) {
 		if ( ! empty( $args['auto-js'] ) ) {
-			$key = 'vaa-auto-js';
-			if ( $multi ) {
-				$key .= '-multi';
+
+			// Auto-generate values array based upon key and value keys.
+			if ( ! empty( $args['auto-js']['key'] ) && empty( $args['auto-js']['values'] ) ) {
+				$value = ( isset( $args['auto-js']['value'] ) ) ? $args['auto-js']['value'] : null;
+				$args['auto-js']['values'] = array();
+				$args['auto-js']['values'][ $args['auto-js']['key'] ] = $value;
+				unset( $args['auto-js']['key'] );
+				unset( $args['auto-js']['value'] );
 			}
-			$attr[ $key ] = wp_json_encode( $args['auto-js'] );
+
+			$attr['vaa-auto-js'] = wp_json_encode( $args['auto-js'] );
 		}
 		return $attr;
 	}
