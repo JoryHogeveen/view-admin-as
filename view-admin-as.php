@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 
 	define( 'VIEW_ADMIN_AS_VERSION',    '1.7.2-dev' );
-	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.7' );
+	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.7.2' );
 	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
 	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
 	define( 'VIEW_ADMIN_AS_DIR',        plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
