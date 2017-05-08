@@ -644,6 +644,28 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		} );
 
+		/**
+		 * Get the values of the option data.
+		 * @since  1.7.2
+		 * @param  {object} data {
+		 *     The option data.
+		 *     @type  {string}   setting  The setting key.
+		 *     @type  {boolean}  confirm  Confirm before sending ajax?
+		 *     @type  {boolean}  refresh  Refresh after sending ajax?
+		 *     @type  {object}   values {
+		 *         A object of multiple values as option_key => data (see below parameters).
+		 *         Can also contain another values parameter to build the option data recursive.
+		 *         @type  {boolean}  required   Whether this option is required or not (default: true).
+		 *         @type  {mixed}    element    The option element (overwrites the second elem parameter).
+		 *         @type  {string}   processor  The value processor.
+		 *         @type  {string}   attr       Get an attribute value instead of using .val()?
+		 *         OR
+		 *         @type  {object}   values     An object of multiple values as option_key => data (see above parameters).
+		 *     }
+		 * }
+		 * @param  {mixed}  elem  The element (runs through $() function).
+		 * @return {object}
+		 */
 		VAA_View_Admin_As.do_auto_js = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
 				return;
@@ -672,6 +694,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 		};
 
+		/**
+		 * Get the values of the option data.
+		 * @since  1.7.2
+		 * @param  {object} data {
+		 *     The option data.
+		 *     @type  {boolean}  required   Whether this option is required or not (default: true).
+		 *     @type  {mixed}    element    The option element (overwrites the second elem parameter).
+		 *     @type  {string}   processor  The value processor.
+		 *     @type  {string}   attr       Get an attribute value instead of using .val()?
+		 *     OR
+		 *     @type  {object}   values     An object of multiple values as option_key => data (see above parameters).
+		 * }
+		 * @param  {mixed}  elem  The element (runs through $() function).
+		 * @return {object}
+		 */
 		VAA_View_Admin_As.get_auto_js_values_recursive = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
 				return null;
@@ -709,6 +746,18 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return val;
 		};
 
+		/**
+		 * Get the value of an option through various processors.
+		 * @since  1.7.2
+		 * @param  {object} data {
+		 *     The option data.
+		 *     @type  {mixed}   element    The option element (overwrites the second elem parameter).
+		 *     @type  {string}  processor  The value processor.
+		 *     @type  {string}  attr       Get an attribute value instead of using .val()?
+		 * }
+		 * @param  {mixed}  elem  The element (runs through $() function).
+		 * @return {*}
+		 */
 		VAA_View_Admin_As.get_auto_js_value = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
 				return null;
