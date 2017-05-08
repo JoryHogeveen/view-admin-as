@@ -645,40 +645,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		VAA_View_Admin_As.do_auto_js = function( elem, data ) {
+			if ( 'object' !== typeof data ) {
+				return;
+			}
 			var $elem    = $( elem ),
-				setting  = ( data.hasOwnProperty( 'setting' ) ) ? Boolean( data.setting ) : null,
-				key      = ( data.hasOwnProperty( 'key' ) ) ? Boolean( data.key ) : null,
-				val      = null,
-				val_data = null,
+				setting  = ( data.hasOwnProperty( 'setting' ) ) ? String( data.setting ) : null,
 				confirm  = ( data.hasOwnProperty( 'confirm' ) ) ? Boolean( data.confirm ) : false,
 				refresh  = ( data.hasOwnProperty( 'refresh' ) ) ? Boolean( data.refresh ) : false;
 
-			if ( data.hasOwnProperty( 'value' ) ) {
-				if ( 'object' !== typeof data.value ) {
-					return false;
-				}
-				val = VAA_View_Admin_As.get_auto_js_value( data.value, elem );
+			var val = VAA_View_Admin_As.get_auto_js_values_recursive( data, elem );
 
-			} else if ( data.hasOwnProperty( 'values' ) ) {
-				val_data = VAA_View_Admin_As.get_auto_js_values_recursive( data, elem );
-			} else if ( 'checkbox' === $elem.attr( 'type' ) ) {
-				val = elem.checked;
-			} else {
-				val = $elem.val();
-			}
-
-			if ( 'undefined' === typeof val || ! setting || ( ! view_data && ! key ) ) {
-				// @todo Notifications etc.
-				return;
-			}
-
-			if ( null !== val || null !== val_data ) {
+			if ( null !== val ) {
 				var view_data = {};
-				if ( ! val_data ) {
-					val_data = {};
-					val_data[ key ] = val;
-				}
-				view_data[ setting ] = val_data;
+				view_data[ setting ] = val;
 
 				if ( confirm ) {
 					confirm = VAA_View_Admin_As.item_confirm( $elem.parent(), VAA_View_Admin_As.__confirm );
@@ -688,6 +667,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} else {
 					VAA_View_Admin_As.ajax( view_data, refresh );
 				}
+			} else {
+				// @todo Notifications etc.
 			}
 		};
 
@@ -700,14 +681,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( data.hasOwnProperty( 'values' ) ) {
 				val = {};
 				$.each( data.values, function( val_key, auto_js ) {
+					if ( null === auto_js ) {
+						auto_js = {};
+					}
 					auto_js.optional = ( auto_js.hasOwnProperty( 'optional' ) ) ? auto_js.optional : false;
 
 					var val_val = VAA_View_Admin_As.get_auto_js_values_recursive( auto_js, elem );
 
-					if ( null === val_val && ! auto_js.optional ) {
-						val = null;
-						stop = true;
-						return false;
+					if ( null === val_val ) {
+						if ( ! auto_js.optional ) {
+							val = null;
+							stop = true;
+							return false;
+						}
 					} else {
 						val[ val_key ] = val_val;
 					}
@@ -773,9 +759,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					}
 					break;
 				default:
-					var value = $( data.element ).val();
-					if ( value ) {
-						val = value;
+					if ( 'checkbox' === $elem.attr( 'type' ) ) {
+						val = $elem.is(':checked');
+					} else {
+						var value = $elem.val();
+						if ( value ) {
+							val = value;
+						}
 					}
 					break;
 			}
