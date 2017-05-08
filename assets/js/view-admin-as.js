@@ -746,6 +746,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return val;
 		};
 
+		/* eslint-disable complexity */
 		/**
 		 * Get the value of an option through various processors.
 		 * @since  1.7.2
@@ -822,6 +823,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			return val;
 		};
+		/* eslint-enable complexity */
 	};
 
 	/**
