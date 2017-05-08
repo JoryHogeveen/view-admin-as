@@ -664,11 +664,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *     }
 		 * }
 		 * @param  {mixed}  elem  The element (runs through $() function).
-		 * @return {object}
+		 * @return {object} Nothing.
 		 */
 		VAA_View_Admin_As.do_auto_js = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
-				return;
+				return null;
 			}
 			var $elem    = $( elem ),
 				setting  = ( data.hasOwnProperty( 'setting' ) ) ? String( data.setting ) : null,
@@ -707,7 +707,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *     @type  {object}   values     An object of multiple values as option_key => data (see above parameters).
 		 * }
 		 * @param  {mixed}  elem  The element (runs through $() function).
-		 * @return {object}
+		 * @return {object} Value data.
 		 */
 		VAA_View_Admin_As.get_auto_js_values_recursive = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
@@ -757,7 +757,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *     @type  {string}  attr       Get an attribute value instead of using .val()?
 		 * }
 		 * @param  {mixed}  elem  The element (runs through $() function).
-		 * @return {*}
+		 * @return {*} Value.
 		 */
 		VAA_View_Admin_As.get_auto_js_value = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
