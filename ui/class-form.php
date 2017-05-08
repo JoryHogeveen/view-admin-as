@@ -263,7 +263,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 				$args['attr']['class'] = 'radio' . $class;
 
 				$attr = $args['attr'];
-				$attr = self::enable_auto_js( $attr, $args );
+				$attr = self::enable_auto_js( $attr, $data );
 				$attr = self::parse_to_html_attr( $attr );
 
 				$label_attr = array();
