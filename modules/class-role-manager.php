@@ -540,8 +540,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			);
 		}
 
-		/*
-		 * Apply current view capabilities to role.
+		/**
+		 * @since  1.7  Apply current view capabilities to role.
 		 */
 		$icon = 'dashicons-hidden';
 		if ( $this->store->get_view() ) {
@@ -605,8 +605,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			) );
 		} // End if().
 
-		/*
-		 * Rename role.
+		/**
+		 * @since  1.7.1  Rename role.
 		 */
 		$admin_bar->add_group( array(
 			'id'     => $root . '-rename',
@@ -660,6 +660,24 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'  => $root . '-rename-apply',
 				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => 'button-primary',
+				'auto-js' => array(
+					'setting' => $this->moduleKey,
+					'refresh' => true,
+					'values'  => array(
+						'rename_role' => array(
+							'values' => array(
+								'role' => array(
+									'element'   => '#wp-admin-bar-' . $root . '-rename-select select#' . $root . '-rename-select',
+									'processor' => 'single', // Default.
+								),
+								'new_name' => array(
+									'element'   => '#wp-admin-bar-' . $root . '-rename-input input#' . $root . '-rename-input',
+									'processor' => 'single',
+								),
+							),
+						),
+					),
+				),
 			) ),
 			'href'   => false,
 				'meta'   => array(
@@ -667,8 +685,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			),
 		) );
 
-		/*
-		 * Clone role.
+		/**
+		 * @since  1.7  Clone role.
 		 */
 		$admin_bar->add_group( array(
 			'id'     => $root . '-clone',
@@ -722,6 +740,24 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'  => $root . '-clone-apply',
 				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => 'button-primary',
+				'auto-js' => array(
+					'setting' => $this->moduleKey,
+					'refresh' => true,
+					'values'  => array(
+						'clone_role' => array(
+							'values' => array(
+								'role' => array(
+									'element'   => '#wp-admin-bar-' . $root . '-clone-select select#' . $root . '-clone-select',
+									'processor' => 'single', // Default.
+								),
+								'new_role' => array(
+									'element'   => '#wp-admin-bar-' . $root . '-clone-input input#' . $root . '-clone-input',
+									'processor' => 'single',
+								),
+							),
+						),
+					),
+				),
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -729,8 +765,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			),
 		) );
 
-		/*
-		 * Delete role.
+		/**
+		 * @since  1.7  Delete role.
 		 */
 		$role_select_options = array_diff_key( $role_select_options, $this->protected_roles );
 		$admin_bar->add_group( array(
@@ -771,6 +807,16 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'  => $root . '-delete-apply',
 				'label' => __( 'Delete', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => 'button-primary',
+				'auto-js' => array(
+					'setting' => $this->moduleKey,
+					'key'     => 'delete_role',
+					'confirm' => true,
+					'refresh' => true,
+					'value'   => array(
+						'element' => '#wp-admin-bar-' . $root . '-delete-select select#' . $root . '-delete-select',
+						'processor' => 'single', // Default.
+					),
+				),
 			) ),
 			'href'   => false,
 			'meta'   => array(

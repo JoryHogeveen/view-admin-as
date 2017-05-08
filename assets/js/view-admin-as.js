@@ -89,12 +89,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		VAA_View_Admin_As.init_caps();
 		VAA_View_Admin_As.init_users();
-		VAA_View_Admin_As.init_auto_js();
 		VAA_View_Admin_As.init_module_role_defaults();
 		VAA_View_Admin_As.init_module_role_manager();
 
 		// Functionality that require the document to be fully loaded.
 		$window.on( 'load', function() {
+
+			VAA_View_Admin_As.init_auto_js();
+
 			// Load autoMaxHeight elements.
 			VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
 
@@ -623,36 +625,164 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.init_auto_js = function() {
 
-		$document.on( 'change', VAA_View_Admin_As.root + ' [vaa-auto-js]', function( e ) {
-			e.preventDefault();
+		$( VAA_View_Admin_As.root + ' [vaa-auto-js]' ).each( function() {
 			var $this = $( this ),
 				data = VAA_View_Admin_As.json_decode( $this.attr('vaa-auto-js') );
-			if ( 'object' === typeof data ) {
-				VAA_View_Admin_As.do_auto_js( this, data );
+			if ( 'object' !== typeof data ) {
+				return;
 			}
+			if ( ! data.hasOwnProperty('event') ) {
+				data.event = 'change';
+			}
+			if ( 'click' === data.event ) {
+				data.event = 'click touchend';
+			}
+			$this.on( data.event, function( e ) {
+				e.preventDefault();
+				VAA_View_Admin_As.do_auto_js( this, data );
+			} );
 		} );
 
 		VAA_View_Admin_As.do_auto_js = function( elem, data ) {
-			var $elem   = $( elem ),
-				setting = data.setting,
-				key     = data.key,
-				val     = $elem.val(),
-				refresh = false;
-			if ( data.hasOwnProperty( 'refresh' ) ) {
-				refresh = Boolean( data.refresh );
-			}
-			if ( 'checkbox' === $elem.attr('type') ) {
-				val = elem.checked;
-			}
-			if ( 'undefined' !== typeof val ) {
-				var val_data = {},
-					view_data = {};
-				val_data[ key ] = val;
-				view_data[ setting ] = val_data;
-				VAA_View_Admin_As.ajax( view_data, refresh );
-			}
-		}
+			var $elem    = $( elem ),
+				setting  = data.setting,
+				key      = data.key,
+				val      = null,
+				val_data = null,
+				confirm  = ( data.hasOwnProperty( 'confirm' ) ) ? Boolean( data.confirm ) : false,
+				refresh  = ( data.hasOwnProperty( 'refresh' ) ) ? Boolean( data.refresh ) : false,
+				stop     = false;
 
+			if ( data.hasOwnProperty( 'value' ) ) {
+				if ( 'object' !== typeof data.value ) {
+					return false;
+				}
+				val = VAA_View_Admin_As.get_auto_js_value( data.value, elem );
+
+			} else if ( data.hasOwnProperty( 'values' ) ) {
+				val_data = {};
+				$.each( data.values, function( option_key, auto_js ) {
+					if ( 'object' !== typeof auto_js ) {
+						return;
+					}
+					auto_js.optional = ( auto_js.hasOwnProperty( 'optional' ) ) ? auto_js.optional : false;
+
+					if ( auto_js.hasOwnProperty( 'values' ) ) {
+						val = {};
+						$.each( auto_js.values, function( val_key, val_auto_js ) {
+							val_auto_js.optional = ( val_auto_js.hasOwnProperty( 'optional' ) ) ? val_auto_js.optional : false;
+							var val_val = VAA_View_Admin_As.get_auto_js_value( val_auto_js, elem );
+							if ( null === val_val ) {
+								val = null;
+								if ( ! val_auto_js.optional ) {
+									stop = true;
+									return false;
+								}
+							}
+							val[ val_key ] = val_val;
+						} );
+
+					} else {
+						val = VAA_View_Admin_As.get_auto_js_value( auto_js, elem );
+					}
+					if ( null === val ) {
+						val = null;
+						if ( ! auto_js.optional ) {
+							stop = true;
+							return false;
+						}
+					}
+					val_data[ option_key ] = val;
+				} );
+
+			} else if ( 'checkbox' === $elem.attr( 'type' ) ) {
+				val = elem.checked;
+			} else {
+				val = $elem.val();
+			}
+
+			if ( stop ) {
+				return;
+			}
+
+			if ( 'undefined' !== typeof val || val_data ) {
+				var view_data = {};
+				if ( ! val_data ) {
+					val_data = {};
+					val_data[ key ] = val;
+				}
+				view_data[ setting ] = val_data;
+
+				if ( confirm ) {
+					confirm = VAA_View_Admin_As.item_confirm( $elem.parent(), VAA_View_Admin_As.__confirm );
+					$( confirm ).on( 'click', function() {
+						VAA_View_Admin_As.ajax( view_data, refresh );
+					} );
+				} else {
+					VAA_View_Admin_As.ajax( view_data, refresh );
+				}
+			}
+		};
+
+		VAA_View_Admin_As.get_auto_js_value = function( data, elem ) {
+			if ( 'object' !== typeof data ) {
+				return null;
+			}
+			var $elem = ( data.hasOwnProperty( 'element' ) ) ? $( data.element ) : $( elem ),
+				val = null;
+			if ( ! data.hasOwnProperty( 'processor' ) ) {
+				data.processor = ( data.hasOwnProperty( 'attr' ) ) ? 'attr' : '';
+			}
+			switch ( data.processor ) {
+				case 'multi':
+					val = {};
+					$elem.each( function() {
+						var $this = $(this);
+						if ( 'checkbox' === $this.attr( 'type' ) ) {
+							val[ $this.val() ] = this.checked;
+						} else {
+							val[ $this.attr('name') ] = $this.val();
+						}
+					} );
+					break;
+				case 'selected':
+					val = [];
+					$elem.each( function() {
+						var $this = $(this);
+						if ( 'checkbox' === $this.attr( 'type' ) ) {
+							if ( this.checked ) {
+								val.push( $this.val() );
+							}
+						} else {
+							val.push( $this.val() );
+						}
+					} );
+					break;
+				case 'json':
+					val = $elem.val();
+					try {
+						val = JSON.parse( val );
+					} catch ( err ) {
+						val = null;
+						// @todo Improve error message.
+						VAA_View_Admin_As.popup( '<pre>' + err + '</pre>', 'error' );
+					}
+					break;
+				case 'attr':
+					var attr = $elem.attr( data.attr );
+					if ( attr ) {
+						val = attr;
+					}
+					break;
+				default:
+					var value = $( data.element ).val();
+					if ( value ) {
+						val = value;
+					}
+					break;
+			}
+			return val;
+		}
 	};
 
 	/**
@@ -877,23 +1007,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 		} );
 
-		// @since  1.6.3  Update meta.
-		$document.on( 'click touchend', root_prefix + '-meta-apply button#' + prefix + '-meta-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = {};
-			$( root_prefix + '-meta-select .ab-item.vaa-item input' ).each( function() {
-				val[ $(this).val() ] = ( $(this).is(':checked') );
-			} );
-			if ( val ) {
-				var view_data = { role_defaults : { update_meta : val } };
-				VAA_View_Admin_As.ajax( view_data, false );
-			}
-			return false;
-		} );
-
 		// @since  1.4  Filter users.
 		$document.on( 'keyup', root_prefix + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
 			e.preventDefault();
@@ -912,119 +1025,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					$(this).show();
 				} );
 			}
-		} );
-
-		// @since  1.4  Apply defaults to users.
-		$document.on( 'click touchend', root_prefix + '-bulk-users-apply button#' + prefix + '-bulk-users-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = [];
-			$( root_prefix + '-bulk-users-select .ab-item.vaa-item input' ).each( function() {
-				if ( $(this).is(':checked') ) {
-					val.push( $(this).val() );
-				}
-			} );
-			if ( val ) {
-				var view_data = { role_defaults : { apply_defaults_to_users : val } };
-				VAA_View_Admin_As.ajax( view_data, false );
-			}
-			return false;
-		} );
-
-		// @since  1.4  Apply defaults to users by role.
-		$document.on( 'click touchend', root_prefix + '-bulk-roles-apply button#' + prefix + '-bulk-roles-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = $( root_prefix + '-bulk-roles-select select#' + prefix + '-bulk-roles-select' ).val();
-			if ( val && '' !== val ) {
-				var view_data = { role_defaults : { apply_defaults_to_users_by_role : val } };
-				VAA_View_Admin_As.ajax( view_data, false );
-			}
-			return false;
-		} );
-
-		// @since  1.7  Copy role defaults.
-		$document.on( 'click touchend', root_prefix + '-copy-roles-copy button.vaa-copy-role-defaults', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = [];
-			$( root_prefix + '-copy-roles-to .ab-item.vaa-item input' ).each( function() {
-				if ( $(this).is(':checked') ) {
-					val.push( $(this).val() );
-				}
-			} );
-			var data = {
-				from: $( root_prefix + '-copy-roles-from select#' + prefix + '-copy-roles-from' ).val(),
-				to: val
-			};
-			if ( data.from && data.to.length ) {
-				var view_data = { role_defaults : { copy_role_defaults : data } };
-				if ( $(this).attr('data-method') ) {
-					view_data.role_defaults.copy_role_defaults_method = String( $(this).attr('data-method') );
-				}
-				VAA_View_Admin_As.ajax( view_data, false );
-			}
-			return false;
-		} );
-
-		// @since  1.5  Export role defaults.
-		$document.on( 'click touchend', root_prefix + '-export-roles-export button#' + prefix + '-export-roles-export', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = $( root_prefix + '-export-roles-select select#' + prefix + '-export-roles-select' ).val();
-			if ( val && '' !== val ) {
-				var view_data = { role_defaults : { export_role_defaults : val } };
-				VAA_View_Admin_As.ajax( view_data, false );
-			}
-			return false;
-		} );
-
-		// @since  1.5  Import role defaults.
-		$document.on( 'click touchend', root_prefix + '-import-roles-import button.vaa-import-role-defaults', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = $( root_prefix + '-import-roles-input textarea#' + prefix + '-import-roles-input' ).val();
-			if ( val && '' !== val ) {
-				try {
-					val = JSON.parse( val );
-					var view_data = { role_defaults : { import_role_defaults : val } };
-					if ( $(this).attr('data-method') ) {
-						view_data.role_defaults.import_role_defaults_method = String( $(this).attr('data-method') );
-					}
-					VAA_View_Admin_As.ajax( view_data, false );
-				} catch ( err ) {
-					// @todo Improve error message.
-					VAA_View_Admin_As.popup( '<pre>' + err + '</pre>', 'error' );
-				}
-			}
-			return false;
-		} );
-
-		// @since  1.4  Clear role defaults.
-		$document.on( 'click touchend', root_prefix + '-clear-roles-apply button#' + prefix + '-clear-roles-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = $( root_prefix + '-clear-roles-select select#' + prefix + '-clear-roles-select' ).val();
-			if ( val && '' !== val ) {
-				var view_data = { role_defaults : { clear_role_defaults : val } },
-					confirm = VAA_View_Admin_As.item_confirm( $(this).parent(), VAA_View_Admin_As.__confirm );
-				$( confirm ).on( 'click', function() {
-					VAA_View_Admin_As.ajax( view_data, false );
-				} );
-			}
-			return false;
 		} );
 	};
 
@@ -1050,53 +1050,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( role && '' !== role && capabilities ) {
 				var view_data = { role_manager : { apply_view_to_role : { role: role, capabilities: capabilities } } };
 				VAA_View_Admin_As.ajax( view_data, true );
-			}
-			return false;
-		} );
-
-		// @since  1.7.1  Rename role.
-		$document.on( 'click touchend', root_prefix + '-rename-apply button#' + prefix + '-rename-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var role = $( root_prefix + '-rename-select select#' + prefix + '-rename-select' ).val();
-			var new_name = $( root_prefix + '-rename-input input#' + prefix + '-rename-input' ).val();
-			if ( role && '' !== role && new_name && '' !== new_name ) {
-				var view_data = { role_manager : { rename_role : { role : role, new_name : new_name } } };
-				VAA_View_Admin_As.ajax( view_data, true );
-			}
-			return false;
-		} );
-
-		// @since  1.7  Clone role.
-		$document.on( 'click touchend', root_prefix + '-clone-apply button#' + prefix + '-clone-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var role = $( root_prefix + '-clone-select select#' + prefix + '-clone-select' ).val();
-			var new_role = $( root_prefix + '-clone-input input#' + prefix + '-clone-input' ).val();
-			if ( role && '' !== role && new_role && '' !== new_role ) {
-				var view_data = { role_manager : { clone_role : { role : role, new_role : new_role } } };
-				VAA_View_Admin_As.ajax( view_data, true );
-			}
-			return false;
-		} );
-
-		// @since  1.7  Delete role.
-		$document.on( 'click touchend', root_prefix + '-delete-apply button#' + prefix + '-delete-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var val = $( root_prefix + '-delete-select select#' + prefix + '-delete-select' ).val();
-			if ( val && '' !== val ) {
-				var view_data = { role_manager : { delete_role : val } },
-					confirm = VAA_View_Admin_As.item_confirm( $(this).parent(), VAA_View_Admin_As.__confirm );
-				$( confirm ).on( 'click', function() {
-					VAA_View_Admin_As.ajax( view_data, true );
-				} );
 			}
 			return false;
 		} );
