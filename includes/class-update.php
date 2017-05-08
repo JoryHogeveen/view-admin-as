@@ -139,6 +139,9 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 				}
 			}
 		}
+
+		// Re-init VAA store.
+		$this->store->init( true );
 	}
 
 	/**
