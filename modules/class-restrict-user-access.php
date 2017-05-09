@@ -403,7 +403,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
 			$view_value = $level->ID;
-			$view_data = array( $this->viewKey => $view_value );
+			$view_data  = array( $this->viewKey => $view_value );
 			if ( $role ) {
 				$view_data['role'] = $role;
 			}

@@ -507,23 +507,23 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		}
 
 		$admin_bar->add_group( array(
-			'id'        => $root . '-groups',
-			'parent'    => $root,
-			'meta'      => array(
-				'class'     => 'ab-sub-secondary',
+			'id'     => $root . '-groups',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
 			),
 		) );
 
 		$root = $root . '-groups';
 
 		$admin_bar->add_node( array(
-			'id'        => $root . '-title',
-			'parent'    => $root,
-			'title'     => VAA_View_Admin_As_Form::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' )
-			               // @codingStandardsIgnoreLine >> Use translate() to prevent groups translation from getting parsed by translate.wordpress.org
-			               . translate( 'Groups', GROUPS_PLUGIN_DOMAIN ),
-			'href'      => false,
-			'meta'      => array(
+			'id'     => $root . '-title',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' )
+			            // @codingStandardsIgnoreLine >> Use translate() to prevent groups translation from getting parsed by translate.wordpress.org
+			            . translate( 'Groups', GROUPS_PLUGIN_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				'tabindex' => '0',
 			),
@@ -542,8 +542,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		// Add the groups.
 		foreach ( $this->get_groups() as $group_key => $group ) {
 			$view_value = $group->name;
-			$view_data = array( $this->viewKey => $view_value );
-			$href = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
+			$view_data  = array( $this->viewKey => $view_value );
+			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->viewKey . '-item';
 			$title = VAA_View_Admin_As_Form::do_view_title( $group->name, $this->viewKey, $view_value );
 			// Check if this group is the current view.
@@ -563,15 +563,15 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				$parent = $root . '-' . $this->viewKey . '-' . (int) $group->parent_id;
 			}
 			$admin_bar->add_node( array(
-				'id'        => esc_attr( $root . '-' . $this->viewKey . '-' . (int) $group->group_id ),
-				'parent'    => $parent,
-				'title'     => $title,
-				'href'      => $href,
-				'meta'      => array(
+				'id'     => esc_attr( $root . '-' . $this->viewKey . '-' . (int) $group->group_id ),
+				'parent' => $parent,
+				'title'  => $title,
+				'href'   => $href,
+				'meta'   => array(
 					// Translators: %s stands for the view type name.
-					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $view_value ),
-					'class'     => $class,
-					'rel'       => $group->group_id,
+					'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $view_value ),
+					'class' => $class,
+					'rel'   => $group->group_id,
 				),
 			) );
 		}
