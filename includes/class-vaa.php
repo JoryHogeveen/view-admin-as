@@ -329,10 +329,9 @@ final class VAA_View_Admin_As
 		if ( empty( $class ) || ! class_exists( $class ) ) {
 			include_once( $file );
 		} else {
-			$this->add_notice( 'class-error-' . $class, array(
+			$this->add_error_notice( __METHOD__ . ' - ' . $class, array(
 				'type' => 'notice-error',
-				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-				             . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+				'message' => __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
 				             // Translators: %s stands for the class name.
 				             . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $class ) . ')</code>',
 			) );
@@ -586,6 +585,43 @@ final class VAA_View_Admin_As
 					'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
 				),
 		) );
+	}
+
+	/**
+	 * Add error notices to generate.
+	 * Automatically generated a bug report link at the end of the notice.
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 *
+	 * @param   string  $id
+	 * @param   array   $notice {
+	 *     Required array.
+	 *     @type  string  $type     The WP notice type class(es).
+	 *     @type  string  $message  The notice message.
+	 * }
+	 * @return  void
+	 */
+	public function add_error_notice( $id, $notice ) {
+		if ( ! empty( $notice['message'] ) ) {
+
+			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : 'notice-error';
+
+			// @todo Add debug_backtrace to body?
+			$report = array(
+				'title' => 'Error: ' . $id,
+				'body'  => $notice['message'],
+			);
+			$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
+
+			$notice['message'] = '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+			                     . $notice['message']
+			                     . ' <a href="' . $report_link . '" target="_blank">'
+			                     . __( 'Click here to report this error!', VIEW_ADMIN_AS_DOMAIN )
+			                     . '</a>';
+
+			$this->add_notice( $id, $notice );
+		}
 	}
 
 	/**

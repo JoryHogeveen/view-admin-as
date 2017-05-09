@@ -178,18 +178,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 		} catch ( Exception $e ) {
 
-			$report = array(
-				'title' => 'Bug: ' . __METHOD__,
-			    'body'  => $e->getMessage(),
-			);
-
-			$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
-
-			$this->vaa->add_notice( __METHOD__, array(
-				'type' => 'error',
-			    'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $e->getMessage()
-			                 . ' <a href="' . $report_link . '" target="_blank">'
-			                 . __( 'Click here to report this bug!', VIEW_ADMIN_AS_DOMAIN ) . '</a>',
+			$this->vaa->add_error_notice( __METHOD__, array(
+			    'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $e->getMessage(),
 			) );
 
 		} // End try().
