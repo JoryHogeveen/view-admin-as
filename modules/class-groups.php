@@ -551,9 +551,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				if ( (int) $this->store->get_view( $this->viewKey ) === (int) $group->group_id ) {
 					$class .= ' current';
 					$href = false;
-				}
-				elseif ( $current_parent = $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
-					if ( (int) $current_parent->parent_id === (int) $group->group_id ) {
+				} else {
+					$selected = $this->get_groups( $this->store->get_view( $this->viewKey ) );
+					if ( (int) $selected->parent_id === (int) $group->group_id ) {
 						$class .= ' current-parent';
 					}
 				}

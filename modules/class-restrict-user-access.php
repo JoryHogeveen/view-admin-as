@@ -421,9 +421,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 						$class .= ' current';
 						$href = false;
 					}
-				}
-				elseif ( $current_parent = $this->get_levels( $this->selectedLevel ) ) {
-					if ( (int) $current_parent->post_parent === (int) $view_value ) {
+				} else {
+					$selected = $this->get_levels( $this->selectedLevel );
+					if ( $selected && (int) $selected->post_parent === (int) $view_value ) {
 						$class .= ' current-parent';
 					}
 				}
