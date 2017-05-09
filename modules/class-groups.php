@@ -15,10 +15,12 @@ add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Groups
 /**
  * Compatibility class for the Groups plugin
  *
+ * Tested from Groups version: 2.1.2
+ *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.7.x
- * @version 1.7.x
+ * @since   1.7.2
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
@@ -26,7 +28,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.7.x
+	 * @since  1.7.2
 	 * @static
 	 * @var    VAA_View_Admin_As_Groups
 	 */
@@ -35,21 +37,21 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * The existing groups.
 	 *
-	 * @since  1.7.x
+	 * @since  1.7.2
 	 * @see    groups/lib/core/class-groups-group.php -> Groups_Groups
 	 * @var    array of objects: Groups_Group
 	 */
 	private $groups;
 
 	/**
-	 * @since  1.7.x
+	 * @since  1.7.2
 	 * @see    groups/lib/core/class-groups-group.php -> Groups_Groups
 	 * @var    Groups_Group
 	 */
 	private $selectedGroup;
 
 	/**
-	 * @since  1.7.x
+	 * @since  1.7.2
 	 * @var    string
 	 */
 	private $viewKey = 'groups';
@@ -57,7 +59,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Populate the instance and validate Groups plugin.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  protected
 	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -90,7 +92,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Initialize the Groups module.
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 */
 	public function do_view() {
@@ -135,7 +137,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Reset Groups_User data for the selected user.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   int  $user_id
 	 */
@@ -185,7 +187,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Update the current user's WP_User instance with the current view data.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   WP_User  $user        User object.
 	 * @param   bool     $accessible  Are the WP_User properties accessible?
@@ -231,7 +233,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @todo https://github.com/itthinx/groups/pull/59
 	 * @see  Groups_User_Group::read() >> groups/lib/core/class-groups-user-group.php
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   bool  $result    Current result.
 	 * @param   int   $user_id   User ID.
@@ -253,7 +255,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @see  Groups_User::can() >> groups/lib/core/class-groups-user.php
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   bool          $result  Current result.
 	 * @param   Groups_Group  $object  (not used) Group object.
@@ -293,10 +295,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @see  Groups_Group::can() >> groups/lib/core/class-groups-group.php
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   bool          $result  Current result.
-	 * @param   Groups_Group  $object  (not used) Group object.
+	 * @param   Groups_Group  $object  Group object.
 	 * @param   string        $cap     Capability.
 	 * @return  bool
 	 */
@@ -313,7 +315,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @see  Groups_Post_Access::user_can_read_post()
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   bool  $result
 	 * @param   int   $post_id
@@ -343,7 +345,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @hook    `wp`
 	 * @see     VAA_View_Admin_As_Groups::groups_post_access_user_can_read_post()
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 */
 	public function post_access_404() {
@@ -359,7 +361,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @see  Groups_Access_Shortcodes::groups_member()
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @param   array   $atts
 	 * @param   string  $content
 	 * @return  string
@@ -373,7 +375,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 *
 	 * @see  Groups_Access_Shortcodes::groups_non_member()
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @param   array   $atts
 	 * @param   string  $content
 	 * @return  string
@@ -388,7 +390,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @see  VAA_View_Admin_As_Groups::shortcode_groups_member()
 	 * @see  VAA_View_Admin_As_Groups::shortcode_groups_non_member()
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @param   array   $atts
 	 * @param   string  $content
 	 * @param   bool    $reverse
@@ -426,7 +428,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add view type.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @param   array  $types  Existing view types.
 	 * @return  array
 	 */
@@ -438,7 +440,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Validate data for this view type
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
 	 * @return  mixed
@@ -453,7 +455,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * View update handler (Ajax probably), called from main handler.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   null    $null    Null.
 	 * @param   array   $data    The ajax data for this module.
@@ -476,7 +478,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Change the VAA admin bar menu title.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   string  $title  The current title.
 	 * @return  string
@@ -493,7 +495,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Add the Groups admin bar items.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string        $root       The root item.
@@ -587,7 +589,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Store the available groups.
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  private
 	 */
 	private function store_groups() {
@@ -603,7 +605,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Get a group by ID.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @param   string  $key  The group key.
 	 * @return  mixed
@@ -623,7 +625,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.2
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
@@ -636,4 +638,4 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		return self::$_instance;
 	}
 
-} // end class.
+} // End class VAA_View_Admin_As_Groups.
