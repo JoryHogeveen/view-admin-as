@@ -451,20 +451,25 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * @param   array  $attr  The attributes array to append to.
 	 * @param   array  $args  {
 	 *     The form element args.
+	 *
 	 *     @type  string  $setting  Required. The setting key.
 	 *     @type  string  $confirm  Optional. Let JS generate a confirm box before running ajax?
 	 *     @type  string  $refresh  Optional. Refresh after ajax return?
 	 *     @type  string  $key      Optional (if values exists). The option key.
 	 *     @type  array   $value {
 	 *         Optional (if values exists). The option value.
+	 *
 	 *         @type  bool    $required  Whether this option is required or not (default: true).
 	 *         @type  string  $element   Optional. The HTML element to use as selector (overwrites current element).
-	 *         @type  string  $parser    Optional. The value processor.
-	 *                                   default: normal handling (single checkbox or input/textarea)
-	 *                                   `multi` : Get multiple values (normal input: name => value | checkbox: value => checked)
-	 *                                   `selected` : Get selected values only (normal input: non empty values | checkbox: checked values)
 	 *         @type  string  $attr      Get an attribute value instead of using .val()?
 	 *         @type  bool    $json      Parse value as JSON? (Default parser only).
+	 *         @type  string  $parser    Optional. The value processor.
+	 *                                   `default` or empty : normal handling
+	 *                                           (single checkbox or input/textarea value)
+	 *                                   `multiple` or `multi` : Get multiple values.
+	 *                                           (default: name => value | checkbox: value => checked)
+	 *                                   `selected` : Get selected values only.
+	 *                                           (default: non empty values | checkbox: values of checked elements)
 	 *     }
 	 *     @type  array   $values   Optional (if key & value exists). The full array of options.
 	 *                              All options need to be key => value pairs. See value type documentation.

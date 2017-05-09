@@ -769,6 +769,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 			switch ( parser ) {
 
+				case 'multiple':
 				case 'multi':
 					val = {};
 					$elem.each( function() {
@@ -832,9 +833,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var $elem = $( elem ),
 				val = null,
 				attr = ( data.hasOwnProperty( 'attr' ) ) ? String( data.attr ) : false,
-				json = ( data.hasOwnProperty( 'json' ) ) ? Boolean( data.json ) : false;
+				json = ( data.hasOwnProperty( 'json' ) ) ? Boolean( data.json ) : false,
+				value = ( attr ) ? $elem.attr( attr ) : $elem.val();
 
-			var value = ( attr ) ? $elem.attr( data.attr ) : $elem.val();
 			if ( 'checkbox' === $elem.attr( 'type' ) ) {
 				var checked = $elem.is(':checked');
 				if ( attr ) {
