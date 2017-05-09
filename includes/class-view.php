@@ -192,7 +192,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 */
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
 
-
 		$done = true;
 	}
 
