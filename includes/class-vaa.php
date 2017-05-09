@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.1
+ * @version 1.7.2
  */
 final class VAA_View_Admin_As
 {
@@ -216,8 +216,7 @@ final class VAA_View_Admin_As
 
 		$this->store->init( true );
 
-		// Sets enabled.
-		$this->validate_user();
+		$this->set_enabled();
 
 		$this->load_modules();
 
@@ -254,8 +253,30 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Try to enable plugin functionality.
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @return  bool
+	 */
+	public function set_enabled() {
+		$this->enable = $this->validate_user();
+		return $this->enable;
+	}
+
+	/**
+	 * Is enabled?
+	 *
+	 * @since   1.5
+	 * @access  public
+	 * @return  bool
+	 */
+	public function is_enabled() {
+		return (bool) $this->enable;
+	}
+
+	/**
 	 * Validate if the current user has access to the functionalities.
-	 * Sets enabled if user passes validation.
 	 *
 	 * @since   0.1    Check if the current user had administrator rights (is_super_admin).
 	 *                 Disable plugin functions for network admin pages.
@@ -270,17 +291,17 @@ final class VAA_View_Admin_As
 	 * @return  bool
 	 */
 	public function validate_user() {
-		$this->enable = false;
+		$valid = false;
 
 		if ( ( VAA_API::is_super_admin()
 		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
 		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
 		     && $this->store->get_curUserSession()
 		) {
-			$this->enable = true;
+			$valid = true;
 		}
 
-		return $this->enable;
+		return $valid;
 	}
 
 	/**
@@ -467,17 +488,6 @@ final class VAA_View_Admin_As
 				load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
 			}
 		}
-	}
-
-	/**
-	 * Is enabled?
-	 *
-	 * @since   1.5
-	 * @access  public
-	 * @return  bool
-	 */
-	public function is_enabled() {
-		return (bool) $this->enable;
 	}
 
 	/**

@@ -190,7 +190,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 			$this->vaa_store->set_curUserSession( 'test' );
 
 			// Resets is_enabled. Required because of force reinit.
-			$this->vaa_main->validate_user();
+			$this->vaa_main->set_enabled();
 
 			// Reload VAA type data.
 			$this->vaa_store->store_users();
