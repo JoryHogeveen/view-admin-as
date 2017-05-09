@@ -597,14 +597,13 @@ final class VAA_View_Admin_As
 	 * @param   string  $id
 	 * @param   array   $notice {
 	 *     Required array.
-	 *     @type  string  $type     The WP notice type class(es).
 	 *     @type  string  $message  The notice message.
+	 *     @type  string  $type     (optional) The WP notice type class(es).
 	 * }
 	 * @return  void
 	 */
 	public function add_error_notice( $id, $notice ) {
 		if ( ! empty( $notice['message'] ) ) {
-
 			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : 'notice-error';
 
 			// @todo Add debug_backtrace to body?
@@ -633,13 +632,14 @@ final class VAA_View_Admin_As
 	 * @param   string  $id
 	 * @param   array   $notice {
 	 *     Required array.
-	 *     @type  string  $type     The WP notice type class(es).
 	 *     @type  string  $message  The notice message.
+	 *     @type  string  $type     (optional) The WP notice type class(es).
 	 * }
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
-		if ( isset( $notice['type'] ) && ! empty( $notice['message'] ) ) {
+		if ( ! empty( $notice['message'] ) ) {
+			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : '';
 			$this->notices[ $id ] = array(
 				'type' => $notice['type'],
 				'message' => $notice['message'],
