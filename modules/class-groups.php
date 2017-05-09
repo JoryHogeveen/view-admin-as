@@ -196,7 +196,20 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		if ( $this->selectedGroup ) {
 			$group_caps = (array) $this->selectedGroup->capabilities_deep;
 			foreach ( $group_caps as $group_cap ) {
-				if ( isset( $group_cap->capability->capability ) ) {
+				/**
+				 * @see    Groups_Capability::create()
+				 * @see    Groups_Capability::__get()
+				 * @param  int     $capability_id
+				 * @param  string  $capability
+				 * @param  string  $class
+				 * @param  string  $object
+				 * @param  string  $name
+				 * @param  string  $description
+				 * @param  array   $group_ids
+				 */
+				if ( isset( $group_cap->capability ) && is_string( $group_cap->capability ) ) {
+					$caps[ $group_cap->capability ] = 1;
+				} elseif ( isset( $group_cap->capability->capability ) ) {
 					$caps[ $group_cap->capability->capability ] = 1;
 				}
 			}
