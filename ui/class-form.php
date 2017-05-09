@@ -70,6 +70,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $class    Optional.
 	 *     @type  string  $element  Optional.
 	 *     @type  array   $attr     Optional.
+	 *     @type  array   $auto_js  Optional. See VAA_View_Admin_As_Form::enable_auto_js().
 	 * }
 	 * @return  string
 	 */
@@ -113,6 +114,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $description  Optional.
 	 *     @type  string  $class        Optional.
 	 *     @type  array   $attr         Optional.
+	 *     @type  array   $auto_js      Optional. See VAA_View_Admin_As_Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide_desc  Optional.
 	 * }
 	 * @return  string
@@ -166,6 +168,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $description     Optional.
 	 *     @type  string  $class           Optional.
 	 *     @type  array   $attr            Optional.
+	 *     @type  array   $auto_js         Optional. See VAA_View_Admin_As_Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide_desc   Optional.
 	 *     @type  bool    $removable       Optional.
 	 * }
@@ -225,6 +228,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $id           Optional (Will be generated from $name if empty).
 	 *     @type  string  $value        Optional.
 	 *     @type  string  $description  Optional.
+	 *     @type  array   $auto_js      Optional. See VAA_View_Admin_As_Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide_desc   Optional.
 	 *     @type  array   $values {
 	 *         Array of radio options data.
@@ -305,6 +309,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $description  Optional.
 	 *     @type  string  $class        Optional.
 	 *     @type  array   $attr         Optional.
+	 *     @type  array   $auto_js      Optional. See VAA_View_Admin_As_Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide_desc   Optional.
 	 *     @type  array   $values {
 	 *         Arrays of selectbox value data.
@@ -437,12 +442,34 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Auto-generate a JSON attribute for automatic JS handling.
+	 *
 	 * @internal  Please do not use this yet since it's in development and subject to changes.
 	 *
 	 * @since   1.7.2
 	 * @static
-	 * @param   array  $args  The form element args.
+	 *
 	 * @param   array  $attr  The attributes array to append to.
+	 * @param   array  $args  {
+	 *     The form element args.
+	 *     @type  string  $setting  Required. The setting key.
+	 *     @type  string  $confirm  Optional. Let JS generate a confirm box before running ajax?
+	 *     @type  string  $refresh  Optional. Refresh after ajax return?
+	 *     @type  string  $key      Optional (if values exists). The option key.
+	 *     @type  array   $value {
+	 *         Optional (if values exists). The option value.
+	 *         @type  bool    $required  Whether this option is required or not (default: true).
+	 *         @type  string  $element   Optional. The HTML element to use as selector (overwrites current element).
+	 *         @type  string  $parser    Optional. The value processor.
+	 *                                   default: normal handling (single checkbox or input/textarea)
+	 *                                   `multi` : Get multiple values (normal input: name => value | checkbox: value => checked)
+	 *                                   `selected` : Get selected values only (normal input: non empty values | checkbox: checked values)
+	 *         @type  string  $attr      Get an attribute value instead of using .val()?
+	 *         @type  bool    $json      Parse value as JSON? (Default parser only).
+	 *     }
+	 *     @type  array   $values   Optional (if key & value exists). The full array of options.
+	 *                              All options need to be key => value pairs. See value type documentation.
+	 *                              Recursive arrays supported (values in values).
+	 * }
 	 * @return  array
 	 */
 	public static function enable_auto_js( $attr, $args ) {

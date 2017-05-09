@@ -657,7 +657,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *         Can also contain another values parameter to build the option data recursive.
 		 *         @type  {boolean}  required   Whether this option is required or not (default: true).
 		 *         @type  {mixed}    element    The option element (overwrites the second elem parameter).
-		 *         @type  {string}   processor  The value processor.
+		 *         @type  {string}   parser     The value parser.
 		 *         @type  {string}   attr       Get an attribute value instead of using .val()?
 		 *         OR
 		 *         @type  {object}   values     An object of multiple values as option_key => data (see above parameters).
@@ -699,10 +699,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 * @since  1.7.2
 		 * @param  {object} data {
 		 *     The option data.
-		 *     @type  {boolean}  required   Whether this option is required or not (default: true).
-		 *     @type  {mixed}    element    The option element (overwrites the second elem parameter).
-		 *     @type  {string}   processor  The value processor.
-		 *     @type  {string}   attr       Get an attribute value instead of using .val()?
+		 *     @type  {boolean}  required  Whether this option is required or not (default: true).
+		 *     @type  {mixed}    element   The option element (overwrites the second elem parameter).
+		 *     @type  {string}   parser    The value parser.
+		 *     @type  {string}   attr      Get an attribute value instead of using .val()?
 		 *     OR
 		 *     @type  {object}   values     An object of multiple values as option_key => data (see above parameters).
 		 * }
@@ -741,89 +741,127 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 
 			} else {
-				val = VAA_View_Admin_As.get_auto_js_value( data, elem );
+				val = VAA_View_Admin_As.parse_auto_js_value( data, elem );
 			}
 			return val;
 		};
 
-		/* eslint-disable complexity */
 		/**
-		 * Get the value of an option through various processors.
+		 * Get the value of an option through various parsers.
 		 * @since  1.7.2
 		 * @param  {object} data {
 		 *     The option data.
-		 *     @type  {mixed}   element    The option element (overwrites the second elem parameter).
-		 *     @type  {string}  processor  The value processor.
-		 *     @type  {string}  attr       Get an attribute value instead of using .val()?
+		 *     @type  {mixed}    element  The option element (overwrites the second elem parameter).
+		 *     @type  {string}   parser   The value parser.
+		 *     @type  {string}   attr     Get an attribute value instead of using .val()?
+		 *     @type  {boolean}  attr     Parse as JSON?
 		 * }
 		 * @param  {mixed}  elem  The element (runs through $() function).
 		 * @return {*} Value.
 		 */
-		VAA_View_Admin_As.get_auto_js_value = function( data, elem ) {
+		VAA_View_Admin_As.parse_auto_js_value = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
 				return null;
 			}
-			var $elem = ( data.hasOwnProperty( 'element' ) ) ? $( data.element ) : $( elem ),
-				val = null;
-			if ( ! data.hasOwnProperty( 'processor' ) ) {
-				data.processor = ( data.hasOwnProperty( 'attr' ) ) ? 'attr' : '';
-			}
-			switch ( data.processor ) {
+			var $elem  = ( data.hasOwnProperty( 'element' ) ) ? $( data.element ) : $( elem ),
+				parser = ( data.hasOwnProperty( 'parser' ) ) ? String( data.parser ) : '',
+				val    = null;
+
+			switch ( parser ) {
+
 				case 'multi':
 					val = {};
 					$elem.each( function() {
 						var $this = $(this),
-						    value = ( data.hasOwnProperty( 'attr' ) ) ? $this.attr( data.attr ) : $this.val();
+							value;
 						if ( 'checkbox' === $this.attr( 'type' ) ) {
+							// JSON not supported and always a boolean value.
+							value = ( data.hasOwnProperty( 'attr' ) ) ? $this.attr( data.attr ) : $this.val();
 							val[ value ] = this.checked;
 						} else {
+							value = VAA_View_Admin_As.get_auto_js_value( this, data );
 							val[ $this.attr('name') ] = value;
 						}
 					} );
 					break;
+
 				case 'selected':
 					val = [];
 					$elem.each( function() {
 						var $this = $(this),
-							value = ( data.hasOwnProperty( 'attr' ) ) ? $this.attr( data.attr ) : $this.val();
+							value;
 						if ( 'checkbox' === $this.attr( 'type' ) ) {
-							if ( this.checked ) {
+							// JSON not supported.
+							value = ( data.hasOwnProperty( 'attr' ) ) ? $this.attr( data.attr ) : $this.val();
+							if ( this.checked && value ) {
 								val.push( value );
 							}
 						} else {
-							val.push( value );
+							value = VAA_View_Admin_As.get_auto_js_value( this, data );
+							if ( value ) {
+								val.push( value );
+							}
 						}
 					} );
 					break;
-				case 'json':
-					try {
-						val = JSON.parse( ( ( data.hasOwnProperty( 'attr' ) ) ? $elem.attr( data.attr ) : $elem.val() ) );
-					} catch ( err ) {
-						val = null;
-						// @todo Improve error message.
-						VAA_View_Admin_As.popup( '<pre>' + err + '</pre>', 'error' );
-					}
-					break;
-				case 'attr':
-					var attr = $elem.attr( data.attr );
-					if ( attr ) {
-						val = attr;
-					}
-					break;
+
 				default:
-					if ( 'checkbox' === $elem.attr( 'type' ) ) {
-						val = $elem.is(':checked');
-					} else {
-						var value = ( data.hasOwnProperty( 'attr' ) ) ? $elem.attr( data.attr ) : $elem.val();
-						if ( value ) {
-							val = value;
-						}
-					}
+					val = VAA_View_Admin_As.get_auto_js_value( $elem, data );
 					break;
+
 			}
+
 			return val;
 		};
-		/* eslint-enable complexity */
+
+		/**
+		 * Get the value of an option through various parsers.
+		 * @since  1.7.2
+		 * @param  {mixed}  elem  Required. The element (runs through $() function).
+		 * @param  {object} data {
+		 *     The option data.
+		 *     @type  {string}   attr  Optional. Get an attribute value instead of using .val()?
+		 *     @type  {boolean}  json  Optional. Parse as JSON?
+		 * }
+		 * @return {*} Value.
+		 */
+		VAA_View_Admin_As.get_auto_js_value = function( elem, data ) {
+			if ( 'object' !== typeof data ) {
+				data = {};
+			}
+			var $elem = $( elem ),
+				val = null,
+				attr = ( data.hasOwnProperty( 'attr' ) ) ? String( data.attr ) : false,
+				json = ( data.hasOwnProperty( 'json' ) ) ? Boolean( data.json ) : false;
+
+			var value = ( attr ) ? $elem.attr( data.attr ) : $elem.val();
+			if ( 'checkbox' === $elem.attr( 'type' ) ) {
+				var checked = $elem.is(':checked');
+				if ( attr ) {
+					if ( checked && value ) {
+						val = value;
+					}
+				} else {
+					val = checked;
+				}
+			} else {
+				if ( value ) {
+					val = value;
+				}
+			}
+
+			if ( json ) {
+				try {
+					val = JSON.parse( val );
+				} catch ( err ) {
+					val = null;
+					// @todo Improve error message.
+					VAA_View_Admin_As.popup( '<pre>' + err + '</pre>', 'error' );
+				}
+			}
+
+			return val;
+		}
 	};
 
 	/**

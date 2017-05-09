@@ -1151,16 +1151,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-meta-apply',
 			'parent' => $root . '-meta',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-				'name'  => $root . '-meta-apply',
-				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'class' => 'button-primary',
+				'name'    => $root . '-meta-apply',
+				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class'   => 'button-primary',
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'update_meta',
 					'refresh' => false,
-					'value'  => array(
+					'value'   => array(
 						'element' => '#wp-admin-bar-' . $root . '-meta-select .ab-item.vaa-item input',
-						'processor' => 'multi',
+						'parser'  => 'multi',
 					),
 				),
 			) ),
@@ -1292,16 +1292,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-bulk-users-apply',
 				'parent' => $root . '-bulk-users',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'  => $root . '-bulk-users-apply',
-					'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-					'class' => 'button-primary',
+					'name'    => $root . '-bulk-users-apply',
+					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+					'class'   => 'button-primary',
 					'auto-js' => array(
 						'setting' => $this->moduleKey,
 						'key'     => 'apply_defaults_to_users',
 						'refresh' => false,
-						'value'  => array(
+						'value'   => array(
 							'element' => '#wp-admin-bar-' . $root . '-bulk-users-select .ab-item.vaa-item input',
-							'processor' => 'selected',
+							'parser'  => 'selected',
 						),
 					),
 				) ),
@@ -1351,16 +1351,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'id'     => $root . '-bulk-roles-apply',
 					'parent' => $root . '-bulk-roles',
 					'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-						'name'  => $root . '-bulk-roles-apply',
-						'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-						'class' => 'button-primary',
+						'name'    => $root . '-bulk-roles-apply',
+						'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+						'class'   => 'button-primary',
 						'auto-js' => array(
 							'setting' => $this->moduleKey,
 							'key'     => 'apply_defaults_to_users_by_role',
 							'refresh' => false,
-							'value'  => array(
+							'value'   => array(
 								'element' => '#wp-admin-bar-' . $root . '-bulk-roles-select select#' . $root . '-bulk-roles-select',
-								'processor' => 'single', // Default.
+								'parser'  => '', // Default.
 							),
 						),
 					) ),
@@ -1432,12 +1432,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'copy_role_defaults' => array(
 						'values' => array(
 							'from' => array(
-								'element'   => '#wp-admin-bar-' . $root . '-copy-roles-from select#' . $root . '-copy-roles-from',
-								'processor' => 'single', // Default.
+								'element' => '#wp-admin-bar-' . $root . '-copy-roles-from select#' . $root . '-copy-roles-from',
+								'parser'  => '', // Default.
 							),
 							'to' => array(
-								'element'   => '#wp-admin-bar-' . $root . '-copy-roles-to .ab-item.vaa-item input',
-								'processor' => 'selected',
+								'element' => '#wp-admin-bar-' . $root . '-copy-roles-to .ab-item.vaa-item input',
+								'parser'  => 'selected',
 							),
 						),
 					),
@@ -1534,16 +1534,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-export-roles-export',
 				'parent' => $root . '-export',
 				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'  => $root . '-export-roles-export',
-					'label' => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
-					'class' => 'button-secondary',
+					'name'    => $root . '-export-roles-export',
+					'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
+					'class'   => 'button-secondary',
 					'auto-js' => array(
 						'setting' => $this->moduleKey,
 						'key'     => 'export_role_defaults',
 						'refresh' => false,
 						'value'   => array(
 							'element' => '#wp-admin-bar-' . $root . '-export-roles-select select#' . $root . '-export-roles-select',
-							'processor' => 'single', // Default.
+							'parser'  => '', // Default.
 						),
 					),
 				) ),
@@ -1592,7 +1592,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'values'  => array(
 					'import_role_defaults' => array(
 						'element' => '#wp-admin-bar-' . $root . '-import-roles-input textarea#' . $root . '-import-roles-input',
-						'processor' => 'json',
+						'parser'  => '', // Default.
+						'json'    => true,
 					),
 					'import_role_defaults_method' => array(
 						'attr' => 'data-method',
@@ -1718,9 +1719,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-clear-roles-apply',
 			'parent' => $root . '-clear',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-				'name'  => $root . '-clear-roles-apply',
-				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'class' => 'button-secondary',
+				'name'    => $root . '-clear-roles-apply',
+				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class'   => 'button-secondary',
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'clear_role_defaults',
@@ -1728,7 +1729,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'refresh' => false,
 					'value'   => array(
 						'element' => '#wp-admin-bar-' . $root . '-clear-roles-select select#' . $root . '-clear-roles-select',
-						'processor' => 'single', // Default.
+						'parser'  => '', // Default.
 					),
 				),
 			) ),

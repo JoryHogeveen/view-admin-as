@@ -657,9 +657,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-rename-apply',
 			'parent' => $root . '-rename',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-				'name'  => $root . '-rename-apply',
-				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'class' => 'button-primary',
+				'name'    => $root . '-rename-apply',
+				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class'   => 'button-primary',
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'refresh' => true,
@@ -667,12 +667,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 						'rename_role' => array(
 							'values' => array(
 								'role' => array(
-									'element'   => '#wp-admin-bar-' . $root . '-rename-select select#' . $root . '-rename-select',
-									'processor' => 'single', // Default.
+									'element' => '#wp-admin-bar-' . $root . '-rename-select select#' . $root . '-rename-select',
+									'parser'  => '', // Default.
 								),
 								'new_name' => array(
-									'element'   => '#wp-admin-bar-' . $root . '-rename-input input#' . $root . '-rename-input',
-									'processor' => 'single',
+									'element' => '#wp-admin-bar-' . $root . '-rename-input input#' . $root . '-rename-input',
+									'parser'  => '',
 								),
 							),
 						),
@@ -737,9 +737,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-clone-apply',
 			'parent' => $root . '-clone',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-				'name'  => $root . '-clone-apply',
-				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'class' => 'button-primary',
+				'name'    => $root . '-clone-apply',
+				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class'   => 'button-primary',
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'refresh' => true,
@@ -747,12 +747,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 						'clone_role' => array(
 							'values' => array(
 								'role' => array(
-									'element'   => '#wp-admin-bar-' . $root . '-clone-select select#' . $root . '-clone-select',
-									'processor' => 'single', // Default.
+									'element' => '#wp-admin-bar-' . $root . '-clone-select select#' . $root . '-clone-select',
+									'parser'  => '', // Default.
 								),
 								'new_role' => array(
-									'element'   => '#wp-admin-bar-' . $root . '-clone-input input#' . $root . '-clone-input',
-									'processor' => 'single',
+									'element' => '#wp-admin-bar-' . $root . '-clone-input input#' . $root . '-clone-input',
+									'parser'  => '',
 								),
 							),
 						),
@@ -804,9 +804,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-delete-apply',
 			'parent' => $root . '-delete',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
-				'name'  => $root . '-delete-apply',
-				'label' => __( 'Delete', VIEW_ADMIN_AS_DOMAIN ),
-				'class' => 'button-primary',
+				'name'    => $root . '-delete-apply',
+				'label'   => __( 'Delete', VIEW_ADMIN_AS_DOMAIN ),
+				'class'   => 'button-primary',
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'delete_role',
@@ -814,7 +814,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'refresh' => true,
 					'value'   => array(
 						'element' => '#wp-admin-bar-' . $root . '-delete-select select#' . $root . '-delete-select',
-						'processor' => 'single', // Default.
+						'parser'  => '', // Default.
 					),
 				),
 			) ),
