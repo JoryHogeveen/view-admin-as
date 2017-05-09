@@ -165,6 +165,17 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		if ( VAA_API::is_user_modified() && isset( $this->ruaLevelManager ) ) {
 
+			if ( is_callable( array( $this->ruaLevelManager, 'reset_user_levels_caps' ) ) ) {
+				/**
+				 * Reset the user levels caps.
+				 * @since  1.7.2
+				 * @link   https://github.com/JoryHogeveen/view-admin-as/issues/56#issuecomment-299077527
+				 * @link   https://github.com/intoxstudio/restrict-user-access/pull/11
+				 * @see    RUA_Level_Manager::add_filters()
+				 */
+				$this->ruaLevelManager->reset_user_levels_caps( $this->store->get_selectedUser()->ID );
+			}
+
 			if ( $this->store->get_view( 'caps' ) ) {
 				/**
 				 * Remove the whole filter when the caps view is selected.
