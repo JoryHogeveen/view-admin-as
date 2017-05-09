@@ -179,7 +179,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		} catch ( Exception $e ) {
 
 			$this->vaa->add_error_notice( __METHOD__, array(
-			    'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $e->getMessage(),
+			    'message' => $e->getMessage(),
 			) );
 
 		} // End try().
