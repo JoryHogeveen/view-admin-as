@@ -148,25 +148,38 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			$user_id = $this->store->get_selectedUser()->ID;
 		}
 
-		Groups_User::clear_cache( $user_id );
+		try {
 
-		$capabilities_base   = array();
-		$capability_ids_base = array();
-		$groups_ids_base     = array( $this->selectedGroup->group_id );
-		$groups_base         = array( $this->selectedGroup );
-		$capabilities        = null;
-		$capability_ids      = null;
-		$groups_ids          = null;
-		$groups              = null;
+			Groups_User::clear_cache( $user_id );
 
-		Groups_Cache::set( Groups_User::CAPABILITIES_BASE . $user_id, $capabilities_base, Groups_User::CACHE_GROUP );
-		Groups_Cache::set( Groups_User::CAPABILITY_IDS_BASE . $user_id, $capability_ids_base, Groups_User::CACHE_GROUP );
-		Groups_Cache::set( Groups_User::GROUP_IDS_BASE . $user_id, $groups_ids_base, Groups_User::CACHE_GROUP );
-		Groups_Cache::set( Groups_User::GROUPS_BASE . $user_id, $groups_base, Groups_User::CACHE_GROUP );
-		//Groups_Cache::set( Groups_User::CAPABILITIES . $user_id, $capabilities, Groups_User::CACHE_GROUP );
-		//Groups_Cache::set( Groups_User::CAPABILITY_IDS . $user_id, $capability_ids, Groups_User::CACHE_GROUP );
-		//Groups_Cache::set( Groups_User::GROUP_IDS . $user_id, $groups_ids, Groups_User::CACHE_GROUP );
-		//Groups_Cache::set( Groups_User::GROUPS . $user_id, $groups, Groups_User::CACHE_GROUP );
+			$capabilities_base   = array();
+			$capability_ids_base = array();
+			$groups_ids_base     = array( $this->selectedGroup->group_id );
+			$groups_base         = array( $this->selectedGroup );
+			$capabilities        = null;
+			$capability_ids      = null;
+			$groups_ids          = null;
+			$groups              = null;
+
+			Groups_Cache::set( Groups_User::CAPABILITIES_BASE . $user_id, $capabilities_base, Groups_User::CACHE_GROUP );
+			Groups_Cache::set( Groups_User::CAPABILITY_IDS_BASE . $user_id, $capability_ids_base, Groups_User::CACHE_GROUP );
+			Groups_Cache::set( Groups_User::GROUP_IDS_BASE . $user_id, $groups_ids_base, Groups_User::CACHE_GROUP );
+			Groups_Cache::set( Groups_User::GROUPS_BASE . $user_id, $groups_base, Groups_User::CACHE_GROUP );
+			//Groups_Cache::set( Groups_User::CAPABILITIES . $user_id, $capabilities, Groups_User::CACHE_GROUP );
+			//Groups_Cache::set( Groups_User::CAPABILITY_IDS . $user_id, $capability_ids, Groups_User::CACHE_GROUP );
+			//Groups_Cache::set( Groups_User::GROUP_IDS . $user_id, $groups_ids, Groups_User::CACHE_GROUP );
+			//Groups_Cache::set( Groups_User::GROUPS . $user_id, $groups, Groups_User::CACHE_GROUP );
+
+		} catch ( Exception $e ) {
+
+			$this->vaa->add_notice( 'reset_groups_user', array(
+				'type' => 'error',
+			    'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $e->getMessage()
+			                 . ' <a href="https://github.com/JoryHogeveen/view-admin-as/issues/new" target="_blank">'
+			                 . __( 'Please create a bug report', VIEW_ADMIN_AS_DOMAIN ) . '</a>',
+			) );
+
+		}
 	}
 
 	/**
