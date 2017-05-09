@@ -506,7 +506,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 		}
 		$label_attr = array(
 			'class' => 'ab-vaa-showhide',
-			'data-showhide' => '.' . $target,
+			'vaa-showhide' => '.' . $target,
 		);
 		$desc_attr = array( 'class' => $target );
 	}

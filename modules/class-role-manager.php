@@ -922,8 +922,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
 					'class'       => 'ab-vaa-conditional',
 					'attr' => array(
-						'data-condition' => '__new__',
-						'data-condition-target' => '#' . $root . '-edit-role',
+						'vaa-condition' => '__new__',
+						'vaa-condition-target' => '#' . $root . '-edit-role',
 					),
 				)
 			),
