@@ -568,7 +568,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	private function apply_defaults_to_users_by_role( $role ) {
 		$success = true;
 		$roles = array();
-		if ( 'all' === $role ) {
+		if ( '__all__' === $role ) {
 			$roles = array_keys( (array) $this->store->get_roles() );
 		} else {
 			foreach ( (array) $role as $role_name ) {
@@ -795,13 +795,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @param   string|array  $role  Role name or array of role names or just "all" for all roles.
+	 * @param   string|array  $role  Role name or array of role names or just "__all__" for all roles.
 	 * @return  bool
 	 */
 	private function clear_role_defaults( $role ) {
 		$role_defaults = $this->get_role_defaults();
 		if ( ! is_array( $role ) ) {
-			if ( isset( $role_defaults ) && 'all' === $role ) {
+			if ( isset( $role_defaults ) && '__all__' === $role ) {
 				$role_defaults = array();
 			} else {
 				$roles = array( $role );
@@ -827,15 +827,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.5
 	 * @access  private
-	 * @param   string  $role  Role name or "all" for all roles.
+	 * @param   string  $role  Role name or "__all__" for all roles.
 	 * @return  mixed
 	 */
-	private function export_role_defaults( $role = 'all' ) {
+	private function export_role_defaults( $role = '__all__' ) {
 		$role_defaults = $this->get_role_defaults();
-		if ( 'all' !== $role && isset( $role_defaults[ $role ] ) ) {
+		if ( '__all__' !== $role && isset( $role_defaults[ $role ] ) ) {
 			$data = $role_defaults[ $role ];
 			$data = array( $role => $data );
-		} elseif ( 'all' === $role && ! empty( $role_defaults ) ) {
+		} elseif ( '__all__' === $role && ! empty( $role_defaults ) ) {
 			$data = $role_defaults;
 		} else {
 			$data = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN );
@@ -1196,8 +1196,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'' => array(
 				'label' => ' --- ',
 			),
-			'all' => array(
-				'value' => 'all',
+			'__all__' => array(
+				'value' => '__all__',
 				'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 			),
 		);
@@ -1382,8 +1382,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			 */
 			$role_copy_options = $role_select_options;
 			$role_copy_options['']['label'] = '- ' . __( 'Select role source', VIEW_ADMIN_AS_DOMAIN ) . ' -';
-			// Remove 'all' option from copy list.
-			unset( $role_copy_options['all'] );
+			// Remove '__all__' option from copy list.
+			unset( $role_copy_options['__all__'] );
 
 			$admin_bar->add_group( array(
 				'id'     => $root . '-copy',
@@ -1669,7 +1669,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'label' => ' --- ',
 			),
 			array(
-				'value' => 'all',
+				'value' => '__all__',
 				'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 			),
 		);
