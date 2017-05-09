@@ -99,12 +99,17 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
+		self::$_instance = $this;
+		parent::__construct( $vaa );
+
+		if ( ! $this->vaa->is_enabled() ) {
+			return;
+		}
 
 		if ( ! is_callable( array( 'RUA_App', 'instance' ) ) ) {
 			return;
 		}
 
-		self::$_instance = $this;
 		$this->ruaApp = RUA_App::instance();
 		if ( isset( $this->ruaApp->level_manager ) ) {
 			$this->ruaLevelManager = $this->ruaApp->level_manager;
@@ -114,8 +119,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 		$this->ruaMetaPrefix   = ( defined( RUA_App::META_PREFIX ) ) ? RUA_App::META_PREFIX : '_ca_';
 		$this->ruaTypeRestrict = ( defined( RUA_App::TYPE_RESTRICT ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
 
-		if ( $vaa->is_enabled() && current_user_can( $access_cap ) && ! is_network_admin() ) {
-			parent::__construct( $vaa );
+		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
 
 			$this->vaa->register_module( array(
 				'id'       => $this->viewKey,

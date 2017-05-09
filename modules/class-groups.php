@@ -67,10 +67,14 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
-		if ( is_callable( array( 'Groups_Group', 'get_groups' ) )
-		  && defined( 'GROUPS_ADMINISTER_GROUPS' )
-		  && current_user_can( GROUPS_ADMINISTER_GROUPS )
-		  && ! is_network_admin()
+		if ( ! $this->vaa->is_enabled() ) {
+			return;
+		}
+
+		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) &&
+		     defined( 'GROUPS_ADMINISTER_GROUPS' ) &&
+		     current_user_can( GROUPS_ADMINISTER_GROUPS ) &&
+		     ! is_network_admin()
 		) {
 
 			$this->vaa->register_module( array(
