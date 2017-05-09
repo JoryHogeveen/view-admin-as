@@ -178,11 +178,11 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 
 		} catch ( Exception $e ) {
 
-			$this->vaa->add_notice( 'reset_groups_user', array(
+			$this->vaa->add_notice( __METHOD__, array(
 				'type' => 'error',
 			    'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $e->getMessage()
 			                 . ' <a href="https://github.com/JoryHogeveen/view-admin-as/issues/new" target="_blank">'
-			                 . __( 'Please create a bug report', VIEW_ADMIN_AS_DOMAIN ) . '</a>',
+			                 . __( 'Click here to report this bug!', VIEW_ADMIN_AS_DOMAIN ) . '</a>',
 			) );
 
 		}
