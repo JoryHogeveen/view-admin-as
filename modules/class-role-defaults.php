@@ -561,8 +561,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Apply default settings to all users of a role.
 	 *
 	 * @since   1.4
+	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
 	 * @access  private
-	 * @param   string|array  $role  The role name.
+	 * @param   string|array  $role  Role name, an array of role names or just "__all__" for all roles.
 	 * @return  bool
 	 */
 	private function apply_defaults_to_users_by_role( $role ) {
@@ -794,8 +795,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Remove defaults of a role.
 	 *
 	 * @since   1.4
+	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
 	 * @access  private
-	 * @param   string|array  $role  Role name or array of role names or just "__all__" for all roles.
+	 * @param   string|array  $role  Role name, an array of role names or just "__all__" for all roles.
 	 * @return  bool
 	 */
 	private function clear_role_defaults( $role ) {
@@ -826,6 +828,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Export role defaults.
 	 *
 	 * @since   1.5
+	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
 	 * @access  private
 	 * @param   string  $role  Role name or "__all__" for all roles.
 	 * @return  mixed
