@@ -178,6 +178,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 */
 		$priority = -999999999;
 		if ( $this->store->get_view( 'caps' ) ) {
+			// Overwrite everything when the capability view is active.
+			remove_all_filters( 'user_has_cap' );
 			$priority = 999999999;
 		}
 		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), $priority, 4 );
@@ -187,11 +189,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * Filter as last to check other plugin changes as well.
 		 *
 		 * @since  0.1
-		 * @since  1.7.2  Only add this filter for multisites.
 		 */
-		if ( is_multisite() ) {
-			add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
-		}
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
+
 
 		$done = true;
 	}
@@ -374,6 +374,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class.
 	 * @since   1.6.2   Use logic from current_view_can().
 	 * @since   1.6.3   Prefix function name with `filter_`.
+	 * @since   1.7.2   Use the `user_has_cap` filter for compatibility enhancements.
 	 * @access  public
 	 *
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap.
@@ -395,7 +396,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			 * Apply user_has_cap filters to make sure we are compatible with modifications from other plugins.
 			 *
 			 * Issues found:
-			 * - Restrict User Access - Overwrites our filtered capabilities.
+			 * - Restrict User Access - Overwrites our filtered capabilities. (fixed since RUA 0.15.x).
+			 * - Groups - Overwrites our filtered capabilities. (fixed in Groups module).
 			 *
 			 * @since  1.7.2
 			 * @see    WP_User::has_cap()
@@ -405,7 +407,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 				$filter_caps,
 				$caps,
 				// Replicate arguments for `user_has_cap`.
-				array_merge( array( $cap, 0 ), (array) $args ),
+				array_merge( array( $cap, $user_id ), (array) $args ),
 				$this->store->get_selectedUser()
 			);
 		}
