@@ -485,8 +485,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 */
 	public function vaa_viewing_as_title( $title ) {
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
-			// @codingStandardsIgnoreLine >> Use translate() to prevent groups translation from getting parsed by translate.wordpress.org
-			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), translate( 'Group', GROUPS_PLUGIN_DOMAIN ) ) . ': '
+			// Translators: %s stands for "Group" (translated with the Groups domain).
+			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->translate_groups( 'Group' ) ) . ': '
 			         . $this->get_groups( $this->store->get_view( $this->viewKey ) )->name;
 		}
 		return $title;
@@ -520,8 +520,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			'id'     => $root . '-title',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' )
-			            // @codingStandardsIgnoreLine >> Use translate() to prevent groups translation from getting parsed by translate.wordpress.org
-			            . translate( 'Groups', GROUPS_PLUGIN_DOMAIN ),
+			            . $this->translate_groups( 'Groups' ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -618,6 +617,19 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			$key = null;
 		}
 		return VAA_API::get_array_data( $this->groups, $key );
+	}
+
+	/**
+	 * Translate with another domain.
+	 *
+	 * @since   1.7.2
+	 * @param   string  $string  The string.
+	 * @return  string
+	 */
+	public function translate_groups( $string ) {
+		$domain = ( defined( 'GROUPS_PLUGIN_DOMAIN' ) ) ? GROUPS_PLUGIN_DOMAIN : 'groups';
+		// @codingStandardsIgnoreLine >> Prevent groups translation from getting parsed by translate.wordpress.org
+		return __( $string, $domain );
 	}
 
 	/**
