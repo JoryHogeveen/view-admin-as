@@ -228,6 +228,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	/**
 	 * Filter the user-group relation.
 	 *
+	 * @todo https://github.com/itthinx/groups/pull/59
 	 * @see  Groups_User_Group::read() >> groups/lib/core/class-groups-user-group.php
 	 *
 	 * @since   1.7.x
@@ -237,7 +238,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * @param   int   $group_id  Group ID.
 	 * @return  bool|object
 	 */
-	/*public function groups_user_is_member( $result, $user_id, $group_id ) {
+	public function groups_user_is_member( $result, $user_id, $group_id ) {
 		if ( (int) $user_id === (int) $this->store->get_curUser()->ID
 		     && $this->selectedGroup
 		     && (int) $group_id === (int) $this->selectedGroup->group->group_id
@@ -245,7 +246,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 			$result = $this->selectedGroup->group;
 		}
 		return $result;
-	}*/
+	}
 
 	/**
 	 * Filter for the current view.
