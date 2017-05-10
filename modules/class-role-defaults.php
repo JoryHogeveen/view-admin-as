@@ -701,7 +701,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.7
 	 * @access  private
 	 * @param   array   $new_defaults  New role defaults (requires a full array of roles with data).
-	 * @param   string  $method        Method to be used (overwrite, append or default)
+	 * @param   string  $method        Method to be used. (merge, append, default).
 	 */
 	private function set_role_defaults( $new_defaults, $method = '' ) {
 		if ( empty( $new_defaults ) ) {
@@ -714,8 +714,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 			// @since  1.6.2  Multiple import methods.
 			switch ( $method ) {
-				case 'overwrite':
-					// Overwrite the existing data, keep data that don't exist in the import.
+				case 'merge':
+					// Merge and the existing data (keep data that doesn't exist in the import data).
 					$role_defaults[ $role ] = array_merge( $role_defaults[ $role ], $role_data );
 				break;
 				case 'append':
@@ -1445,7 +1445,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						),
 					),
 					'copy_role_defaults_method' => array(
-						'attr' => 'data-method',
+						'attr' => 'vaa-method',
 					),
 				),
 			);
@@ -1457,18 +1457,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'label' => __( 'Copy', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
 					'attr'  => array(
-						'data-method' => 'copy',
-						'data-showhide' => 'p.vaa-copy-role-defaults-desc',
+						'vaa-method' => 'copy',
+						'vaa-showhide' => 'p.vaa-copy-role-defaults-desc',
 					),
 					'auto-js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'  => $root . '-copy-roles-copy-overwrite',
-					'label' => __( 'Overwrite', VIEW_ADMIN_AS_DOMAIN ),
+					'name'  => $root . '-copy-roles-copy-merge',
+					'label' => __( 'Merge', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
 					'attr'  => array(
-						'data-method' => 'overwrite',
-						'data-showhide' => 'p.vaa-copy-role-defaults-overwrite-desc',
+						'vaa-method' => 'merge',
+						'vaa-showhide' => 'p.vaa-copy-role-defaults-merge-desc',
 					),
 					'auto-js' => $auto_js,
 				) ) . ' '
@@ -1477,8 +1477,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'label' => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
 					'attr'  => array(
-						'data-method' => 'append',
-						'data-showhide' => 'p.vaa-copy-role-defaults-append-desc',
+						'vaa-method' => 'append',
+						'vaa-showhide' => 'p.vaa-copy-role-defaults-append-desc',
 					),
 					'auto-js' => $auto_js,
 				) )
@@ -1487,8 +1487,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					array( 'class' => 'vaa-copy-role-defaults-desc' )
 				)
 				. VAA_View_Admin_As_Admin_Bar::do_description(
-					__( 'Overwrite and keep existing data that is not overwritten', VIEW_ADMIN_AS_DOMAIN ),
-					array( 'class' => 'vaa-copy-role-defaults-overwrite-desc' )
+					__( 'Merge and overwrite existing data', VIEW_ADMIN_AS_DOMAIN ),
+					array( 'class' => 'vaa-copy-role-defaults-merge-desc' )
 				)
 				. VAA_View_Admin_As_Admin_Bar::do_description(
 					__( 'Append without overwriting the existing data', VIEW_ADMIN_AS_DOMAIN ),
@@ -1599,7 +1599,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'json'    => true,
 					),
 					'import_role_defaults_method' => array(
-						'attr' => 'data-method',
+						'attr' => 'vaa-method',
 					),
 				),
 			);
@@ -1611,18 +1611,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'label' => __( 'Import', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
 					'attr'  => array(
-						'data-method' => 'import',
-						'data-showhide' => 'p.vaa-import-role-defaults-desc',
+						'vaa-method' => 'import',
+						'vaa-showhide' => 'p.vaa-import-role-defaults-desc',
 					),
 					'auto-js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Admin_Bar::do_button( array(
-					'name'  => $root . '-import-roles-import-overwrite',
-					'label' => __( 'Overwrite', VIEW_ADMIN_AS_DOMAIN ),
+					'name'  => $root . '-import-roles-import-merge',
+					'label' => __( 'Merge', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
 					'attr'  => array(
-						'data-method' => 'overwrite',
-						'data-showhide' => 'p.vaa-import-role-defaults-overwrite-desc',
+						'vaa-method' => 'merge',
+						'vaa-showhide' => 'p.vaa-import-role-defaults-merge-desc',
 					),
 					'auto-js' => $auto_js,
 				) ) . ' '
@@ -1631,8 +1631,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'label' => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
 					'attr'  => array(
-						'data-method' => 'append',
-						'data-showhide' => 'p.vaa-import-role-defaults-append-desc',
+						'vaa-method' => 'append',
+						'vaa-showhide' => 'p.vaa-import-role-defaults-append-desc',
 					),
 					'auto-js' => $auto_js,
 				) )
@@ -1641,8 +1641,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					array( 'class' => 'vaa-import-role-defaults-desc' )
 				)
 				. VAA_View_Admin_As_Admin_Bar::do_description(
-					__( 'Overwrite and keep existing data that is not overwritten', VIEW_ADMIN_AS_DOMAIN ),
-					array( 'class' => 'vaa-import-role-defaults-overwrite-desc' )
+					__( 'Merge and overwrite existing data', VIEW_ADMIN_AS_DOMAIN ),
+					array( 'class' => 'vaa-import-role-defaults-merge-desc' )
 				)
 				. VAA_View_Admin_As_Admin_Bar::do_description(
 					__( 'Append without overwriting the existing data', VIEW_ADMIN_AS_DOMAIN ),
