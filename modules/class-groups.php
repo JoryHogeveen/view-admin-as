@@ -38,14 +38,14 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 	 * The existing groups.
 	 *
 	 * @since  1.7.2
-	 * @see    groups/lib/core/class-groups-group.php -> Groups_Groups
+	 * @see    Groups_Group >> groups/lib/core/class-groups-group.php
 	 * @var    array of objects: Groups_Group
 	 */
 	private $groups;
 
 	/**
 	 * @since  1.7.2
-	 * @see    groups/lib/core/class-groups-group.php -> Groups_Groups
+	 * @see    Groups_Group >> groups/lib/core/class-groups-group.php
 	 * @var    Groups_Group
 	 */
 	private $selectedGroup;
@@ -563,13 +563,13 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
 				$parent = $root . '-' . $this->viewKey . '-' . (int) $group->parent_id;
 			}
 			$admin_bar->add_node( array(
-				'id'     => esc_attr( $root . '-' . $this->viewKey . '-' . (int) $group->group_id ),
+				'id'     => $root . '-' . $this->viewKey . '-' . (int) $group->group_id,
 				'parent' => $parent,
 				'title'  => $title,
 				'href'   => $href,
 				'meta'   => array(
 					// Translators: %s stands for the view type name.
-					'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $view_value ),
+					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $view_value ),
 					'class' => $class,
 					'rel'   => $group->group_id,
 				),

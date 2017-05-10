@@ -61,7 +61,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 				'href' => $href,
 				'meta' => array(
 					// Translators: %s stands for the translated role name.
-					'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $this->store->get_rolenames( $role_key )
+					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $this->store->get_rolenames( $role_key )
 					),
 					'class' => $class,
 					'rel'   => $role_key,

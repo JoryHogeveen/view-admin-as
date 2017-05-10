@@ -39,7 +39,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			'href'   => $href,
 			'meta'   => array(
 				// Translators: %s stands for the user display name.
-				'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
+				'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
 				'class' => $class,
 				'rel'   => $user->ID,
 			),

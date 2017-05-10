@@ -437,13 +437,13 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 				$parent = $root . '-' . $this->viewKey . '-' . (int) $level->post_parent;
 			}
 			$admin_bar->add_node( array(
-				'id'        => esc_attr( $root . '-' . $this->viewKey . '-' . $view_value ),
+				'id'        => $root . '-' . $this->viewKey . '-' . $view_value,
 				'parent'    => $parent,
 				'title'     => $title,
 				'href'      => $href,
 				'meta'      => array(
 					// Translators: %s stands for the view type name.
-					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
+					'title'     => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
 					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
 					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $view_value,
