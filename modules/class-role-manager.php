@@ -577,7 +577,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				),
 				'href'   => false,
 				'meta'   => array(
-					'class'    => 'ab-vaa-select select-role',
+					'class' => 'ab-vaa-select select-role',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -636,7 +636,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'ab-vaa-select select-role',
+				'class' => 'ab-vaa-select select-role',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -644,13 +644,13 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'parent' => $root . '-rename',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_input(
 				array(
-					'name'   => $root . '-rename-input',
+					'name'        => $root . '-rename-input',
 					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
 				)
 			),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'ab-vaa-input rename-role',
+				'class' => 'ab-vaa-input rename-role',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -680,7 +680,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				),
 			) ),
 			'href'   => false,
-				'meta'   => array(
+			'meta'   => array(
 				'class' => 'vaa-button-container',
 			),
 		) );
@@ -716,7 +716,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'ab-vaa-select select-role',
+				'class' => 'ab-vaa-select select-role',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -724,13 +724,13 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'parent' => $root . '-clone',
 			'title'  => VAA_View_Admin_As_Admin_Bar::do_input(
 				array(
-					'name'   => $root . '-clone-input',
+					'name'        => $root . '-clone-input',
 					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
 				)
 			),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'ab-vaa-input clone-role',
+				'class' => 'ab-vaa-input clone-role',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -797,7 +797,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'ab-vaa-select select-role',
+				'class' => 'ab-vaa-select select-role',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -904,7 +904,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				array(
 					'name'  => $root . '-save-role',
 					'label' => __( 'Save role', VIEW_ADMIN_AS_DOMAIN ),
-					'class'       => 'button-primary input-overlay',
+					'class' => 'button-primary input-overlay',
 				)
 			),
 			'href'   => false,
@@ -922,7 +922,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
 					'class'       => 'ab-vaa-conditional',
 					'attr' => array(
-						'vaa-condition' => '__new__',
+						'vaa-condition'        => '__new__',
 						'vaa-condition-target' => '#' . $root . '-edit-role',
 					),
 				)
