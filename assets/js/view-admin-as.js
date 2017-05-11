@@ -159,17 +159,32 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$( VAA_View_Admin_As.prefix + '[vaa-condition-target]' ).each( function() {
 				var $this    = $( this ),
 					$target  = $( $this.attr( 'vaa-condition-target' ) ),
-					compare  = $this.attr( 'vaa-condition' ),
-					checkbox = $target.is(':checkbox');
-				$this.hide();
-				$target.on( 'change', function() {
+					checkbox = ( 'checkbox' === $target.attr('type') ),
+					compare  = $this.attr( 'vaa-condition' );
+				if ( checkbox ) {
+					if ( 'undefined' !== typeof compare ) {
+						compare = Boolean( compare );
+					} else {
+						compare = true;
+					}
+				}
+				function check_conditional() {
 					if ( checkbox && $target.is(':checked') ) {
-						$this.slideDown('fast');
+						if ( compare ) {
+							$this.slideDown('fast');
+						} else {
+							$this.slideUp('fast');
+						}
 					} else if ( ! checkbox && compare === $target.val() ) {
 						$this.slideDown('fast');
 					} else {
 						$this.slideUp('fast');
 					}
+				}
+				$this.hide();
+				check_conditional();
+				$target.on( 'change', function() {
+					check_conditional();
 					VAA_View_Admin_As.autoMaxHeight();
 				} );
 			} );
