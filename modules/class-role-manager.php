@@ -580,6 +580,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'class' => 'ab-vaa-select select-role',
 				),
 			) );
+			// @todo Find a way to get the current view server-side (view capabilities aren't available yet in ajax handling).
 			$admin_bar->add_node( array(
 				'id'     => $root . '-apply-view-apply',
 				'parent' => $root . '-apply-view',
@@ -588,7 +589,22 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-primary',
 					'attr'  => array(
-						'data-view-caps' => wp_json_encode( $this->store->get_selectedCaps() ),
+						'vaa-view-caps' => wp_json_encode( $this->store->get_selectedCaps() ),
+					),
+				    'auto-js' => array(
+				    	'setting' => $this->moduleKey,
+						'key'     => 'apply_view_to_role',
+						'refresh' => false,
+						'values'  => array(
+							'role' => array(
+								'element' => '#wp-admin-bar-' . $root . '-apply-view-select select#' . $root . '-apply-view-select',
+								'parser'  => '', // Default.
+							),
+							'capabilities' => array(
+								'attr' => 'vaa-view-caps',
+								'json' => true,
+							),
+						),
 					),
 				) ),
 				'href'   => false,

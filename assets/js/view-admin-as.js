@@ -1133,38 +1133,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.init_module_role_manager = function() {
 
-		var root = VAA_View_Admin_As.root + '-role-manager',
-			prefix = 'vaa-role-manager',
-			root_prefix = VAA_View_Admin_As.prefix + root;
-
-		// @since  1.7  Apply current view capabilities to role.
-		$document.on( 'click touchend', root_prefix + '-apply-view-apply button#' + prefix + '-apply-view-apply', function( e ) {
-			if ( true === VAA_View_Admin_As._touchmove ) {
-				return;
-			}
-			e.preventDefault();
-			var role = $( root_prefix + '-apply-view-select select#' + prefix + '-apply-view-select' ).val();
-			var capabilities = JSON.parse( $(this).attr('data-view-caps') );
-			if ( role && '' !== role && capabilities ) {
-				var view_data = { role_manager : { apply_view_to_role : { role: role, capabilities: capabilities } } };
-				VAA_View_Admin_As.ajax( view_data, true );
-			}
-			return false;
-		} );
-
 		/**
 		 * Capability functions.
 		 */
-		var caps_root = VAA_View_Admin_As.root + '-caps-manager-role-manager',
-			caps_prefix = 'vaa-caps-manager-role-manager',
-			caps_root_prefix = VAA_View_Admin_As.prefix + caps_root;
+		var root = VAA_View_Admin_As.root + '-caps-manager-role-manager',
+			prefix = 'vaa-caps-manager-role-manager',
+			root_prefix = VAA_View_Admin_As.prefix + root;
 
 		// @since  1.7  Update capabilities when selecting a role.
-		$document.on( 'change', caps_root_prefix + ' select#' + caps_prefix + '-edit-role', function() {
+		$document.on( 'change', root_prefix + ' select#' + prefix + '-edit-role', function() {
 			var $this = $(this),
 				role  = $this.val(),
 				caps  = {},
-				selectedRoleElement = $( caps_root_prefix + ' select#' + caps_prefix + '-edit-role option[value="' + role + '"]' );
+				selectedRoleElement = $( root_prefix + ' select#' + prefix + '-edit-role option[value="' + role + '"]' );
 			if ( selectedRoleElement.attr('data-caps') ) {
 				caps = JSON.parse( selectedRoleElement.attr('data-caps') );
 			}
@@ -1179,18 +1160,18 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.7  Add/Modify roles.
-		$document.on( 'click touchend', caps_root_prefix + ' button#' + caps_prefix + '-save-role', function( e ) {
+		$document.on( 'click touchend', root_prefix + ' button#' + prefix + '-save-role', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
 			e.preventDefault();
-			var role = $( caps_root_prefix + ' select#' + caps_prefix + '-edit-role' ).val(),
+			var role = $( root_prefix + ' select#' + prefix + '-edit-role' ).val(),
 				refresh = false;
 			if ( ! role ) {
 				return false;
 			}
 			if ( '__new__' === role ) {
-				role = $( caps_root_prefix + ' input#' + caps_prefix + '-new-role' ).val();
+				role = $( root_prefix + ' input#' + prefix + '-new-role' ).val();
 				refresh = true;
 			}
 			var data = {
@@ -1202,14 +1183,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.7  Add new capabilities.
-		$document.on( 'click touchend', caps_root_prefix + '-new-cap button#' + caps_prefix + '-add-cap', function( e ) {
+		$document.on( 'click touchend', root_prefix + '-new-cap button#' + prefix + '-add-cap', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
 			e.preventDefault();
 			var existing = VAA_View_Admin_As.get_selected_capabilities();
-			var val = $( caps_root_prefix + '-new-cap input#' + caps_prefix + '-new-cap' ).val();
-			var item = $( caps_root_prefix + '-new-cap #' + caps_prefix + '-cap-template' ).html().toString();
+			var val = $( root_prefix + '-new-cap input#' + prefix + '-new-cap' ).val();
+			var item = $( root_prefix + '-new-cap #' + prefix + '-cap-template' ).html().toString();
 			val = val.replace( / /g, '_' );
 			item = item.replace( /vaa_new_item/g, val );
 			if ( 'undefined' !== typeof existing[ val ] ) {
