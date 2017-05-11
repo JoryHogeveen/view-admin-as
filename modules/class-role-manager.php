@@ -411,7 +411,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7.2
 	 * @access  public
-	 * @param   string  $role_name  The role name/label.
+	 * @param   string  $role_name  The role ID/slug.
 	 * @param   bool    $format     Apply string formatting.
 	 * @return  string
 	 */
