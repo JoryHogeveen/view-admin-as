@@ -146,7 +146,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 
 			// @since  1.6.3  Toggle items on hover.
-			$( VAA_View_Admin_As.prefix + '.ab-vaa-showhide[vaa-showhide]' ).each( function() {
+			$( VAA_View_Admin_As.prefix + '[vaa-showhide]' ).each( function() {
 				$( $(this).attr('vaa-showhide') ).hide();
 				$(this).on( 'mouseenter', function() {
 					$( $(this).attr('vaa-showhide') ).slideDown('fast');
@@ -156,7 +156,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 
 			// @since  1.7  Conditional items.
-			$( VAA_View_Admin_As.prefix + '.ab-vaa-conditional[vaa-condition-target]' ).each( function() {
+			$( VAA_View_Admin_As.prefix + '[vaa-condition-target]' ).each( function() {
 				var $this    = $( this ),
 					$target  = $( $this.attr( 'vaa-condition-target' ) ),
 					compare  = $this.attr( 'vaa-condition' ),
