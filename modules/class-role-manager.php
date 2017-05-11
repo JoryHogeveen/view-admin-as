@@ -785,7 +785,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 							'element' => '#wp-admin-bar-' . $root . '-clone-input input#' . $root . '-clone-input',
 							'parser'  => '',
 						),
-
 					),
 				),
 			) ),

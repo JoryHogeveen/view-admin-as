@@ -56,6 +56,7 @@ This plugin will work with most other plugins but these are tested:
 *	**BuddyPress**
 *	**Genesis Framework** *(and probably other theme frameworks)*
 *	**Gravity Forms**
+*	**Groups 2.1+** *(Custom integration: adds a view type for groups. Pro version not tested)*
 *	**Pods Framework 2.0+**
 *	**Members**
 *	**Restrict User Access 0.13+** *(Custom integration: adds a view type for access levels)*
