@@ -485,9 +485,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 				$value = ( isset( $args['auto-js']['value'] ) ) ? $args['auto-js']['value'] : null;
 				$args['auto-js']['values'] = array();
 				$args['auto-js']['values'][ $args['auto-js']['key'] ] = $value;
-				unset( $args['auto-js']['key'] );
-				unset( $args['auto-js']['value'] );
 			}
+			unset( $args['auto-js']['key'] );
+			unset( $args['auto-js']['value'] );
 
 			$attr['vaa-auto-js'] = wp_json_encode( $args['auto-js'] );
 		}

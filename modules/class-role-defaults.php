@@ -1590,7 +1590,6 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 			$auto_js = array(
 				'setting' => $this->moduleKey,
-				'key'     => 'import_role_defaults',
 				'refresh' => false,
 				'values'  => array(
 					'import_role_defaults' => array(
