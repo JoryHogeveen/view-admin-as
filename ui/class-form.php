@@ -456,8 +456,11 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *     @type  string  $confirm  Optional. Let JS generate a confirm box before running ajax?
 	 *     @type  string  $refresh  Optional. Refresh after ajax return?
 	 *     @type  string  $key      Optional (if values exists). The option key.
-	 *     @type  array   $value {
-	 *         Optional (if values exists). The option value.
+	 *     @type  array   $values {
+	 *         The array of options. Alias: `value`.
+	 *         All options need to be key => value pairs. See type documentation.
+	 *         Recursive arrays supported (values in values).
+	 *         If a key parameter exists this array will be added as the values of that key.
 	 *
 	 *         @type  bool    $required  Whether this option is required or not (default: true).
 	 *         @type  string  $element   Optional. The HTML element to use as selector (overwrites current element).
@@ -471,9 +474,6 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *                                   `selected` : Get selected values only.
 	 *                                           (default: non empty values | checkbox: values of checked elements)
 	 *     }
-	 *     @type  array   $values   Optional (if key & value exists). The full array of options.
-	 *                              All options need to be key => value pairs. See value type documentation.
-	 *                              Recursive arrays supported (values in values).
 	 * }
 	 * @return  array
 	 */
@@ -481,10 +481,19 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 		if ( ! empty( $args['auto-js'] ) ) {
 
 			// Auto-generate values array based upon key and value keys.
-			if ( ! empty( $args['auto-js']['key'] ) && empty( $args['auto-js']['values'] ) ) {
-				$value = ( isset( $args['auto-js']['value'] ) ) ? $args['auto-js']['value'] : null;
-				$args['auto-js']['values'] = array();
-				$args['auto-js']['values'][ $args['auto-js']['key'] ] = $value;
+			if ( ! empty( $args['auto-js']['key'] ) ) {
+				if ( empty( $args['auto-js']['values'] ) ) {
+					// Single value data.
+					$value = null;
+					if ( ! empty( $args['auto-js']['value'] ) ) {
+						$value = $args['auto-js']['value'];
+					}
+				} else {
+					// Set the values as the values of the supplied key.
+					$value = array( 'values' => $args['auto-js']['values'] );
+				}
+				$values = array( $args['auto-js']['key'] => $value );
+				$args['auto-js']['values'] = $values;
 			}
 			unset( $args['auto-js']['key'] );
 			unset( $args['auto-js']['value'] );
