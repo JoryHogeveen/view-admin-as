@@ -662,19 +662,16 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'class'   => 'button-primary',
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
+					'key'     => 'rename_role',
 					'refresh' => true,
 					'values'  => array(
-						'rename_role' => array(
-							'values' => array(
-								'role' => array(
-									'element' => '#wp-admin-bar-' . $root . '-rename-select select#' . $root . '-rename-select',
-									'parser'  => '', // Default.
-								),
-								'new_name' => array(
-									'element' => '#wp-admin-bar-' . $root . '-rename-input input#' . $root . '-rename-input',
-									'parser'  => '',
-								),
-							),
+						'role' => array(
+							'element' => '#wp-admin-bar-' . $root . '-rename-select select#' . $root . '-rename-select',
+							'parser'  => '', // Default.
+						),
+						'new_name' => array(
+							'element' => '#wp-admin-bar-' . $root . '-rename-input input#' . $root . '-rename-input',
+							'parser'  => '',
 						),
 					),
 				),
@@ -742,20 +739,18 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'class'   => 'button-primary',
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
+					'key'     => 'clone_role',
 					'refresh' => true,
 					'values'  => array(
-						'clone_role' => array(
-							'values' => array(
-								'role' => array(
-									'element' => '#wp-admin-bar-' . $root . '-clone-select select#' . $root . '-clone-select',
-									'parser'  => '', // Default.
-								),
-								'new_role' => array(
-									'element' => '#wp-admin-bar-' . $root . '-clone-input input#' . $root . '-clone-input',
-									'parser'  => '',
-								),
-							),
+						'role' => array(
+							'element' => '#wp-admin-bar-' . $root . '-clone-select select#' . $root . '-clone-select',
+							'parser'  => '', // Default.
 						),
+						'new_role' => array(
+							'element' => '#wp-admin-bar-' . $root . '-clone-input input#' . $root . '-clone-input',
+							'parser'  => '',
+						),
+
 					),
 				),
 			) ),

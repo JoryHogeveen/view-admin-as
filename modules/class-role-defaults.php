@@ -460,20 +460,23 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 		// @since  1.5  Import
 		if ( VAA_API::array_has( $data, 'import_role_defaults', array( 'validation' => 'is_array' ) ) ) {
-			$method = ( ! empty( $data['import_role_defaults_method'] ) ) ? (string) $data['import_role_defaults_method'] : '';
-			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
-			$content = $this->import_role_defaults( $data['import_role_defaults'], $method );
-			if ( true === $content ) {
-				$success = true;
-			} else {
-				$success = $this->ajax_data_popup( false, (array) $content, 'error' );
+			$success = false;
+			if ( ! empty( $data['import_role_defaults']['data'] ) ) {
+				$method = ( ! empty( $data['import_role_defaults']['method'] ) ) ? (string) $data['import_role_defaults']['method'] : '';
+				// $content format: array( 'text' => **text**, 'errors' => **error array** ).
+				$content = $this->import_role_defaults( $data['import_role_defaults']['data'], $method );
+				if ( true === $content ) {
+					$success = true;
+				} else {
+					$success = $this->ajax_data_popup( false, (array) $content, 'error' );
+				}
 			}
 		}
 
 		// @since  1.7  Copy
 		if ( VAA_API::array_has( $data, 'copy_role_defaults', array( 'validation' => 'is_array' ) ) ) {
 			if ( isset( $data['copy_role_defaults']['from'] ) && isset( $data['copy_role_defaults']['to'] ) ) {
-				$method = ( ! empty( $data['copy_role_defaults_method'] ) ) ? (string) $data['copy_role_defaults_method'] : '';
+				$method = ( ! empty( $data['copy_role_defaults']['method'] ) ) ? (string) $data['copy_role_defaults']['method'] : '';
 				// $content format: array( 'text' => **text**, 'errors' => **error array** ).
 				$content = $this->copy_role_defaults(
 					$data['copy_role_defaults']['from'],
@@ -1430,21 +1433,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 			$auto_js = array(
 				'setting' => $this->moduleKey,
+				'key'     => 'copy_role_defaults',
 				'refresh' => false,
-				'values'  => array(
-					'copy_role_defaults' => array(
-						'values' => array(
-							'from' => array(
-								'element' => '#wp-admin-bar-' . $root . '-copy-roles-from select#' . $root . '-copy-roles-from',
-								'parser'  => '', // Default.
-							),
-							'to' => array(
-								'element' => '#wp-admin-bar-' . $root . '-copy-roles-to .ab-item.vaa-item input',
-								'parser'  => 'selected',
-							),
-						),
+				'values' => array(
+					'from' => array(
+						'element' => '#wp-admin-bar-' . $root . '-copy-roles-from select#' . $root . '-copy-roles-from',
+						'parser'  => '', // Default.
 					),
-					'copy_role_defaults_method' => array(
+					'to' => array(
+						'element' => '#wp-admin-bar-' . $root . '-copy-roles-to .ab-item.vaa-item input',
+						'parser'  => 'selected',
+					),
+					'method' => array(
 						'attr' => 'vaa-method',
 					),
 				),
@@ -1590,14 +1590,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 			$auto_js = array(
 				'setting' => $this->moduleKey,
+				'key'     => 'import_role_defaults',
 				'refresh' => false,
 				'values'  => array(
-					'import_role_defaults' => array(
+					'data' => array(
 						'element' => '#wp-admin-bar-' . $root . '-import-roles-input textarea#' . $root . '-import-roles-input',
 						'parser'  => '', // Default.
 						'json'    => true,
 					),
-					'import_role_defaults_method' => array(
+					'method' => array(
 						'attr' => 'vaa-method',
 					),
 				),
