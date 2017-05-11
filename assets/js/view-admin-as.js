@@ -638,6 +638,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				data.event = 'click touchend';
 			}
 			$this.on( data.event, function( e ) {
+				if ( 'change' !== data.event && true === VAA_View_Admin_As._touchmove ) {
+					return;
+				}
 				e.preventDefault();
 				VAA_View_Admin_As.do_auto_js( data, this );
 				return false;
