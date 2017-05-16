@@ -307,7 +307,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		// @see wp-includes/capabilities.php
 		$existing_role = get_role( $role );
 		// Build role name. (Only used for adding a new role).
-		$role_name     = ucfirst( strip_tags( $role ) );
+		$role_name     = self::sanitize_role_name( $role );
 		// Sanitize capabilities.
 		$capabilities  = array_map( 'boolval', $capabilities );
 
@@ -418,7 +418,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$role = $this->store->get_roles( $role );
 		if ( $role ) {
 			// @todo Check https://core.trac.wordpress.org/ticket/40320.
-			$new_name = ucfirst( strip_tags( $new_name ) );
+			$new_name = self::sanitize_role_name( $new_name );
 
 			$this->wp_roles->role_objects[ $slug ]->name = $new_name;
 			$this->wp_roles->role_names[ $slug ] = $new_name;
@@ -551,6 +551,25 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			$data[ $role_key ] = $role->capabilities;
 		}
 		return $data;
+	}
+
+	/**
+	 * Convert role slug into a role name.
+	 * Formats the name by default (capitalize and convert underscores to spaces).
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @param   string  $role_name  The role ID/slug.
+	 * @param   bool    $format     Apply string formatting.
+	 * @return  string
+	 */
+	public static function sanitize_role_name( $role_name, $format = true ) {
+		$role_name = strip_tags( $role_name );
+		if ( $format ) {
+			$role_name = str_replace( array( '_' ), ' ', $role_name );
+			$role_name = ucwords( $role_name );
+		}
+		return trim( $role_name );
 	}
 
 	/**

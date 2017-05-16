@@ -100,6 +100,8 @@ final class VAA_API
 	 * @param   array  $data
 	 * @param   bool   $type  Only compare a single view type instead of all view data?
 	 *                        If set, the data value should be the single view type data.
+	 *                        If data is `null` then it will return true if that view type is active.
+	 *                        If data is `false` then it will return true if this is the only active view type.
 	 * @return  bool
 	 */
 	public static function is_current_view( $data, $type = null ) {
