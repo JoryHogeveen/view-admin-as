@@ -722,7 +722,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *     @type  {string}   parser    The value parser.
 		 *     @type  {string}   attr      Get an attribute value instead of using .val()?
 		 *     OR
-		 *     @type  {object}   values     An object of multiple values as option_key => data (see above parameters).
+		 *     @type  {object}   values    An object of multiple values as option_key => data (see above parameters).
 		 * }
 		 * @param  {mixed}  elem  The element (runs through $() function).
 		 * @return {object} Value data.
@@ -743,14 +743,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 					var val_val = VAA_View_Admin_As.get_auto_js_values_recursive( auto_js, elem );
 
-					if ( null === val_val ) {
-						if ( auto_js.required ) {
-							val = null;
-							stop = true;
-							return false;
-						}
-					} else {
+					if ( null !== val_val ) {
 						val[ val_key ] = val_val;
+					} else if ( auto_js.required ) {
+						val = null;
+						stop = true;
+						return false;
 					}
 				} );
 
