@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
 Tested up to: 4.8
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -175,6 +175,19 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 11. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.7.2 =
+
+*	**Feature:** Integration with the "Groups" plugin. Introduces a new view type `groups` when this plugin is activated. [#11](https://github.com/JoryHogeveen/view-admin-as/issues/11)
+*	**Fix:** auto max height didn't work on frontend. [#55](https://github.com/JoryHogeveen/view-admin-as/issues/55)
+*	**Compatibility:** Allow other plugins to overwrite our `user_has_cap` filter by setting it's priority as first (large negative number). [#56](https://github.com/JoryHogeveen/view-admin-as/issues/56). Thanks to [@pbiron](https://github.com/pbiron) for the report.
+*	**Compatibility:** Run the `user_has_cap` filter in your `map_meta_cap` filter. [#56](https://github.com/JoryHogeveen/view-admin-as/issues/56)
+*	**Enhancement:** Automatic JS handling for simple and more advanced options. [#60](https://github.com/JoryHogeveen/view-admin-as/issues/60)
+*	**Enhancement:** Role defaults: Rename `all` wildcard to `__all__` to prevent a possible conflict with custom roles.
+*	**Enhancement:** Role defaults: Add recording indicator icon to the top level node when a role view is active.
+*	**Refactoring:** Move form logic to separate class and extend it (admin bar)
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/54) & [Groups integration PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/59)
 
 = 1.7.1 =
 
