@@ -280,8 +280,15 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$existing_role = get_role( $role );
 		// Build role name. (Only used for adding a new role).
 		$role_name     = self::sanitize_role_name( $role );
-		// Sanitize capabilities.
-		$capabilities  = array_map( 'boolval', $capabilities );
+		/**
+		 * Sanitize capabilities.
+		 * @since  1.7
+		 * @since  1.7.2  Use foreach loop. boolval() is PHP 5.5+.
+		 * @example  $capabilities = array_map( 'boolval', $capabilities );
+		 */
+		foreach ( $capabilities as $cap => $grant ) {
+			$capabilities[ $cap ] = (bool) $grant;
+		}
 
 		if ( ! $existing_role ) {
 			// Sanitize role slug/key.
