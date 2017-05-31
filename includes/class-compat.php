@@ -180,10 +180,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 				'manage_network_plugins',
 				'manage_network_themes',
 				'manage_network_options',
-			    // WP 4.8+
-			    'upgrade_network',
-			    'setup_network',
 			);
+			if ( VAA_API::validate_wp_version( '4.8' ) ) {
+				$network_caps[] = 'upgrade_network';
+				$network_caps[] = 'setup_network';
+			}
 			$caps = array_merge( $network_caps, $caps );
 		}
 
