@@ -430,20 +430,28 @@ final class VAA_API
 	 * Returns true when it's the provided version or newer.
 	 *
 	 * @since   1.6.4
+	 * @since   1.7.2  Only check full version numbers by default.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @global  string      $wp_version  WordPress version.
-	 * @param   int|string  $version     The WP version to check.
+	 * @global  string      $wp_version          WordPress version.
+	 * @param   int|string  $version             The WP version to check.
+	 * @param   bool        $only_full_versions  Only validate full versions without dev notes (RC1, dev, etc).
 	 * @return  bool
 	 */
-	public static function validate_wp_version( $version ) {
+	public static function validate_wp_version( $version, $only_full_versions = true ) {
 		global $wp_version;
-		if ( version_compare( $wp_version, $version, '<' ) ) {
-			return false;
+		$version = strtolower( $version );
+		$compare = strtolower( $wp_version );
+		if ( $only_full_versions ) {
+			// Only leave the version numbers.
+			$version = explode( '-', $version );
+			$version = $version[0];
+			$compare = explode( '-', $compare );
+			$compare = $compare[0];
 		}
-		return true;
+		return (bool) version_compare( $version, $compare, '<=' );
 	}
 
 	/**
