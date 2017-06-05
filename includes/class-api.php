@@ -207,17 +207,13 @@ final class VAA_API
 		$params = array(
 			'action'        => 'view_admin_as',
 			'view_admin_as' => $data, // wp_json_encode( array( $type, $data ) ),
-			'_vaa_nonce'   => (string) $nonce,
+			'_vaa_nonce'    => (string) $nonce,
 		);
 
 		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
 		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
 		if ( empty( $url ) ) {
-			if ( is_network_admin() ) {
-				$url = network_admin_url();
-			} else {
-				$url = admin_url();
-			}
+			$url = is_network_admin() ? network_admin_url() : admin_url();
 		}
 
 		$url = add_query_arg( $params, ( $url ) ? $url : false );
