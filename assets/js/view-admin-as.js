@@ -102,29 +102,30 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 			// Toggle content with title.
 			$( VAA_View_Admin_As.prefix + '.ab-vaa-toggle' ).each( function() {
-				var toggleContent = $(this).parent().children().not('.ab-vaa-toggle');
-				if ( ! $(this).hasClass('active') ) {
-					toggleContent.hide();
+				var $this   = $(this),
+					$toggle = $this.parent().children().not('.ab-vaa-toggle');
+				if ( ! $this.hasClass('active') ) {
+					$toggle.hide();
 				}
 
-				$(this).on( 'click touchend', function( e ) {
+				$this.on( 'click touchend', function( e ) {
 					e.preventDefault();
 					e.stopPropagation();
 					if ( true === VAA_View_Admin_As._touchmove ) {
 						return;
 					}
 					if ( $(this).hasClass('active') ) {
-						toggleContent.slideUp('fast');
+						$toggle.slideUp('fast');
 						$(this).removeClass('active');
 					} else {
-						toggleContent.slideDown('fast');
+						$toggle.slideDown('fast');
 						$(this).addClass('active');
 					}
 					VAA_View_Admin_As.autoMaxHeight();
 				} );
 
 				// @since  1.6.1  Keyboard a11y.
-				$(this).on( 'keyup', function( e ) {
+				$this.on( 'keyup', function( e ) {
 					e.preventDefault();
 					/**
 					 * @see  https://api.jquery.com/keyup/
@@ -135,10 +136,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					 */
 					var key = parseInt( e.which, 10 );
 					if ( $(this).hasClass('active') && ( 13 === key || 32 === key || 38 === key ) ) {
-						toggleContent.slideUp('fast');
+						$toggle.slideUp('fast');
 						$(this).removeClass('active');
 					} else if ( 13 === key || 32 === key || 40 === key ) {
-						toggleContent.slideDown('fast');
+						$toggle.slideDown('fast');
 						$(this).addClass('active');
 					}
 					VAA_View_Admin_As.autoMaxHeight();
@@ -157,7 +158,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 			// @since  1.7  Conditional items.
 			$( VAA_View_Admin_As.prefix + '[vaa-condition-target]' ).each( function() {
-				var $this    = $( this ),
+				var $this    = $(this),
 					$target  = $( $this.attr( 'vaa-condition-target' ) ),
 					checkbox = ( 'checkbox' === $target.attr('type') ),
 					compare  = $this.attr( 'vaa-condition' );
@@ -484,7 +485,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$( 'html, body' ).animate( { scrollTop: '0' } );
 			// Remove it after # seconds.
 			if ( timeout ) {
-				setTimeout( function () { $( root ).slideUp( 'fast', function () { $( this ).remove(); } ); }, timeout );
+				setTimeout( function () { $( root ).slideUp( 'fast', function () { $(this).remove(); } ); }, timeout );
 			}
 		} else {
 			// Notice in top level admin bar.
@@ -493,7 +494,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$( root + ' .remove' ).click( function() { $(this).parent().remove(); } );
 			// Remove it after # seconds.
 			if ( timeout ) {
-				setTimeout( function () { $( root ).fadeOut( 'fast', function () { $( this ).remove(); } ); }, timeout );
+				setTimeout( function () { $( root ).fadeOut( 'fast', function () { $(this).remove(); } ); }, timeout );
 			}
 		}
 	};
@@ -593,8 +594,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		var root = 'body #vaa-overlay',
 			$overlay = $( root ),
-			$overlayContainer = $( root + ' .vaa-overlay-container' ),
-			$popupResponse = $( root + ' .vaa-response-data' );
+			$overlay_container = $( root + ' .vaa-overlay-container' ),
+			$popup_response = $( root + ' .vaa-response-data' );
 
 		// Remove overlay.
 		$( root + ' .vaa-overlay-container .remove' ).click( function() {
@@ -610,7 +611,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		} );
 
-		var textarea = $( 'textarea', $popupResponse );
+		var textarea = $( 'textarea', $popup_response );
 		if ( textarea.length ) {
 			// Select full text on click.
 			textarea.on( 'click', function() { $(this).select(); } );
@@ -619,13 +620,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		var popupMaxHeight = function() {
 			if ( textarea.length ) {
 				textarea.each( function() {
-					$( this ).css( { 'height': 'auto', 'overflow-y': 'hidden' } ).height( this.scrollHeight );
+					$(this).css( { 'height': 'auto', 'overflow-y': 'hidden' } ).height( this.scrollHeight );
 				});
 			}
 			// 80% of screen height - padding + border;
-			var maxHeight = ( $overlay.height() * .8 ) - 24;
-			$overlayContainer.css( 'max-height', maxHeight );
-			$popupResponse.css( 'max-height', maxHeight );
+			var max_height = ( $overlay.height() * .8 ) - 24;
+			$overlay_container.css( 'max-height', max_height );
+			$popup_response.css( 'max-height', max_height );
 		};
 		popupMaxHeight();
 		$window.on( 'resize', function() {
@@ -641,7 +642,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	VAA_View_Admin_As.init_auto_js = function() {
 
 		$( VAA_View_Admin_As.root + ' [vaa-auto-js]' ).each( function() {
-			var $this = $( this ),
+			var $this = $(this),
 				data = VAA_View_Admin_As.json_decode( $this.attr('vaa-auto-js') );
 			if ( 'object' !== typeof data ) {
 				return;
@@ -895,11 +896,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// Search users.
 		$document.on( 'keyup', root_prefix + ' .ab-vaa-search.search-users input', function() {
 			$( VAA_View_Admin_As.prefix + ' .ab-vaa-search .ab-vaa-results' ).empty();
-			if ( 1 <= $(this).val().length ) {
-				var inputText = $(this).val();
+			var input_text = $(this).val();
+			if ( 1 <= input_text.length ) {
 				$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
 					var name = $( '.ab-item', this ).text();
-					if ( -1 < name.toLowerCase().indexOf( inputText.toLowerCase() ) ) {
+					if ( -1 < name.toLowerCase().indexOf( input_text.toLowerCase() ) ) {
 						var exists = false;
 						$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results .vaa-user-item .ab-item' ).each(function() {
 							if ( -1 < $(this).text().indexOf(name) ) {
@@ -976,11 +977,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
 				var val = $(this).attr('value');
 				if ( 'undefined' === typeof capabilities[ val ] ) {
-					if ( $(this).is(':checked') ) {
-						capabilities[ val ] = 1;
-					} else {
-						capabilities[ val ] = 0;
-					}
+					capabilities[ val ] = $(this).is(':checked');
 				}
 			} );
 			return capabilities;
@@ -989,14 +986,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// Since  1.7  Set the selected capabilities.
 		VAA_View_Admin_As.set_selected_capabilities = function( capabilities ) {
 			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
-				if ( capabilities.hasOwnProperty( $(this).attr('value') ) ) {
-					if ( capabilities[ $(this).attr('value') ] ) {
-						$( this ).attr('checked','checked');
+				var $this = $(this);
+				if ( capabilities.hasOwnProperty( $this.attr('value') ) ) {
+					if ( capabilities[ $this.attr('value') ] ) {
+						$this.attr( 'checked', 'checked' );
 					} else {
-						$( this ).attr( 'checked', false );
+						$this.attr( 'checked', false );
 					}
 				} else {
-					$( this ).attr( 'checked', false );
+					$this.attr( 'checked', false );
 				}
 			} );
 		};
@@ -1004,13 +1002,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// Enlarge caps.
 		$document.on( 'click', root_prefix + ' #open-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
-			$( root_prefix + '-manager > .ab-sub-wrapper').addClass('fullPopup');
+			$( root_prefix + '-manager > .ab-sub-wrapper' ).addClass('fullPopup');
 			VAA_View_Admin_As.autoMaxHeight();
 		} );
 		// Undo enlarge caps.
 		$document.on( 'click', root_prefix + ' #close-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
-			$( root_prefix + '-manager > .ab-sub-wrapper').removeClass('fullPopup');
+			$( root_prefix + '-manager > .ab-sub-wrapper' ).removeClass('fullPopup');
 			VAA_View_Admin_As.autoMaxHeight();
 		} );
 
@@ -1069,8 +1067,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			var newCaps = VAA_View_Admin_As.get_selected_capabilities();
-			VAA_View_Admin_As.ajax( { caps : newCaps }, true );
+			var new_caps = VAA_View_Admin_As.get_selected_capabilities();
+			VAA_View_Admin_As.ajax( { caps : new_caps }, true );
 			return false;
 		} );
 	};
@@ -1107,10 +1105,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		$document.on( 'keyup', root_prefix + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
 			e.preventDefault();
 			if ( 1 <= $(this).val().length ) {
-				var inputText = $(this).val();
+				var input_text = $(this).val();
 				$( root_prefix + '-bulk-users-select .ab-item.vaa-item' ).each( function() {
 					var name = $('.user-name', this).text();
-					if ( -1 < name.toLowerCase().indexOf( inputText.toLowerCase() ) ) {
+					if ( -1 < name.toLowerCase().indexOf( input_text.toLowerCase() ) ) {
 						$(this).show();
 					} else {
 						$(this).hide();
@@ -1143,9 +1141,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var $this = $(this),
 				role  = $this.val(),
 				caps  = {},
-				selectedRoleElement = $( root_prefix + ' select#' + prefix + '-edit-role option[value="' + role + '"]' );
-			if ( selectedRoleElement.attr('data-caps') ) {
-				caps = JSON.parse( selectedRoleElement.attr('data-caps') );
+				$selected_role = $( root_prefix + ' select#' + prefix + '-edit-role option[value="' + role + '"]' );
+			if ( $selected_role.attr('data-caps') ) {
+				caps = JSON.parse( $selected_role.attr('data-caps') );
 			}
 
 			// Reset role filters.
@@ -1210,19 +1208,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}
 		setTimeout( function() {
 			// @link  http://stackoverflow.com/questions/11193453/find-the-vertical-position-of-scrollbar-without-jquery
-			var scrollTop = ( 'undefined' !== typeof window.pageYOffset ) ? window.pageYOffset : ( document.documentElement || document.body.parentNode || document.body ).scrollTop;
+			var scroll_top = ( 'undefined' !== typeof window.pageYOffset ) ? window.pageYOffset : ( document.documentElement || document.body.parentNode || document.body ).scrollTop;
 
 			VAA_View_Admin_As.maxHeightListenerElements.each( function() {
 			var $element = $(this),
 				count    = 0,
 				wait     = setInterval( function() {
-					var offset    = $element.offset(),
-						offsetTop = ( offset.top - scrollTop );
-					if ( $element.is(':visible') && 0 < offsetTop ) {
+					var offset     = $element.offset(),
+						offset_top = ( offset.top - scroll_top );
+					if ( $element.is(':visible') && 0 < offset_top ) {
 						clearInterval( wait );
-						var maxHeight = $window.height() - offsetTop - 100;
-						maxHeight = ( 100 < maxHeight ) ? maxHeight : 100;
-						$element.css( { 'max-height': maxHeight + 'px' } );
+						var max_height = $window.height() - offset_top - 100;
+						max_height = ( 100 < max_height ) ? max_height : 100;
+						$element.css( { 'max-height': max_height + 'px' } );
 					}
 					count++;
 					if ( 5 < count ) {
