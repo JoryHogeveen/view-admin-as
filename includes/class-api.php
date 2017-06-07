@@ -56,11 +56,7 @@ final class VAA_API
 		);
 
 		if ( null === $user_id ) {
-			$store = view_admin_as()->store();
-			$user  = $store->get_curUser();
-			if ( isset( $user->ID ) ) {
-				$user_id = $store->get_curUser()->ID;
-			}
+			$user_id = VAA_View_Admin_As_Store::get_originalUserData( 'ID' );
 		}
 
 		// Is it a super admin and is it one of the manually configured superior admins?
