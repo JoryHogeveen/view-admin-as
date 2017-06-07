@@ -181,6 +181,7 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 *	**Feature:** Integration with the "Groups" plugin. Introduces a new view type `groups` when this plugin is activated. [#11](https://github.com/JoryHogeveen/view-admin-as/issues/11)
 *	**Fix:** auto max height didn't work on frontend. [#55](https://github.com/JoryHogeveen/view-admin-as/issues/55)
 *	**Fix:** Role Manager used `boolval()` which is only available in PHP 5.5+. [#63](https://github.com/JoryHogeveen/view-admin-as/issues/63)
+*	**Fix:** `view_admin_as_superior_admins` filter was not working for single installations. [#65](https://github.com/JoryHogeveen/view-admin-as/issues/65)
 *	**Compatibility:** Allow other plugins to overwrite our `user_has_cap` filter by setting it's priority as first (large negative number). [#56](https://github.com/JoryHogeveen/view-admin-as/issues/56). Thanks to [@pbiron](https://github.com/pbiron) for the report.
 *	**Compatibility:** Run the `user_has_cap` filter in your `map_meta_cap` filter. [#56](https://github.com/JoryHogeveen/view-admin-as/issues/56)
 *	**Compatibility:** Add new network capabilities (WP 4.8) to the list. [#64](https://github.com/JoryHogeveen/view-admin-as/issues/64)
