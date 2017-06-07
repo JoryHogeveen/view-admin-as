@@ -55,7 +55,7 @@ final class VAA_API
 			( null !== $user_id && (int) get_current_user_id() === (int) $user_id ) ? null : $user_id
 		);
 
-		if ( ! $user_id ) {
+		if ( null === $user_id ) {
 			$store = view_admin_as()->store();
 			if ( $store->get_curUser() ) {
 				$user_id = $store->get_curUser()->ID;
