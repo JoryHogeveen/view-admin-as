@@ -55,6 +55,10 @@ final class VAA_API
 			( null !== $user_id && (int) get_current_user_id() === (int) $user_id ) ? null : $user_id
 		);
 
+		if ( null === $user_id ) {
+			$user_id = VAA_View_Admin_As_Store::get_originalUserData( 'ID' );
+		}
+
 		// Is it a super admin and is it one of the manually configured superior admins?
 		return (bool) ( true === $is_super_admin && in_array( (int) $user_id, self::get_superior_admins(), true ) );
 	}
@@ -207,17 +211,13 @@ final class VAA_API
 		$params = array(
 			'action'        => 'view_admin_as',
 			'view_admin_as' => $data, // wp_json_encode( array( $type, $data ) ),
-			'_vaa_nonce'   => (string) $nonce,
+			'_vaa_nonce'    => (string) $nonce,
 		);
 
 		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
 		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
 		if ( empty( $url ) ) {
-			if ( is_network_admin() ) {
-				$url = network_admin_url();
-			} else {
-				$url = admin_url();
-			}
+			$url = is_network_admin() ? network_admin_url() : admin_url();
 		}
 
 		$url = add_query_arg( $params, ( $url ) ? $url : false );
@@ -430,20 +430,28 @@ final class VAA_API
 	 * Returns true when it's the provided version or newer.
 	 *
 	 * @since   1.6.4
+	 * @since   1.7.2  Only check full version numbers by default.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @global  string      $wp_version  WordPress version.
-	 * @param   int|string  $version     The WP version to check.
+	 * @global  string      $wp_version          WordPress version.
+	 * @param   int|string  $version             The WP version to check.
+	 * @param   bool        $only_full_versions  Only validate full versions without dev notes (RC1, dev, etc).
 	 * @return  bool
 	 */
-	public static function validate_wp_version( $version ) {
+	public static function validate_wp_version( $version, $only_full_versions = true ) {
 		global $wp_version;
-		if ( version_compare( $wp_version, $version, '<' ) ) {
-			return false;
+		$version = strtolower( $version );
+		$compare = strtolower( $wp_version );
+		if ( $only_full_versions ) {
+			// Only leave the version numbers.
+			$version = explode( '-', $version );
+			$version = $version[0];
+			$compare = explode( '-', $compare );
+			$compare = $compare[0];
 		}
-		return true;
+		return (bool) version_compare( $version, $compare, '<=' );
 	}
 
 	/**

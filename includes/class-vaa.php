@@ -608,7 +608,7 @@ final class VAA_View_Admin_As
 
 			// @todo Add debug_backtrace to body?
 			$report = array(
-				'title' => 'Error: ' . $id,
+				'title' => __( 'Error', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $id,
 				'body'  => $notice['message'],
 			);
 			$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
