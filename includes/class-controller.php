@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.1
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
@@ -340,9 +340,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 	 * Check if the provided data is the same as the current view.
 	 *
 	 * @since   1.7
-	 * @param   array  $data
+	 * @since   1.7.2  Data options: `null` for active view & `false` for only/single view.
+	 * @param   mixed  $data  The view data to compare with.
 	 * @param   bool   $type  Only compare a single view type instead of all view data?
-	 *                        If set, the data value should be the single view type data.
+	 *                        If set, the data value should be the single view type data or `null`.
+	 *                        If data is `null` then it will return true if that view type is active.
+	 *                        If data is `false` then it will return true if this is the only active view type.
 	 * @return  bool
 	 */
 	public function is_current_view( $data, $type = null ) {
@@ -353,6 +356,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 			}
 			if ( is_array( $data ) ) {
 				return VAA_API::array_equal( $data, $current );
+			}
+			if ( null === $data ) {
+				return true;
+			}
+			if ( false === $data ) {
+				return ( 1 === count( $this->store->get_view() ) );
 			}
 			return ( (string) $data === (string) $current );
 		}

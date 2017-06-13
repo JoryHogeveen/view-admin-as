@@ -609,7 +609,25 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( $this->store->get_view( 'role' ) && $this->is_enabled() ) {
 			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
 			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
+			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
 		}
+	}
+
+	/**
+	 * Add a role defaults icon to indicate screen changes are being recorded to role defaults.
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @param   string  $title  The current title.
+	 * @return  string
+	 */
+	public function vaa_title_recording_role_defaults( $title ) {
+		$role = $this->store->get_view( 'role' );
+		$title .= VAA_View_Admin_As_Form::do_icon( 'dashicons-welcome-view-site', array(
+			'title' => __( 'Recording screen changes for role defaults', VIEW_ADMIN_AS_DOMAIN )
+					   . ': ' . $this->store->get_rolenames( $role ),
+		) );
+		return $title;
 	}
 
 	/**
@@ -957,7 +975,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root_prefix . '-enable',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
 				'name'        => $root_prefix . '-enable',
 				'value'       => $this->get_optionData( 'enable' ),
 				'compare'     => true,
@@ -998,7 +1016,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-role-defaults',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-welcome-view-site' ) . __( 'Role defaults', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-welcome-view-site' ) . __( 'Role defaults', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -1012,7 +1030,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-register-enable',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
 				'name'    => $root . '-setting-register-enable',
 				'value'   => $this->get_optionData( 'apply_defaults_on_register' ),
 				'compare' => true,
@@ -1032,7 +1050,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-disable-user-screen-options',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
 				'name'        => $root . '-setting-disable-user-screen-options',
 				'value'       => $this->get_optionData( 'disable_user_screen_options' ),
 				'compare'     => true,
@@ -1053,7 +1071,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-lock-meta-boxes',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
 				'name'        => $root . '-setting-lock-meta-boxes',
 				'value'       => $this->get_optionData( 'lock_meta_boxes' ),
 				'compare'     => true,
@@ -1086,7 +1104,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-title',
 			'parent' => $root . '-meta',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-tools' ) . __( 'Manage meta sync', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-tools' ) . __( 'Manage meta sync', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
@@ -1096,7 +1114,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-docs',
 			'parent' => $root . '-meta',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-info' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-info' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/FAQ#4-what-data-is-stored-for-role-defaults-and-how-can-i-change-this',
 			'meta'   => array(
 				'class'  => 'auto-height vaa-has-icon',
@@ -1106,16 +1124,16 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-add',
 			'parent' => $root . '-meta',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
+			'title'  => VAA_View_Admin_As_Form::do_input( array(
 				'name'        => $root . '-meta-new',
 				'placeholder' => esc_attr__( 'Add meta key', VIEW_ADMIN_AS_DOMAIN ),
-			) ) . VAA_View_Admin_As_Admin_Bar::do_button( array(
+			) ) . VAA_View_Admin_As_Form::do_button( array(
 				'name'  => $root . '-meta-add',
 				'label' => __( 'Add', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => 'button-primary input-overlay',
 			) )
 			. '<div id="' . $root . '-meta-template" style="display: none;"><div class="ab-item vaa-item">'
-			. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+			. VAA_View_Admin_As_Form::do_checkbox( array(
 				'name'           => 'role-defaults-meta-select[]',
 				'id'             => $root . '-meta-select-vaa_new_item',
 				'value'          => true,
@@ -1133,7 +1151,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		foreach ( $this->get_meta() as $metakey => $value ) {
 			$meta_select_content .=
 				'<div class="ab-item vaa-item">'
-				. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+				. VAA_View_Admin_As_Form::do_checkbox( array(
 					'name'           => 'role-defaults-meta-select[]',
 					'id'             => $root . '-meta-select-' . $metakey,
 					'value'          => $value,
@@ -1156,7 +1174,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-apply',
 			'parent' => $root . '-meta',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+			'title'  => VAA_View_Admin_As_Form::do_button( array(
 				'name'    => $root . '-meta-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
@@ -1215,7 +1233,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			);
 			$role_check_content[ $role_key ] =
 				'<div class="ab-item vaa-item">'
-				. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+				. VAA_View_Admin_As_Form::do_checkbox( array(
 					'name'           => 'role-defaults-bulk-roles-select[]',
 					'id'             => $root . '-bulk-roles-select-' . esc_attr( $role_key ),
 					'checkbox_value' => esc_attr( $role_key ),
@@ -1232,7 +1250,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					$role_name = $this->store->get_rolenames( $role );
 					$users_check_content[] =
 						'<div class="ab-item vaa-item">'
-						. VAA_View_Admin_As_Admin_Bar::do_checkbox( array(
+						. VAA_View_Admin_As_Form::do_checkbox( array(
 							'name'           => 'role-defaults-bulk-users-select[]',
 							'id'             => $root . '-bulk-users-select-' . $user->ID,
 							'checkbox_value' => $user->ID . '|' . $role,
@@ -1265,7 +1283,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-title',
 				'parent' => $root . '-bulk-users',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-users' )
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-users' )
 							. __( 'Apply defaults to users', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
@@ -1276,7 +1294,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-filter',
 				'parent' => $root . '-bulk-users',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_input( array(
+				'title'  => VAA_View_Admin_As_Form::do_input( array(
 					'name'        => $root . '-bulk-users-filter',
 					'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username' ) ) . ')',
 				) ),
@@ -1297,7 +1315,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-apply',
 				'parent' => $root . '-bulk-users',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'title'  => VAA_View_Admin_As_Form::do_button( array(
 					'name'    => $root . '-bulk-users-apply',
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-primary',
@@ -1333,7 +1351,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$admin_bar->add_node( array(
 					'id'     => $root . '-bulk-roles-title',
 					'parent' => $root . '-bulk-roles',
-					'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-groups' )
+					'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-groups' )
 								. __( 'Apply defaults to users by role', VIEW_ADMIN_AS_DOMAIN ),
 					'href'   => false,
 					'meta'   => array(
@@ -1344,7 +1362,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$admin_bar->add_node( array(
 					'id'     => $root . '-bulk-roles-select',
 					'parent' => $root . '-bulk-roles',
-					'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+					'title'  => VAA_View_Admin_As_Form::do_select( array(
 						'name'   => $root . '-bulk-roles-select',
 						'values' => $role_select_options,
 					) ),
@@ -1356,7 +1374,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$admin_bar->add_node( array(
 					'id'     => $root . '-bulk-roles-apply',
 					'parent' => $root . '-bulk-roles',
-					'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+					'title'  => VAA_View_Admin_As_Form::do_button( array(
 						'name'    => $root . '-bulk-roles-apply',
 						'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 						'class'   => 'button-primary',
@@ -1401,7 +1419,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-copy-roles',
 				'parent' => $root . '-copy',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-pressthis' )
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-pressthis' )
 					. __( 'Copy defaults to role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
@@ -1412,7 +1430,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-copy-roles-from',
 				'parent' => $root . '-copy',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+				'title'  => VAA_View_Admin_As_Form::do_select( array(
 					'name'   => $root . '-copy-roles-from',
 					'values' => $role_copy_options,
 				) ),
@@ -1452,7 +1470,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-copy-roles-copy',
 				'parent' => $root . '-copy',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'title'  => VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-copy-roles-copy',
 					'label' => __( 'Copy', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
@@ -1462,7 +1480,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					),
 					'auto-js' => $auto_js,
 				) ) . ' '
-				. VAA_View_Admin_As_Admin_Bar::do_button( array(
+				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-copy-roles-copy-merge',
 					'label' => __( 'Merge', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
@@ -1472,7 +1490,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					),
 					'auto-js' => $auto_js,
 				) ) . ' '
-				. VAA_View_Admin_As_Admin_Bar::do_button( array(
+				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-copy-roles-copy-append',
 					'label' => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-copy-role-defaults',
@@ -1482,15 +1500,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					),
 					'auto-js' => $auto_js,
 				) )
-				. VAA_View_Admin_As_Admin_Bar::do_description(
+				. VAA_View_Admin_As_Form::do_description(
 					__( 'Fully overwrite data', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-copy-role-defaults-desc' )
 				)
-				. VAA_View_Admin_As_Admin_Bar::do_description(
+				. VAA_View_Admin_As_Form::do_description(
 					__( 'Merge and overwrite existing data', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-copy-role-defaults-merge-desc' )
 				)
-				. VAA_View_Admin_As_Admin_Bar::do_description(
+				. VAA_View_Admin_As_Form::do_description(
 					__( 'Append without overwriting the existing data', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-copy-role-defaults-append-desc' )
 				),
@@ -1513,7 +1531,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-export-roles',
 				'parent' => $root . '-export',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-upload' )
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-upload' )
 							. __( 'Export defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
@@ -1524,7 +1542,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-export-roles-select',
 				'parent' => $root . '-export',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+				'title'  => VAA_View_Admin_As_Form::do_select( array(
 					'name'   => $root . '-export-roles-select',
 					'values' => $role_select_options,
 				) ),
@@ -1536,7 +1554,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-export-roles-export',
 				'parent' => $root . '-export',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'title'  => VAA_View_Admin_As_Form::do_button( array(
 					'name'    => $root . '-export-roles-export',
 					'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-secondary',
@@ -1569,7 +1587,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-import-roles',
 				'parent' => $root . '-import',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-download' )
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-download' )
 							. __( 'Import defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 				'href'   => false,
 				'meta'   => array(
@@ -1606,7 +1624,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-import-roles-import',
 				'parent' => $root . '-import',
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+				'title'  => VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-import-roles-import',
 					'label' => __( 'Import', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
@@ -1616,7 +1634,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					),
 					'auto-js' => $auto_js,
 				) ) . ' '
-				. VAA_View_Admin_As_Admin_Bar::do_button( array(
+				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-import-roles-import-merge',
 					'label' => __( 'Merge', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
@@ -1626,7 +1644,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					),
 					'auto-js' => $auto_js,
 				) ) . ' '
-				. VAA_View_Admin_As_Admin_Bar::do_button( array(
+				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-import-roles-import-append',
 					'label' => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
@@ -1636,15 +1654,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					),
 					'auto-js' => $auto_js,
 				) )
-				. VAA_View_Admin_As_Admin_Bar::do_description(
+				. VAA_View_Admin_As_Form::do_description(
 					__( 'Fully overwrite data', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-import-role-defaults-desc' )
 				)
-				. VAA_View_Admin_As_Admin_Bar::do_description(
+				. VAA_View_Admin_As_Form::do_description(
 					__( 'Merge and overwrite existing data', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-import-role-defaults-merge-desc' )
 				)
-				. VAA_View_Admin_As_Admin_Bar::do_description(
+				. VAA_View_Admin_As_Form::do_description(
 					__( 'Append without overwriting the existing data', VIEW_ADMIN_AS_DOMAIN ),
 					array( 'class' => 'vaa-import-role-defaults-append-desc' )
 				),
@@ -1698,7 +1716,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-clear-roles',
 			'parent' => $root . '-clear',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-trash' )
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-trash' )
 						. __( 'Remove defaults for role', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
@@ -1709,7 +1727,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-clear-roles-select',
 			'parent' => $root . '-clear',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_select( array(
+			'title'  => VAA_View_Admin_As_Form::do_select( array(
 				'name'   => $root . '-clear-roles-select',
 				'values' => $role_clear_options,
 			) ),
@@ -1721,7 +1739,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-clear-roles-apply',
 			'parent' => $root . '-clear',
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_button( array(
+			'title'  => VAA_View_Admin_As_Form::do_button( array(
 				'name'    => $root . '-clear-roles-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',

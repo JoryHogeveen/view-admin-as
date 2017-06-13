@@ -168,6 +168,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		/**
 		 * Network capabilities.
 		 * @since  1.5.3
+		 * @since  1.7.2  Added new WP 4.8 caps.
+		 *                https://make.wordpress.org/core/2017/05/22/multisite-focused-changes-in-4-8/
 		 * @see    https://codex.wordpress.org/Roles_and_Capabilities
 		 */
 		if ( is_multisite() ) {
@@ -179,6 +181,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 				'manage_network_themes',
 				'manage_network_options',
 			);
+			if ( VAA_API::validate_wp_version( '4.8' ) ) {
+				$network_caps[] = 'upgrade_network';
+				$network_caps[] = 'setup_network';
+			}
 			$caps = array_merge( $network_caps, $caps );
 		}
 

@@ -76,14 +76,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	public function vaa_init() {
 
 		// If the amount of items (roles and users combined) is more than 15 users, group them under their roles.
-		if ( $this->store->get_userSettings( 'force_group_users' )
-			 || 15 < ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) ) ) {
-			$this->groupUserRoles = true;
-		}
-
 		// There are no roles to group users on network pages.
-		if ( is_network_admin() ) {
-			$this->groupUserRoles = false;
+		if ( ! is_network_admin() && (
+			$this->store->get_userSettings( 'force_group_users' ) ||
+			15 < ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) )
+		) ) {
+			$this->groupUserRoles = true;
 		}
 
 		// Add the default nodes to the WP admin bar.
@@ -189,6 +187,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			}
 		}
 
+		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
+		if ( $this->store->get_view() ) {
+			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
+		}
+
 		// Add menu item.
 		$admin_bar->add_node( array(
 			'id'     => self::$root,
@@ -196,7 +199,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			'title'  => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
 			'href'   => false,
 			'meta'   => array(
-				'title'    => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
+				'title'    => $tooltip,
 				'tabindex' => '0',
 			),
 		) );

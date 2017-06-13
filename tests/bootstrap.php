@@ -29,7 +29,7 @@ define( 'TEST_VAA_PLUGIN_PATH'   , TEST_VAA_PLUGIN_FOLDER . '/' . TEST_VAA_PLUGI
 
 // Activates this plugin in WordPress so it can be tested.
 $GLOBALS['wp_tests_options'] = array(
-  'active_plugins' => array( TEST_VAA_PLUGIN_PATH ),
+	'active_plugins' => array( TEST_VAA_PLUGIN_PATH ),
 );
 
 require_once $_tests_dir . '/includes/functions.php';
