@@ -15,12 +15,13 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * Tested from RUA version: 0.12.4
  * Official RUA compat release: 0.13 (https://github.com/intoxstudio/restrict-user-access/pull/8)
- * Checked version: 0.14
+ * Required since v1.7.2: 0.15.1 (https://github.com/intoxstudio/restrict-user-access/pull/11)
+ * Checked version: 0.15.1
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.7.1
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
@@ -74,6 +75,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	private $ruaApp;
 
 	/**
+	 * @since  1.7.2
+	 * @var    RUA_Level_Manager
+	 */
+	private $ruaLevelManager;
+
+	/**
 	 * @since  1.6.4
 	 * @var    string
 	 */
@@ -93,20 +100,27 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
+		self::$_instance = $this;
+		parent::__construct( $vaa );
+
+		if ( ! $this->vaa->is_enabled() ) {
+			return;
+		}
 
 		if ( ! is_callable( array( 'RUA_App', 'instance' ) ) ) {
 			return;
 		}
 
-		self::$_instance = $this;
 		$this->ruaApp = RUA_App::instance();
+		if ( isset( $this->ruaApp->level_manager ) ) {
+			$this->ruaLevelManager = $this->ruaApp->level_manager;
+		}
 
 		$access_cap            = ( defined( RUA_App::CAPABILITY ) ) ? RUA_App::CAPABILITY : 'edit_users';
 		$this->ruaMetaPrefix   = ( defined( RUA_App::META_PREFIX ) ) ? RUA_App::META_PREFIX : '_ca_';
 		$this->ruaTypeRestrict = ( defined( RUA_App::TYPE_RESTRICT ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
 
-		if ( $vaa->is_enabled() && current_user_can( $access_cap ) && ! is_network_admin() ) {
-			parent::__construct( $vaa );
+		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
 
 			$this->vaa->register_module( array(
 				'id'       => $this->viewKey,
@@ -120,11 +134,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
 			add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_roles_after' ), 10, 2 );
 
-			add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
-
 			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
 			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
 		}
+
+		add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 	}
 
 	/**
@@ -151,6 +165,30 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			if ( $this->store->get_view() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
 				// Not a view with administrator capability == no global access.
 				add_filter( 'rua/user/global-access', '__return_false' );
+			}
+		}
+
+		if ( VAA_API::is_user_modified() && isset( $this->ruaLevelManager ) ) {
+
+			if ( is_callable( array( $this->ruaLevelManager, 'reset_user_levels_caps' ) ) ) {
+				/**
+				 * Reset the user levels caps.
+				 * @since  1.7.2
+				 * @link   https://github.com/JoryHogeveen/view-admin-as/issues/56#issuecomment-299077527
+				 * @link   https://github.com/intoxstudio/restrict-user-access/pull/11
+				 * @see    RUA_Level_Manager::add_filters()
+				 */
+				$this->ruaLevelManager->reset_user_levels_caps( $this->store->get_selectedUser()->ID );
+			}
+
+			if ( $this->store->get_view( 'caps' ) ) {
+				/**
+				 * Remove the whole filter when the caps view is selected.
+				 * @since  1.7.2
+				 * @link   https://github.com/JoryHogeveen/view-admin-as/issues/56#issuecomment-299077527
+				 * @see    RUA_Level_Manager::add_filters()
+				 */
+				remove_filter( 'user_has_cap', array( $this->ruaLevelManager, 'user_level_has_cap' ), 9 );
 			}
 		}
 	}
@@ -208,7 +246,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Add groups view type.
+	 * Add view type.
 	 *
 	 * @since   1.6.4
 	 * @param   array  $types  Existing view types.
@@ -369,16 +407,17 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
-			$view_data = array( $this->viewKey => $level->ID );
+			$view_value = $level->ID;
+			$view_data  = array( $this->viewKey => $view_value );
 			if ( $role ) {
 				$view_data['role'] = $role;
 			}
 			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = VAA_View_Admin_As_Admin_Bar::do_view_title( $level->post_title, $this->viewKey, ( $role ) ? wp_json_encode( $view_data ) : $level->ID );
+			$title = VAA_View_Admin_As_Form::do_view_title( $level->post_title, $this->viewKey, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->viewKey ) ) {
-				if ( VAA_API::is_current_view( $level->ID, $this->viewKey ) ) {
+				if ( VAA_API::is_current_view( $view_value, $this->viewKey ) ) {
 					// @todo Use is_current_view() from vaa controller?
 					if ( 1 === count( $this->store->get_view() ) && empty( $role ) ) {
 						$class .= ' current';
@@ -387,28 +426,28 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 						$class .= ' current';
 						$href = false;
 					}
-				}
-				elseif ( $current_parent = $this->get_levels( $this->selectedLevel ) ) {
-					if ( (int) $current_parent->post_parent === (int) $level->ID ) {
+				} else {
+					$selected = $this->get_levels( $this->selectedLevel );
+					if ( $selected && (int) $selected->post_parent === (int) $view_value ) {
 						$class .= ' current-parent';
 					}
 				}
 			}
 			$parent = $root;
 			if ( ! empty( $level->post_parent ) ) {
-				$parent = $root . '-' . $this->viewKey . '-' . $level->post_parent;
+				$parent = $root . '-' . $this->viewKey . '-' . (int) $level->post_parent;
 			}
 			$admin_bar->add_node( array(
-				'id'        => $root . '-' . $this->viewKey . '-' . $level->ID,
+				'id'        => $root . '-' . $this->viewKey . '-' . $view_value,
 				'parent'    => $parent,
 				'title'     => $title,
 				'href'      => $href,
 				'meta'      => array(
 					// Translators: %s stands for the view type name.
-					'title'     => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
+					'title'     => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
 					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
-					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $level->ID,
+					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $view_value,
 				),
 			) );
 		} // End foreach().

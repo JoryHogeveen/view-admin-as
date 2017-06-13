@@ -3,7 +3,7 @@
  * Add user items.
  *
  * @since    1.7
- * @version  1.7.1
+ * @version  1.7.2
  *
  * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string        $root       The current root item.
@@ -24,7 +24,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$parent = $root;
 		$href   = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-user-item';
-		$title  = VAA_View_Admin_As_Admin_Bar::do_view_title( $user->display_name, 'user', $user->ID );
+		$title  = VAA_View_Admin_As_Form::do_view_title( $user->display_name, 'user', $user->ID );
 		// Check if this user is the current view.
 		if ( VAA_API::is_current_view( $user->ID, 'user' ) ) {
 			$class .= ' current';
@@ -39,7 +39,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			'href'   => $href,
 			'meta'   => array(
 				// Translators: %s stands for the user display name.
-				'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
+				'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
 				'class' => $class,
 				'rel'   => $user->ID,
 			),

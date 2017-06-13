@@ -2,7 +2,8 @@
 /**
  * Add caps items.
  *
- * @since  1.7
+ * @since    1.7
+ * @version  1.7.2
  *
  * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string        $root       The current root item.
@@ -23,32 +24,28 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	}
 
 	$caps_items = '';
-	foreach ( $this->store->get_caps() as $cap_name => $cap_val ) {
+	foreach ( $this->store->get_caps() as $cap => $granted ) {
 		$class   = 'vaa-cap-item';
-		$checked = false;
+		$checked = (bool) $granted;
 		// check if we've selected a capability view and we've changed some capabilities.
 		$selected_caps = $this->store->get_view( 'caps' );
-		if ( isset( $selected_caps[ $cap_name ] ) ) {
-			if ( 1 === (int) $selected_caps[ $cap_name ] ) {
-				$checked = true;
-			}
-		} elseif ( 1 === (int) $cap_val ) {
-			$checked = true;
+		if ( isset( $selected_caps[ $cap ] ) ) {
+			$checked = (bool) $selected_caps[ $cap ];
 		}
 		// Check for this capability in any view set.
-		if ( $this->vaa->view()->current_view_can( $cap_name ) ) {
+		if ( $this->vaa->view()->current_view_can( $cap ) ) {
 			$class .= ' current';
 		}
 		// The list of capabilities.
 		$caps_items .=
 			'<div class="ab-item ' . $class . '">'
-			. VAA_View_Admin_As_Admin_Bar::do_checkbox(
+			. VAA_View_Admin_As_Form::do_checkbox(
 				array(
-					'name'           => 'vaa_cap_' . esc_attr( $cap_name ),
+					'name'           => 'vaa_cap_' . esc_attr( $cap ),
 					'value'          => $checked,
 					'compare'        => true,
-					'checkbox_value' => esc_attr( $cap_name ),
-					'label'          => $cap_name,
+					'checkbox_value' => esc_attr( $cap ),
+					'label'          => $cap,
 				)
 			)
 			. '</div>';

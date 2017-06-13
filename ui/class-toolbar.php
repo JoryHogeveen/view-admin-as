@@ -22,7 +22,7 @@ if ( class_exists( 'WP_Admin_Bar' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7
+ * @version 1.7.2
  * @see     wp-includes/class-wp-admin-bar.php
  * @uses    WP_Admin_Bar Extends class
  */
@@ -95,7 +95,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 
 		// @since  1.6.2  Check for customizer preview.
 		if ( ! is_admin_bar_showing() && ! is_customize_preview()
-		     && ( 'no' === $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_view() )
+		     && ( ! $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_view() )
 		) {
 
 			self::$showing = true;

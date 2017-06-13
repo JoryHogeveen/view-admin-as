@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
- * @version 1.7.1
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
@@ -30,6 +30,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @var    VAA_View_Admin_As_View
 	 */
 	private static $_instance = null;
+
+	/**
+	 * Is the current user modified?
+	 *
+	 * @since  1.7.2
+	 * @var    bool
+	 */
+	private $is_user_modified = false;
 
 	/**
 	 * VAA_View_Admin_As_View constructor.
@@ -119,7 +127,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * Force own locale on view.
 		 * @since  1.6.1
 		 */
-		if ( 'yes' === $this->store->get_userSettings( 'freeze_locale' )
+		if ( $this->store->get_userSettings( 'freeze_locale' )
 			&& (int) $this->store->get_curUser()->ID !== (int) $this->store->get_selectedUser()->ID
 		) {
 			add_action( 'init', array( $this, 'freeze_locale' ), 0 );
@@ -137,6 +145,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	public function init_user_modifications() {
 		static $done;
 		if ( $done ) return;
+
+		$this->is_user_modified = true;
 
 		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_user' ), 99 );
 
@@ -159,17 +169,39 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 */
 		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
+		// `user_has_cap` priority.
+		$priority = -999999999;
+		if ( $this->store->get_view( 'caps' ) ) {
+			// Overwrite everything when the capability view is active.
+			remove_all_filters( 'user_has_cap' );
+			$priority = 999999999;
+		}
 		/**
-		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
-		 * @since  0.1
+		 * The priority value of the VAA `user_has_cap` filter.
+		 * Runs as first by default.
+		 *
+		 * @since   1.7.2
+		 * @param   int  $priority
+		 * @return  int
 		 */
-		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 3 ); //4
+		$priority = (int) apply_filters( 'view_admin_as_user_has_cap_priority', $priority );
 
 		/**
 		 * Change the capabilities.
+		 *
 		 * @since  1.7.1
+		 * @since  1.7.2  Changed priority to set is at the beginning instead of as last
+		 *                to allow other plugins to filter based on the modified user.
 		 */
-		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), 999999999, 4 );
+		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), $priority, 4 );
+
+		/**
+		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
+		 * Filter as last to check other plugin changes as well.
+		 *
+		 * @since  0.1
+		 */
+		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
 
 		$done = true;
 	}
@@ -352,15 +384,16 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 	 * @since   1.6     Moved to this class from main class.
 	 * @since   1.6.2   Use logic from current_view_can().
 	 * @since   1.6.3   Prefix function name with `filter_`.
+	 * @since   1.7.2   Use the `user_has_cap` filter for compatibility enhancements.
 	 * @access  public
 	 *
 	 * @param   array   $caps     The actual (mapped) cap names, if the caps are not mapped this returns the requested cap.
 	 * @param   string  $cap      The capability that was requested.
 	 * @param   int     $user_id  The ID of the user.
-	 * param   array   $args     Adds the context to the cap. Typically the object ID (not used).
+	 * @param   array   $args     Adds the context to the cap. Typically the object ID (not used).
 	 * @return  array   $caps
 	 */
-	public function filter_map_meta_cap( $caps, $cap, $user_id ) {
+	public function filter_map_meta_cap( $caps, $cap, $user_id, $args = array() ) {
 
 		if ( (int) $this->store->get_selectedUser()->ID !== (int) $user_id ) {
 			return $caps;
@@ -368,12 +401,33 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 
 		$filter_caps = (array) $this->store->get_selectedCaps();
 
+		if ( ! $this->store->get_view( 'caps' ) ) {
+			/**
+			 * Apply user_has_cap filters to make sure we are compatible with modifications from other plugins.
+			 *
+			 * Issues found:
+			 * - Restrict User Access - Overwrites our filtered capabilities. (fixed since RUA 0.15.x).
+			 * - Groups - Overwrites our filtered capabilities. (fixed in Groups module).
+			 *
+			 * @since  1.7.2
+			 * @see    WP_User::has_cap()
+			 */
+			$filter_caps = apply_filters(
+				'user_has_cap',
+				$filter_caps,
+				$caps,
+				// Replicate arguments for `user_has_cap`.
+				array_merge( array( $cap, $user_id ), (array) $args ),
+				$this->store->get_selectedUser()
+			);
+		}
+
 		foreach ( (array) $caps as $actual_cap ) {
 			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
-				// Regular users.
-				$caps[ $cap ] = 0;
+				// Regular users. Assuming this capability never exists..
+				$caps['vaa_do_not_allow'] = 'vaa_do_not_allow';
 				// Network admins.
-				$caps[] = 'do_not_allow';
+				$caps['do_not_allow'] = 'do_not_allow';
 			}
 		}
 
@@ -419,14 +473,26 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			$caps = $this->store->get_selectedCaps();
 		}
 
-		if ( is_array( $caps )
-		    && array_key_exists( $cap, $caps )
-		    && 1 === (int) $caps[ $cap ]
-		    && 'do_not_allow' !== $caps[ $cap ]
+		if ( is_array( $caps ) &&
+		     array_key_exists( $cap, $caps ) &&
+		     1 === (int) $caps[ $cap ] &&
+		     'do_not_allow' !== $cap &&
+		     'do_not_allow' !== $caps[ $cap ]
 		) {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Is the current user modified?
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @return  bool
+	 */
+	public function is_user_modified() {
+		return (bool) $this->is_user_modified;
 	}
 
 	/**

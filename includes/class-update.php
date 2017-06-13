@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7
+ * @version 1.7.2
  * @uses    VAA_View_Admin_As_Class_Base Extends class
  */
 final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
@@ -96,6 +96,10 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 			$this->store->set_userMeta( false );
 		}
 
+		if ( version_compare( $current_db_version, '1.7.2', '<' ) ) {
+			$this->update_1_7_2();
+		}
+
 		// Update version, append if needed.
 		$this->store->set_optionData( $this->store->get_dbVersion(), 'db_version', true );
 		// Update option data.
@@ -103,6 +107,41 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
 
 		// Main update finished, hook used to update modules.
 		do_action( 'vaa_view_admin_as_db_update' );
+	}
+
+	/**
+	 * Update to version 1.7.2.
+	 * Changes yes/no options to boolean types.
+	 *
+	 * @since   1.7.2
+	 * @global  wpdb  $wpdb
+	 * @access  private
+	 * @return  void
+	 */
+	private function update_1_7_2() {
+		global $wpdb;
+
+		$sql = 'SELECT * FROM ' . $wpdb->usermeta . ' WHERE meta_key = %s';
+		// @codingStandardsIgnoreLine >> $wpdb->prepare(), check returning false error.
+		$results = (array) $wpdb->get_results( $wpdb->prepare( $sql, 'vaa-view-admin-as' ) );
+
+		foreach ( $results as $meta ) {
+			if ( ! empty( $meta->meta_value ) ) {
+				// @codingStandardsIgnoreLine >> unserialize() required since WP stores it this way.
+				$value = unserialize( $meta->meta_value );
+				if ( ! empty( $value['settings'] ) ) {
+					foreach ( $value['settings'] as $key => $val ) {
+						if ( in_array( $key, array( 'force_group_users', 'freeze_locale', 'hide_front' ), true ) ) {
+							$value['settings'][ $key ] = ( 'yes' === $val ) ? true : false;
+						}
+					}
+					update_user_meta( $meta->user_id, 'vaa-view-admin-as', $value );
+				}
+			}
+		}
+
+		// Re-init VAA store.
+		$this->store->init( true );
 	}
 
 	/**

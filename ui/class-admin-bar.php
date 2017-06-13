@@ -13,20 +13,13 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * Admin Bar UI for View Admin As.
  *
- * Disable some PHPMD checks for this class.
- * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @SuppressWarnings(PHPMD.CyclomaticComplexity)
- * @SuppressWarnings(PHPMD.NPathComplexity)
- * @todo Refactor to enable above checks?
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.7.1
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.2
+ * @uses    VAA_View_Admin_As_Form Extends class
  */
-final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 {
 	/**
 	 * The single instance of the class.
@@ -83,14 +76,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	public function vaa_init() {
 
 		// If the amount of items (roles and users combined) is more than 15 users, group them under their roles.
-		if ( "yes" === $this->store->get_userSettings( 'force_group_users' )
-			 || 15 < ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) ) ) {
-			$this->groupUserRoles = true;
-		}
-
 		// There are no roles to group users on network pages.
-		if ( is_network_admin() ) {
-			$this->groupUserRoles = false;
+		if ( ! is_network_admin() && (
+			$this->store->get_userSettings( 'force_group_users' ) ||
+			15 < ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) )
+		) ) {
+			$this->groupUserRoles = true;
 		}
 
 		// Add the default nodes to the WP admin bar.
@@ -123,24 +114,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Add admin bar menu items.
+	 * Get the toolbar title for the main VAA node.
 	 *
-	 * @since   1.5
-	 * @access  public
-	 * @see     'admin_bar_menu' action
-	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item ID/Name. If set it will overwrite the user setting.
-	 * @return  void
+	 * @since   1.7.2
+	 * @access  private
+	 * @see     admin_bar_menu()
+	 * @return  string
 	 */
-	public function admin_bar_menu( $admin_bar, $root = '' ) {
-
-		$icon = 'dashicons-hidden';
+	private function get_admin_bar_menu_title() {
 		$title = __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
-
-		if ( $this->store->get_view() ) {
-			$icon = 'dashicons-visibility';
-		}
 
 		if ( $this->store->get_view( 'caps' ) ) {
 			$title = __( 'Modified view', VIEW_ADMIN_AS_DOMAIN );
@@ -172,6 +154,30 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		$title = apply_filters( 'vaa_admin_bar_viewing_as_title', $title, $this->store->get_view() );
 
+		return $title;
+	}
+
+	/**
+	 * Add admin bar menu items.
+	 *
+	 * @since   1.5
+	 * @access  public
+	 * @see     'admin_bar_menu' action
+	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string        $root       The root item ID/Name. If set it will overwrite the user setting.
+	 * @return  void
+	 */
+	public function admin_bar_menu( $admin_bar, $root = '' ) {
+
+		$icon = 'dashicons-hidden';
+
+		if ( $this->store->get_view() ) {
+			$icon = 'dashicons-visibility';
+		}
+
+		$title = $this->get_admin_bar_menu_title();
+
 		if ( empty( $root ) ) {
 			$root = 'top-secondary';
 			if ( $this->store->get_userSettings( 'admin_menu_location' )
@@ -181,6 +187,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			}
 		}
 
+		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
+		if ( $this->store->get_view() ) {
+			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
+		}
+
 		// Add menu item.
 		$admin_bar->add_node( array(
 			'id'     => self::$root,
@@ -188,7 +199,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 			'title'  => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
 			'href'   => false,
 			'meta'   => array(
-				'title'    => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
+				'title'    => $tooltip,
 				'tabindex' => '0',
 			),
 		) );
@@ -376,124 +387,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		 */
 		do_action( 'vaa_admin_bar_settings_before', $admin_bar, $root, self::$root );
 
-		$admin_bar->add_node( array(
-			'id'     => $root . '-admin-menu-location',
-			'parent' => $root,
-			'title'  => self::do_select( array(
-				'name'        => $root . '-admin-menu-location',
-				'value'       => $this->store->get_userSettings( 'admin_menu_location' ),
-				'label'       => __( 'Location', VIEW_ADMIN_AS_DOMAIN ) . ': &nbsp; ',
-				'description' => __( 'Change the location of this menu node', VIEW_ADMIN_AS_DOMAIN ),
-				'values'      => array(
-					array(
-						'compare' => 'top-secondary',
-						'label' => __( 'Default', VIEW_ADMIN_AS_DOMAIN ),
-					),
-					array(
-						'compare' => 'my-account',
-						'label' => __( 'My account', VIEW_ADMIN_AS_DOMAIN ),
-					),
-				),
-				//'auto_showhide_desc' => true
-			) ),
-			'href'   => false,
-			'meta'   => array(
-				'class' => 'auto-height',
-			),
-		) );
-
-		$admin_bar->add_node( array(
-			'id'     => $root . '-view-mode',
-			'parent' => $root,
-			'title'  => self::do_radio( array(
-				'name'     => $root . '-view-mode',
-				'value'    => $this->store->get_userSettings( 'view_mode' ),
-				'values'   => array(
-					array(
-						'compare'     => 'browse',
-						'label'       => __( 'Browse mode', VIEW_ADMIN_AS_DOMAIN ),
-						'description' => __( 'Store view and use WordPress with this view', VIEW_ADMIN_AS_DOMAIN ),
-					),
-					array(
-						'compare'     => 'single',
-						'label'       => __( 'Single switch mode', VIEW_ADMIN_AS_DOMAIN ),
-						'description' => __( 'Choose view on every pageload. This setting doesn\'t store views', VIEW_ADMIN_AS_DOMAIN ),
-					),
-				),
-				//'auto_showhide_desc' => true
-			) ),
-			'href'   => false,
-			'meta'   => array(
-				'class' => 'auto-height',
-			),
-		) );
-
-		$admin_bar->add_node( array(
-			'id'     => $root . '-hide-front',
-			'parent' => $root,
-			'title'  => self::do_checkbox( array(
-				'name'        => $root . '-hide-front',
-				'value'       => $this->store->get_userSettings( 'hide_front' ),
-				'compare'     => 'yes',
-				'label'       => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
-				'description' => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN ),
-				//'auto_showhide_desc' => true,
-			) ),
-			'href'   => false,
-			'meta'   => array(
-				'class' => 'auto-height',
-			),
-		) );
-
-		/**
-		 * Force own locale on view, WP 4.7+ only.
-		 *
-		 * @see     https://github.com/JoryHogeveen/view-admin-as/issues/21
-		 * @since   1.6.1
-		 */
-		if ( VAA_API::validate_wp_version( '4.7' ) ) {
-			$admin_bar->add_node( array(
-				'id'     => $root . '-freeze-locale',
-				'parent' => $root,
-				'title'  => self::do_checkbox( array(
-					'name'        => $root . '-freeze-locale',
-					'value'       => $this->store->get_userSettings( 'freeze_locale' ),
-					'compare'     => 'yes',
-					'label'       => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN ),
-					//'auto_showhide_desc' => true,
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'auto-height',
-				),
-			) );
-		}
-
-		/**
-		 * force_group_users setting.
-		 *
-		 * @since   1.5.2
-		 */
-		if ( true !== $this->groupUserRoles || 15 >= ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) ) ) {
-			$admin_bar->add_node( array(
-				'id'     => $root . '-force-group-users',
-				'parent' => $root,
-				'title'  => self::do_checkbox( array(
-					'name'        => $root . '-force-group-users',
-					'value'       => $this->store->get_userSettings( 'force_group_users' ),
-					'compare'     => 'yes',
-					'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
-					//'auto_showhide_desc' => true,
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class'    => 'auto-height',
-					'tabindex' => '0',
-				),
-			) );
-		}
+		// Add user setting nodes.
+		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-settings-user.php' );
 
 		/**
 		 * Add items at the end of the settings group.
@@ -933,428 +828,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Class_Base
 		) );
 
 		$done = true;
-	}
-
-	/**
-	 * Generate a view type title.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @static
-	 * @param   string  $title  The title content.
-	 * @param   string  $type   The view type.
-	 * @param   string  $value  The view value.
-	 * @param   array   $attr   (optional) Array of other attributes.
-	 * @return  string
-	 */
-	public static function do_view_title( $title, $type, $value, $attr = array() ) {
-		$attr = (array) $attr;
-		$class = ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '' );
-		$attr['class'] = 'vaa-view-data' . $class;
-		$attr['data-view-type'] = $type;
-		$attr['data-view-value'] = $value;
-		$attr = self::parse_to_html_attr( $attr );
-		return '<span ' . $attr . '>' . $title . '</span>';
-	}
-
-	/**
-	 * Generate button HTML for node.
-	 *
-	 * @since   1.6.1
-	 * @since   1.6.2  Added $element option.
-	 * @access  public
-	 * @static
-	 * @param   array  $args {
-	 *     Required. An array of field arguments.
-	 *     @type  string  $name     Required.
-	 *     @type  string  $id       Optional (Will be generated from $name if empty).
-	 *     @type  string  $label    Optional.
-	 *     @type  string  $class    Optional.
-	 *     @type  string  $element  Optional.
-	 *     @type  array   $attr     Optional.
-	 * }
-	 * @return  string
-	 */
-	public static function do_button( $args ) {
-		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
-		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
-		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
-		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : '';
-		$class = ( ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '' );
-
-		$args['attr']['id'] = $id;
-		$args['attr']['name'] = $name;
-		$args['attr']['class'] = 'button' . $class;
-
-		$attr = self::parse_to_html_attr( $args['attr'] );
-
-		return '<' . $elem . ' ' . $attr . '>' . $label . '</' . $elem . '>';
-	}
-
-	/**
-	 * Generate text input HTML for node.
-	 *
-	 * @since   1.6.1
-	 * @since   1.6.3  Automatic show/hide description option.
-	 * @access  public
-	 * @static
-	 * @param   array  $args {
-	 *     Required. An array of field arguments.
-	 *     @type  string  $name         Required.
-	 *     @type  string  $id           Optional (Will be generated from $name if empty).
-	 *     @type  string  $placeholder  Optional.
-	 *     @type  string  $default      Optional.
-	 *     @type  string  $value        Optional.
-	 *     @type  string  $label        Optional.
-	 *     @type  string  $description  Optional.
-	 *     @type  string  $class        Optional.
-	 *     @type  array   $attr         Optional.
-	 *     @type  bool    $auto_showhide_desc  Optional.
-	 * }
-	 * @return  string
-	 */
-	public static function do_input( $args ) {
-		$html = '';
-
-		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
-		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
-		$default = ( ! empty( $args['default'] ) ) ? $args['default'] : '';
-		$placeholder = ( ! empty( $args['placeholder'] ) ) ? $args['placeholder'] : '';
-		$class = ( ! empty( $args['class'] ) ) ? $args['class'] : '';
-
-		$args['attr']['type'] = 'text';
-		$args['attr']['id'] = $id;
-		$args['attr']['name'] = $name;
-		$args['attr']['placeholder'] = $placeholder;
-		$args['attr']['value'] = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
-		$args['attr']['class'] = $class;
-
-		$attr = self::parse_to_html_attr( $args['attr'] );
-
-		$label_attr = array();
-		$desc_attr = array();
-		if ( ! empty( $args['auto_showhide_desc'] ) ) {
-			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
-		}
-
-		if ( ! empty( $args['label'] ) ) {
-			$html .= self::do_label( $args['label'], $id, $label_attr );
-		}
-		$html .= '<input ' . $attr . '/>';
-		if ( ! empty( $args['description'] ) ) {
-			$html .= self::do_description( $args['description'], $desc_attr );
-		}
-		return $html;
-	}
-
-	/**
-	 * Generate checkbox HTML for node.
-	 *
-	 * @since   1.6.1
-	 * @since   1.6.3  Automatic show/hide description option + removable option.
-	 * @access  public
-	 * @static
-	 * @param   array  $args {
-	 *     Required. An array of field arguments.
-	 *     @type  string  $name            Required.
-	 *     @type  string  $id              Optional (Will be generated from $name if empty).
-	 *     @type  string  $compare         Optional.
-	 *     @type  string  $value           Optional.
-	 *     @type  string  $checkbox_value  Optional  (default: 1).
-	 *     @type  string  $label           Optional.
-	 *     @type  string  $description     Optional.
-	 *     @type  string  $class           Optional.
-	 *     @type  array   $attr            Optional.
-	 *     @type  bool    $auto_showhide_desc   Optional.
-	 *     @type  bool    $removable       Optional.
-	 * }
-	 * @return  string
-	 */
-	public static function do_checkbox( $args ) {
-		$html = '';
-
-		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
-		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
-
-		if ( empty( $args['value'] ) ) {
-			$args['value'] = null;
-		}
-		if ( empty( $args['compare'] ) ) {
-			$args['compare'] = 1;
-		}
-		$checked = checked( $args['value'], $args['compare'], false );
-		$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
-
-		$args['attr']['type'] = 'checkbox';
-		$args['attr']['id'] = $id;
-		$args['attr']['name'] = $name;
-		$args['attr']['value'] = ( ! empty( $args['checkbox_value'] ) ) ? $args['checkbox_value'] : '1';
-		$args['attr']['class'] = 'checkbox' . $class;
-
-		$attr = self::parse_to_html_attr( $args['attr'] );
-
-		$label_attr = array();
-		$desc_attr = array();
-		if ( ! empty( $args['auto_showhide_desc'] ) ) {
-			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
-		}
-
-		$html .= '<input ' . $attr . ' ' . $checked . '/>';
-		if ( ! empty( $args['label'] ) ) {
-			$html .= self::do_label( $args['label'], $id, $label_attr );
-		}
-		if ( ! empty( $args['removable'] ) ) {
-			$html .= self::do_icon( 'dashicons-dismiss remove', array( 'title' => __( 'Remove', VIEW_ADMIN_AS_DOMAIN ) ) );
-		}
-		if ( ! empty( $args['description'] ) ) {
-			$html .= self::do_description( $args['description'], $desc_attr );
-		}
-		return $html;
-	}
-
-	/**
-	 * Generate radio HTML for node.
-	 *
-	 * @since   1.6.1
-	 * @since   1.6.3  Automatic show/hide description option.
-	 * @access  public
-	 * @static
-	 * @param   array  $data {
-	 *     Required. An array of arrays with field arguments.
-	 *     @type  string  $name         Required.
-	 *     @type  string  $id           Optional (Will be generated from $name if empty).
-	 *     @type  string  $value        Optional.
-	 *     @type  string  $description  Optional.
-	 *     @type  bool    $auto_showhide_desc   Optional.
-	 *     @type  array   $values {
-	 *         Array of radio options data.
-	 *         @type  array  $args {
-	 *             @type  string  $compare      Required.
-	 *             @type  string  $label        Optional.
-	 *             @type  string  $description  Optional.
-	 *             @type  string  $class        Optional.
-	 *             @type  array   $attr         Optional.
-	 *             @type  bool    $auto_showhide_desc   Optional  (overwrite $data).
-	 *         }
-	 *     }
-	 * }
-	 * @return  string
-	 */
-	public static function do_radio( $data ) {
-		$html = '';
-
-		if ( is_array( $data ) && ! empty( $data['values'] ) ) {
-			foreach ( $data['values'] as $args ) {
-
-				$id = esc_attr( ( ( ! empty( $data['id'] ) ) ? $data['id'] : $data['name'] ) . '-' . $args['compare'] );
-				$name = str_replace( '-', '_', esc_attr( $data['name'] ) );
-
-				if ( empty( $data['value'] ) ) {
-					$data['value'] = null;
-				}
-				$checked = checked( $data['value'], $args['compare'], false );
-				$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
-				$class .= ' ' . esc_attr( $data['name'] );
-
-				$args['attr']['type'] = 'radio';
-				$args['attr']['id'] = $id;
-				$args['attr']['name'] = $name;
-				$args['attr']['value'] = $args['compare'];
-				$args['attr']['class'] = 'radio' . $class;
-
-				$attr = self::parse_to_html_attr( $args['attr'] );
-
-				$label_attr = array();
-				$desc_attr = array();
-				if ( ( ! empty( $args['auto_showhide_desc'] ) ) ||
-					 ( ! isset( $args['auto_showhide_desc'] ) && ! empty( $data['auto_showhide_desc'] ) )
-				) {
-					self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
-				}
-
-				$html .= '<input ' . $attr . ' ' . $checked . '/>';
-				if ( ! empty( $args['label'] ) ) {
-					$html .= self::do_label( $args['label'], $id, $label_attr );
-				}
-				$html .= '<br>';
-				if ( ! empty( $args['description'] ) ) {
-					$html .= self::do_description( $args['description'], $desc_attr );
-				}
-			} // End foreach().
-			if ( ! empty( $data['description'] ) ) {
-				$html .= self::do_description( $data['description'] );
-			}
-		} // End if().
-		return $html;
-	}
-
-	/**
-	 * Generate selectbox HTML for node.
-	 *
-	 * @since   1.6.1
-	 * @since   1.6.3  Automatic show/hide description option.
-	 * @access  public
-	 * @static
-	 * @param   array  $data {
-	 *     Required. An array of arrays with field arguments.
-	 *     @type  string  $name         Required.
-	 *     @type  string  $id           Optional (Will be generated from $name if empty).
-	 *     @type  string  $value        Optional.
-	 *     @type  string  $label        Optional.
-	 *     @type  string  $description  Optional.
-	 *     @type  string  $class        Optional.
-	 *     @type  array   $attr         Optional.
-	 *     @type  bool    $auto_showhide_desc   Optional.
-	 *     @type  array   $values {
-	 *         Arrays of selectbox value data.
-	 *         @type  array  $args {
-	 *             @type  string  $compare  Required.
-	 *             @type  string  $value    Optional  (Alias for compare).
-	 *             @type  string  $label    Optional.
-	 *             @type  string  $class  Optional.
-	 *             @type  array   $attr     Optional.
-	 *         }
-	 *     }
-	 * }
-	 * @return  string
-	 */
-	public static function do_select( $data ) {
-		$html = '';
-
-		if ( is_array( $data ) && ! empty( $data['values'] ) ) {
-			$id = esc_attr( ( ! empty( $data['id'] ) ) ? $data['id'] : $data['name'] );
-			$name = str_replace( '-', '_', esc_attr( $data['name'] ) );
-
-			$label_attr = array();
-			$desc_attr = array();
-			if ( ! empty( $data['auto_showhide_desc'] ) ) {
-				self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
-			}
-
-			if ( ! empty( $data['label'] ) ) {
-				$html .= self::do_label( $data['label'], $id, $label_attr );
-			}
-
-			if ( empty( $data['value'] ) ) {
-				$data['value'] = null;
-			}
-
-			$class = ( ! empty( $data['class'] ) ) ? ' ' . $data['class'] : '';
-
-			$data['attr']['id'] = $id;
-			$data['attr']['name'] = $name;
-			$data['attr']['class'] = 'selectbox' . $class;
-			$attr = self::parse_to_html_attr( $data['attr'] );
-
-			$html .= '<select ' . $attr . '/>';
-
-			foreach ( $data['values'] as $args ) {
-
-				if ( empty( $args['compare'] ) ) {
-					$args['compare'] = ( ! empty( $args['value'] ) ) ? $args['value'] : false;
-				}
-				$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['compare'];
-				$selected = selected( $data['value'], $args['compare'], false );
-
-				$args['attr']['value'] = $args['compare'];
-				$attr = self::parse_to_html_attr( $args['attr'] );
-
-				$html .= '<option ' . $attr . ' ' . $selected . '>' . $label . '</option>';
-
-			}
-			$html .= '</select>';
-
-			if ( ! empty( $data['description'] ) ) {
-				$html .= self::do_description( $data['description'], $desc_attr );
-			}
-		} // End if().
-		return $html;
-	}
-
-	/**
-	 * Returns icon html for WP admin bar.
-	 *
-	 * @since   1.6.1
-	 * @since   1.6.3   Added second $attr parameter.
-	 * @static
-	 * @param   string  $icon  The icon class.
-	 * @param   array   $attr  Extra attributes.
-	 * @return  string
-	 */
-	public static function do_icon( $icon, $attr = array() ) {
-		$attr['class'] = 'ab-icon dashicons ' . $icon;
-		$attr['aria-hidden'] = 'true';
-		$attr = self::parse_to_html_attr( $attr );
-		return '<span' . $attr . '></span>';
-	}
-
-	/**
-	 * Returns label html for WP admin bar.
-	 *
-	 * @since   1.6.1
-	 * @since   1.6.3   Added third $attr parameter.
-	 * @static
-	 * @param   string  $label  The label.
-	 * @param   string  $for    (optional) Add for attribute.
-	 * @param   array   $attr   Extra attributes.
-	 * @return  string
-	 */
-	public static function do_label( $label, $for = '', $attr = array() ) {
-		$attr['for'] = $for;
-		$attr = self::parse_to_html_attr( $attr );
-		return '<label' . $attr . '>' . $label . '</label>';
-	}
-
-	/**
-	 * Returns description html for WP admin bar.
-	 *
-	 * @since   1.6.1
-	 * @since   1.6.3   Added second $attr parameter.
-	 * @static
-	 * @param   string  $text  The description text.
-	 * @param   array   $attr  Extra attributes.
-	 * @return  string
-	 */
-	public static function do_description( $text, $attr = array() ) {
-		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
-		$attr = self::parse_to_html_attr( $attr );
-		return '<p' . $attr . '>' . $text . '</p>';
-	}
-
-	/**
-	 * Update label and description attributes to enable auto show/hide functionality
-	 *
-	 * @since   1.7
-	 * @param   string  $target      The target element.
-	 * @param   array   $label_attr  Label attributes.
-	 * @param   array   $desc_attr   Description attributes.
-	 */
-	public static function enable_auto_showhide_desc( $target, &$label_attr = array(), &$desc_attr = array() ) {
-		$label_attr = array(
-			'class' => 'ab-vaa-showhide',
-			'data-showhide' => '.' . $target,
-		);
-		$desc_attr = array( 'class' => $target );
-	}
-
-	/**
-	 * Converts an array of attributes to a HTML string format starting with a space.
-	 *
-	 * @since   1.6.1
-	 * @since   1.7     Renamed from `parse_attr_to_html`
-	 * @static
-	 * @param   array   $array  Array to parse. (attribute => value pairs)
-	 * @return  string
-	 */
-	public static function parse_to_html_attr( $array ) {
-		$str = '';
-		if ( is_array( $array ) && ! empty( $array ) ) {
-			foreach ( $array as $attr => $value ) {
-				$array[ $attr ] = esc_attr( $attr ) . '="' . esc_attr( $value ) . '"';
-			}
-			$str = ' ' . implode( ' ', $array );
-		}
-		return $str;
 	}
 
 	/**

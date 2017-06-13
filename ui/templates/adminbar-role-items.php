@@ -3,7 +3,7 @@
  * Add role items.
  *
  * @since    1.7
- * @version  1.7.1
+ * @version  1.7.2
  *
  * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string        $root       The current root item.
@@ -24,7 +24,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$parent = $root;
 		$href   = VAA_API::get_vaa_action_link( array( 'role' => $role_key ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-role-item';
-		$title  = VAA_View_Admin_As_Admin_Bar::do_view_title( $this->store->get_rolenames( $role_key ), 'role', $role_key );
+		$title  = VAA_View_Admin_As_Form::do_view_title( $this->store->get_rolenames( $role_key ), 'role', $role_key );
 		// Check if the users need to be grouped under their roles.
 		if ( true === $this->groupUserRoles ) {
 			// make sure items are aligned properly when some roles don't have users.
@@ -61,7 +61,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 				'href' => $href,
 				'meta' => array(
 					// Translators: %s stands for the translated role name.
-					'title' => sprintf( esc_attr__( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $this->store->get_rolenames( $role_key )
+					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $this->store->get_rolenames( $role_key )
 					),
 					'class' => $class,
 					'rel'   => $role_key,

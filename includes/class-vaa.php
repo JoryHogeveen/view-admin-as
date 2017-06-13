@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.1
+ * @version 1.7.2
  */
 final class VAA_View_Admin_As
 {
@@ -216,8 +216,7 @@ final class VAA_View_Admin_As
 
 		$this->store->init( true );
 
-		// Sets enabled.
-		$this->validate_user();
+		$this->set_enabled();
 
 		$this->load_modules();
 
@@ -254,8 +253,30 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Try to enable plugin functionality.
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @return  bool
+	 */
+	public function set_enabled() {
+		$this->enable = $this->validate_user();
+		return $this->enable;
+	}
+
+	/**
+	 * Is enabled?
+	 *
+	 * @since   1.5
+	 * @access  public
+	 * @return  bool
+	 */
+	public function is_enabled() {
+		return (bool) $this->enable;
+	}
+
+	/**
 	 * Validate if the current user has access to the functionalities.
-	 * Sets enabled if user passes validation.
 	 *
 	 * @since   0.1    Check if the current user had administrator rights (is_super_admin).
 	 *                 Disable plugin functions for network admin pages.
@@ -270,17 +291,17 @@ final class VAA_View_Admin_As
 	 * @return  bool
 	 */
 	public function validate_user() {
-		$this->enable = false;
+		$valid = false;
 
 		if ( ( VAA_API::is_super_admin()
 		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
 		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
 		     && $this->store->get_curUserSession()
 		) {
-			$this->enable = true;
+			$valid = true;
 		}
 
-		return $this->enable;
+		return $valid;
 	}
 
 	/**
@@ -308,10 +329,9 @@ final class VAA_View_Admin_As
 		if ( empty( $class ) || ! class_exists( $class ) ) {
 			include_once( $file );
 		} else {
-			$this->add_notice( 'class-error-' . $class, array(
+			$this->add_error_notice( __METHOD__ . ' - ' . $class, array(
 				'type' => 'notice-error',
-				'message' => '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-				             . __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+				'message' => __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
 				             // Translators: %s stands for the class name.
 				             . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $class ) . ')</code>',
 			) );
@@ -370,6 +390,10 @@ final class VAA_View_Admin_As
 	private function load_ui() {
 
 		$includes = array(
+			'form' => array(
+				'file'  => 'ui/class-form.php',
+				'class' => 'VAA_View_Admin_As_Form',
+			),
 			'ui' => array(
 				'file'  => 'ui/class-ui.php',
 				'class' => 'VAA_View_Admin_As_UI',
@@ -415,6 +439,13 @@ final class VAA_View_Admin_As
 			);
 		}
 
+		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
+			$includes['groups'] = array(
+				'file'  => 'modules/class-groups.php',
+				'class' => 'VAA_View_Admin_As_Groups',
+			);
+		}
+
 		// Run include code but do not register modules yet (leave that to the modules).
 		$this->load_files( $includes );
 
@@ -456,17 +487,6 @@ final class VAA_View_Admin_As
 				load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
 			}
 		}
-	}
-
-	/**
-	 * Is enabled?
-	 *
-	 * @since   1.5
-	 * @access  public
-	 * @return  bool
-	 */
-	public function is_enabled() {
-		return (bool) $this->enable;
 	}
 
 	/**
@@ -568,6 +588,42 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Add error notices to generate.
+	 * Automatically generated a bug report link at the end of the notice.
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 *
+	 * @param   string  $id
+	 * @param   array   $notice {
+	 *     Required array.
+	 *     @type  string  $message  The notice message.
+	 *     @type  string  $type     (optional) The WP notice type class(es).
+	 * }
+	 * @return  void
+	 */
+	public function add_error_notice( $id, $notice ) {
+		if ( ! empty( $notice['message'] ) ) {
+			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : 'notice-error';
+
+			// @todo Add debug_backtrace to body?
+			$report = array(
+				'title' => __( 'Error', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $id,
+				'body'  => $notice['message'],
+			);
+			$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
+
+			$notice['message'] = '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+			                     . $notice['message']
+			                     . ' <a href="' . $report_link . '" target="_blank">'
+			                     . __( 'Click here to report this error!', VIEW_ADMIN_AS_DOMAIN )
+			                     . '</a>';
+
+			$this->add_notice( $id, $notice );
+		}
+	}
+
+	/**
 	 * Add notices to generate.
 	 *
 	 * @since   1.5.1
@@ -576,13 +632,14 @@ final class VAA_View_Admin_As
 	 * @param   string  $id
 	 * @param   array   $notice {
 	 *     Required array.
-	 *     @type  string  $type     The WP notice type class(es).
 	 *     @type  string  $message  The notice message.
+	 *     @type  string  $type     (optional) The WP notice type class(es).
 	 * }
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
-		if ( isset( $notice['type'] ) && ! empty( $notice['message'] ) ) {
+		if ( ! empty( $notice['message'] ) ) {
+			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : '';
 			$this->notices[ $id ] = array(
 				'type' => $notice['type'],
 				'message' => $notice['message'],

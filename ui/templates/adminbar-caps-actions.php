@@ -2,7 +2,8 @@
 /**
  * Add caps actions.
  *
- * @since  1.7
+ * @since    1.7
+ * @version  1.7.2
  *
  * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string        $root       The current root item.
@@ -27,7 +28,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		array(
 			'id'     => $root . '-filtercaps',
 			'parent' => $parent,
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_input(
+			'title'  => VAA_View_Admin_As_Form::do_input(
 				array(
 					'name'        => $root . '-filtercaps',
 					'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN ),
@@ -89,7 +90,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		array(
 			'id'     => $root . '-selectrolecaps',
 			'parent' => $parent,
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_select(
+			'title'  => VAA_View_Admin_As_Form::do_select(
 				array(
 					'name'   => $root . '-selectrolecaps',
 					'values' => $role_select_options,
@@ -108,13 +109,13 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		array(
 			'id'     => $root . '-bulkselectcaps',
 			'parent' => $parent,
-			'title'  => VAA_View_Admin_As_Admin_Bar::do_button(
+			'title'  => VAA_View_Admin_As_Form::do_button(
 				array(
 					'name'    => 'select-all-caps',
 					'label'   => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
 					'classes' => 'button-secondary',
 				)
-			) . ' ' . VAA_View_Admin_As_Admin_Bar::do_button(
+			) . ' ' . VAA_View_Admin_As_Form::do_button(
 				array(
 					'name'    => 'deselect-all-caps',
 					'label'   => __( 'Deselect', VIEW_ADMIN_AS_DOMAIN ),
