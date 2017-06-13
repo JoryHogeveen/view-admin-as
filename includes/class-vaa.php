@@ -684,12 +684,13 @@ final class VAA_View_Admin_As
 		$valid = true;
 
 		// Validate WP.
-		if ( version_compare( $wp_version, '4.1', '<' ) ) {
+		$min_wp_version = '4.1';
+		if ( version_compare( $wp_version, $min_wp_version, '<' ) ) {
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
 				    // Translators: %1$s stands for "WordPress", %2$s stands for the version.
-				    . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
+				    . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', $min_wp_version ),
 			) );
 			$valid = false;
 		}
