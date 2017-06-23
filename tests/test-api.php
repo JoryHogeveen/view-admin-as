@@ -174,10 +174,27 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 		$arr2 = array( 'test', 1 );
 		$this->assertFalse( VAA_API::array_equal( $arr1, $arr2 ) );
 
-		// Recursive arrays are not supported.
+		// Recursive arrays.
 		$arr1 = array( 'key' => array(), 'key2' => 1 );
 		$arr2 = array( 'key' => array(), 'key2' => 1 );
+		$this->assertTrue( VAA_API::array_equal( $arr1, $arr2 ) );
+
+		$arr1 = array( 'key' => array( 'test', 'test2' ), 'key2' => 1 );
+		$arr2 = array( 'key' => array( 'test' ), 'key2' => 1 );
 		$this->assertFalse( VAA_API::array_equal( $arr1, $arr2 ) );
+
+		$arr1 = array( 'key' => array( 'test' ), 'key2' => 1 );
+		$arr2 = array( 'key' => array( 'test', 'test2' ), 'key2' => 1 );
+		$this->assertFalse( VAA_API::array_equal( $arr1, $arr2 ) );
+
+		// Recursive arrays strict comparison.
+		$arr1 = array( 'key' => array( 'test', 1 ), 'key2' => 1 );
+		$arr2 = array( 'key' => array( 'test', '1' ), 'key2' => 1 );
+		$this->assertFalse( VAA_API::array_equal( $arr1, $arr2, true, true ) );
+
+		$arr1 = array( 'key' => array( 'test', '1' ), 'key2' => 1 );
+		$arr2 = array( 'key' => array( 'test', 1 ), 'key2' => 1 );
+		$this->assertFalse( VAA_API::array_equal( $arr1, $arr2, true, true ) );
 
 	}
 

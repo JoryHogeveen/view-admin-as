@@ -328,13 +328,20 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   array  $array1  Array one.
-	 * @param   array  $array2  Array two.
+	 * @param   array  $array1     Array one.
+	 * @param   array  $array2     Array two.
+	 * @param   bool   $recursive  Compare recursively.
+	 * @param   bool   $strict     Strict comparison? Only available when comparing recursive.
 	 * @return  bool
 	 */
-	public static function array_equal( $array1, $array2 ) {
+	public static function array_equal( $array1, $array2, $recursive = true, $strict = false ) {
 		if ( ! is_array( $array1 ) || ! is_array( $array2 ) ) {
 			return false;
+		}
+		if ( $recursive ) {
+			return (
+				self::array_diff_assoc_recursive( $array1, $array2, $strict ) === self::array_diff_assoc_recursive( $array2, $array1, $strict )
+			);
 		}
 		// Check for recursive arrays.
 		$arr1 = array_filter( $array1, 'is_scalar' );
@@ -346,6 +353,52 @@ final class VAA_API
 			count( $arr1 ) === count( $arr2 ) &&
 			array_diff_assoc( $arr1, $arr2 ) === array_diff_assoc( $arr2, $arr1 )
 		);
+	}
+
+	/**
+	 * Recursive version of `array_diff_assoc()`.
+	 *
+	 * @since   1.7.3
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array  $array1  Array one.
+	 * @param   array  $array2  Array two.
+	 * @param   bool   $strict  Strict comparison?
+	 * @return  array
+	 */
+	public static function array_diff_assoc_recursive( $array1, $array2, $strict = false ) {
+		$return = array();
+
+		foreach ( $array1 as $key => $value ) {
+			if ( array_key_exists( $key, $array2 ) ) {
+				if ( is_array( $value ) ) {
+					if ( is_array( $array2[ $key ] ) ) {
+						$diff = self::array_diff_assoc_recursive( $value, $array2[ $key ], $strict );
+						if ( $diff ) {
+							$return[ $key ] = $diff;
+						}
+					} else {
+						$return[ $key ] = $value;
+					}
+				} else {
+					if ( $strict ) {
+						if ( $value !== $array2[ $key ] ) {
+							$return[ $key ] = $value;
+						}
+					} else {
+						if ( (string) $value !== (string) $array2[ $key ] ) {
+							$return[ $key ] = $value;
+						}
+					}
+				}
+			} else {
+				$return[ $key ] = $value;
+			}
+		}
+
+		return $return;
 	}
 
 	/**
