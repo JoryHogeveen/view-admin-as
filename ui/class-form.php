@@ -42,16 +42,17 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * @param   string  $type   The view type.
 	 * @param   string  $value  The view value.
 	 * @param   array   $attr   (optional) Array of other attributes.
+	 * @param   string  $elem   (optional) HTML element type.
 	 * @return  string
 	 */
-	public static function do_view_title( $title, $type, $value, $attr = array() ) {
+	public static function do_view_title( $title, $type, $value, $attr = array(), $elem = 'span' ) {
 		$attr = (array) $attr;
 		$class = ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '';
 		$attr['class'] = 'vaa-view-data' . $class;
 		$attr['vaa-view-type'] = $type;
 		$attr['vaa-view-value'] = $value;
 		$attr = self::parse_to_html_attr( $attr );
-		return '<span ' . $attr . '>' . $title . '</span>';
+		return '<' . $elem . ' ' . $attr . '>' . $title . '</' . $elem . '>';
 	}
 
 	/**
