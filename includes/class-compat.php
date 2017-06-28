@@ -96,7 +96,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		if ( $this->store->get_view()
 		     && (int) $this->store->get_curUser()->ID === (int) $this->store->get_selectedUser()->ID
 		) {
-			// Only apply the filter if the current user is modified
+			// Only apply the filter if the current user is modified.
 			add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
 		}
 	}
