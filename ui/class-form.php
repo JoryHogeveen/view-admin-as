@@ -515,7 +515,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * @param   array   $args        (optional) Pass the full arguments array for auto_show_hide key validation.
 	 */
 	public static function enable_auto_showhide_desc( $target, &$label_attr = array(), &$desc_attr = array(), $args = array() ) {
-		if ( ! empty( $args ) && empty( $data['auto_showhide_desc'] ) ) {
+		if ( ! empty( $args ) && empty( $args['auto_showhide_desc'] ) ) {
 			return;
 		}
 		$label_attr = array(
