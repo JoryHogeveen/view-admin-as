@@ -223,7 +223,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @access  public
 	 * @static
-	 * @param   array  $data {
+	 * @param   array  $args {
 	 *     Required. An array of arrays with field arguments.
 	 *     @type  string  $name         Required.
 	 *     @type  string  $id           Optional (Will be generated from $name if empty).
@@ -233,7 +233,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *     @type  bool    $auto_showhide_desc   Optional.
 	 *     @type  array   $values {
 	 *         Array of radio options data.
-	 *         @type  array  $args {
+	 *         @type  array {
 	 *             @type  string  $compare      Required.
 	 *             @type  string  $label        Optional.
 	 *             @type  string  $description  Optional.
@@ -245,49 +245,49 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * }
 	 * @return  string
 	 */
-	public static function do_radio( $data ) {
+	public static function do_radio( $args ) {
 		$html = '';
 
-		if ( ! empty( $data['values'] ) ) {
-			foreach ( $data['values'] as $args ) {
+		if ( ! empty( $args['values'] ) ) {
+			foreach ( $args['values'] as $val ) {
 
-				$id = esc_attr( ( ( ! empty( $data['id'] ) ) ? $data['id'] : $data['name'] ) . '-' . $args['compare'] );
-				$name = str_replace( '-', '_', esc_attr( $data['name'] ) );
+				$id = esc_attr( ( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] ) . '-' . $val['compare'] );
+				$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 
-				if ( empty( $data['value'] ) ) {
-					$data['value'] = null;
+				if ( empty( $args['value'] ) ) {
+					$args['value'] = null;
 				}
-				$checked = checked( $data['value'], $args['compare'], false );
-				$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
-				$class .= ' ' . esc_attr( $data['name'] );
+				$checked = checked( $args['value'], $val['compare'], false );
+				$class = ( ! empty( $val['class'] ) ) ? ' ' . $val['class'] : '';
+				$class .= ' ' . esc_attr( $args['name'] );
 
-				$args['attr']['type'] = 'radio';
-				$args['attr']['id'] = $id;
-				$args['attr']['name'] = $name;
-				$args['attr']['value'] = $args['compare'];
-				$args['attr']['class'] = 'radio' . $class;
+				$val['attr']['type'] = 'radio';
+				$val['attr']['id'] = $id;
+				$val['attr']['name'] = $name;
+				$val['attr']['value'] = $val['compare'];
+				$val['attr']['class'] = 'radio' . $class;
 
-				$attr = $args['attr'];
-				$attr = self::enable_auto_js( $attr, $data );
+				$attr = $val['attr'];
+				$attr = self::enable_auto_js( $attr, $args );
 				$attr = self::parse_to_html_attr( $attr );
 
 				$label_attr = array();
 				$desc_attr = array();
 				// Custom validation required.
-				if ( ( ! empty( $args['auto_showhide_desc'] ) ) ||
-					 ( ! isset( $args['auto_showhide_desc'] ) && ! empty( $data['auto_showhide_desc'] ) )
+				if ( ( ! empty( $val['auto_showhide_desc'] ) ) ||
+					 ( ! isset( $val['auto_showhide_desc'] ) && ! empty( $args['auto_showhide_desc'] ) )
 				) {
 					self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
 				}
 
 				$html .= '<input ' . $attr . ' ' . $checked . '/>';
-				$html .= self::do_label( $args, $id, $label_attr );
+				$html .= self::do_label( $val, $id, $label_attr );
 				$html .= '<br>';
-				$html .= self::do_description( $args, $desc_attr );
+				$html .= self::do_description( $val, $desc_attr );
 
 			} // End foreach().
 
-			$html .= self::do_description( $data );
+			$html .= self::do_description( $args );
 
 		} // End if().
 		return $html;
@@ -301,7 +301,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @access  public
 	 * @static
-	 * @param   array  $data {
+	 * @param   array  $args {
 	 *     Required. An array of arrays with field arguments.
 	 *     @type  string  $name         Required.
 	 *     @type  string  $id           Optional (Will be generated from $name if empty).
@@ -314,7 +314,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 *     @type  bool    $auto_showhide_desc   Optional.
 	 *     @type  array   $values {
 	 *         Arrays of selectbox value data.
-	 *         @type  array  $args {
+	 *         @type  array {
 	 *             @type  string  $compare  Required.
 	 *             @type  string  $value    Optional  (Alias for compare).
 	 *             @type  string  $label    Optional.
@@ -325,52 +325,52 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Class_Base
 	 * }
 	 * @return  string
 	 */
-	public static function do_select( $data ) {
+	public static function do_select( $args ) {
 		$html = '';
 
-		if ( ! empty( $data['values'] ) ) {
-			$id = esc_attr( ( ! empty( $data['id'] ) ) ? $data['id'] : $data['name'] );
-			$name = str_replace( '-', '_', esc_attr( $data['name'] ) );
+		if ( ! empty( $args['values'] ) ) {
+			$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
+			$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 
 			$label_attr = array();
 			$desc_attr = array();
-			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $data );
+			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
 
-			$html .= self::do_label( $data, $id, $label_attr );
+			$html .= self::do_label( $args, $id, $label_attr );
 
-			if ( empty( $data['value'] ) ) {
-				$data['value'] = null;
+			if ( empty( $args['value'] ) ) {
+				$args['value'] = null;
 			}
 
-			$class = ( ! empty( $data['class'] ) ) ? ' ' . $data['class'] : '';
+			$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
 
-			$data['attr']['id'] = $id;
-			$data['attr']['name'] = $name;
-			$data['attr']['class'] = 'selectbox' . $class;
+			$args['attr']['id'] = $id;
+			$args['attr']['name'] = $name;
+			$args['attr']['class'] = 'selectbox' . $class;
 
-			$attr = $data['attr'];
-			$attr = self::enable_auto_js( $attr, $data );
+			$attr = $args['attr'];
+			$attr = self::enable_auto_js( $attr, $args );
 			$attr = self::parse_to_html_attr( $attr );
 
 			$html .= '<select ' . $attr . '>';
 
-			foreach ( $data['values'] as $args ) {
+			foreach ( $args['values'] as $val ) {
 
-				if ( empty( $args['compare'] ) ) {
-					$args['compare'] = ( ! empty( $args['value'] ) ) ? $args['value'] : false;
+				if ( empty( $val['compare'] ) ) {
+					$val['compare'] = ( ! empty( $val['value'] ) ) ? $val['value'] : false;
 				}
-				$label = ( ! empty( $args['label'] ) ) ? $args['label'] : $args['compare'];
-				$selected = selected( $data['value'], $args['compare'], false );
+				$label = ( ! empty( $val['label'] ) ) ? $val['label'] : $val['compare'];
+				$selected = selected( $args['value'], $val['compare'], false );
 
-				$args['attr']['value'] = $args['compare'];
-				$attr = self::parse_to_html_attr( $args['attr'] );
+				$val['attr']['value'] = $val['compare'];
+				$attr = self::parse_to_html_attr( $val['attr'] );
 
 				$html .= '<option ' . $attr . ' ' . $selected . '>' . $label . '</option>';
 
 			}
 			$html .= '</select>';
 
-			$html .= self::do_description( $data, $desc_attr );
+			$html .= self::do_description( $args, $desc_attr );
 
 		} // End if().
 		return $html;
