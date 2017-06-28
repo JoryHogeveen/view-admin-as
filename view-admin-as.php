@@ -42,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
-if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
+if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as' ) ) {
 
 	define( 'VIEW_ADMIN_AS_VERSION',    '1.7.3-dev' );
 	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.7.2' );
