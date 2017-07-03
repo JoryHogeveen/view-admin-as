@@ -159,7 +159,7 @@ final class VAA_View_Admin_As
 			),
 			array(
 				'file'  => 'includes/class-base.php',
-				'class' => 'VAA_View_Admin_As_Class_Base',
+				'class' => 'VAA_View_Admin_As_Base',
 			),
 			array(
 				'file'  => 'includes/class-settings.php',

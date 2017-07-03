@@ -16,10 +16,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.2
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.

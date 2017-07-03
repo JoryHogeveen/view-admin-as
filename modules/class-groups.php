@@ -20,10 +20,10 @@ add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Groups
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.2
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.

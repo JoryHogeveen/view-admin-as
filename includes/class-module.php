@@ -17,10 +17,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5  (This was one class with VAA_View_Admin_As_Class_Base)
- * @version 1.7
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Class_Base
+abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 {
 	/**
 	 * Option key.
