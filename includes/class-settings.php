@@ -157,6 +157,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 
 			$default_user = array(
 				'admin_menu_location' => 'top-secondary',
+				'disable_super_admin' => true,
 				'force_group_users'   => false,
 				'freeze_locale'       => false,
 				'hide_front'          => false,
@@ -164,6 +165,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 			);
 			$allowed_user = array(
 				'admin_menu_location' => array( 'top-secondary', 'my-account' ),
+				'disable_super_admin' => array( true, false ),
 				'force_group_users'   => array( true, false ),
 				'freeze_locale'       => array( true, false ),
 				'hide_front'          => array( true, false ),
