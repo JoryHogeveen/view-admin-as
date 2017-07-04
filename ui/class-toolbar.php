@@ -65,7 +65,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		$this->vaa_store = $vaa->store();
+		$this->vaa_store = view_admin_as()->store();
 
 		if ( ! is_admin() ) {
 			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
@@ -132,7 +132,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		 * @param   array  $array  Empty array.
 		 * @return  array
 		 */
-		$toolbar_classes = array_map( 'esc_attr', apply_filters( 'view_admin_as_toolbar_classes', array() ) );
+		$toolbar_classes = apply_filters( 'view_admin_as_toolbar_classes', array() );
 		echo '<div id="vaa_toolbar" class="' . esc_attr( implode( ' ', $toolbar_classes ) ) . '">';
 
 		$this->render();

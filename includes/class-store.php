@@ -63,11 +63,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * }
 	 */
 	private $data = array(
-		'caps' => array(),
-		'roles' => array(),
+		'caps'      => array(),
+		'roles'     => array(),
 		'rolenames' => array(),
-		'users' => array(),
-		'userids' => array(),
+		'users'     => array(),
+		'userids'   => array(),
 	);
 
 	/**
@@ -161,11 +161,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Get the current user session (WP 4.0+).
 		$this->set_curUserSession( (string) wp_get_session_token() );
 
-		self::$isCurUserSuperAdmin = false;
-		if ( is_super_admin( $this->get_curUser()->ID ) ) {
-			self::$isCurUserSuperAdmin = true;
-		}
-
+		self::$isCurUserSuperAdmin = is_super_admin( $this->get_curUser()->ID );
 		self::$curUserData = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
@@ -174,6 +170,59 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		$this->set_userMeta( get_user_meta( $this->get_curUser()->ID, $this->get_userMetaKey(), true ) );
 
 		$done = true;
+	}
+
+	/**
+	 * Store available capabilities.
+	 *
+	 * @since   1.4.1
+	 * @since   1.6    Moved to this class from main class.
+	 * @access  public
+	 * @return  void
+	 */
+	public function store_caps() {
+
+		// Get current user capabilities.
+		$caps = self::get_originalUserData( 'allcaps' );
+		if ( empty( $caps ) ) {
+			// Fallback.
+			$caps = $this->get_curUser()->allcaps;
+		}
+
+		// Only allow to add capabilities for an admin (or super admin).
+		if ( self::is_super_admin() ) {
+
+			/**
+			 * Add compatibility for other cap managers.
+			 *
+			 * @since  1.5
+			 * @see    VAA_View_Admin_As_Compat->init()
+			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
+			 * @return array
+			 */
+			$all_caps = apply_filters( 'view_admin_as_get_capabilities', array() );
+
+			$add_caps = array();
+			// Add new capabilities to the capability array as disabled.
+			foreach ( $all_caps as $cap_key => $cap_val ) {
+				if ( is_numeric( $cap_key ) ) {
+					// Try to convert numeric (faulty) keys. Some developers just don't get it..
+					$add_caps[ (string) $cap_val ] = 0;
+				} else {
+					$add_caps[ (string) $cap_key ] = 0;
+				}
+			}
+
+			$caps = array_merge( $add_caps, $caps );
+
+		} // End if().
+
+		// Remove role names.
+		$caps = array_diff_key( $caps, $this->get_roles() );
+		// And sort alphabetical.
+		ksort( $caps );
+
+		$this->set_caps( $caps );
 	}
 
 	/**
@@ -503,59 +552,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		}
 		$users = $tmp_users;
 		return $users;
-	}
-
-	/**
-	 * Store available capabilities.
-	 *
-	 * @since   1.4.1
-	 * @since   1.6    Moved to this class from main class.
-	 * @access  public
-	 * @return  void
-	 */
-	public function store_caps() {
-
-		// Get current user capabilities.
-		$caps = self::get_originalUserData( 'allcaps' );
-		if ( empty( $caps ) ) {
-			// Fallback.
-			$caps = $this->get_curUser()->allcaps;
-		}
-
-		// Only allow to add capabilities for an admin (or super admin).
-		if ( self::is_super_admin() ) {
-
-			/**
-			 * Add compatibility for other cap managers.
-			 *
-			 * @since  1.5
-			 * @see    VAA_View_Admin_As_Compat->init()
-			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
-			 * @return array
-			 */
-			$all_caps = apply_filters( 'view_admin_as_get_capabilities', array() );
-
-			$add_caps = array();
-			// Add new capabilities to the capability array as disabled.
-			foreach ( $all_caps as $cap_key => $cap_val ) {
-				if ( is_numeric( $cap_key ) ) {
-					// Try to convert numeric (faulty) keys. Some developers just don't get it..
-					$add_caps[ (string) $cap_val ] = 0;
-				} else {
-					$add_caps[ (string) $cap_key ] = 0;
-				}
-			}
-
-			$caps = array_merge( $add_caps, $caps );
-
-		} // End if().
-
-		// Remove role names.
-		$caps = array_diff_key( $caps, $this->get_roles() );
-		// And sort alphabetical.
-		ksort( $caps );
-
-		$this->set_caps( $caps );
 	}
 
 	/**

@@ -159,7 +159,7 @@ final class VAA_View_Admin_As
 			),
 			array(
 				'file'  => 'includes/class-base.php',
-				'class' => 'VAA_View_Admin_As_Class_Base',
+				'class' => 'VAA_View_Admin_As_Base',
 			),
 			array(
 				'file'  => 'includes/class-settings.php',
@@ -329,7 +329,7 @@ final class VAA_View_Admin_As
 		if ( empty( $class ) || ! class_exists( $class ) ) {
 			include_once( $file );
 		} else {
-			$this->add_error_notice( __METHOD__ . ' - ' . $class, array(
+			$this->add_error_notice( $class . '::' . __METHOD__, array(
 				'type' => 'notice-error',
 				'message' => __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
 				             // Translators: %s stands for the class name.
@@ -603,24 +603,26 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function add_error_notice( $id, $notice ) {
-		if ( ! empty( $notice['message'] ) ) {
-			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : 'notice-error';
-
-			// @todo Add debug_backtrace to body?
-			$report = array(
-				'title' => __( 'Error', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $id,
-				'body'  => $notice['message'],
-			);
-			$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
-
-			$notice['message'] = '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-			                     . $notice['message']
-			                     . ' <a href="' . $report_link . '" target="_blank">'
-			                     . __( 'Click here to report this error!', VIEW_ADMIN_AS_DOMAIN )
-			                     . '</a>';
-
-			$this->add_notice( $id, $notice );
+		if ( empty( $notice['message'] ) ) {
+			return;
 		}
+
+		$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : 'notice-error';
+
+		// @todo Add debug_backtrace to body?
+		$report = array(
+			'title' => __( 'Error', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $id,
+			'body'  => $notice['message'],
+		);
+		$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
+
+		$notice['message'] = '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
+		                     . $notice['message']
+		                     . ' <a href="' . $report_link . '" target="_blank">'
+		                     . __( 'Click here to report this error!', VIEW_ADMIN_AS_DOMAIN )
+		                     . '</a>';
+
+		$this->add_notice( $id, $notice );
 	}
 
 	/**
@@ -684,12 +686,13 @@ final class VAA_View_Admin_As
 		$valid = true;
 
 		// Validate WP.
-		if ( version_compare( $wp_version, '4.1', '<' ) ) {
+		$min_wp_version = '4.1';
+		if ( version_compare( $wp_version, $min_wp_version, '<' ) ) {
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
 				    // Translators: %1$s stands for "WordPress", %2$s stands for the version.
-				    . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', '3.5' ),
+				    . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', $min_wp_version ),
 			) );
 			$valid = false;
 		}

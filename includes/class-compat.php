@@ -16,10 +16,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.1
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.
@@ -96,7 +96,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 		if ( $this->store->get_view()
 		     && (int) $this->store->get_curUser()->ID === (int) $this->store->get_selectedUser()->ID
 		) {
-			// Only apply the filter if the current user is modified
+			// Only apply the filter if the current user is modified.
 			add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
 		}
 	}
@@ -338,7 +338,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Class_Base
 	}
 
 	/**
-	 * Add our capabilities to our own group in the members plugin.
+	 * Add our capabilities to our own group in the Members plugin.
 	 *
 	 * @since   1.6
 	 * @access  public

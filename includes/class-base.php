@@ -17,9 +17,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.7
+ * @since   1.7.3  Renamed from VAA_View_Admin_As_Class_Base
+ * @version 1.7.3
  */
-abstract class VAA_View_Admin_As_Class_Base
+abstract class VAA_View_Admin_As_Base
 {
 	/**
 	 * View Admin As object.
