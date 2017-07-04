@@ -56,12 +56,12 @@ abstract class VAA_View_Admin_As_Base
 	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
 	 */
 	protected function __construct( $vaa = null ) {
-		// Load resources
+		// Load resources.
 		$this->load_vaa( $vaa );
 	}
 
 	/**
-	 * init function to store data from the main class and enable functionality based on the current view.
+	 * Init function to store data from the main class and enable functionality based on the current view.
 	 *
 	 * @since   1.5
 	 * @since   1.6    $vaa param.

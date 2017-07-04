@@ -108,6 +108,39 @@ if ( isset( $this ) &&
 	);
 
 	/**
+	 * Disable super admin checks while switched.
+	 *
+	 * @since   1.7.3
+	 */
+	if ( VAA_API::is_super_admin() ) {
+		$admin_bar->add_node(
+			array(
+				'id'     => $root . '-disable-super-admin',
+				'parent' => $root,
+				'title'  => VAA_View_Admin_As_Form::do_checkbox(
+					array(
+						'name'        => $root . '-disable-super-admin',
+						'value'       => $this->store->get_userSettings( 'disable_super_admin' ),
+						'compare'     => true,
+						'label'       => __( 'Disable super admin', VIEW_ADMIN_AS_DOMAIN ),
+						'description' => __( 'Disable super admin status while switched to another view', VIEW_ADMIN_AS_DOMAIN ),
+						'auto-js' => array(
+							'setting' => 'user_setting',
+							'key'     => 'disable_super_admin',
+							'refresh' => ( $this->store->get_view() ) ? true : false,
+						),
+						//'auto_showhide_desc' => true,
+					)
+				),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'auto-height',
+				),
+			)
+		);
+	}
+
+	/**
 	 * hide_front setting.
 	 *
 	 * @since   1.6

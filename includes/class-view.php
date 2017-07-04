@@ -207,7 +207,10 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * Disable super admin capabilities for the current user.
 		 * @since  1.7.2-dev
 		 */
-		if ( ! is_network_admin() ) {
+		if ( ! is_network_admin() &&
+		     VAA_API::is_super_admin() &&
+		     $this->store->get_userSettings( 'disable_super_admin' )
+		) {
 			$this->disable_super_admin();
 		}
 
