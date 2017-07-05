@@ -227,6 +227,7 @@
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive > .ab-sub-wrapper > .ab-submenu {padding: 0;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup {position: fixed; display: block; visibility: visible; overflow: hidden; z-index: 999; max-height: 90%; width: 90%; margin: 5%; top: 0; left: 0; box-shadow: 0 0 50px rgba(0,0,0,0.3);}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup .ab-item {display: block;}
+#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul::after {display: table; clear: both; content: ' ';}
 
 /**
  * Capability nodes
@@ -239,6 +240,7 @@
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #close-caps-popup {display: block;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #open-caps-popup {display: none;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #wp-admin-bar-vaa-caps-select-options .vaa-cap-item {width: 250px; float: left; clear: none;}
+#wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #wp-admin-bar-vaa-caps-select-options .vaa-cap-item .remove {margin-right: 6px;}
 
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps-popup:hover {cursor: pointer;}
 
@@ -260,6 +262,17 @@
 /**
  * Responsive
  */
+@media screen and (min-width: 783px) {
+	/* Full popup form elements */
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select {float: left; clear: none; width: auto;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input button {margin: 5px 0;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input input,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select select {width: auto;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input input + button.input-overlay,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select select + button.input-overlay {position: static; vertical-align: top;}
+}
+
 @media screen and (max-width: 782px) {
 
 	/**
