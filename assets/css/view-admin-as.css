@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1
- * @version 1.7.2
+ * @version 1.7.3
  * @preserve
  */
 
@@ -47,7 +47,7 @@
  * General
  */
 #wpadminbar #wp-admin-bar-vaa ul li,
-#wpadminbar #wp-admin-bar-vaa .ab-item {clear: both;}
+#wpadminbar #wp-admin-bar-vaa .ab-item {clear: both; z-index: auto;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-item > span {line-height: 26px;}
 #wpadminbar #wp-admin-bar-vaa .ab-item > span.remove {font-size: 16px; line-height: 16px; top: 1px;}
@@ -119,6 +119,32 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-icon {padding: 0 2px 1px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-icon .ab-icon {margin: 0;}
 #wpadminbar #wp-admin-bar-vaa button.vaa-icon .ab-icon {padding: 0;}
+
+/**
+ * Help tooltips
+ */
+#wpadminbar #wp-admin-bar-vaa .vaa-tooltip {
+	position: absolute;
+	display: none;
+	opacity: 0;
+	transition: all .2s;
+	right: 12px;
+	top: 0;
+	padding: 10px 15px;
+	width: 140px;
+	height: auto;
+	font-size: 11px;
+	line-height: 1.2em;
+	white-space: normal;
+	border-radius: 3px;
+	border: 1px solid rgba(175,175,175,0.5);
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	z-index: 99999;
+}
+#wpadminbar #wp-admin-bar-vaa .vaa-help {float: right; padding: 0; font-size: 16px; line-height: inherit; margin: 0 0 0 5px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-help ~ *:last-child,
+#wpadminbar #wp-admin-bar-vaa .vaa-help ~ input + label {margin-right: 20px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-help:hover .vaa-tooltip {display: inline-block; opacity: 1;}
 
 /**
  * Auto max height

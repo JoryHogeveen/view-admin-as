@@ -144,6 +144,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$desc_attr = array();
 		self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
 
+		$html .= self::do_help( $args );
 		$html .= self::do_label( $args, $id, $label_attr );
 		$html .= '<input ' . $attr . '/>';
 		$html .= self::do_description( $args, $desc_attr );
@@ -204,6 +205,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$desc_attr = array();
 		self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
 
+		$html .= self::do_help( $args );
 		$html .= '<input ' . $attr . ' ' . $checked . '/>';
 		$html .= self::do_label( $args, $id, $label_attr );
 
@@ -280,6 +282,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 					self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
 				}
 
+				$html .= self::do_help( $val );
 				$html .= '<input ' . $attr . ' ' . $checked . '/>';
 				$html .= self::do_label( $val, $id, $label_attr );
 				$html .= '<br>';
@@ -336,6 +339,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 			$desc_attr = array();
 			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
 
+			$html .= self::do_help( $args );
 			$html .= self::do_label( $args, $id, $label_attr );
 
 			if ( empty( $args['value'] ) ) {
@@ -383,15 +387,19 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @static
-	 * @param   string  $icon  The icon class.
-	 * @param   array   $attr  Extra attributes.
+	 * @param   string  $icon     The icon class.
+	 * @param   array   $attr     Extra attributes.
+	 * @param   string  $content  Icon content.
 	 * @return  string
 	 */
-	public static function do_icon( $icon, $attr = array() ) {
+	public static function do_icon( $icon, $attr = array(), $content = '' ) {
+		if ( ! empty( $attr['class'] ) ) {
+			$icon .= ' ' . (string) $attr['class'];
+		}
 		$attr['class'] = 'ab-icon dashicons ' . $icon;
 		$attr['aria-hidden'] = 'true';
 		$attr = self::parse_to_html_attr( $attr );
-		return '<span ' . $attr . '></span>';
+		return '<span ' . $attr . '>' . $content . '</span>';
 	}
 
 	/**
@@ -435,10 +443,43 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 				return '';
 			}
 			$text = $text['description'];
+		} elseif ( ! is_string( $text ) ) {
+			return '';
 		}
 		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
 		$attr = self::parse_to_html_attr( $attr );
 		return '<p ' . $attr . '>' . $text . '</p>';
+	}
+
+	/**
+	 * Returns help tooltip html for WP admin bar.
+	 *
+	 * @since   1.6.1
+	 * @since   1.6.3  Added second $attr parameter.
+	 * @since   1.7.2  Moved to this class from admin bar class.
+	 * @static
+	 * @param   string|array  $text  The help text. (Also accepts an array with a `help` key)
+	 * @param   array         $attr  Extra attributes.
+	 * @return  string
+	 */
+	public static function do_help( $text, $attr = array() ) {
+		if ( is_array( $text ) ) {
+			if ( empty( $text['help'] ) ) {
+				return '';
+			}
+			$text = $text['help'];
+		} elseif ( ! is_string( $text ) ) {
+			return '';
+		}
+		// ab-sub-wrapper for background, ab-item for text color.
+		$attr['class'] = 'ab-item ab-sub-wrapper vaa-tooltip' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
+		$attr = self::parse_to_html_attr( $attr );
+
+		return self::do_icon(
+			'dashicons-editor-help',
+			array( 'class' => 'vaa-help' ),
+			'<span ' . $attr . '>' . $text . '</span>'
+		);
 	}
 
 	/**
