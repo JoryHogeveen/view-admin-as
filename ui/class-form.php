@@ -282,11 +282,13 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 					self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
 				}
 
+				$html .= '<div class="vaa-radio-wrapper">';
 				$html .= self::do_help( $val );
 				$html .= '<input ' . $attr . ' ' . $checked . '/>';
 				$html .= self::do_label( $val, $id, $label_attr );
 				$html .= '<br>';
 				$html .= self::do_description( $val, $desc_attr );
+				$html .= '</div>';
 
 			} // End foreach().
 
