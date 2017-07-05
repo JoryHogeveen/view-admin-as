@@ -142,7 +142,7 @@
 	box-shadow: 0 0 15px rgba(0,0,0,0.2);
 	z-index: 99999;
 }
-#wpadminbar #wp-admin-bar-vaa .vaa-help {float: right; text-align: right; padding: 0; font-size: 16px; line-height: inherit; margin: 0 0 0 5px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-help {float: right; text-align: right; padding: 0; font-size: 16px; line-height: inherit !important; margin: 0 0 0 5px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ *:last-child,
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ input + label {margin-right: 20px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-help:hover .vaa-tooltip {display: inline-block; opacity: 1;}

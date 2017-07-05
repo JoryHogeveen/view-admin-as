@@ -36,7 +36,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			),
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
+				'class' => 'ab-vaa-input ab-vaa-filter filter-caps vaa-column-one-half vaa-column-first',
 			),
 		)
 	);
@@ -124,7 +124,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			),
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'vaa-button-container vaa-clear-float',
+				'class' => 'ab-vaa-input vaa-button-container vaa-clear-float',
 			),
 		)
 	);
