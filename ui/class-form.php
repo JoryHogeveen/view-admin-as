@@ -142,9 +142,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 
 		$label_attr = array();
 		$desc_attr = array();
-		self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
+		self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
-		$html .= self::do_help( $args );
+		$html .= self::do_help( $args, $label_attr );
 		$html .= self::do_label( $args, $id, $label_attr );
 		$html .= '<input ' . $attr . '/>';
 		$html .= self::do_description( $args, $desc_attr );
@@ -203,9 +203,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 
 		$label_attr = array();
 		$desc_attr = array();
-		self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
+		self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
-		$html .= self::do_help( $args );
+		$html .= self::do_help( $args, $label_attr );
 		$html .= '<input ' . $attr . ' ' . $checked . '/>';
 		$html .= self::do_label( $args, $id, $label_attr );
 
@@ -279,11 +279,11 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 				if ( ( ! empty( $val['auto_showhide_desc'] ) ) ||
 					 ( ! isset( $val['auto_showhide_desc'] ) && ! empty( $args['auto_showhide_desc'] ) )
 				) {
-					self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr );
+					self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 				}
 
 				$html .= '<div class="vaa-radio-wrapper">';
-				$html .= self::do_help( $val );
+				$html .= self::do_help( $val, $label_attr );
 				$html .= '<input ' . $attr . ' ' . $checked . '/>';
 				$html .= self::do_label( $val, $id, $label_attr );
 				$html .= '<br>';
@@ -339,9 +339,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 
 			$label_attr = array();
 			$desc_attr = array();
-			self::enable_auto_showhide_desc( $id . '-desc', $label_attr, $desc_attr, $args );
+			self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
-			$html .= self::do_help( $args );
+			$html .= self::do_help( $args, $label_attr );
 			$html .= self::do_label( $args, $id, $label_attr );
 
 			if ( empty( $args['value'] ) ) {
@@ -455,32 +455,52 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 
 	/**
 	 * Returns help tooltip html for WP admin bar.
+	 * It will also change auto show/hide trigger to the help icon if the help text is a boolean true instead of a string.
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @static
-	 * @param   string|array  $text  The help text. (Also accepts an array with a `help` key)
-	 * @param   array         $attr  Extra attributes.
+	 * @param   string|array  $text          The help text. (Also accepts an array with a `help` key)
+	 * @param   array         $attr          Extra icon attributes.
+	 * @param   array         $tooltip_attr  Extra tooltip attributes.
 	 * @return  string
 	 */
-	public static function do_help( $text, $attr = array() ) {
+	public static function do_help( $text, &$attr = array(), $tooltip_attr = array() ) {
 		if ( is_array( $text ) ) {
 			if ( empty( $text['help'] ) ) {
 				return '';
 			}
 			$text = $text['help'];
-		} elseif ( ! is_string( $text ) ) {
+		} elseif ( ! $text ) {
 			return '';
 		}
-		// ab-sub-wrapper for background, ab-item for text color.
-		$attr['class'] = 'ab-item ab-sub-wrapper vaa-tooltip' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
-		$attr = self::parse_to_html_attr( $attr );
+
+		// Reset auto show/hide settings is $test is true. Disables show/hide on the label and sets it on the help icon.
+		$help_attr = array( 'class' => 'vaa-help' );
+		if ( true === $text ) {
+			// Do nothing is auto show/hide isn't enabled.
+			if ( ! isset( $attr['vaa-showhide'] ) ) {
+				return '';
+			}
+			$help_attr['vaa-showhide'] = $attr['vaa-showhide'];
+			$help_attr['class'] .= ' ab-vaa-showhide';
+			unset( $attr['vaa-showhide'] );
+		}
+
+		if ( is_string( $text ) ) {
+			// ab-sub-wrapper for background, ab-item for text color.
+			$tooltip_attr['class'] = 'ab-item ab-sub-wrapper vaa-tooltip' . ( ( ! empty( $tooltip_attr['class'] ) ) ? ' ' . $tooltip_attr['class'] : '');
+			$tooltip_attr = self::parse_to_html_attr( $tooltip_attr );
+			$text = '<span ' . $tooltip_attr . '>' . $text . '</span>';
+		} else {
+			$text = '';
+		}
 
 		return self::do_icon(
 			'dashicons-editor-help',
-			array( 'class' => 'vaa-help' ),
-			'<span ' . $attr . '>' . $text . '</span>'
+			$help_attr,
+			$text
 		);
 	}
 
@@ -548,25 +568,24 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Update label and description attributes to enable auto show/hide functionality
+	 * Update auto show/hide trigger and target attributes to enable auto show/hide functionality
 	 *
 	 * @since   1.7
 	 * @since   1.7.2   Moved to this class from admin bar class.
+	 * @since   1.7.3   Renamed from `enable_auto_showhide_desc`
 	 * @static
-	 * @param   string  $target      The target element.
-	 * @param   array   $label_attr  Label attributes.
-	 * @param   array   $desc_attr   Description attributes.
-	 * @param   array   $args        (optional) Pass the full arguments array for auto_show_hide key validation.
+	 * @param   string  $target        The target element.
+	 * @param   array   $trigger_attr  Trigger element attributes.
+	 * @param   array   $target_attr   Target element attributes.
+	 * @param   array   $args          (optional) Pass the full arguments array for auto_show_hide key validation.
 	 */
-	public static function enable_auto_showhide_desc( $target, &$label_attr = array(), &$desc_attr = array(), $args = array() ) {
+	public static function enable_auto_showhide( $target, &$trigger_attr = array(), &$target_attr = array(), $args = array() ) {
 		if ( ! empty( $args ) && empty( $args['auto_showhide_desc'] ) ) {
 			return;
 		}
-		$label_attr = array(
-			'class' => 'ab-vaa-showhide',
-			'vaa-showhide' => '.' . $target,
-		);
-		$desc_attr = array( 'class' => $target );
+		$trigger_attr['class'] = ( isset( $trigger_attr['class'] ) ) ? (string) $trigger_attr['class'] . ' ab-vaa-showhide' : 'ab-vaa-showhide';
+		$trigger_attr['vaa-showhide'] = '.' . $target;
+		$target_attr['class'] = ( isset( $target_attr['class'] ) ) ? (string) $target_attr['class'] . ' ' . $target : $target;
 	}
 
 	/**
