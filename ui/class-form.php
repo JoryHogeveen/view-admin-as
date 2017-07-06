@@ -113,6 +113,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *     @type  string  $value        Optional.
 	 *     @type  string  $label        Optional.
 	 *     @type  string  $description  Optional.
+	 *     @type  string  $help         Optional.
 	 *     @type  string  $class        Optional.
 	 *     @type  array   $attr         Optional.
 	 *     @type  array   $auto_js      Optional. See VAA_View_Admin_As_Form::enable_auto_js().
@@ -168,6 +169,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *     @type  string  $checkbox_value  Optional  (default: 1).
 	 *     @type  string  $label           Optional.
 	 *     @type  string  $description     Optional.
+	 *     @type  string  $help            Optional.
 	 *     @type  string  $class           Optional.
 	 *     @type  array   $attr            Optional.
 	 *     @type  array   $auto_js         Optional. See VAA_View_Admin_As_Form::enable_auto_js().
@@ -239,6 +241,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *             @type  string  $compare      Required.
 	 *             @type  string  $label        Optional.
 	 *             @type  string  $description  Optional.
+	 *             @type  string  $help         Optional.
 	 *             @type  string  $class        Optional.
 	 *             @type  array   $attr         Optional.
 	 *             @type  bool    $auto_showhide_desc   Optional  (overwrite $data).
@@ -313,6 +316,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *     @type  string  $value        Optional.
 	 *     @type  string  $label        Optional.
 	 *     @type  string  $description  Optional.
+	 *     @type  string  $help         Optional.
 	 *     @type  string  $class        Optional.
 	 *     @type  array   $attr         Optional.
 	 *     @type  array   $auto_js      Optional. See VAA_View_Admin_As_Form::enable_auto_js().
@@ -456,6 +460,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	/**
 	 * Returns help tooltip html for WP admin bar.
 	 * It will also change auto show/hide trigger to the help icon if the help text is a boolean true instead of a string.
+	 * @todo document this properly.
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Added second $attr parameter.
