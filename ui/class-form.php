@@ -462,9 +462,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * It will also change auto show/hide trigger to the help icon if the help text is a boolean true instead of a string.
 	 * @todo document this properly.
 	 *
-	 * @since   1.6.1
-	 * @since   1.6.3  Added second $attr parameter.
-	 * @since   1.7.2  Moved to this class from admin bar class.
+	 * @since   1.7.3
 	 * @static
 	 * @param   string|array  $text          The help text. (Also accepts an array with a `help` key)
 	 * @param   array         $attr          Extra icon attributes.
@@ -495,18 +493,16 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 
 		if ( is_string( $text ) ) {
 			// ab-sub-wrapper for background, ab-item for text color.
-			$tooltip_attr['class'] = 'ab-item ab-sub-wrapper vaa-tooltip' . ( ( ! empty( $tooltip_attr['class'] ) ) ? ' ' . $tooltip_attr['class'] : '');
+			$tooltip_attr = self::merge_attr( array(
+				'class' => 'ab-item ab-sub-wrapper vaa-tooltip',
+			), $tooltip_attr );
 			$tooltip_attr = self::parse_to_html_attr( $tooltip_attr );
 			$text = '<span ' . $tooltip_attr . '>' . $text . '</span>';
 		} else {
 			$text = '';
 		}
 
-		return self::do_icon(
-			'dashicons-editor-help',
-			$help_attr,
-			$text
-		);
+		return self::do_icon( 'dashicons-editor-help', $help_attr, $text );
 	}
 
 	/**
@@ -573,7 +569,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Update auto show/hide trigger and target attributes to enable auto show/hide functionality
+	 * Update auto show/hide trigger and target attributes to enable auto show/hide functionality.
 	 *
 	 * @since   1.7
 	 * @since   1.7.2   Moved to this class from admin bar class.
@@ -588,9 +584,41 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		if ( ! empty( $args ) && empty( $args['auto_showhide_desc'] ) ) {
 			return;
 		}
-		$trigger_attr['class'] = ( isset( $trigger_attr['class'] ) ) ? (string) $trigger_attr['class'] . ' ab-vaa-showhide' : 'ab-vaa-showhide';
-		$trigger_attr['vaa-showhide'] = '.' . $target;
-		$target_attr['class'] = ( isset( $target_attr['class'] ) ) ? (string) $target_attr['class'] . ' ' . $target : $target;
+		$trigger_attr = self::merge_attr( $trigger_attr, array(
+			'class' => 'ab-vaa-showhide',
+		    'vaa-showhide' => '.' . $target,
+		) );
+		$target_attr = self::merge_attr( $target_attr, array(
+			'class' => $target,
+		) );
+	}
+
+	/**
+	 * Merge two arrays of attributes into one, combining values.
+	 * It currently doesn't convert variable types.
+	 *
+	 * @since   1.7.3
+	 * @static
+	 * @param   array  $attr  The current attributes.
+	 * @param   array  $new   The new attributes. Attribute names as key.
+	 * @return  array
+	 */
+	public static function merge_attr( $attr, $new ) {
+		foreach ( $new as $key => $value ) {
+			if ( empty( $attr[ $key ] ) ) {
+				$attr[ $key ] = $value;
+				continue;
+			}
+			if ( is_array( $attr[ $key ] ) ) {
+				$attr[ $key ] = array_merge( $attr[ $key ], (array) $value );
+				continue;
+			}
+			if ( is_array( $value ) ) {
+				$value = implode( ' ', $value );
+			}
+			$attr[ $key ] .= ( ! empty( $value ) ) ? ' ' . $value : '';
+		}
+		return $attr;
 	}
 
 	/**
