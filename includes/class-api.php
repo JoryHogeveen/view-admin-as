@@ -21,7 +21,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 final class VAA_API
 {
 	/**
-	 * Check if the original current user is a super admin
+	 * Check if the user is a super admin.
+	 * It will validate the original user while in a view and no parameter is passed.
 	 *
 	 * @since   1.6.3
 	 * @access  public
@@ -32,11 +33,16 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function is_super_admin( $user_id = null ) {
-		return VAA_View_Admin_As_Store::is_super_admin( $user_id );
+		$store = view_admin_as()->store();
+		if ( $store ) {
+			return $store->is_super_admin( $user_id );
+		}
+		return is_super_admin( $user_id );
 	}
 
 	/**
-	 * Check if the user is a superior admin
+	 * Check if the user is a superior admin.
+	 * It will validate the original user while in a view and no parameter is passed.
 	 *
 	 * @since   1.5.3
 	 * @since   1.6    Moved to this class from main class
@@ -56,7 +62,10 @@ final class VAA_API
 		);
 
 		if ( null === $user_id ) {
-			$user_id = VAA_View_Admin_As_Store::get_originalUserData( 'ID' );
+			$store = view_admin_as()->store();
+			if ( $store ) {
+				$user_id = $store->get_originalUserData( 'ID' );
+			}
 		}
 
 		// Is it a super admin and is it one of the manually configured superior admins?
