@@ -153,10 +153,13 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			}
 		}
 
-		// @since  1.7.1  Add post type and taxonomy caps.
+		/**
+		 * @since  1.7.1  Add post type and taxonomy caps.
+		 * @since  1.7.3  Prevent duplicate array keys.
+		 */
 		$wp_objects = array_merge(
-			(array) get_post_types( array(), 'objects' ),
-			(array) get_taxonomies( array(), 'objects' )
+			array_values( (array) get_post_types( array(), 'objects' ) ),
+			array_values( (array) get_taxonomies( array(), 'objects' ) )
 		);
 		foreach ( $wp_objects as $obj ) {
 			if ( isset( $obj->cap ) ) {
