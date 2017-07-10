@@ -42,6 +42,7 @@ if ( isset( $this ) &&
 					'value'       => $this->store->get_userSettings( 'admin_menu_location' ),
 					'label'       => __( 'Location', VIEW_ADMIN_AS_DOMAIN ) . ': &nbsp; ',
 					'description' => __( 'Change the location of this menu node', VIEW_ADMIN_AS_DOMAIN ),
+					'help'        => true,
 					'values'      => array(
 						array(
 							'compare' => 'top-secondary',
@@ -57,7 +58,7 @@ if ( isset( $this ) &&
 					    'key'     => 'admin_menu_location',
 					    'refresh' => true,
 					),
-					//'auto_showhide_desc' => true
+					'auto_showhide_desc' => true,
 				)
 			),
 			'href'   => false,
@@ -85,11 +86,13 @@ if ( isset( $this ) &&
 							'compare'     => 'browse',
 							'label'       => __( 'Browse mode', VIEW_ADMIN_AS_DOMAIN ),
 							'description' => __( 'Store view and use WordPress with this view', VIEW_ADMIN_AS_DOMAIN ),
+							'help'        => true,
 						),
 						array(
 							'compare'     => 'single',
 							'label'       => __( 'Single switch mode', VIEW_ADMIN_AS_DOMAIN ),
 							'description' => __( 'Choose view on every pageload. This setting doesn\'t store views', VIEW_ADMIN_AS_DOMAIN ),
+							'help'        => true,
 						),
 					),
 					'auto-js' => array(
@@ -97,7 +100,7 @@ if ( isset( $this ) &&
 						'key'     => 'view_mode',
 						'refresh' => false,
 					),
-					//'auto_showhide_desc' => true
+					'auto_showhide_desc' => true,
 				)
 			),
 			'href'   => false,
@@ -124,12 +127,13 @@ if ( isset( $this ) &&
 						'compare'     => true,
 						'label'       => __( 'Disable super admin', VIEW_ADMIN_AS_DOMAIN ),
 						'description' => __( 'Disable super admin status while switched to another view', VIEW_ADMIN_AS_DOMAIN ),
+						'help'        => true,
 						'auto-js' => array(
 							'setting' => 'user_setting',
 							'key'     => 'disable_super_admin',
 							'refresh' => ( $this->store->get_view() ) ? true : false,
 						),
-						//'auto_showhide_desc' => true,
+						'auto_showhide_desc' => true,
 					)
 				),
 				'href'   => false,
@@ -156,12 +160,13 @@ if ( isset( $this ) &&
 					'compare'     => true,
 					'label'       => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
 					'description' => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN ),
+					'help'        => true,
 					'auto-js' => array(
 						'setting' => 'user_setting',
 						'key'     => 'hide_front',
 						'refresh' => false,
 					),
-					//'auto_showhide_desc' => true,
+					'auto_showhide_desc' => true,
 				)
 			),
 			'href'   => false,
@@ -190,12 +195,13 @@ if ( isset( $this ) &&
 						'compare'     => true,
 						'label'       => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
 						'description' => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN ),
+						'help'        => true,
 						'auto-js' => array(
 							'setting' => 'user_setting',
 							'key'     => 'freeze_locale',
 							'refresh' => ( $this->store->get_view( 'user' ) ) ? true : false,
 						),
-						//'auto_showhide_desc' => true,
+						'auto_showhide_desc' => true,
 					)
 				),
 				'href'   => false,
@@ -225,12 +231,13 @@ if ( isset( $this ) &&
 						'compare'     => true,
 						'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
 						'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
+						'help'        => true,
 						'auto-js' => array(
 							'setting' => 'user_setting',
 							'key'     => 'force_group_users',
 							'refresh' => true,
 						),
-						//'auto_showhide_desc' => true,
+						'auto_showhide_desc' => true,
 					)
 				),
 				'href'   => false,

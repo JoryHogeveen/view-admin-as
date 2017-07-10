@@ -1056,6 +1056,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Disable screen options', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( "Hide the screen options for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
+				'help'        => true,
+				'auto_showhide_desc' => true,
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'disable_user_screen_options',
@@ -1077,6 +1079,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Lock meta boxes', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( "Lock meta box order and locations for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
+				'help'        => true,
+				'auto_showhide_desc' => true,
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'lock_meta_boxes',
