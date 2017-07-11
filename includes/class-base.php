@@ -116,9 +116,8 @@ abstract class VAA_View_Admin_As_Base
 	public function current_user_can( $capability = null ) {
 		if ( $capability ) {
 			return ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can( $capability ) ) );
-		} else {
-			return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
 		}
+		return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
 	}
 
 	/**

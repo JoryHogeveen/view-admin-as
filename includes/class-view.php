@@ -205,7 +205,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 
 		/**
 		 * Disable super admin capabilities for the current user.
-		 * @since  1.7.2-dev
+		 * @since  1.7.3
 		 */
 		if ( ! is_network_admin() &&
 		     VAA_API::is_super_admin() &&
@@ -471,10 +471,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * Remove the current user from the list of super admins.
 	 * This sets/changes the global $super_admins variable which overwrites the site option.
 	 *
-	 * @since   1.7.2-dev
+	 * @since   1.7.3
 	 * @access  public
-	 * @see     get_super_admins() >> wp-includes/capabilities.php
-	 * @see     is_super_admin() >> wp-includes/capabilities.php
+	 * @see     grant_super_admin()  >> wp-includes/capabilities.php
+	 * @see     revoke_super_admin() >> wp-includes/capabilities.php
+	 * @see     get_super_admins()   >> wp-includes/capabilities.php
+	 * @see     is_super_admin()     >> wp-includes/capabilities.php
 	 * @link    https://developer.wordpress.org/reference/functions/is_super_admin/
 	 *
 	 * @global  array  $super_admins
