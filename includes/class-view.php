@@ -204,11 +204,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
 
 		/**
-		 * Disable super admin capabilities for the current user.
+		 * Disable super admin status for the current user.
 		 * @since  1.7.3
 		 */
 		if ( ! is_network_admin() &&
-		     VAA_API::is_super_admin() &&
+		     VAA_API::is_super_admin( $this->store->get_selectedUser()->ID ) &&
 		     $this->store->get_userSettings( 'disable_super_admin' )
 		) {
 			$this->disable_super_admin();
