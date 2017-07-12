@@ -291,7 +291,25 @@
 
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item.description,
 	#wpadminbar #wp-admin-bar-vaa .ab-item p.description {display: block !important; padding-left: 0; padding-right: 0;}
+
+	/**
+	 * Help tooltip
+	 */
+	#wpadminbar #wp-admin-bar-vaa .vaa-help {display: block; padding: 8px 0; float: none; text-align: left; margin: 0;}
 	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-help:empty {display: none;}
+	/* Always display tooltip on mobile view. */
+	#wpadminbar #wp-admin-bar-vaa .vaa-tooltip {
+		font-size: 13px;
+		display: inline-block;
+		position: static !important;
+		opacity: 1;
+		border: 0;
+		padding: 0 !important;
+		margin-left: 5px !important;
+		width: auto;
+		vertical-align: text-top;
+		line-height: 20px;
+	}
 
 	/**
 	 * Notices
@@ -340,9 +358,4 @@
 	#wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {top: 9px; right: 11px;}
 
 	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper {margin: 6px 0;}
-
-	/**
-	 * Help tooltip
-	 */
-	#wpadminbar #wp-admin-bar-vaa .vaa-tooltip {right: 16px; font-size: 13px;}
 }
