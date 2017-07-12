@@ -188,7 +188,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 				$network_caps[] = 'upgrade_network';
 				$network_caps[] = 'setup_network';
 			}
-			$caps = array_merge( $network_caps, $caps );
+			$caps = array_merge( array_combine( $network_caps, $network_caps ), $caps );
 		}
 
 		return $caps;
