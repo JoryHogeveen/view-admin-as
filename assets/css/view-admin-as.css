@@ -289,6 +289,10 @@
 
 	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-hide-responsive {display: none;}
 
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item.description,
+	#wpadminbar #wp-admin-bar-vaa .ab-item p.description {display: block !important; padding-left: 0; padding-right: 0;}
+	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-help:empty {display: none;}
+
 	/**
 	 * Notices
 	 */
