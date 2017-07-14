@@ -145,7 +145,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$desc_attr = array();
 		self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
-		$html .= self::do_help( $args, $label_attr );
+		$html .= self::do_help( $args, array(), array(), $label_attr );
 		$html .= self::do_label( $args, $id, $label_attr );
 		$html .= '<input ' . $attr . '/>';
 		$html .= self::do_description( $args, $desc_attr );
@@ -207,7 +207,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$desc_attr = array();
 		self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
-		$html .= self::do_help( $args, $label_attr );
+		$html .= self::do_help( $args, array(), array(), $label_attr );
 		$html .= '<input ' . $attr . ' ' . $checked . '/>';
 		$html .= self::do_label( $args, $id, $label_attr );
 
@@ -286,7 +286,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 				}
 
 				$html .= '<div class="vaa-radio-wrapper">';
-				$html .= self::do_help( $val, $label_attr );
+				$html .= self::do_help( $val, array(), array(), $label_attr );
 				$html .= '<input ' . $attr . ' ' . $checked . '/>';
 				$html .= self::do_label( $val, $id, $label_attr );
 				$html .= '<br>';
@@ -345,7 +345,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 			$desc_attr = array();
 			self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
-			$html .= self::do_help( $args, $label_attr );
+			$html .= self::do_help( $args, array(), array(), $label_attr );
 			$html .= self::do_label( $args, $id, $label_attr );
 
 			if ( empty( $args['value'] ) ) {
@@ -392,6 +392,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.6.1
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
+	 * @since   1.7.3  Added third $content parameter.
 	 * @static
 	 * @param   string  $icon     The icon class.
 	 * @param   array   $attr     Extra attributes.
@@ -464,12 +465,13 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.3
 	 * @static
-	 * @param   string|array  $text          The help text. (Also accepts an array with a `help` key)
-	 * @param   array         $attr          Extra icon attributes.
-	 * @param   array         $tooltip_attr  Extra tooltip attributes.
+	 * @param   string|array  $text           The help text. (Also accepts an array with a `help` key)
+	 * @param   array         $help_attr      Extra help icon attributes.
+	 * @param   array         $tooltip_attr   Extra tooltip attributes.
+	 * @param   array         $showhide_attr  Optionally overwrite existing show/hide attributes.
 	 * @return  string
 	 */
-	public static function do_help( $text, &$attr = array(), $tooltip_attr = array() ) {
+	public static function do_help( $text, $help_attr = array(), $tooltip_attr = array(), &$showhide_attr = array() ) {
 		if ( is_array( $text ) ) {
 			if ( empty( $text['help'] ) ) {
 				return '';
@@ -480,15 +482,17 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		}
 
 		// Reset auto show/hide settings is $test is true. Disables show/hide on the label and sets it on the help icon.
-		$help_attr = array( 'class' => 'vaa-help' );
+		$help_attr = self::merge_attr( $help_attr, array(
+			'class' => 'vaa-help',
+		) );
 		if ( true === $text ) {
 			// Do nothing is auto show/hide isn't enabled.
-			if ( ! isset( $attr['vaa-showhide'] ) ) {
+			if ( ! isset( $showhide_attr['vaa-showhide'] ) ) {
 				return '';
 			}
-			$help_attr['vaa-showhide'] = $attr['vaa-showhide'];
+			$help_attr['vaa-showhide'] = $showhide_attr['vaa-showhide'];
 			$help_attr['class'] .= ' ab-vaa-showhide';
-			unset( $attr['vaa-showhide'] );
+			unset( $showhide_attr['vaa-showhide'] );
 		}
 
 		if ( is_string( $text ) ) {
