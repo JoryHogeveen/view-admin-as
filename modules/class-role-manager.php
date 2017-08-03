@@ -365,16 +365,16 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				case 'append':
 					// Append any new cap keys.
 					$caps = array_merge( $capabilities, $role->capabilities );
-				break;
+					break;
 				case 'merge':
 					// Ensure we have all the caps (even original ones).
 					$caps = array_merge( $role->capabilities, $capabilities );
-				break;
+					break;
 				default:
 					// Set all current caps to false to make sure the new caps will overwrite everything.
 					$caps = array_map( '__return_false', $role->capabilities );
 					$caps = array_merge( $caps, $capabilities );
-				break;
+					break;
 			}
 			// Update existing role.
 			foreach ( $caps as $cap => $grant ) {
@@ -994,8 +994,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'parent' => $root . '-export',
 			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
 				'name'        => $root . '-export-roles-caps-only',
-			    'label'       => __( 'Capabilities only', VIEW_ADMIN_AS_DOMAIN ),
-			    'description' => __( 'Not compatible with the "All" option.' ),
+				'label'       => __( 'Capabilities only', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Not compatible with the "All" option.' ),
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -1018,11 +1018,11 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 							'element' => '#wp-admin-bar-' . $root . '-export-roles-select select#' . $root . '-export-roles-select',
 							'parser'  => '', // Default.
 						),
-					    'caps_only' => array(
-						    'element'  => '#wp-admin-bar-' . $root . '-export-roles-caps-only input#' . $root . '-export-roles-caps-only',
-					        'parser'   => '', // Default.
-					        'required' => false,
-					    ),
+						'caps_only' => array(
+							'element'  => '#wp-admin-bar-' . $root . '-export-roles-caps-only input#' . $root . '-export-roles-caps-only',
+							'parser'   => '', // Default.
+							'required' => false,
+						),
 					),
 				),
 			) ),
