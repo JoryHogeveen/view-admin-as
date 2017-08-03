@@ -374,11 +374,11 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		$options = apply_filters( 'view_admin_as_error_page_options', $options );
 		?>
 		<div>
-			<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) ?>:</h3>
-			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ) ?>
+			<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ); ?>:</h3>
+			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ); ?>
 			<ul>
 				<?php foreach ( $options as $option ) { ?>
-					<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
+					<li><a href="<?php echo $option['url']; ?>"><?php echo $option['text']; ?></a></li>
 				<?php } ?>
 			</ul>
 		</div>

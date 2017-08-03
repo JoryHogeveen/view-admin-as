@@ -55,8 +55,8 @@ if ( isset( $this ) &&
 					),
 					'auto-js' => array(
 						'setting' => 'user_setting',
-					    'key'     => 'admin_menu_location',
-					    'refresh' => true,
+						'key'     => 'admin_menu_location',
+						'refresh' => true,
 					),
 					'auto_showhide_desc' => true,
 				)

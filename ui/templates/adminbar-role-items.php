@@ -30,8 +30,8 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			// make sure items are aligned properly when some roles don't have users.
 			$class .= ' vaa-menupop';
 			// Check if the current view is a user with this role.
-			if ( $this->store->get_view( 'user' )
-			     && in_array( $role_key, $this->store->get_selectedUser()->roles, true )
+			if ( $this->store->get_view( 'user' ) &&
+			     in_array( $role_key, $this->store->get_selectedUser()->roles, true )
 			) {
 				$class .= ' current-parent';
 			}
@@ -61,8 +61,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 				'href' => $href,
 				'meta' => array(
 					// Translators: %s stands for the translated role name.
-					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $this->store->get_rolenames( $role_key )
-					),
+					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $this->store->get_rolenames( $role_key ) ),
 					'class' => $class,
 					'rel'   => $role_key,
 				),
