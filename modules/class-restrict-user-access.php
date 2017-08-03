@@ -21,10 +21,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.7.2
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.
@@ -116,9 +116,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Class_Base
 			$this->ruaLevelManager = $this->ruaApp->level_manager;
 		}
 
-		$access_cap            = ( defined( RUA_App::CAPABILITY ) ) ? RUA_App::CAPABILITY : 'edit_users';
-		$this->ruaMetaPrefix   = ( defined( RUA_App::META_PREFIX ) ) ? RUA_App::META_PREFIX : '_ca_';
-		$this->ruaTypeRestrict = ( defined( RUA_App::TYPE_RESTRICT ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
+		$access_cap            = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_restrictions';
+		$this->ruaMetaPrefix   = ( defined( 'RUA_App::META_PREFIX' ) ) ? RUA_App::META_PREFIX : '_ca_';
+		$this->ruaTypeRestrict = ( defined( 'RUA_App::TYPE_RESTRICT' ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
 
 		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
 

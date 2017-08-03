@@ -32,7 +32,7 @@
         <exclude name="WordPress.XSS.EscapeOutput.OutputNotEscaped" />
         <!-- The use of function "" is discouraged -->
         <exclude name="WordPress.PHP.DiscouragedFunctions.Discouraged" />
-        <!--  -->
+        <!-- Expected next thing to be an escaping function (see Codex for 'Data Validation'), not '' -->
         <exclude name="WordPress.XSS.EscapeOutput" />
         <!-- Expected # spaces after parameter type; # found -->
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType" />
@@ -50,6 +50,8 @@
         <exclude name="Generic.Commenting.DocComment.SpacingBeforeTags" />
         <!-- Inline control structures are not allowed -->
         <exclude name="Generic.ControlStructures.InlineControlStructure.NotAllowed" />
+        <!-- Tabs must be used to indent lines; spaces are not allowed (not working as I want it to) -->
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed" />
         <!-- Line indented incorrectly; expected at least # tabs, found # -->
         <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
         <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />

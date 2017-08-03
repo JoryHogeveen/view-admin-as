@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.1
+ * @version 1.7.3
  * @uses    VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
@@ -63,11 +63,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * }
 	 */
 	private $data = array(
-		'caps' => array(),
-		'roles' => array(),
+		'caps'      => array(),
+		'roles'     => array(),
 		'rolenames' => array(),
-		'users' => array(),
-		'userids' => array(),
+		'users'     => array(),
+		'userids'   => array(),
 	);
 
 	/**
@@ -93,17 +93,19 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * Will contain all properties of the original current user object.
 	 *
 	 * @since  1.6.3
+	 * @since  1.7.3  Not static anymore.
 	 * @var    array
 	 */
-	private static $curUserData = array();
+	private $curUserData = array();
 
 	/**
 	 * Is the original current user a super admin?
 	 *
 	 * @since  1.6.3
+	 * @since  1.7.3  Not static anymore.
 	 * @var    bool
 	 */
-	private static $isCurUserSuperAdmin = false;
+	private $isCurUserSuperAdmin = false;
 
 	/**
 	 * Selected view data as stored in the user meta.
@@ -161,12 +163,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Get the current user session (WP 4.0+).
 		$this->set_curUserSession( (string) wp_get_session_token() );
 
-		self::$isCurUserSuperAdmin = false;
-		if ( is_super_admin( $this->get_curUser()->ID ) ) {
-			self::$isCurUserSuperAdmin = true;
-		}
-
-		self::$curUserData = get_object_vars( $this->get_curUser() );
+		$this->isCurUserSuperAdmin = is_super_admin( $this->get_curUser()->ID );
+		$this->curUserData = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
@@ -174,6 +172,59 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		$this->set_userMeta( get_user_meta( $this->get_curUser()->ID, $this->get_userMetaKey(), true ) );
 
 		$done = true;
+	}
+
+	/**
+	 * Store available capabilities.
+	 *
+	 * @since   1.4.1
+	 * @since   1.6    Moved to this class from main class.
+	 * @access  public
+	 * @return  void
+	 */
+	public function store_caps() {
+
+		// Get current user capabilities.
+		$caps = $this->get_originalUserData( 'allcaps' );
+		if ( empty( $caps ) ) {
+			// Fallback.
+			$caps = $this->get_curUser()->allcaps;
+		}
+
+		// Only allow to add capabilities for an admin (or super admin).
+		if ( VAA_API::is_super_admin() ) {
+
+			/**
+			 * Add compatibility for other cap managers.
+			 *
+			 * @since  1.5
+			 * @see    VAA_View_Admin_As_Compat->init()
+			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
+			 * @return array
+			 */
+			$all_caps = apply_filters( 'view_admin_as_get_capabilities', array() );
+
+			$add_caps = array();
+			// Add new capabilities to the capability array as disabled.
+			foreach ( $all_caps as $cap_key => $cap_val ) {
+				if ( is_numeric( $cap_key ) ) {
+					// Try to convert numeric (faulty) keys. Some developers just don't get it..
+					$add_caps[ (string) $cap_val ] = 0;
+				} else {
+					$add_caps[ (string) $cap_key ] = 0;
+				}
+			}
+
+			$caps = array_merge( $add_caps, $caps );
+
+		} // End if().
+
+		// Remove role names.
+		$caps = array_diff_key( $caps, $this->get_roles() );
+		// And sort alphabetical.
+		ksort( $caps );
+
+		$this->set_caps( $caps );
 	}
 
 	/**
@@ -198,7 +249,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Store available roles (role_objects for objects, roles for arrays).
 		$roles = $wp_roles->role_objects;
 
-		if ( ! self::is_super_admin() ) {
+		if ( ! VAA_API::is_super_admin() ) {
 
 			// The current user is not a super admin (or regular admin in single installations).
 			unset( $roles['administrator'] );
@@ -251,7 +302,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		$superior_admins = VAA_API::get_superior_admins();
 
 		// Is the current user a super admin?
-		$is_super_admin = self::is_super_admin();
+		$is_super_admin = VAA_API::is_super_admin();
 		// Is it also one of the manually configured superior admins?
 		$is_superior_admin = VAA_API::is_superior_admin();
 
@@ -506,72 +557,20 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
-	 * Store available capabilities.
-	 *
-	 * @since   1.4.1
-	 * @since   1.6    Moved to this class from main class.
-	 * @access  public
-	 * @return  void
-	 */
-	public function store_caps() {
-
-		// Get current user capabilities.
-		$caps = self::get_originalUserData( 'allcaps' );
-		if ( empty( $caps ) ) {
-			// Fallback.
-			$caps = $this->get_curUser()->allcaps;
-		}
-
-		// Only allow to add capabilities for an admin (or super admin).
-		if ( self::is_super_admin() ) {
-
-			/**
-			 * Add compatibility for other cap managers.
-			 *
-			 * @since  1.5
-			 * @see    VAA_View_Admin_As_Compat->init()
-			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
-			 * @return array
-			 */
-			$all_caps = apply_filters( 'view_admin_as_get_capabilities', array() );
-
-			$add_caps = array();
-			// Add new capabilities to the capability array as disabled.
-			foreach ( $all_caps as $cap_key => $cap_val ) {
-				if ( is_numeric( $cap_key ) ) {
-					// Try to convert numeric (faulty) keys. Some developers just don't get it..
-					$add_caps[ (string) $cap_val ] = 0;
-				} else {
-					$add_caps[ (string) $cap_key ] = 0;
-				}
-			}
-
-			$caps = array_merge( $add_caps, $caps );
-
-		} // End if().
-
-		// Remove role names.
-		$caps = array_diff_key( $caps, $this->get_roles() );
-		// And sort alphabetical.
-		ksort( $caps );
-
-		$this->set_caps( $caps );
-	}
-
-	/**
 	 * Helper function for is_super_admin().
 	 * Will validate the original user if it is the current user or no user ID is passed.
 	 * This can prevent invalid checks after a view is applied.
 	 *
 	 * @since   1.6.3
+	 * @since   1.7.3  Not static anymore.
+	 * @see     VAA_API::is_super_admin()
 	 * @access  public
-	 * @static
 	 * @param   int  $user_id  (optional).
 	 * @return  bool
 	 */
-	public static function is_super_admin( $user_id = null ) {
+	public function is_super_admin( $user_id = null ) {
 		if ( null === $user_id || (int) get_current_user_id() === (int) $user_id ) {
-			return self::$isCurUserSuperAdmin;
+			return $this->isCurUserSuperAdmin;
 		}
 		return is_super_admin( $user_id );
 	}
@@ -582,13 +581,13 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * This has all public WP_User properties stored as an array.
 	 *
 	 * @since   1.6.3
+	 * @since   1.7.3  Not static anymore.
 	 * @access  public
-	 * @static
 	 * @param   string  $key  (optional).
 	 * @return  mixed
 	 */
-	public static function get_originalUserData( $key = null ) {
-		return VAA_API::get_array_data( self::$curUserData, $key );
+	public function get_originalUserData( $key = null ) {
+		return VAA_API::get_array_data( $this->curUserData, $key );
 	}
 
 	/**

@@ -17,9 +17,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.7
+ * @since   1.7.3  Renamed from VAA_View_Admin_As_Class_Base
+ * @version 1.7.3
  */
-abstract class VAA_View_Admin_As_Class_Base
+abstract class VAA_View_Admin_As_Base
 {
 	/**
 	 * View Admin As object.
@@ -55,12 +56,12 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
 	 */
 	protected function __construct( $vaa = null ) {
-		// Load resources
+		// Load resources.
 		$this->load_vaa( $vaa );
 	}
 
 	/**
-	 * init function to store data from the main class and enable functionality based on the current view.
+	 * Init function to store data from the main class and enable functionality based on the current view.
 	 *
 	 * @since   1.5
 	 * @since   1.6    $vaa param.
@@ -115,9 +116,8 @@ abstract class VAA_View_Admin_As_Class_Base
 	public function current_user_can( $capability = null ) {
 		if ( $capability ) {
 			return ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can( $capability ) ) );
-		} else {
-			return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
 		}
+		return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
 	}
 
 	/**

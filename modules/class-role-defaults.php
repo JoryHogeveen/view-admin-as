@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4
- * @version 1.7.2
+ * @version 1.7.3
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
@@ -738,15 +738,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				case 'merge':
 					// Merge and the existing data (keep data that doesn't exist in the import data).
 					$role_defaults[ $role ] = array_merge( $role_defaults[ $role ], $role_data );
-				break;
+					break;
 				case 'append':
 					// Append new data without overwriting the existing data.
 					$role_defaults[ $role ] = array_merge( $role_data, $role_defaults[ $role ] );
-				break;
+					break;
 				default:
 					// Fully Overwrite data for each supplied role.
 					$role_defaults[ $role ] = $role_data;
-				break;
+					break;
 			}
 		}
 		$this->update_optionData( $role_defaults, 'roles', true );
@@ -1056,6 +1056,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Disable screen options', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( "Hide the screen options for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
+				'help'        => true,
+				'auto_showhide_desc' => true,
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'disable_user_screen_options',
@@ -1077,6 +1079,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Lock meta boxes', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( "Lock meta box order and locations for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
+				'help'        => true,
+				'auto_showhide_desc' => true,
 				'auto-js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'lock_meta_boxes',

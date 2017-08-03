@@ -765,8 +765,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'attr'  => array(
 						'vaa-view-caps' => wp_json_encode( $this->store->get_selectedCaps() ),
 					),
-				    'auto-js' => array(
-				    	'setting' => $this->moduleKey,
+					'auto-js' => array(
+						'setting' => $this->moduleKey,
 						'key'     => 'apply_view_to_role',
 						'refresh' => false,
 						'values'  => array(
@@ -1223,7 +1223,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			) ),
 			'href'   => false,
 			'meta'   => array(
-			'class' => 'vaa-button-container',
+			'class'  => 'vaa-button-container',
 			),
 		) );
 	}

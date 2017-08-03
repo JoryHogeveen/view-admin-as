@@ -66,7 +66,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Safely try to parse as JSON. If it isn't JSON it will return the original string.
 	 * @since   1.7
-	 * @param   {string}  val  The string the decode.
+	 * @param   {string}  val  The string to decode.
 	 * @return  {string|object}  Parsed JSON object or original string.
 	 */
 	VAA_View_Admin_As.json_decode = function( val ) {
