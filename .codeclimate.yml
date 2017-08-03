@@ -109,6 +109,9 @@ engines:
       # Disable: Inline control structures are not allowed
       Generic ControlStructures InlineControlStructure NotAllowed:
         enabled: false
+      # Disable: Tabs must be used to indent lines; spaces are not allowed (not working as I want it to)
+      Generic WhiteSpace DisallowSpaceIndent SpacesUsed:
+        enabled: false
       # Disable: Line indented incorrectly; expected at least # tabs, found #
       Generic WhiteSpace ScopeIndent Incorrect:
         enabled: false
