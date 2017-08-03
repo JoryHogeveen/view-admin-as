@@ -32,7 +32,7 @@
         <exclude name="WordPress.XSS.EscapeOutput.OutputNotEscaped" />
         <!-- The use of function "" is discouraged -->
         <exclude name="WordPress.PHP.DiscouragedFunctions.Discouraged" />
-        <!--  -->
+        <!-- Expected next thing to be an escaping function (see Codex for 'Data Validation'), not '' -->
         <exclude name="WordPress.XSS.EscapeOutput" />
         <!-- Expected # spaces after parameter type; # found -->
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType" />

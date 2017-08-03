@@ -614,11 +614,11 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		}
 
 		$allowed_keys = array_unique( array_merge(
-		    // View types.
+			// View types.
 			$this->get_view_types(),
 			// Module keys.
-		    array_keys( $this->vaa->get_modules() ),
-		    // VAA core keys.
+			array_keys( $this->vaa->get_modules() ),
+			// VAA core keys.
 			array( 'setting', 'user_setting', 'reset' )
 		) );
 

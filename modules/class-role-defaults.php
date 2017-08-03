@@ -738,15 +738,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				case 'merge':
 					// Merge and the existing data (keep data that doesn't exist in the import data).
 					$role_defaults[ $role ] = array_merge( $role_defaults[ $role ], $role_data );
-				break;
+					break;
 				case 'append':
 					// Append new data without overwriting the existing data.
 					$role_defaults[ $role ] = array_merge( $role_data, $role_defaults[ $role ] );
-				break;
+					break;
 				default:
 					// Fully Overwrite data for each supplied role.
 					$role_defaults[ $role ] = $role_data;
-				break;
+					break;
 			}
 		}
 		$this->update_optionData( $role_defaults, 'roles', true );

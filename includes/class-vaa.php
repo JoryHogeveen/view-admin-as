@@ -332,8 +332,8 @@ final class VAA_View_Admin_As
 			$this->add_error_notice( $class . '::' . __METHOD__, array(
 				'type' => 'notice-error',
 				'message' => __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-				             // Translators: %s stands for the class name.
-				             . ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $class ) . ')</code>',
+					// Translators: %s stands for the class name.
+					. ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $class ) . ')</code>',
 			) );
 			return false;
 		}
@@ -579,9 +579,9 @@ final class VAA_View_Admin_As
 		$this->add_notice( 'vaa-welcome', array(
 			'type' => 'notice-success',
 			'message' => '<strong>' . __( 'Thank you for installing View Admin As!', VIEW_ADMIN_AS_DOMAIN ) . '</strong> '
-	            . sprintf(
-	                // Translators: %s stands for `Dashboard` (link element).
-	                __( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
+				. sprintf(
+					// Translators: %s stands for `Dashboard` (link element).
+					__( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
 					'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
 				),
 		) );
@@ -617,10 +617,10 @@ final class VAA_View_Admin_As
 		$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
 
 		$notice['message'] = '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-		                     . $notice['message']
-		                     . ' <a href="' . $report_link . '" target="_blank">'
-		                     . __( 'Click here to report this error!', VIEW_ADMIN_AS_DOMAIN )
-		                     . '</a>';
+			. $notice['message']
+			. ' <a href="' . $report_link . '" target="_blank">'
+			. __( 'Click here to report this error!', VIEW_ADMIN_AS_DOMAIN )
+			. '</a>';
 
 		$this->add_notice( $id, $notice );
 	}
@@ -691,8 +691,8 @@ final class VAA_View_Admin_As
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
-				    // Translators: %1$s stands for "WordPress", %2$s stands for the version.
-				    . sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', $min_wp_version ),
+					// Translators: %1$s stands for "WordPress", %2$s stands for the version.
+					. sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', $min_wp_version ),
 			) );
 			$valid = false;
 		}
