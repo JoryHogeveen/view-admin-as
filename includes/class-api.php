@@ -110,7 +110,7 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   array  $data
+	 * @param   mixed  $data
 	 * @param   bool   $type  Only compare a single view type instead of all view data?
 	 *                        If set, the data value should be the single view type data.
 	 *                        If data is `null` then it will return true if that view type is active.
