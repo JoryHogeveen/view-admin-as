@@ -279,8 +279,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 				$label_attr = array();
 				$desc_attr = array();
 				// Custom validation required.
-				if ( ( ! empty( $val['auto_showhide_desc'] ) ) ||
-					 ( ! isset( $val['auto_showhide_desc'] ) && ! empty( $args['auto_showhide_desc'] ) )
+				if ( ( ! empty( $val['auto_showhide'] ) ) ||
+					 ( ! isset( $val['auto_showhide'] ) && ! empty( $args['auto_showhide'] ) )
 				) {
 					self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 				}
@@ -585,7 +585,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @param   array   $args          (optional) Pass the full arguments array for auto_show_hide key validation.
 	 */
 	public static function enable_auto_showhide( $target, &$trigger_attr = array(), &$target_attr = array(), $args = array() ) {
-		if ( ! empty( $args ) && empty( $args['auto_showhide_desc'] ) ) {
+		if ( ! empty( $args ) && empty( $args['auto_showhide'] ) ) {
 			return;
 		}
 		$trigger_attr = self::merge_attr( $trigger_attr, array(

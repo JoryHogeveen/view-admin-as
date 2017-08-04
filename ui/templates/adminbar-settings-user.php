@@ -58,7 +58,7 @@ if ( isset( $this ) &&
 						'key'     => 'admin_menu_location',
 						'refresh' => true,
 					),
-					'auto_showhide_desc' => true,
+					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -100,7 +100,7 @@ if ( isset( $this ) &&
 						'key'     => 'view_mode',
 						'refresh' => false,
 					),
-					'auto_showhide_desc' => true,
+					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -133,7 +133,7 @@ if ( isset( $this ) &&
 							'key'     => 'disable_super_admin',
 							'refresh' => ( $this->store->get_view() ) ? true : false,
 						),
-						'auto_showhide_desc' => true,
+						'auto_showhide' => true,
 					)
 				),
 				'href'   => false,
@@ -166,7 +166,7 @@ if ( isset( $this ) &&
 						'key'     => 'hide_front',
 						'refresh' => false,
 					),
-					'auto_showhide_desc' => true,
+					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -201,7 +201,7 @@ if ( isset( $this ) &&
 							'key'     => 'freeze_locale',
 							'refresh' => ( $this->store->get_view( 'user' ) ) ? true : false,
 						),
-						'auto_showhide_desc' => true,
+						'auto_showhide' => true,
 					)
 				),
 				'href'   => false,
@@ -237,7 +237,7 @@ if ( isset( $this ) &&
 							'key'     => 'force_group_users',
 							'refresh' => true,
 						),
-						'auto_showhide_desc' => true,
+						'auto_showhide' => true,
 					)
 				),
 				'href'   => false,
