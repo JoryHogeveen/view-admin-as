@@ -64,14 +64,14 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
-	 *     Required. An array of field arguments.
-	 *     @type  string  $name     Required.
-	 *     @type  string  $id       Optional (Will be generated from $name if empty).
-	 *     @type  string  $label    Optional.
-	 *     @type  string  $class    Optional.
-	 *     @type  string  $element  Optional.
-	 *     @type  array   $attr     Optional.
-	 *     @type  array   $auto_js  Optional. See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     (required) An array of field arguments.
+	 *     @type  string  $name     (required)
+	 *     @type  string  $id       (optional) Will be generated from $name if empty.
+	 *     @type  string  $label    (optional)
+	 *     @type  string  $class    (optional)
+	 *     @type  string  $element  (optional)
+	 *     @type  array   $attr     (optional)
+	 *     @type  array   $auto_js  (optional) See VAA_View_Admin_As_Form::enable_auto_js().
 	 * }
 	 * @return  string
 	 */
@@ -105,19 +105,19 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
-	 *     Required. An array of field arguments.
-	 *     @type  string  $name         Required.
-	 *     @type  string  $id           Optional (Will be generated from $name if empty).
-	 *     @type  string  $placeholder  Optional.
-	 *     @type  string  $default      Optional.
-	 *     @type  string  $value        Optional.
-	 *     @type  string  $label        Optional.
-	 *     @type  string  $description  Optional.
-	 *     @type  string  $help         Optional.
-	 *     @type  string  $class        Optional.
-	 *     @type  array   $attr         Optional.
-	 *     @type  array   $auto_js      Optional. See VAA_View_Admin_As_Form::enable_auto_js().
-	 *     @type  bool    $auto_showhide_desc  Optional.
+	 *     (required) An array of field arguments.
+	 *     @type  string  $name           (required)
+	 *     @type  string  $id             (optional) Will be generated from $name if empty.
+	 *     @type  string  $placeholder    (optional)
+	 *     @type  string  $default        (optional)
+	 *     @type  string  $value          (optional)
+	 *     @type  string  $label          (optional)
+	 *     @type  string  $description    (optional)
+	 *     @type  string  $help           (optional)
+	 *     @type  string  $class          (optional)
+	 *     @type  array   $attr           (optional)
+	 *     @type  array   $auto_js        (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  bool    $auto_showhide  (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
 	 * }
 	 * @return  string
 	 */
@@ -161,20 +161,20 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
-	 *     Required. An array of field arguments.
-	 *     @type  string  $name            Required.
-	 *     @type  string  $id              Optional (Will be generated from $name if empty).
-	 *     @type  string  $compare         Optional.
-	 *     @type  string  $value           Optional.
-	 *     @type  string  $checkbox_value  Optional  (default: 1).
-	 *     @type  string  $label           Optional.
-	 *     @type  string  $description     Optional.
-	 *     @type  string  $help            Optional.
-	 *     @type  string  $class           Optional.
-	 *     @type  array   $attr            Optional.
-	 *     @type  array   $auto_js         Optional. See VAA_View_Admin_As_Form::enable_auto_js().
-	 *     @type  bool    $auto_showhide_desc   Optional.
-	 *     @type  bool    $removable       Optional.
+	 *     (required) An array of field arguments.
+	 *     @type  string  $name            (required)
+	 *     @type  string  $id              (optional) Will be generated from $name if empty.
+	 *     @type  string  $compare         (optional)
+	 *     @type  string  $value           (optional)
+	 *     @type  string  $checkbox_value  (optional) Default: 1.
+	 *     @type  string  $label           (optional)
+	 *     @type  string  $description     (optional)
+	 *     @type  string  $help            (optional)
+	 *     @type  string  $class           (optional)
+	 *     @type  array   $attr            (optional)
+	 *     @type  array   $auto_js         (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  bool    $auto_showhide   (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
+	 *     @type  bool    $removable       (optional)
 	 * }
 	 * @return  string
 	 */
@@ -228,23 +228,23 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
-	 *     Required. An array of arrays with field arguments.
-	 *     @type  string  $name         Required.
-	 *     @type  string  $id           Optional (Will be generated from $name if empty).
-	 *     @type  string  $value        Optional.
-	 *     @type  string  $description  Optional.
-	 *     @type  array   $auto_js      Optional. See VAA_View_Admin_As_Form::enable_auto_js().
-	 *     @type  bool    $auto_showhide_desc   Optional.
+	 *     (required) An array of arrays with field arguments.
+	 *     @type  string  $name           (required)
+	 *     @type  string  $id             (optional) Will be generated from $name if empty.
+	 *     @type  string  $value          (optional)
+	 *     @type  string  $description    (optional)
+	 *     @type  array   $auto_js        (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  bool    $auto_showhide  (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
 	 *     @type  array   $values {
 	 *         Array of radio options data.
 	 *         @type  array {
-	 *             @type  string  $compare      Required.
-	 *             @type  string  $label        Optional.
-	 *             @type  string  $description  Optional.
-	 *             @type  string  $help         Optional.
-	 *             @type  string  $class        Optional.
-	 *             @type  array   $attr         Optional.
-	 *             @type  bool    $auto_showhide_desc   Optional  (overwrite $data).
+	 *             @type  string  $compare        (required)
+	 *             @type  string  $label          (optional)
+	 *             @type  string  $description    (optional)
+	 *             @type  string  $help           (optional)
+	 *             @type  string  $class          (optional)
+	 *             @type  array   $attr           (optional)
+	 *             @type  bool    $auto_showhide  (optional) Overwrite $data.
 	 *         }
 	 *     }
 	 * }
@@ -279,8 +279,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 				$label_attr = array();
 				$desc_attr = array();
 				// Custom validation required.
-				if ( ( ! empty( $val['auto_showhide_desc'] ) ) ||
-					 ( ! isset( $val['auto_showhide_desc'] ) && ! empty( $args['auto_showhide_desc'] ) )
+				if ( ( ! empty( $val['auto_showhide'] ) ) ||
+					 ( ! isset( $val['auto_showhide'] ) && ! empty( $args['auto_showhide'] ) )
 				) {
 					self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 				}
@@ -310,25 +310,25 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   array  $args {
-	 *     Required. An array of arrays with field arguments.
-	 *     @type  string  $name         Required.
-	 *     @type  string  $id           Optional (Will be generated from $name if empty).
-	 *     @type  string  $value        Optional.
-	 *     @type  string  $label        Optional.
-	 *     @type  string  $description  Optional.
-	 *     @type  string  $help         Optional.
-	 *     @type  string  $class        Optional.
-	 *     @type  array   $attr         Optional.
-	 *     @type  array   $auto_js      Optional. See VAA_View_Admin_As_Form::enable_auto_js().
-	 *     @type  bool    $auto_showhide_desc   Optional.
+	 *     (required) An array of arrays with field arguments.
+	 *     @type  string  $name           (required)
+	 *     @type  string  $id             (optional) Will be generated from $name if empty.
+	 *     @type  string  $value          (optional)
+	 *     @type  string  $label          (optional)
+	 *     @type  string  $description    (optional)
+	 *     @type  string  $help           (optional)
+	 *     @type  string  $class          (optional)
+	 *     @type  array   $attr           (optional)
+	 *     @type  array   $auto_js        (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  bool    $auto_showhide  (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
 	 *     @type  array   $values {
 	 *         Arrays of selectbox value data.
 	 *         @type  array {
-	 *             @type  string  $compare  Required.
-	 *             @type  string  $value    Optional  (Alias for compare).
-	 *             @type  string  $label    Optional.
-	 *             @type  string  $class    Optional.
-	 *             @type  array   $attr     Optional.
+	 *             @type  string  $compare  (required)
+	 *             @type  string  $value    (optional) Alias for compare.
+	 *             @type  string  $label    (optional)
+	 *             @type  string  $class    (optional)
+	 *             @type  array   $attr     (optional)
 	 *         }
 	 *     }
 	 * }
@@ -395,8 +395,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.3  Added third $content parameter.
 	 * @static
 	 * @param   string  $icon     The icon class.
-	 * @param   array   $attr     Extra attributes.
-	 * @param   string  $content  Icon content.
+	 * @param   array   $attr     (optional) Extra attributes.
+	 * @param   string  $content  (optional) Icon content.
 	 * @return  string
 	 */
 	public static function do_icon( $icon, $attr = array(), $content = '' ) {
@@ -416,9 +416,9 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.6.3  Added third $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @static
-	 * @param   string|array  $label  The label. (Also accepts an array with a `label` key)
-	 * @param   string        $for    (optional) Add for attribute.
-	 * @param   array         $attr   Extra attributes.
+	 * @param   string|array  $label  The label. Also accepts an array with a `label` key.
+	 * @param   string        $for    (optional) Add `for` attribute.
+	 * @param   array         $attr   (optional) Extra attributes.
 	 * @return  string
 	 */
 	public static function do_label( $label, $for = '', $attr = array() ) {
@@ -440,8 +440,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @static
-	 * @param   string|array  $text  The description text. (Also accepts an array with a `description` key)
-	 * @param   array         $attr  Extra attributes.
+	 * @param   string|array  $text  The description text. Also accepts an array with a `description` key.
+	 * @param   array         $attr  (optional) Extra attributes.
 	 * @return  string
 	 */
 	public static function do_description( $text, $attr = array() ) {
@@ -465,10 +465,10 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.3
 	 * @static
-	 * @param   string|array  $text           The help text. (Also accepts an array with a `help` key)
-	 * @param   array         $help_attr      Extra help icon attributes.
-	 * @param   array         $tooltip_attr   Extra tooltip attributes.
-	 * @param   array         $showhide_attr  Optionally overwrite existing show/hide attributes.
+	 * @param   string|array  $text           The help text. Also accepts an array with a `help` key.
+	 * @param   array         $help_attr      (optional) Extra help icon attributes.
+	 * @param   array         $tooltip_attr   (optional) Extra tooltip attributes.
+	 * @param   array         $showhide_attr  (optional) Overwrite existing show/hide attributes.
 	 * @return  string
 	 */
 	public static function do_help( $text, $help_attr = array(), $tooltip_attr = array(), &$showhide_attr = array() ) {
@@ -490,8 +490,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 			if ( ! isset( $showhide_attr['vaa-showhide'] ) ) {
 				return '';
 			}
-			$help_attr['vaa-showhide'] = $showhide_attr['vaa-showhide'];
 			$help_attr['class'] .= ' ab-vaa-showhide';
+			$help_attr['vaa-showhide'] = $showhide_attr['vaa-showhide'];
 			unset( $showhide_attr['vaa-showhide'] );
 		}
 
@@ -519,24 +519,24 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *
 	 * @param   array  $attr  The attributes array to append to.
 	 * @param   array  $args  {
-	 *     The form element args.
+	 *     The form element args. Below parameters should be in the `auto_js` key.
 	 *
-	 *     @type  string  $setting  Required. The setting key.
-	 *     @type  string  $confirm  Optional. Let JS generate a confirm box before running ajax?
-	 *     @type  string  $refresh  Optional. Refresh after ajax return?
-	 *     @type  string  $key      Optional (if values exists). The option key.
+	 *     @type  string  $setting  (required) The setting key.
+	 *     @type  string  $confirm  (optional) Let JS generate a confirm box before running ajax?
+	 *     @type  string  $refresh  (optional) Refresh after ajax return?
+	 *     @type  string  $key      (optional, if values exists). The option key.
 	 *     @type  array   $values {
 	 *         The array of options. Alias: `value`.
 	 *         All options need to be key => value pairs. See type documentation.
 	 *         Recursive arrays supported (values in values).
 	 *         If a key parameter exists this array will be added as the values of that key.
 	 *
-	 *         @type  bool    $required  Whether this option is required or not (default: true).
-	 *         @type  string  $element   Optional. The HTML element to use as selector (overwrites current element).
-	 *         @type  string  $attr      Get an attribute value instead of using .val()?
-	 *         @type  bool    $json      Parse value as JSON? (Default parser only).
-	 *         @type  string  $parser    Optional. The value processor.
-	 *                                   `default` or empty : normal handling
+	 *         @type  bool    $required  (optional) Whether this option is required or not (default: true).
+	 *         @type  string  $element   (optional) The HTML element to use as selector (overwrites current element).
+	 *         @type  string  $attr      (optional) Get an attribute value instead of using .val()?
+	 *         @type  bool    $json      (optional) Parse value as JSON? (Default parser only).
+	 *         @type  string  $parser    (optional) The value processor.
+	 *                                   `default` or empty : Normal handling.
 	 *                                           (single checkbox or input/textarea value)
 	 *                                   `multiple` or `multi` : Get multiple values.
 	 *                                           (default: name => value | checkbox: value => checked)
@@ -547,27 +547,27 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @return  array
 	 */
 	public static function enable_auto_js( $attr, $args ) {
-		if ( ! empty( $args['auto-js'] ) ) {
+		if ( ! empty( $args['auto_js'] ) ) {
 
 			// Auto-generate values array based upon key and value keys.
-			if ( ! empty( $args['auto-js']['key'] ) ) {
-				if ( empty( $args['auto-js']['values'] ) ) {
+			if ( ! empty( $args['auto_js']['key'] ) ) {
+				if ( empty( $args['auto_js']['values'] ) ) {
 					// Single value data.
 					$value = null;
-					if ( ! empty( $args['auto-js']['value'] ) ) {
-						$value = $args['auto-js']['value'];
+					if ( ! empty( $args['auto_js']['value'] ) ) {
+						$value = $args['auto_js']['value'];
 					}
 				} else {
 					// Set the values as the values of the supplied key.
-					$value = array( 'values' => $args['auto-js']['values'] );
+					$value = array( 'values' => $args['auto_js']['values'] );
 				}
-				$values = array( $args['auto-js']['key'] => $value );
-				$args['auto-js']['values'] = $values;
+				$values = array( $args['auto_js']['key'] => $value );
+				$args['auto_js']['values'] = $values;
 			}
-			unset( $args['auto-js']['key'] );
-			unset( $args['auto-js']['value'] );
+			unset( $args['auto_js']['key'] );
+			unset( $args['auto_js']['value'] );
 
-			$attr['vaa-auto-js'] = wp_json_encode( $args['auto-js'] );
+			$attr['vaa-auto-js'] = wp_json_encode( $args['auto_js'] );
 		}
 		return $attr;
 	}
@@ -575,26 +575,48 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	/**
 	 * Update auto show/hide trigger and target attributes to enable auto show/hide functionality.
 	 *
+	 * @todo Allow multiple targets with this key with the `auto_showhide` key.
+	 *
 	 * @since   1.7
 	 * @since   1.7.2   Moved to this class from admin bar class.
-	 * @since   1.7.3   Renamed from `enable_auto_showhide_desc`
+	 * @since   1.7.3   Renamed from `enable_auto_showhide_desc` + allow multiple values for trigger.
 	 * @static
 	 * @param   string  $target        The target element.
 	 * @param   array   $trigger_attr  Trigger element attributes.
-	 * @param   array   $target_attr   Target element attributes.
+	 * @param   array   $target_attr   (optional) Target element attributes.
 	 * @param   array   $args          (optional) Pass the full arguments array for auto_show_hide key validation.
 	 */
 	public static function enable_auto_showhide( $target, &$trigger_attr = array(), &$target_attr = array(), $args = array() ) {
-		if ( ! empty( $args ) && empty( $args['auto_showhide_desc'] ) ) {
+		if ( ! empty( $args ) && empty( $args['auto_showhide'] ) ) {
 			return;
 		}
+
+		$trigger_target = '.' . $target;
+		if ( ! empty( $args['auto_showhide'] ) && ! is_bool( $args['auto_showhide'] ) ) {
+			// Just the delay, keep the target value.
+			if ( is_numeric( $args['auto_showhide'] ) ) {
+				$trigger_target = wp_json_encode( array(
+					'target' => $trigger_target,
+					'delay' => $args['auto_showhide'],
+				) );
+			}
+			// Full data.
+			elseif ( is_array( $args['auto_showhide'] ) ) {
+				$trigger_target = wp_json_encode( $args['auto_showhide'] );
+			}
+		}
+
 		$trigger_attr = self::merge_attr( $trigger_attr, array(
 			'class' => 'ab-vaa-showhide',
-		    'vaa-showhide' => '.' . $target,
+		    'vaa-showhide' => $trigger_target,
 		) );
-		$target_attr = self::merge_attr( $target_attr, array(
-			'class' => $target,
-		) );
+
+		// @todo Find a way to create multiple targets.
+		if ( ! empty( $target ) ) {
+			$target_attr = self::merge_attr( $target_attr, array(
+				'class' => $target,
+			) );
+		}
 	}
 
 	/**

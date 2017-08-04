@@ -53,12 +53,12 @@ if ( isset( $this ) &&
 							'label'   => __( 'My account', VIEW_ADMIN_AS_DOMAIN ),
 						),
 					),
-					'auto-js' => array(
+					'auto_js' => array(
 						'setting' => 'user_setting',
 						'key'     => 'admin_menu_location',
 						'refresh' => true,
 					),
-					'auto_showhide_desc' => true,
+					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -95,12 +95,12 @@ if ( isset( $this ) &&
 							'help'        => true,
 						),
 					),
-					'auto-js' => array(
+					'auto_js' => array(
 						'setting' => 'user_setting',
 						'key'     => 'view_mode',
 						'refresh' => false,
 					),
-					'auto_showhide_desc' => true,
+					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -128,12 +128,12 @@ if ( isset( $this ) &&
 						'label'       => __( 'Disable super admin', VIEW_ADMIN_AS_DOMAIN ),
 						'description' => __( 'Disable super admin status while switched to another view', VIEW_ADMIN_AS_DOMAIN ),
 						'help'        => true,
-						'auto-js' => array(
+						'auto_js' => array(
 							'setting' => 'user_setting',
 							'key'     => 'disable_super_admin',
 							'refresh' => ( $this->store->get_view() ) ? true : false,
 						),
-						'auto_showhide_desc' => true,
+						'auto_showhide' => true,
 					)
 				),
 				'href'   => false,
@@ -161,12 +161,12 @@ if ( isset( $this ) &&
 					'label'       => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
 					'description' => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN ),
 					'help'        => true,
-					'auto-js' => array(
+					'auto_js' => array(
 						'setting' => 'user_setting',
 						'key'     => 'hide_front',
 						'refresh' => false,
 					),
-					'auto_showhide_desc' => true,
+					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -196,12 +196,12 @@ if ( isset( $this ) &&
 						'label'       => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
 						'description' => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN ),
 						'help'        => true,
-						'auto-js' => array(
+						'auto_js' => array(
 							'setting' => 'user_setting',
 							'key'     => 'freeze_locale',
 							'refresh' => ( $this->store->get_view( 'user' ) ) ? true : false,
 						),
-						'auto_showhide_desc' => true,
+						'auto_showhide' => true,
 					)
 				),
 				'href'   => false,
@@ -232,12 +232,12 @@ if ( isset( $this ) &&
 						'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
 						'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
 						'help'        => true,
-						'auto-js' => array(
+						'auto_js' => array(
 							'setting' => 'user_setting',
 							'key'     => 'force_group_users',
 							'refresh' => true,
 						),
-						'auto_showhide_desc' => true,
+						'auto_showhide' => true,
 					)
 				),
 				'href'   => false,
