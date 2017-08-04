@@ -471,7 +471,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Enable role manager', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Add or remove roles and grant or deny them capabilities', VIEW_ADMIN_AS_DOMAIN ),
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'enable',
 					'refresh' => true,
@@ -617,7 +617,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'attr'  => array(
 						'vaa-view-caps' => wp_json_encode( $this->store->get_selectedCaps() ),
 					),
-					'auto-js' => array(
+					'auto_js' => array(
 						'setting' => $this->moduleKey,
 						'key'     => 'apply_view_to_role',
 						'refresh' => false,
@@ -702,7 +702,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'    => $root . '-rename-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'rename_role',
 					'refresh' => true,
@@ -779,7 +779,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'    => $root . '-clone-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'clone_role',
 					'refresh' => true,
@@ -843,7 +843,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'    => $root . '-delete-apply',
 				'label'   => __( 'Delete', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'delete_role',
 					'confirm' => true,
@@ -856,7 +856,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			) ),
 			'href'   => false,
 			'meta'   => array(
-			'class'  => 'vaa-button-container',
+				'class'  => 'vaa-button-container',
 			),
 		) );
 	}

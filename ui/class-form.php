@@ -547,27 +547,27 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @return  array
 	 */
 	public static function enable_auto_js( $attr, $args ) {
-		if ( ! empty( $args['auto-js'] ) ) {
+		if ( ! empty( $args['auto_js'] ) ) {
 
 			// Auto-generate values array based upon key and value keys.
-			if ( ! empty( $args['auto-js']['key'] ) ) {
-				if ( empty( $args['auto-js']['values'] ) ) {
+			if ( ! empty( $args['auto_js']['key'] ) ) {
+				if ( empty( $args['auto_js']['values'] ) ) {
 					// Single value data.
 					$value = null;
-					if ( ! empty( $args['auto-js']['value'] ) ) {
-						$value = $args['auto-js']['value'];
+					if ( ! empty( $args['auto_js']['value'] ) ) {
+						$value = $args['auto_js']['value'];
 					}
 				} else {
 					// Set the values as the values of the supplied key.
-					$value = array( 'values' => $args['auto-js']['values'] );
+					$value = array( 'values' => $args['auto_js']['values'] );
 				}
-				$values = array( $args['auto-js']['key'] => $value );
-				$args['auto-js']['values'] = $values;
+				$values = array( $args['auto_js']['key'] => $value );
+				$args['auto_js']['values'] = $values;
 			}
-			unset( $args['auto-js']['key'] );
-			unset( $args['auto-js']['value'] );
+			unset( $args['auto_js']['key'] );
+			unset( $args['auto_js']['value'] );
 
-			$attr['vaa-auto-js'] = wp_json_encode( $args['auto-js'] );
+			$attr['vaa-auto-js'] = wp_json_encode( $args['auto_js'] );
 		}
 		return $attr;
 	}

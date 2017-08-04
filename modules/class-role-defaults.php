@@ -981,7 +981,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Enable role defaults', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Set default screen settings for roles and apply them on users through various bulk and automatic actions', VIEW_ADMIN_AS_DOMAIN ),
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'enable',
 					'refresh' => true,
@@ -1035,7 +1035,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'value'   => $this->get_optionData( 'apply_defaults_on_register' ),
 				'compare' => true,
 				'label'   => __( 'Automatically apply defaults to new users', VIEW_ADMIN_AS_DOMAIN ),
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'apply_defaults_on_register',
 					'refresh' => false,
@@ -1058,7 +1058,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'description' => __( "Hide the screen options for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
 				'help'        => true,
 				'auto_showhide_desc' => true,
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'disable_user_screen_options',
 					'refresh' => false,
@@ -1081,7 +1081,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'description' => __( "Lock meta box order and locations for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
 				'help'        => true,
 				'auto_showhide_desc' => true,
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'lock_meta_boxes',
 					'refresh' => false,
@@ -1182,7 +1182,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'name'    => $root . '-meta-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'update_meta',
 					'refresh' => false,
@@ -1323,7 +1323,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'name'    => $root . '-bulk-users-apply',
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-primary',
-					'auto-js' => array(
+					'auto_js' => array(
 						'setting' => $this->moduleKey,
 						'key'     => 'apply_defaults_to_users',
 						'refresh' => false,
@@ -1382,7 +1382,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'name'    => $root . '-bulk-roles-apply',
 						'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 						'class'   => 'button-primary',
-						'auto-js' => array(
+						'auto_js' => array(
 							'setting' => $this->moduleKey,
 							'key'     => 'apply_defaults_to_users_by_role',
 							'refresh' => false,
@@ -1482,7 +1482,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'copy',
 						'vaa-showhide' => 'p.vaa-copy-role-defaults-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-copy-roles-copy-merge',
@@ -1492,7 +1492,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'merge',
 						'vaa-showhide' => 'p.vaa-copy-role-defaults-merge-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-copy-roles-copy-append',
@@ -1502,7 +1502,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'append',
 						'vaa-showhide' => 'p.vaa-copy-role-defaults-append-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) )
 				. VAA_View_Admin_As_Form::do_description(
 					__( 'Fully overwrite data', VIEW_ADMIN_AS_DOMAIN ),
@@ -1562,7 +1562,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'name'    => $root . '-export-roles-export',
 					'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-secondary',
-					'auto-js' => array(
+					'auto_js' => array(
 						'setting' => $this->moduleKey,
 						'key'     => 'export_role_defaults',
 						'refresh' => false,
@@ -1636,7 +1636,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'import',
 						'vaa-showhide' => 'p.vaa-import-role-defaults-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-import-roles-import-merge',
@@ -1646,7 +1646,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'merge',
 						'vaa-showhide' => 'p.vaa-import-role-defaults-merge-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-import-roles-import-append',
@@ -1656,7 +1656,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'append',
 						'vaa-showhide' => 'p.vaa-import-role-defaults-append-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) )
 				. VAA_View_Admin_As_Form::do_description(
 					__( 'Fully overwrite data', VIEW_ADMIN_AS_DOMAIN ),
@@ -1747,7 +1747,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'name'    => $root . '-clear-roles-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'clear_role_defaults',
 					'confirm' => true,
