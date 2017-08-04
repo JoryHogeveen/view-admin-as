@@ -146,6 +146,7 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + select,
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + input,
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ input + label {margin-right: 20px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-help:hover {cursor: help;}
 #wpadminbar #wp-admin-bar-vaa .vaa-help:hover .vaa-tooltip {display: inline-block; opacity: 1;}
 
 /**
