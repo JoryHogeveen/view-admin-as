@@ -70,7 +70,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return  {string|object}  Parsed JSON object or original string.
 	 */
 	VAA_View_Admin_As.json_decode = function( val ) {
-		if ( 0 === val.indexOf("{") ) {
+		if ( 0 === val.indexOf("{") || 0 === val.indexOf("[") ) {
 			try {
 				val = JSON.parse( val );
 			} catch ( err ) {
