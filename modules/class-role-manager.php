@@ -478,7 +478,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'method'    => '',
 		) );
 		$data = $args['data'];
-		if ( ! $data ) {
+		if ( ! $data || ! is_array( $data ) ) {
 			return __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN );
 		}
 
@@ -493,7 +493,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		foreach ( $data as $role_key => $role_data ) {
 			$role = get_role( $role_key );
 			$capabilities = array_map( 'boolval', (array) $role_data );
-			if ( ! VAA_API::array_equal( $role_data, $capabilities ) ) {
+			if ( ! VAA_API::array_equal( $role_data, $capabilities, false ) ) {
 				$error_list[] = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role_key;
 			} else {
 				if ( $role ) {
