@@ -1009,7 +1009,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'    => $root . '-export-roles-export',
 				'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'export_roles',
 					'refresh' => false,
@@ -1128,7 +1128,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'vaa-method'   => 'import',
 					'vaa-showhide' => 'p.vaa-import-role-manager-desc',
 				),
-				'auto-js' => $auto_js,
+				'auto_js' => $auto_js,
 			) ) . ' '
 			. VAA_View_Admin_As_Form::do_button( array(
 				'name'  => $root . '-import-roles-import-merge',
@@ -1138,7 +1138,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'vaa-method'   => 'merge',
 					'vaa-showhide' => 'p.vaa-import-role-manager-merge-desc',
 				),
-				'auto-js' => $auto_js,
+				'auto_js' => $auto_js,
 			) ) . ' '
 			. VAA_View_Admin_As_Form::do_button( array(
 				'name'  => $root . '-import-roles-import-append',
@@ -1148,7 +1148,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'vaa-method'   => 'append',
 					'vaa-showhide' => 'p.vaa-import-role-manager-append-desc',
 				),
-				'auto-js' => $auto_js,
+				'auto_js' => $auto_js,
 			) )
 			. VAA_View_Admin_As_Form::do_description(
 				__( 'Fully overwrite capabilities', VIEW_ADMIN_AS_DOMAIN ),
