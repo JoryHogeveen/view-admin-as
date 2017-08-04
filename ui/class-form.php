@@ -575,26 +575,48 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	/**
 	 * Update auto show/hide trigger and target attributes to enable auto show/hide functionality.
 	 *
+	 * @todo Allow multiple targets with this key with the `auto_showhide` key.
+	 *
 	 * @since   1.7
 	 * @since   1.7.2   Moved to this class from admin bar class.
-	 * @since   1.7.3   Renamed from `enable_auto_showhide_desc`
+	 * @since   1.7.3   Renamed from `enable_auto_showhide_desc` + allow multiple values for trigger.
 	 * @static
 	 * @param   string  $target        The target element.
 	 * @param   array   $trigger_attr  Trigger element attributes.
-	 * @param   array   $target_attr   Target element attributes.
+	 * @param   array   $target_attr   (optional) Target element attributes.
 	 * @param   array   $args          (optional) Pass the full arguments array for auto_show_hide key validation.
 	 */
 	public static function enable_auto_showhide( $target, &$trigger_attr = array(), &$target_attr = array(), $args = array() ) {
 		if ( ! empty( $args ) && empty( $args['auto_showhide'] ) ) {
 			return;
 		}
+
+		$trigger_target = '.' . $target;
+		if ( ! empty( $args['auto_showhide'] ) && ! is_bool( $args['auto_showhide'] ) ) {
+			// Just the delay, keep the target value.
+			if ( is_numeric( $args['auto_showhide'] ) ) {
+				$trigger_target = wp_json_encode( array(
+					'target' => $trigger_target,
+					'delay' => $args['auto_showhide'],
+				) );
+			}
+			// Full data.
+			elseif ( is_array( $args['auto_showhide'] ) ) {
+				$trigger_target = wp_json_encode( $args['auto_showhide'] );
+			}
+		}
+
 		$trigger_attr = self::merge_attr( $trigger_attr, array(
 			'class' => 'ab-vaa-showhide',
-		    'vaa-showhide' => '.' . $target,
+		    'vaa-showhide' => $trigger_target,
 		) );
-		$target_attr = self::merge_attr( $target_attr, array(
-			'class' => $target,
-		) );
+
+		// @todo Find a way to create multiple targets.
+		if ( ! empty( $target ) ) {
+			$target_attr = self::merge_attr( $target_attr, array(
+				'class' => $target,
+			) );
+		}
 	}
 
 	/**

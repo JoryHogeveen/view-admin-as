@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.2
+ * @version 1.7.3
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -146,13 +146,36 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 			} );
 
-			// @since  1.6.3  Toggle items on hover.
+			/**
+			 * @since  1.6.3  Toggle items on hover.
+			 * @since  1.7.3  Allow multiple targets + add delay option.
+ 			 */
 			$( VAA_View_Admin_As.prefix + '[vaa-showhide]' ).each( function() {
-				$( $(this).attr('vaa-showhide') ).hide();
-				$(this).on( 'mouseenter', function() {
-					$( $(this).attr('vaa-showhide') ).slideDown('fast');
-				}).on( 'mouseleave', function() {
-					$( $(this).attr('vaa-showhide') ).slideUp('fast');
+				var $this = $( this ),
+					args = VAA_View_Admin_As.json_decode( $this.attr('vaa-showhide') ),
+					delay = 200;
+				if ( 'object' !== typeof args ) {
+					args = { 0: { target: args, delay: delay } };
+				}
+				$.each( args, function( key, data ) {
+					var timeout = null;
+					if ( ! data.hasOwnProperty( 'target' ) ) {
+						return true;
+					}
+					if ( ! data.hasOwnProperty( 'delay' ) ) {
+						data.delay = delay;
+					}
+					$( data.target ).hide();
+					$this.on( 'mouseenter', function() {
+						timeout = setTimeout( function() {
+							$( data.target ).slideDown('fast');
+						}, data.delay );
+					}).on( 'mouseleave', function() {
+						if ( timeout ) {
+							clearTimeout( timeout );
+						}
+						$( data.target ).slideUp('fast');
+					} );
 				} );
 			} );
 
