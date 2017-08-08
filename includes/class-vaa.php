@@ -114,7 +114,7 @@ final class VAA_View_Admin_As
 		}
 
 		// Lets start!
-		add_action( 'plugins_loaded', array( $this, 'init' ), 0 );
+		add_action( 'plugins_loaded', array( $this, 'init' ), -99999 );
 	}
 
 	/**
