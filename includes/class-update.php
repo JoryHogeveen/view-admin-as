@@ -127,8 +127,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 
 		foreach ( $results as $meta ) {
 			if ( ! empty( $meta->meta_value ) ) {
-				// @codingStandardsIgnoreLine >> unserialize() required since WP stores it this way.
-				$value = unserialize( $meta->meta_value );
+				$value = maybe_unserialize( $meta->meta_value );
 				if ( ! empty( $value['settings'] ) ) {
 					foreach ( $value['settings'] as $key => $val ) {
 						if ( in_array( $key, array( 'force_group_users', 'freeze_locale', 'hide_front' ), true ) ) {
