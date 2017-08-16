@@ -148,7 +148,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		foreach ( $this->store->get_roles() as $key => $role ) {
 			if ( is_array( $role->capabilities ) ) {
 				foreach ( $role->capabilities as $cap => $grant ) {
-					$caps[ $cap ] = $cap;
+					$caps[ (string) $cap ] = $cap;
 				}
 			}
 		}
