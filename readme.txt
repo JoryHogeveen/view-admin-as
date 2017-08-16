@@ -106,6 +106,14 @@ Or search for "View Admin As" via your plugins menu.
 
 * WordPress 4.1 or greater (Though I always recommend to update to the latest version!)
 
+= Install as a must-use plugin =
+Move the `view-admin-as.php` file into the root of your mu-plugins directory, not in the `view-admin-as` subdirectory.  
+This is a limitation of WordPress and probably won't change soon.  
+
+**Example:**  
+All files dir: `/wp-content/mu-plugins/view-admin-as/...`  
+Main file dir: `/wp-content/mu-plugins/view-admin-as.php`  
+
 == Frequently Asked Questions ==
 
 = 1. How do I switch to a user, role or visitor? =
@@ -166,6 +174,9 @@ All the plugin functionality is only run if the user is logged in AND is allowed
 
 So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
+
+= 8. Does this plugin work as a must-use plugin (mu-plugin)? =
+Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Screenshots ==
 

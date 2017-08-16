@@ -116,6 +116,14 @@ Installation of this plugin works like any other plugin out there. Either:
 
 Or search for "View Admin As" via your plugins menu.
 
+### Install as a must-use plugin
+Move the `view-admin-as.php` file into the root of your mu-plugins directory, not in the `view-admin-as` subdirectory.  
+This is a limitation of WordPress and probably won't change soon.  
+
+**Example:**  
+All files dir: `/wp-content/mu-plugins/view-admin-as/...`  
+Main file dir: `/wp-content/mu-plugins/view-admin-as.php`  
+
 ### Minimum Requirements
 * WordPress 4.1 or greater (Though I always recommend to update to the latest version!)
 
