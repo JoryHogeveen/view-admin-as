@@ -28,6 +28,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
 *	Easily switch back anytime
+*	Completely secure (see *Security* below)
 *	Do this all without logging out and easily go back to your own (default) user view!
 
 ### Module: Role defaults (screen settings)
@@ -48,7 +49,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Clone roles
 *	Update role capabilities from current view
 
-## Compatibility
+## Compatibility & Integrations
 
 This plugin will work with most other plugins but these are tested:
 
@@ -80,7 +81,7 @@ Please help translating this plugin on [translate.wordpress.org](https://transla
 
 ## Ideas?
 Please let me know by creating a new [issue](https://github.com/JoryHogeveen/view-admin-as/issues/new) and describe your idea.  
-Pull Requests are welcome!
+Pull Requests are very welcome!
 
 ## I can't switch back!
 When a view is selected there is a reset button available on the dropdown.
@@ -94,10 +95,15 @@ Please let me know through the support and add a plugins and themes list! :)
 https://wordpress.org/support/plugin/view-admin-as
 
 ## Security
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
-Only if the above requirements are OK will this plugin do anything.
-Your view is stored separately so your user will keep the normal roles and capabilities.
-All settings, views, capabilities, etc. are checked before applied.
+You have nothing to worry about.  
+All the plugin functionality is only run if the user is logged in AND is allowed to use this plugin (website admin or custom capabilities).  
+**This plugin will do absolutely nothing if the above requirements are not met.**
+
+* Your view is stored separately so your user will keep the normal roles and capabilities.
+* All settings, views, capabilities, etc. are verified before applied.
+* Passwords are not (and cannot be) revealed.
+* Fully written with the WordPress coding and security standards. 
+* Full support for SSL (https).
 
 So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
