@@ -89,8 +89,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$args['attr']['class'] = 'button' . $class;
 
 		$attr = $args['attr'];
-		if ( ! empty( $args['auto-js'] ) && empty( $args['auto-js']['event'] ) ) {
-			$args['auto-js']['event'] = 'click';
+		if ( ! empty( $args['auto_js'] ) && empty( $args['auto_js']['event'] ) ) {
+			$args['auto_js']['event'] = 'click';
 		}
 		$attr = self::enable_auto_js( $attr, $args );
 		$attr = self::parse_to_html_attr( $attr );
