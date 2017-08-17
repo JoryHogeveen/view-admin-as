@@ -21,17 +21,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @version 1.7.3
  * @uses    VAA_View_Admin_As_Base Extends class
  */
-class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
-
-	/**
-	 * The main VAA settings instance.
-	 *
-	 * @since  1.7
-	 * @static
-	 * @var    VAA_View_Admin_As_Settings
-	 */
-	private static $_vaa_instance = null;
-
+class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
+{
 	/**
 	 * Database option key.
 	 * Always starts with `vaa_`.
@@ -140,9 +131,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 		$default_user = array();
 		$allowed_user = array();
 
-		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) && null === self::$_vaa_instance ) {
-
-			self::$_vaa_instance = $this;
+		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) ) {
 
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData( array(
