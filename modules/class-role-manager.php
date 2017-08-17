@@ -169,7 +169,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 			// Add custom capabilities.
 			if ( $this->store->get_view( 'caps' ) ) {
-				add_filter( 'view_admin_as_get_capabilities', array( $this, 'filter_custom_view_capabilities' ), 10, 2 );
+				add_filter( 'view_admin_as_get_capabilities', array( $this, 'filter_custom_view_capabilities' ), 11, 2 );
 			}
 		}
 	}
