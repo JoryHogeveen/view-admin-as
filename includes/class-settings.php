@@ -180,8 +180,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			add_filter( 'view_admin_as_validate_view_data_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 			add_filter( 'view_admin_as_validate_view_data_user_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 
-			add_filter( 'view_admin_as_handle_ajax_setting', array( $this, 'filter_store_settings' ), 10, 3 );
-			add_filter( 'view_admin_as_handle_ajax_user_setting', array( $this, 'filter_store_settings' ), 10, 3 );
+			add_filter( 'view_admin_as_handle_ajax_setting', array( $this, 'filter_update_settings' ), 10, 3 );
+			add_filter( 'view_admin_as_handle_ajax_user_setting', array( $this, 'filter_update_settings' ), 10, 3 );
 
 			// Make identifier empty for the filters.
 			$id = '';
@@ -278,18 +278,19 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Validate hook for settings.
 	 *
 	 * @since   1.7
+	 * @since   1.7.3   Renamed from filter_store_settings().
 	 * @param   null    $null  Default return (invalid).
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $key   The data key.
 	 * @return  mixed
 	 */
-	public function filter_store_settings( $null, $data, $key ) {
+	public function filter_update_settings( $null, $data, $key ) {
 		if ( ! empty( $data ) && ! empty( $key ) ) {
 			if ( 'setting' === $key ) {
-				return $this->store_settings( $data, 'global' );
+				return $this->update_settings( $data, 'global' );
 			}
 			if ( 'user_setting' === $key ) {
-				return $this->store_settings( $data, 'user' );
+				return $this->update_settings( $data, 'user' );
 			}
 		}
 		return $null;
@@ -338,15 +339,16 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Also merges with the default settings.
 	 *
 	 * @since   1.5
-	 * @since   1.6  Moved to this class from main class.
-	 * @since   1.7  Moved to this class from store class.
+	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.7    Moved to this class from store class.
+	 * @since   1.7.3  Renamed from store_settings().
 	 * @access  public
 	 *
 	 * @param   array   $settings  The new settings.
 	 * @param   string  $type      The type of settings (global / user).
 	 * @return  bool
 	 */
-	public function store_settings( $settings, $type ) {
+	public function update_settings( $settings, $type ) {
 		if ( 'global' === $type ) {
 			$current  = $this->get_settings();
 			$defaults = $this->get_defaultSettings();

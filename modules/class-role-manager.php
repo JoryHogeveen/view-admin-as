@@ -885,7 +885,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			) ),
 			'href'   => false,
 			'meta'   => array(
-				'class'  => 'vaa-button-container',
+				'class' => 'vaa-button-container',
 			),
 		) );
 	}
