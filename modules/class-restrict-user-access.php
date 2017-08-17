@@ -116,7 +116,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$this->ruaLevelManager = $this->ruaApp->level_manager;
 		}
 
-		$access_cap            = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_restrictions';
+		$access_cap            = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_options';
 		$this->ruaMetaPrefix   = ( defined( 'RUA_App::META_PREFIX' ) ) ? RUA_App::META_PREFIX : '_ca_';
 		$this->ruaTypeRestrict = ( defined( 'RUA_App::TYPE_RESTRICT' ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
 
