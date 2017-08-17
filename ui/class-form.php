@@ -38,6 +38,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @access  public
 	 * @static
+	 *
 	 * @param   string  $title  The title content.
 	 * @param   string  $type   The view type.
 	 * @param   string  $value  The view value.
@@ -63,6 +64,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @access  public
 	 * @static
+	 *
 	 * @param   array  $args {
 	 *     (required) An array of field arguments.
 	 *     @type  string  $name     (required)
@@ -87,8 +89,8 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$args['attr']['class'] = 'button' . $class;
 
 		$attr = $args['attr'];
-		if ( ! empty( $args['auto-js'] ) && empty( $args['auto-js']['event'] ) ) {
-			$args['auto-js']['event'] = 'click';
+		if ( ! empty( $args['auto_js'] ) && empty( $args['auto_js']['event'] ) ) {
+			$args['auto_js']['event'] = 'click';
 		}
 		$attr = self::enable_auto_js( $attr, $args );
 		$attr = self::parse_to_html_attr( $attr );
@@ -104,6 +106,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @access  public
 	 * @static
+	 *
 	 * @param   array  $args {
 	 *     (required) An array of field arguments.
 	 *     @type  string  $name           (required)
@@ -160,6 +163,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @access  public
 	 * @static
+	 *
 	 * @param   array  $args {
 	 *     (required) An array of field arguments.
 	 *     @type  string  $name            (required)
@@ -227,6 +231,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @access  public
 	 * @static
+	 *
 	 * @param   array  $args {
 	 *     (required) An array of arrays with field arguments.
 	 *     @type  string  $name           (required)
@@ -309,6 +314,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @access  public
 	 * @static
+	 *
 	 * @param   array  $args {
 	 *     (required) An array of arrays with field arguments.
 	 *     @type  string  $name           (required)
@@ -394,6 +400,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @since   1.7.3  Added third $content parameter.
 	 * @static
+	 *
 	 * @param   string  $icon     The icon class.
 	 * @param   array   $attr     (optional) Extra attributes.
 	 * @param   string  $content  (optional) Icon content.
@@ -416,6 +423,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.6.3  Added third $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @static
+	 *
 	 * @param   string|array  $label  The label. Also accepts an array with a `label` key.
 	 * @param   string        $for    (optional) Add `for` attribute.
 	 * @param   array         $attr   (optional) Extra attributes.
@@ -440,6 +448,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @static
+	 *
 	 * @param   string|array  $text  The description text. Also accepts an array with a `description` key.
 	 * @param   array         $attr  (optional) Extra attributes.
 	 * @return  string
@@ -465,6 +474,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.3
 	 * @static
+	 *
 	 * @param   string|array  $text           The help text. Also accepts an array with a `help` key.
 	 * @param   array         $help_attr      (optional) Extra help icon attributes.
 	 * @param   array         $tooltip_attr   (optional) Extra tooltip attributes.
@@ -575,16 +585,28 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	/**
 	 * Update auto show/hide trigger and target attributes to enable auto show/hide functionality.
 	 *
-	 * @todo Allow multiple targets with this key with the `auto_showhide` key.
-	 *
 	 * @since   1.7
 	 * @since   1.7.2   Moved to this class from admin bar class.
 	 * @since   1.7.3   Renamed from `enable_auto_showhide_desc` + allow multiple values for trigger.
 	 * @static
+	 *
 	 * @param   string  $target        The target element.
 	 * @param   array   $trigger_attr  Trigger element attributes.
 	 * @param   array   $target_attr   (optional) Target element attributes.
-	 * @param   array   $args          (optional) Pass the full arguments array for auto_show_hide key validation.
+	 * @param   array   $args  {
+	 *     (optional)Pass the full arguments array for auto_showhide key validation.
+	 *
+	 *     @type  bool|int|array  $auto_showhide {
+	 *         Pass `true` for default handling of the first function parameter target.
+	 *         Pass an integer to just set the delay for the first function parameter target.
+	 *         Pass an array for full target data (multiple allowed), see parameters below. This will overwrite the first function parameter.
+	 *
+	 *         @type array {
+	 *             @type  string  $target  The selector string for jQuery.
+	 *             @type  int     $delay   (optional) Set the delay in milliseconds.
+	 *         }
+	 *     }
+	 * }
 	 */
 	public static function enable_auto_showhide( $target, &$trigger_attr = array(), &$target_attr = array(), $args = array() ) {
 		if ( ! empty( $args ) && empty( $args['auto_showhide'] ) ) {
@@ -600,7 +622,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 					'delay' => $args['auto_showhide'],
 				) );
 			}
-			// Full data.
+			// Full data. Multiple targets allowed,
 			elseif ( is_array( $args['auto_showhide'] ) ) {
 				$trigger_target = wp_json_encode( $args['auto_showhide'] );
 			}
@@ -608,10 +630,10 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 
 		$trigger_attr = self::merge_attr( $trigger_attr, array(
 			'class' => 'ab-vaa-showhide',
-		    'vaa-showhide' => $trigger_target,
+			'vaa-showhide' => $trigger_target,
 		) );
 
-		// @todo Find a way to create multiple targets.
+		// @todo Find a way to auto create multiple targets.
 		if ( ! empty( $target ) ) {
 			$target_attr = self::merge_attr( $target_attr, array(
 				'class' => $target,
@@ -625,6 +647,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.3
 	 * @static
+	 *
 	 * @param   array  $attr  The current attributes.
 	 * @param   array  $new   The new attributes. Attribute names as key.
 	 * @return  array
@@ -650,10 +673,11 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	/**
 	 * Converts an array of attributes to a HTML string format starting with a space.
 	 *
-	 * @static
 	 * @since   1.6.1
 	 * @since   1.7     Renamed from `parse_attr_to_html`
 	 * @since   1.7.2   Support array values. (Example: CSS classes). Moved to this class from admin bar class.
+	 * @static
+	 *
 	 * @param   array   $array  Array to parse. (attribute => value pairs)
 	 * @return  string
 	 */
@@ -679,6 +703,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.7.2
 	 * @access  public
 	 * @static
+	 *
 	 * @param   VAA_View_Admin_As  $caller  The referrer class
 	 * @return  VAA_View_Admin_As_Form
 	 */

@@ -21,17 +21,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @version 1.7.3
  * @uses    VAA_View_Admin_As_Base Extends class
  */
-class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
-
-	/**
-	 * The main VAA settings instance.
-	 *
-	 * @since  1.7
-	 * @static
-	 * @var    VAA_View_Admin_As_Settings
-	 */
-	private static $_vaa_instance = null;
-
+class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
+{
 	/**
 	 * Database option key.
 	 * Always starts with `vaa_`.
@@ -140,9 +131,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 		$default_user = array();
 		$allowed_user = array();
 
-		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) && null === self::$_vaa_instance ) {
-
-			self::$_vaa_instance = $this;
+		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) ) {
 
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData( array(
@@ -202,6 +191,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 
 			// Append underscore to the identifier for the filters.
 			$id = '_' . $id;
+
 		} // End if().
 
 		/**
@@ -320,7 +310,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 		}
 
 		foreach ( $settings as $setting => $value ) {
-			// Only pass the settings if the key and value matched the data in the allowed settings
+			// Only pass the settings if the key and value matched the data in the allowed settings.
 			if ( ! array_key_exists( $setting, $allowed ) || ! in_array( $value, $allowed[ $setting ], true ) ) {
 				unset( $settings[ $setting ] );
 			}
@@ -383,9 +373,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 	 * Checks if the setting is allowed, otherwise sets it to the default value.
 	 *
 	 * @since   1.7
-	 * @param   array  $settings  The new settings
-	 * @param   array  $defaults  The default settings
-	 * @param   array  $allowed   The allowed settings
+	 * @param   array  $settings  The new settings.
+	 * @param   array  $defaults  The default settings.
+	 * @param   array  $allowed   The allowed settings.
 	 * @return  array
 	 */
 	public function parse_settings( $settings, $defaults, $allowed ) {
@@ -451,7 +441,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 
 			return $success;
 		}
-		// No user or metadata found, no deletion needed
+		// No user or metadata found, no deletion needed.
 		return true;
 	}
 
@@ -471,14 +461,14 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 	public function delete_all_user_meta( $reset_only = true ) {
 		global $wpdb;
 		if ( $reset_only ) {
-			// Reset
+			// Reset.
 			return (bool) $wpdb->update(
 				$wpdb->usermeta, // table.
 				array( 'meta_value' => '' ), // data.
 				array( 'meta_key' => $this->get_userMetaKey() ) // where.
 			);
 		} else {
-			// Delete
+			// Delete.
 			return (bool) $wpdb->delete(
 				$wpdb->usermeta, // table.
 				array( 'meta_key' => $this->get_userMetaKey() ) // where.
@@ -590,7 +580,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 	 * Set the option key as used in the options table.
 	 * @param   string  $val  Option key.
 	 */
-	public function set_optionKey( $val ) {
+	protected function set_optionKey( $val ) {
 		$this->optionKey = (string) str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $val ) );
 	}
 
@@ -598,26 +588,30 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 	 * Set the option key as used in the options table.
 	 * @param   string  $val  Option key.
 	 */
-	public function set_userMetaKey( $val ) {
+	protected function set_userMetaKey( $val ) {
 		$this->userMetaKey = (string) sanitize_title_with_dashes( $val );
 	}
 
 	/**
 	 * Set the default settings.
-	 * @param   array  $val  Settings.
+	 * @param   array   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_defaultSettings( $val ) {
-		$this->defaultSettings = array_map( 'strval', (array) $val );
+	protected function set_defaultSettings( $val, $key = null, $append = false ) {
+		$this->defaultSettings = VAA_API::set_array_data( $this->defaultSettings, $val, $key, $append );
 	}
 
 	/**
 	 * Set the default user settings.
-	 * @param   array  $val  Settings.
+	 * @param   array   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_defaultUserSettings( $val ) {
-		$this->defaultUserSettings = array_map( 'strval', (array) $val );
+	protected function set_defaultUserSettings( $val, $key = null, $append = false ) {
+		$this->defaultUserSettings = VAA_API::set_array_data( $this->defaultUserSettings, $val, $key, $append );
 	}
 
 	/**
@@ -627,7 +621,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_allowedSettings( $val, $key = null, $append = false ) {
+	protected function set_allowedSettings( $val, $key = null, $append = false ) {
 		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $val, $key, $append );
 	}
 
@@ -638,7 +632,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base {
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_allowedUserSettings( $val, $key = null, $append = false ) {
+	protected function set_allowedUserSettings( $val, $key = null, $append = false ) {
 		$this->allowedUserSettings = VAA_API::set_array_data( $this->allowedUserSettings, $val, $key, $append );
 	}
 

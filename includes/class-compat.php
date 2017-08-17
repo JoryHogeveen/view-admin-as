@@ -65,7 +65,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		 *
 		 * @since  1.6
 		 */
-		add_filter( 'members_get_capabilities', array( $this, 'add_capabilities' ) );
+		add_filter( 'members_get_capabilities', array( $this, 'get_vaa_capabilities' ) );
 		add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
 
 		/**
@@ -121,7 +121,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		) );
 
 		if ( $args['vaa'] ) {
-			$caps = $this->add_capabilities( $caps );
+			$caps = $this->get_vaa_capabilities( $caps );
 		}
 
 		if ( $args['wp'] ) {
@@ -130,6 +130,27 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 
 		if ( $args['plugins'] ) {
 			$caps = array_merge( $this->get_plugin_capabilities(), $caps );
+		}
+
+		return $caps;
+	}
+
+	/**
+	 * Add our capabilities to an existing list of capabilities.
+	 *
+	 * @since   1.6
+	 * @since   1.7.3  Renamed from add_capabilities().
+	 * @access  public
+	 * @see     init()
+	 *
+	 * @param   array  $caps  The capabilities.
+	 * @return  array
+	 */
+	public function get_vaa_capabilities( $caps = array() ) {
+
+		// Allow VAA modules to add their capabilities.
+		foreach ( (array) apply_filters( 'view_admin_as_add_capabilities', array( 'view_admin_as' ) ) as $cap ) {
+			$caps[ $cap ] = $cap;
 		}
 
 		return $caps;
@@ -148,7 +169,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		foreach ( $this->store->get_roles() as $key => $role ) {
 			if ( is_array( $role->capabilities ) ) {
 				foreach ( $role->capabilities as $cap => $grant ) {
-					$caps[ $cap ] = $cap;
+					$caps[ (string) $cap ] = $cap;
 				}
 			}
 		}
@@ -297,26 +318,6 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Add our capabilities to an existing list of capabilities.
-	 *
-	 * @since   1.6
-	 * @access  public
-	 * @see     init()
-	 *
-	 * @param   array  $caps  The capabilities.
-	 * @return  array
-	 */
-	public function add_capabilities( $caps = array() ) {
-
-		// Allow VAA modules to add their capabilities.
-		foreach ( (array) apply_filters( 'view_admin_as_add_capabilities', array( 'view_admin_as' ) ) as $cap ) {
-			$caps[ $cap ] = $cap;
-		}
-
-		return $caps;
-	}
-
-	/**
 	 * Fix compatibility issues Pods Framework 2.0+.
 	 *
 	 * @since   1.0.1
@@ -354,7 +355,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			members_register_cap_group( 'view_admin_as',
 				array(
 					'label'      => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
-					'caps'       => $this->add_capabilities(),
+					'caps'       => $this->get_vaa_capabilities(),
 					'icon'       => 'dashicons-visibility',
 					'diff_added' => true,
 				)
@@ -393,7 +394,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @return  array
 	 */
 	public function filter_ure_custom_capability_groups( $groups, $cap_id ) {
-		if ( in_array( $cap_id, $this->add_capabilities(), true ) ) {
+		if ( in_array( $cap_id, $this->get_vaa_capabilities(), true ) ) {
 			$groups = (array) $groups;
 			$groups[] = 'view_admin_as';
 		}

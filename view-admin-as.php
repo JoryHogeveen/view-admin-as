@@ -46,11 +46,28 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 
 	define( 'VIEW_ADMIN_AS_VERSION',    '1.7.3-dev' );
 	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.7.2' );
+	define( 'VIEW_ADMIN_AS_DOMAIN',     'view-admin-as' );
 	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
 	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_DIR',        plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_URL',        plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_DOMAIN',     'view-admin-as' );
+
+	/**
+	 * Added must-use (mu-plugins) compatibility.
+	 * Move this file into the root of your mu-plugins directory, not in the `view-admin-as` subdirectory.
+	 * This is a limitation of WordPress and probably won't change soon.
+	 *
+	 * Plugins dir:   /wp-content/mu-plugins/view-admin-as/...
+	 * This file dir: /wp-content/mu-plugins/view-admin-as.php
+	 *
+	 * @since  1.7.3
+	 */
+	if ( 0 === strpos( VIEW_ADMIN_AS_FILE, WPMU_PLUGIN_DIR ) ) {
+		define( 'VIEW_ADMIN_AS_MU',   true );
+		define( 'VIEW_ADMIN_AS_DIR',  plugin_dir_path( VIEW_ADMIN_AS_FILE ) . 'view-admin-as' . DIRECTORY_SEPARATOR );
+		define( 'VIEW_ADMIN_AS_URL',  plugin_dir_url( VIEW_ADMIN_AS_FILE ) . 'view-admin-as' . DIRECTORY_SEPARATOR );
+	} else {
+		define( 'VIEW_ADMIN_AS_DIR',  plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
+		define( 'VIEW_ADMIN_AS_URL',  plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
+	}
 
 	// Include main init class file.
 	require_once( VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php' );

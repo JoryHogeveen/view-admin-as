@@ -26,6 +26,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
 *	Easily switch back anytime
+*	Completely secure (see *Security* below)
 *	Do this all without logging out and easily go back to your own (default) user view!
 
 = Module: Role defaults (screen settings) =
@@ -77,7 +78,8 @@ Please let me know through the support and add a plugins and themes list! :)
 
 = Security =
 
-This plugin will keep your users and data secure, see item **7** at [FAQ](https://wordpress.org/plugins/view-admin-as/faq/) for more info!
+This plugin is completely safe and will keep your users, passwords and data secure.  
+For more info see item **7** at [FAQ](https://wordpress.org/plugins/view-admin-as/faq/)!
 
 = Developer notes =
 
@@ -103,6 +105,14 @@ Or search for "View Admin As" via your plugins menu.
 = Minimum Requirements =
 
 * WordPress 4.1 or greater (Though I always recommend to update to the latest version!)
+
+= Install as a must-use plugin =
+Move the `view-admin-as.php` file into the root of your mu-plugins directory, not in the `view-admin-as` subdirectory.  
+This is a limitation of WordPress and probably won't change soon.  
+
+**Example:**  
+All files dir: `/wp-content/mu-plugins/view-admin-as/...`  
+Main file dir: `/wp-content/mu-plugins/view-admin-as.php`  
 
 == Frequently Asked Questions ==
 
@@ -152,13 +162,21 @@ If that is not the case, please contact me! See next item.
 Please let me know through the support and add a plugins and themes list! :)
 
 = 7. Is this plugin safe? Even for production websites? =
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
-Only if the above requirements are OK will this plugin do anything.
-Your view is stored separately so your user will keep the normal roles and capabilities.
-All settings, views, capabilities, etc. are checked before applied.
+You have nothing to worry about.  
+All the plugin functionality is only run if the user is logged in AND is allowed to use this plugin (website admin or custom capabilities).  
+**This plugin will do absolutely nothing if the above requirements are not met.**
+
+* Your view is stored separately so your user will keep the normal roles and capabilities.
+* All settings, views, capabilities, etc. are verified before applied.
+* Passwords are not (and cannot be) revealed.
+* Fully written with the WordPress coding and security standards. 
+* Full support for SSL (https).
 
 So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
+
+= 8. Does this plugin work as a must-use plugin (mu-plugin)? =
+Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Screenshots ==
 

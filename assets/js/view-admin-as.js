@@ -159,22 +159,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 				$.each( args, function( key, data ) {
 					var timeout = null;
-					if ( ! data.hasOwnProperty( 'target' ) ) {
-						return true;
-					}
+					// Don't validate target property. It's mandatory so let the console notify the developer.
 					if ( ! data.hasOwnProperty( 'delay' ) ) {
 						data.delay = delay;
 					}
-					$( data.target ).hide();
+					var $target = $( data.target );
+					$target.hide();
 					$this.on( 'mouseenter', function() {
 						timeout = setTimeout( function() {
-							$( data.target ).slideDown('fast');
+							$target.slideDown('fast');
 						}, data.delay );
 					}).on( 'mouseleave', function() {
 						if ( timeout ) {
 							clearTimeout( timeout );
 						}
-						$( data.target ).slideUp('fast');
+						$target.slideUp('fast');
 					} );
 				} );
 			} );

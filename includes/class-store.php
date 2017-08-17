@@ -419,8 +419,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 				// Turn query results into WP_User objects.
 				foreach ( $users_results as $user ) {
-					// @codingStandardsIgnoreLine >> unserialize() required since WP stores it this way.
-					$user->roles = unserialize( $user->roles );
+					$user->roles = maybe_unserialize( $user->roles );
 					$users[ $user->ID ] = new WP_User( $user );
 				}
 
@@ -514,8 +513,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			$roles = $this->get_users( $user_id )->roles;
 			if ( is_string( $roles ) ) {
 				// It is still raw DB data, unserialize it.
-				// @codingStandardsIgnoreLine >> unserialize() required since WP stores it this way.
-				$roles = unserialize( $roles );
+				$roles = maybe_unserialize( $roles );
 			}
 
 			// Always return an array format due to $single handling (unused 4th parameter).

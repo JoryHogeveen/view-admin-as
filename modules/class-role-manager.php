@@ -166,6 +166,11 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			// Show the admin bar node.
 			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 6, 2 );
 			add_action( 'vaa_admin_bar_caps_manager_before', array( $this, 'admin_bar_menu_caps' ), 6, 2 );
+
+			// Add custom capabilities.
+			if ( $this->store->get_view( 'caps' ) ) {
+				add_filter( 'view_admin_as_get_capabilities', array( $this, 'filter_custom_view_capabilities' ), 10, 2 );
+			}
 		}
 	}
 
@@ -284,6 +289,30 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		}
 
 		return $success;
+	}
+
+	/**
+	 * Add all current caps view capabilities to an array of existing capabilities.
+	 * Makes sure that if you add a custom capability to your view it is still visible after reload.
+	 *
+	 * @since   1.7.3
+	 * @access  public
+	 * @param   array  $caps  Current capabilities.
+	 * @param   array  $args  Function arguments.
+	 * @return  array
+	 */
+	public function filter_custom_view_capabilities( $caps = array(), $args = array() ) {
+
+		if ( isset( $args['vaa_role_manager'] ) && ! $args['vaa_role_manager'] ) {
+			return $caps;
+		}
+
+		$view_caps = $this->store->get_view( 'caps' );
+		if ( ! $view_caps ) {
+			return $caps;
+		}
+		$cap_keys = array_keys( $view_caps );
+		return array_merge( array_combine( $cap_keys, $cap_keys ), $caps );
 	}
 
 	/**

@@ -567,7 +567,7 @@ final class VAA_API
 		// @codingStandardsIgnoreLine >> Ignore $_GET and $_POST issues.
 		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
 		if ( isset( $data[ $key ] ) && isset( $data['_vaa_nonce'] ) && wp_verify_nonce( $data['_vaa_nonce'], $nonce ) ) {
-			$request = VAA_API::get_array_data( $data, $key );
+			$request = self::get_array_data( $data, $key );
 			if ( is_string( $request ) ) {
 				$request = json_decode( stripcslashes( html_entity_decode( $request ) ), true );
 			}
