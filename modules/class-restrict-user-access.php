@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * Tested from RUA version: 0.12.4
  * Official RUA compat release: 0.13 (https://github.com/intoxstudio/restrict-user-access/pull/8)
  * Required since v1.7.2: 0.15.1 (https://github.com/intoxstudio/restrict-user-access/pull/11)
- * Checked version: 0.15.1
+ * Checked version: 0.16
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
