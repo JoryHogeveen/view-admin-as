@@ -114,22 +114,37 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 
 	/**
 	 * Sets the default data.
+	 *
 	 * @since   1.7
 	 * @access  protected
-	 * @param   string  $id  Identifier for this settings instance.
+	 * @param   string  $id    Identifier for this settings instance.
+	 * @param   array   $args  {
+	 *     (optional) Setting arguments.
+	 *     @type  array  $default  The default settings (option)
+	 *     @type  array  $allowed  The allowed settings (option). Use arrays to define all possible values for a setting.
+	 *     @type  array  $default_user  The default user settings (meta)
+	 *     @type  array  $allowed_user  The allowed user settings (meta). Use arrays to define all possible values for a setting.
+	 * }
 	 */
-	protected function __construct( $id ) {
+	protected function __construct( $id, $args = array() ) {
 		parent::__construct();
 
 		if ( empty( $id ) || ! is_string( $id ) ) {
 			return null;
 		}
 
-		$default = array();
-		$allowed = array();
+		$args = wp_parse_args( $args, array(
+			'default' => array(),
+			'allowed' => array(),
+			'default_user' => array(),
+			'allowed_user' => array(),
+		) );
 
-		$default_user = array();
-		$allowed_user = array();
+		$default = $args['default'];
+		$allowed = $args['allowed'];
+
+		$default_user = $args['default_user'];
+		$allowed_user = $args['allowed_user'];
 
 		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) ) {
 
