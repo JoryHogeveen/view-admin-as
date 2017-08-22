@@ -87,6 +87,16 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 	// Instantiate View Admin As.
 	view_admin_as();
 
+	/**
+	 * PHP 5.5+ function.
+	 * @see boolval()
+	 */
+	if ( ! function_exists( 'boolval' ) ) {
+		function boolval( $val ) {
+			return (bool) $val;
+		}
+	}
+
 // end if class_exists.
 } else {
 

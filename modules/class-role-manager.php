@@ -338,15 +338,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$existing_role = get_role( $role );
 		// Build role name. (Only used for adding a new role).
 		$role_name     = self::sanitize_role_name( $role );
-		/**
-		 * Sanitize capabilities.
-		 * @since  1.7
-		 * @since  1.7.2  Use foreach loop. boolval() is PHP 5.5+.
-		 * @example  $capabilities = array_map( 'boolval', $capabilities );
-		 */
-		foreach ( $capabilities as $cap => $grant ) {
-			$capabilities[ $cap ] = (bool) $grant;
-		}
+		// Sanitize capabilities.
+		$capabilities = array_map( 'boolval', (array) $capabilities );
 
 		if ( ! $existing_role ) {
 			// Sanitize role slug/key.
@@ -526,11 +519,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$error_list = array();
 		foreach ( $data as $role_key => $role_data ) {
 			$role = get_role( $role_key );
-			$capabilities = array();
-			// Use foreach loop. boolval() is PHP 5.5+.
-			foreach ( $role_data as $cap => $grant ) {
-				$capabilities[ $cap ] = (bool) $grant;
-			}
+			$capabilities = array_map( 'boolval', (array) $role_data );
 			if ( ! VAA_API::array_equal( $role_data, $capabilities, false ) ) {
 				$error_list[] = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role_key;
 			} else {
