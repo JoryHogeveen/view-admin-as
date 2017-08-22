@@ -457,6 +457,10 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			// @todo Check https://core.trac.wordpress.org/ticket/40320.
 			$new_name = self::sanitize_role_name( $new_name );
 
+			if ( empty( $new_name ) ) {
+				return __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN );
+			}
+
 			$this->wp_roles->role_objects[ $slug ]->name = $new_name;
 			$this->wp_roles->role_names[ $slug ] = $new_name;
 			$this->wp_roles->roles[ $slug ]['name'] = $new_name;
