@@ -27,28 +27,27 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	 * - sanitize_role_slug
 	 */
 	function test_sanitize() {
-		$class = self::get_instance();
 
 		/**
 		 * Sanitize role names
 		 */
 
 		// Capitalize
-		$this->assertEquals( 'Test', $class::sanitize_role_name( 'test' ) );
+		$this->assertEquals( 'Test', VAA_View_Admin_As_Role_Manager::sanitize_role_name( 'test' ) );
 		// Capitalize and convert underscores to spaces
-		$this->assertEquals( 'Test Yay', $class::sanitize_role_name( 'test_yay' ) );
+		$this->assertEquals( 'Test Yay', VAA_View_Admin_As_Role_Manager::sanitize_role_name( 'test_yay' ) );
 
 		/**
 		 * Sanitize role slugs
 		 */
 
 		// Remove caps
-		$this->assertEquals( 'test', $class::sanitize_role_slug( 'Test' ) );
+		$this->assertEquals( 'test', VAA_View_Admin_As_Role_Manager::sanitize_role_slug( 'Test' ) );
 		// Special chars, keep underscores
-		$this->assertEquals( 'test', $class::sanitize_role_slug( 'Test@_' ) );
+		$this->assertEquals( 'test', VAA_View_Admin_As_Role_Manager::sanitize_role_slug( 'Test@_' ) );
 		// Lowercase and underscores only
-		$this->assertEquals( 'test_yay', $class::sanitize_role_slug( 'Test@_Yay!' ) );
-		$this->assertEquals( 'test_yay', $class::sanitize_role_slug( 'Test Yay!' ) );
+		$this->assertEquals( 'test_yay', VAA_View_Admin_As_Role_Manager::sanitize_role_slug( 'Test@_Yay!' ) );
+		$this->assertEquals( 'test_yay', VAA_View_Admin_As_Role_Manager::sanitize_role_slug( 'Test Yay!' ) );
 
 	}
 
