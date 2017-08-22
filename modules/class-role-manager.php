@@ -213,6 +213,34 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			return $success;
 		}
 
+		// @since  1.7.x  Export
+		if ( VAA_API::array_has( $data, 'export_roles', array( 'validation' => 'is_array' ) ) ) {
+			$content = $this->export_roles( $data['export_roles'] );
+			if ( is_array( $content ) ) {
+				$success = $this->ajax_data_popup( true, array(
+					'text' => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
+					'textarea' => wp_json_encode( $content ),
+				) );
+			} else {
+				$success = $this->ajax_data_notice( false, array( 'text' => $content ), 'error' );
+			}
+		}
+
+		// @since  1.7.x  Import
+		if ( VAA_API::array_has( $data, 'import_roles', array( 'validation' => 'is_array' ) ) ) {
+			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
+			$content = $this->import_roles( $data['import_roles'] );
+			if ( true === $content ) {
+				$success = true;
+			} else {
+				if ( is_array( $content ) ) {
+					$success = $this->ajax_data_popup( false, (array) $content, 'error' );
+				} else {
+					$success = $this->ajax_data_notice( false, array( 'text' => $content ), 'error' );
+				}
+			}
+		}
+
 		$options = array(
 			'apply_view_to_role' => array(
 				'validation' => 'is_array',
@@ -357,22 +385,39 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @param   WP_Role  $role          The role object.
 	 * @param   array    $capabilities  The new role capabilities.
+	 * @param   string   $method        Update method.
+	 * @return  bool
 	 */
-	public function update_role_caps( $role, $capabilities ) {
-		if ( $role instanceof WP_Role ) {
-			// Ensure we have all the caps (even old ones that need to be removed).
-			$caps = array_merge( $role->capabilities, $capabilities );
+	public function update_role_caps( $role, $capabilities, $method = '' ) {
+		if ( $role instanceof WP_Role && is_array( $capabilities ) ) {
+			switch ( (string) $method ) {
+				case 'append':
+					// Append any new cap keys.
+					$caps = array_merge( $capabilities, $role->capabilities );
+					break;
+				case 'merge':
+					// Ensure we have all the caps (even original ones).
+					$caps = array_merge( $role->capabilities, $capabilities );
+					break;
+				default:
+					// Set all current caps to false to make sure the new caps will overwrite everything.
+					$caps = array_map( '__return_false', $role->capabilities );
+					$caps = array_merge( $caps, $capabilities );
+					break;
+			}
 			// Update existing role.
 			foreach ( $caps as $cap => $grant ) {
 				// @todo Option to deny capability (like Members).
 				// @todo Do this in one call (prevent a lot of queries).
-				if ( ! empty( $capabilities[ $cap ] ) ) {
+				if ( ! empty( $caps[ $cap ] ) ) {
 					$role->add_cap( (string) $cap, (bool) $grant );
 				} else {
 					$role->remove_cap( (string) $cap );
 				}
 			}
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -439,6 +484,109 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			return __( 'This role cannot be removed', VIEW_ADMIN_AS_DOMAIN );
 		}
 		return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+	}
+
+	/**
+	 * Import role(s).
+	 *
+	 * @since   1.7.x
+	 * @access  public
+	 * @param   array  $args  {
+	 *     @type  array   $data       The import data.
+	 *     @type  bool    $caps_data  Does the data only contains capabilities?
+	 *     @type  string  $role       The role to import the capabilities to.
+	 *     @type  string  $method     The import/update method. See update_role_caps().
+	 * }
+	 * @return  mixed
+	 */
+	public function import_roles( $args = array() ) {
+		$args = wp_parse_args( $args, array(
+			'data'      => null,
+			'caps_data' => false,
+			'role'      => '',
+			'method'    => '',
+		) );
+		$data = $args['data'];
+		if ( ! $data || ! is_array( $data ) ) {
+			return __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN );
+		}
+
+		if ( $args['caps_data'] ) {
+			if ( ! get_role( $args['role'] ) ) {
+				return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+			}
+			$data = array( $args['role'] => $data );
+		}
+
+		$error_list = array();
+		foreach ( $data as $role_key => $role_data ) {
+			$role = get_role( $role_key );
+			$capabilities = array_map( 'boolval', (array) $role_data );
+			if ( ! VAA_API::array_equal( $role_data, $capabilities, false ) ) {
+				$error_list[] = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role_key;
+			} else {
+				if ( $role ) {
+					$this->update_role_caps( $role, $capabilities, $args['method'] );
+				} else {
+					$this->save_role( $role_key, $capabilities );
+				}
+			}
+		}
+
+		if ( ! empty( $error_list ) ) {
+			// Close enough!
+			return array(
+				'text' => esc_attr__( 'Data imported but there were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
+				'list' => $error_list,
+			);
+		}
+		return true; // Yay!
+	}
+
+	/**
+	 * Export role(s).
+	 *
+	 * @since   1.7.x
+	 * @access  public
+	 * @param   array   $args  {
+	 *     @type  string  $role       Role name or "__all__" for all roles.
+	 *     @type  bool    $caps_only  Only export caps for a single role? `__all__` is not supported.
+	 * }
+	 * @return  array|string
+	 */
+	public function export_roles( $args = array() ) {
+		$args = wp_parse_args( $args, array(
+			'role'      => null,
+			'caps_only' => false,
+		) );
+		$role = $args['role'];
+		if ( ! $role ) {
+			return __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN );
+		}
+
+		if ( $args['caps_only'] ) {
+			$role = $this->store->get_roles( $role );
+			if ( ! $role ) {
+				return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+			}
+			return $role->capabilities;
+		}
+
+		$data = array();
+		if ( '__all__' === $role ) {
+			$roles = $this->store->get_roles();
+			foreach ( $roles as $role_key => $role ) {
+				$data[ $role_key ] = $role->capabilities;
+			}
+		} else {
+			$role_key = $role;
+			$role = $this->store->get_roles( $role );
+			if ( ! $role ) {
+				return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+			}
+			$data[ $role_key ] = $role->capabilities;
+		}
+		return $data;
 	}
 
 	/**
@@ -824,6 +972,225 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					),
 				),
 			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'vaa-button-container',
+			),
+		) );
+
+		/**
+		 * @since  1.5  Export actions.
+		 */
+		$role_export_options = $role_select_options;
+		$all_roles_option['__all__'] = array(
+			'value' => '__all__',
+			'label' => ' - ' . __( 'All roles', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
+		);
+		array_splice( $role_export_options, 1, 0, $all_roles_option );
+
+		$admin_bar->add_group( array(
+			'id'     => $root . '-export',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-export-roles',
+			'parent' => $root . '-export',
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-upload' )
+			            . __( 'Export roles', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
+				'tabindex' => '0',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-export-roles-select',
+			'parent' => $root . '-export',
+			'title'  => VAA_View_Admin_As_Form::do_select( array(
+				'name'   => $root . '-export-roles-select',
+				'values' => $role_export_options,
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-export-roles-caps-only',
+			'parent' => $root . '-export',
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+				'name'        => $root . '-export-roles-caps-only',
+				'label'       => __( 'Capabilities only', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Not compatible with the "All" option.' ),
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-export-roles-export',
+			'parent' => $root . '-export',
+			'title'  => VAA_View_Admin_As_Form::do_button( array(
+				'name'    => $root . '-export-roles-export',
+				'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
+				'class'   => 'button-secondary',
+				'auto_js' => array(
+					'setting' => $this->moduleKey,
+					'key'     => 'export_roles',
+					'refresh' => false,
+					'values'  => array(
+						'role' => array(
+							'element' => '#wp-admin-bar-' . $root . '-export-roles-select select#' . $root . '-export-roles-select',
+							'parser'  => '', // Default.
+						),
+						'caps_only' => array(
+							'element'  => '#wp-admin-bar-' . $root . '-export-roles-caps-only input#' . $root . '-export-roles-caps-only',
+							'parser'   => '', // Default.
+							'required' => false,
+						),
+					),
+				),
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'vaa-button-container',
+			),
+		) );
+
+		/**
+		 * @since  1.5  Import actions.
+		 */
+		$admin_bar->add_group( array(
+			'id'     => $root . '-import',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-import-roles',
+			'parent' => $root . '-import',
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-download' )
+			            . __( 'Import roles', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
+				'tabindex' => '0',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-import-roles-input',
+			'parent' => $root . '-import',
+			'title'  => '<textarea id="' . $root . '-import-roles-input" name="role-manager-import-roles-input" placeholder="'
+			            . esc_attr__( 'Paste code here', VIEW_ADMIN_AS_DOMAIN ) . '"></textarea>',
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-textarea input-role', // vaa-column-one-half vaa-column-last .
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-import-roles-caps-only',
+			'parent' => $root . '-import',
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+				'name'        => $root . '-import-roles-caps-only',
+				'label'       => __( 'Capabilities only', VIEW_ADMIN_AS_DOMAIN ),
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-import-roles-select',
+			'parent' => $root . '-import',
+			'title'  => VAA_View_Admin_As_Form::do_select( array(
+				'name'   => $root . '-import-roles-select',
+				'values' => $role_select_options,
+				'attr'   => array(
+					'vaa-condition'        => true,
+					'vaa-condition-target' => '#' . $root . '-import-roles-caps-only',
+				),
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
+			),
+		) );
+
+		$auto_js = array(
+			'setting' => $this->moduleKey,
+			'key'     => 'import_roles',
+			'refresh' => true,
+			'values'  => array(
+				'data' => array(
+					'element' => '#wp-admin-bar-' . $root . '-import-roles-input textarea#' . $root . '-import-roles-input',
+					'parser'  => '', // Default.
+					'json'    => true,
+				),
+				'caps_data' => array(
+					'element'  => '#wp-admin-bar-' . $root . '-import-roles-caps-only input#' . $root . '-import-roles-caps-only',
+					'parser'   => '', // Default.
+					'required' => false,
+				),
+				'role' => array(
+					'element'  => '#wp-admin-bar-' . $root . '-import-roles-select select#' . $root . '-import-roles-select',
+					'parser'   => '', // Default.
+					'required' => false,
+				),
+				'method' => array(
+					'attr' => 'vaa-method',
+				),
+			),
+		);
+		$admin_bar->add_node( array(
+			'id'     => $root . '-import-roles-import',
+			'parent' => $root . '-import',
+			'title'  => VAA_View_Admin_As_Form::do_button( array(
+				'name'  => $root . '-import-roles-import',
+				'label' => __( 'Import', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-secondary ab-vaa-showhide vaa-import-role-manager',
+				'attr'  => array(
+					'vaa-method'   => 'import',
+					'vaa-showhide' => 'p.vaa-import-role-manager-desc',
+				),
+				'auto_js' => $auto_js,
+			) ) . ' '
+			. VAA_View_Admin_As_Form::do_button( array(
+				'name'  => $root . '-import-roles-import-merge',
+				'label' => __( 'Merge', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
+				'attr'  => array(
+					'vaa-method'   => 'merge',
+					'vaa-showhide' => 'p.vaa-import-role-manager-merge-desc',
+				),
+				'auto_js' => $auto_js,
+			) ) . ' '
+			. VAA_View_Admin_As_Form::do_button( array(
+				'name'  => $root . '-import-roles-import-append',
+				'label' => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-secondary ab-vaa-showhide vaa-import-role-manager',
+				'attr'  => array(
+					'vaa-method'   => 'append',
+					'vaa-showhide' => 'p.vaa-import-role-manager-append-desc',
+				),
+				'auto_js' => $auto_js,
+			) )
+			. VAA_View_Admin_As_Form::do_description(
+				__( 'Fully overwrite capabilities', VIEW_ADMIN_AS_DOMAIN ),
+				array( 'class' => 'vaa-import-role-manager-desc' )
+			)
+			. VAA_View_Admin_As_Form::do_description(
+				__( 'Merge and overwrite existing capabilities', VIEW_ADMIN_AS_DOMAIN ),
+				array( 'class' => 'vaa-import-role-manager-merge-desc' )
+			)
+			. VAA_View_Admin_As_Form::do_description(
+				__( 'Append without overwriting the existing capabilities', VIEW_ADMIN_AS_DOMAIN ),
+				array( 'class' => 'vaa-import-role-manager-append-desc' )
+			),
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'vaa-button-container',
