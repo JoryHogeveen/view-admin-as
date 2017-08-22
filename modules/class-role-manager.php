@@ -625,8 +625,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	public static function sanitize_role_slug( $role_name ) {
 		$role_name = sanitize_title_with_dashes( $role_name );
 		$role_name = str_replace( array( ' ', '-' ), '_', $role_name );
+		$role_name = trim( $role_name, '_' );
 		//$role_name = sanitize_key( $role_name );
-		return $role_name;
+		return trim( $role_name );
 	}
 
 	/**
