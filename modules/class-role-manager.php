@@ -100,8 +100,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		 */
 		if ( $this->get_optionData( 'enable' ) ) {
 			$this->enable = true;
-			$this->init();
 		}
+
+		$this->init();
 
 		add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
