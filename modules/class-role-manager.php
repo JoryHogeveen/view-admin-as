@@ -605,6 +605,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @return  string
 	 */
 	public static function sanitize_role_name( $role_name, $format = true ) {
+		if ( ! is_string( $role_name ) ) {
+			return null;
+		}
 		$role_name = strip_tags( $role_name );
 		if ( $format ) {
 			$role_name = str_replace( array( '_' ), ' ', $role_name );
@@ -623,6 +626,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @return  string
 	 */
 	public static function sanitize_role_slug( $role_name ) {
+		if ( ! is_string( $role_name ) ) {
+			return null;
+		}
 		$role_name = sanitize_title_with_dashes( $role_name );
 		$role_name = str_replace( array( ' ', '-' ), '_', $role_name );
 		$role_name = trim( $role_name, '_' );
