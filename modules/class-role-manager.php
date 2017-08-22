@@ -526,7 +526,11 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$error_list = array();
 		foreach ( $data as $role_key => $role_data ) {
 			$role = get_role( $role_key );
-			$capabilities = array_map( 'boolval', (array) $role_data );
+			$capabilities = array();
+			// Use foreach loop. boolval() is PHP 5.5+.
+			foreach ( $role_data as $cap => $grant ) {
+				$capabilities[ $cap ] = (bool) $grant;
+			}
 			if ( ! VAA_API::array_equal( $role_data, $capabilities, false ) ) {
 				$error_list[] = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role_key;
 			} else {
