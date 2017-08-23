@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
 Tested up to: 4.8
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -46,6 +46,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Grant and/or add capabilities to roles
 *	Rename roles
 *	Clone roles
+*	Import/Export roles
 *	Update role capabilities from current view
 
 = Compatibility & Integrations =
@@ -193,6 +194,20 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 11. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.7.3 =
+
+*	**Feature:** Role Manager: Import/Export roles. [#51](https://github.com/JoryHogeveen/view-admin-as/issues/51) & [PR #62](https://github.com/JoryHogeveen/view-admin-as/pull/62)
+*	**Feature/Enhancement:** Option to disable super admin status when a view is active and modifies the current user. [#53](https://github.com/JoryHogeveen/view-admin-as/issues/53) & [PR #61](https://github.com/JoryHogeveen/view-admin-as/pull/61)
+*	**Enhancement:** Role Manager: Show custom capabilities that are not yet stored but used in an active caps view [#70](https://github.com/JoryHogeveen/view-admin-as/issues/70)
+*	**Enhancement:** Prevent duplicate names when fetching capabilities from WP objects.
+*	**Enhancement:** Allow this plugin to be installed as a must-use plugin. [#71](https://github.com/JoryHogeveen/view-admin-as/issues/71)
+	*	More info: [Docs: Install as a must-use plugin](https://github.com/JoryHogeveen/view-admin-as#install-as-a-must-use-plugin) & [WP codex: mu-plugins](https://codex.wordpress.org/Must_Use_Plugins)
+*	**UI:** Option tooltips. [#67](https://github.com/JoryHogeveen/view-admin-as/issues/67)
+*	**UI:** Enhance full popup caps view.
+*	**Refactoring:** Fix base class name.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/68)
 
 = 1.7.2 =
 
