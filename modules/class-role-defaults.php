@@ -133,10 +133,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.4    Validate option data.
 		 * @since  1.6    Also calls init().
 		 */
-		if ( $this->get_optionData( 'enable' ) ) {
-			$this->enable = true;
-			$this->init();
-		}
+		$this->set_enable( (bool) $this->get_optionData( 'enable' ), false );
+
+		$this->init();
 
 		/**
 		 * Only allow settings for admin users or users with the correct capabilities.
@@ -161,6 +160,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	private function init() {
 		global $wpdb;
+		static $done = false;
 
 		/**
 		 * Replace %% with the current table prefix and add it to the array of forbidden meta keys.
@@ -172,6 +172,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->get_blog_prefix(), $meta_key );
 			}
 		}
+
 		/**
 		 * Allow users to overwrite the default meta keys.
 		 *
@@ -186,10 +187,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 *
 		 * @since  1.6.3
 		 */
-		$this->set_meta( array_merge(
-			$this->meta_default,
-			( $this->get_optionData( 'meta' ) ) ? (array) $this->get_optionData( 'meta' ) : array()
-		) );
+		$this->set_meta( array_merge( $this->meta_default, (array) $this->get_optionData( 'meta' ) ) );
+
+		// Don't go further if this module is disabled or if it already was initialized.
+		if ( $done || ! $this->is_enabled() ) {
+			return;
+		}
 
 		// Setting: Automatically apply defaults to new users.
 		if ( $this->get_optionData( 'apply_defaults_on_register' ) ) {
@@ -213,6 +216,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.6.2  Move to footer (changed hook).
 		 */
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
+
+		$done = true;
 	}
 
 	/**

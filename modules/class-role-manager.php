@@ -98,9 +98,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		 *
 		 * @since  1.7
 		 */
-		if ( $this->get_optionData( 'enable' ) ) {
-			$this->enable = true;
-		}
+		$this->set_enable( (bool) $this->get_optionData( 'enable' ), false );
 
 		$this->init();
 
