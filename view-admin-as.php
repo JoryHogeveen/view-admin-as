@@ -61,12 +61,24 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 	 * @since  1.7.3
 	 */
 	if ( 0 === strpos( VIEW_ADMIN_AS_FILE, WPMU_PLUGIN_DIR ) ) {
-		define( 'VIEW_ADMIN_AS_MU',   true );
-		define( 'VIEW_ADMIN_AS_DIR',  plugin_dir_path( VIEW_ADMIN_AS_FILE ) . 'view-admin-as' . DIRECTORY_SEPARATOR );
-		define( 'VIEW_ADMIN_AS_URL',  plugin_dir_url( VIEW_ADMIN_AS_FILE ) . 'view-admin-as' . DIRECTORY_SEPARATOR );
+		define( 'VIEW_ADMIN_AS_MU',  true );
+		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' );
+		define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' );
 	} else {
-		define( 'VIEW_ADMIN_AS_DIR',  plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
-		define( 'VIEW_ADMIN_AS_URL',  plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
+		define( 'VIEW_ADMIN_AS_MU',  false );
+		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
+		define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
+	}
+
+	/**
+	 * PHP 5.5+ function.
+	 * @see boolval()
+	 * @todo Move to a separate file?
+	 */
+	if ( ! function_exists( 'boolval' ) ) {
+		function boolval( $val ) {
+			return (bool) $val;
+		}
 	}
 
 	// Include main init class file.
@@ -87,16 +99,6 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 	// Instantiate View Admin As.
 	view_admin_as();
 
-	/**
-	 * PHP 5.5+ function.
-	 * @see boolval()
-	 */
-	if ( ! function_exists( 'boolval' ) ) {
-		function boolval( $val ) {
-			return (bool) $val;
-		}
-	}
-
 // end if class_exists.
 } else {
 
@@ -105,7 +107,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 	function view_admin_as_conflict_admin_notice() {
 		echo '<div class="notice-error notice is-dismissible"><p><strong>' . esc_html__( 'View Admin As', 'view-admin-as' ) . ':</strong> '
 			. esc_html__( 'Plugin not activated because of a conflict with an other plugin or theme', 'view-admin-as' )
-		    // Translators: %s stands for the class name.
+			// Translators: %s stands for the class name.
 			. ' <code>(' . sprintf( esc_html__( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')</code></p></div>';
 	}
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
