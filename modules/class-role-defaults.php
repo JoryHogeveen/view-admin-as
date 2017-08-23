@@ -288,10 +288,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Get the metadata for meta compare.
 	 *
 	 * @since   1.5
-	 * @access  private
+	 * @access  public
 	 * @return  array   $this->meta  The meta keys.
 	 */
-	private function get_meta() {
+	public function get_meta() {
 		return $this->meta;
 	}
 
@@ -300,11 +300,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Used to enforce only 1 level depth array of strings.
 	 *
 	 * @since   1.5
-	 * @access  private
+	 * @access  public
 	 * @param   array   $var  The new meta keys.
 	 * @return  void
 	 */
-	private function set_meta( $var ) {
+	public function set_meta( $var ) {
 		if ( is_array( $var ) ) {
 			$this->meta = array_merge( $this->meta_default, $this->validate_meta( $var ) );
 			ksort( $this->meta );
@@ -315,11 +315,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Validates meta keys in case forbidden or invalid meta keys are added.
 	 *
 	 * @since   1.5.2
-	 * @access  private
+	 * @access  public
 	 * @param   array   $metas  The meta keys.
 	 * @return  array
 	 */
-	private function validate_meta( $metas ) {
+	public function validate_meta( $metas ) {
 		if ( is_array( $metas ) ) {
 			foreach ( $metas as $meta_key => $meta_value ) {
 				// Remove forbidden or invalid meta keys.
@@ -936,11 +936,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @todo Refactor to enable above checks?
 	 *
 	 * @since   1.4
-	 * @access  private
+	 * @access  public
 	 * @param   string  $meta_key_compare  Meta key.
 	 * @return  bool
 	 */
-	private function compare_metakey( $meta_key_compare ) {
+	public function compare_metakey( $meta_key_compare ) {
 		$meta_keys = $this->get_meta();
 		if ( is_array( $meta_keys ) ) {
 			foreach ( $meta_keys as $meta_key => $meta_value ) {

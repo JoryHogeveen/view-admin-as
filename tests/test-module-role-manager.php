@@ -22,14 +22,14 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Tests for:
-	 * - sanitize_role_name
-	 * - sanitize_role_slug
+	 * Test sanitizing.
+	 * @see VAA_View_Admin_As_Role_Manager::sanitize_role_slug()
+	 * @see VAA_View_Admin_As_Role_Manager::sanitize_role_name()
 	 */
 	function test_sanitize() {
 
 		/**
-		 * Sanitize role names
+		 * Sanitize role names.
 		 */
 
 		// Capitalize
@@ -38,7 +38,7 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 		$this->assertEquals( 'Test Yay', VAA_View_Admin_As_Role_Manager::sanitize_role_name( 'test_yay' ) );
 
 		/**
-		 * Sanitize role slugs
+		 * Sanitize role slugs.
 		 */
 
 		// Remove caps
@@ -52,7 +52,8 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test export roles
+	 * Test export roles.
+	 * @see VAA_View_Admin_As_Role_Manager::export_roles()
 	 */
 	function test_export() {
 		$class = self::get_instance();
@@ -84,7 +85,8 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test import roles
+	 * Test import roles.
+	 * @see VAA_View_Admin_As_Role_Manager::import_roles()
 	 */
 	function test_import() {
 		$class = self::get_instance();
@@ -124,7 +126,8 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test clone roles
+	 * Test clone roles.
+	 * @see VAA_View_Admin_As_Role_Manager::clone_role()
 	 */
 	function test_clone() {
 		$class = self::get_instance();
@@ -152,7 +155,8 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test rename roles
+	 * Test rename roles.
+	 * @see VAA_View_Admin_As_Role_Manager::rename_role()
 	 */
 	function test_rename() {
 		$class = self::get_instance();
@@ -176,7 +180,7 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 		// The editor should not exist anymore.
 		$this->assertEquals( $editor->name, $rename );
 
-		// Revert change
+		// Revert change.
 		$class->rename_role( 'editor', 'Editor' );
 		$editor = get_role( 'editor' );
 		// The editor should not exist anymore.
@@ -185,7 +189,8 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Test delete roles
+	 * Test delete roles.
+	 * @see VAA_View_Admin_As_Role_Manager::delete_role()
 	 */
 	function test_delete() {
 		$class = self::get_instance();
