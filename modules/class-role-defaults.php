@@ -930,6 +930,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Match the meta key with predefined metakeys.
 	 * %% stands for a wildcard. This function only supports one wildcard!
 	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
 	 * @since   1.4
 	 * @access  private
 	 * @param   string  $meta_key_compare  Meta key.
@@ -952,6 +957,22 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$compare_end = true;
 				if ( ! empty( $meta_key_parts[1] ) ) {
 					$compare_end = VAA_API::ends_with( $meta_key_compare, $meta_key_parts[1] );
+				}
+
+				/**
+				 * Double checks.
+				 * @since 1.7.3
+				 */
+				if ( false !== strpos( $meta_key, '%%' ) ) {
+					// Example 1: `edit_%%_per_page` would otherwise be valid for: `edit_%%_per_page`.
+					if ( $meta_key === $meta_key_compare ) {
+						return false;
+					}
+					// Example 2: `edit_per_page` would otherwise be valid for: `edit_%%_per_page`.
+					$compare_check = str_replace( '__', '_', implode( '', $meta_key_parts ) );
+					if ( $compare_check === $meta_key_compare ) {
+						return false;
+					}
 				}
 
 				if ( true === $compare_start && true === $compare_end ) {
