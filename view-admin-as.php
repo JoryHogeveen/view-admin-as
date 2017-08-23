@@ -62,8 +62,8 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 	 */
 	if ( 0 === strpos( VIEW_ADMIN_AS_FILE, WPMU_PLUGIN_DIR ) ) {
 		define( 'VIEW_ADMIN_AS_MU',  true );
-		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' );
-		define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' );
+		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' ) );
+		define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' ) );
 	} else {
 		define( 'VIEW_ADMIN_AS_MU',  false );
 		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
