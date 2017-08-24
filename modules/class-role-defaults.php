@@ -847,7 +847,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( $this->get_role_defaults() !== $role_defaults ) {
 			return $this->update_optionData( $role_defaults, 'roles' );
 		}
-		// @todo Currently still returns truewhen a role doesn't exists. Maybe return false?
+		// @todo Currently still returns true when a role doesn't exists. Maybe return false?
 		return true; // No changes needed.
 	}
 

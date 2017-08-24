@@ -45,6 +45,8 @@ class VAA_UnitTest extends WP_UnitTestCase {
 
 		// Tests
 		$this->vaa_assert_enabled( false );
+		$this->vaa_assert_super_admin( false );
+		$this->vaa_assert_superior_admin( false );
 	}
 
 	/**
@@ -56,6 +58,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 		// Tests
 		$this->vaa_assert_enabled( false );
 		$this->vaa_assert_super_admin( false );
+		$this->vaa_assert_superior_admin( false );
 	}
 
 	/**
@@ -73,12 +76,14 @@ class VAA_UnitTest extends WP_UnitTestCase {
 			 */
 			$this->vaa_assert_enabled( true );
 			$this->vaa_assert_super_admin( false );
+			$this->vaa_assert_superior_admin( false );
 		} else {
 			/**
 			 * Requires 'edit_users'.
 			 */
 			$this->vaa_assert_enabled( true );
 			$this->vaa_assert_super_admin( false );
+			$this->vaa_assert_superior_admin( false );
 		}
 	}
 
@@ -92,9 +97,11 @@ class VAA_UnitTest extends WP_UnitTestCase {
 		if ( is_multisite() ) {
 			$this->vaa_assert_enabled( false );
 			$this->vaa_assert_super_admin( false );
+			$this->vaa_assert_superior_admin( false );
 		} else {
 			$this->vaa_assert_enabled( true );
 			$this->vaa_assert_super_admin( true );
+			$this->vaa_assert_superior_admin( false );
 		}
 	}
 
@@ -107,6 +114,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 		// Tests
 		$this->vaa_assert_enabled( true );
 		$this->vaa_assert_super_admin( true );
+		$this->vaa_assert_superior_admin( false );
 	}
 
 	/**
@@ -119,6 +127,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 		// Tests
 		$this->vaa_assert_enabled( false );
 		$this->vaa_assert_super_admin( false );
+		$this->vaa_assert_superior_admin( false );
 	}
 
 	/**
@@ -130,6 +139,7 @@ class VAA_UnitTest extends WP_UnitTestCase {
 		// Tests
 		$this->vaa_assert_enabled( true );
 		$this->vaa_assert_super_admin( true );
+		$this->vaa_assert_superior_admin( true );
 	}
 
 ///////////////////////////////////////////////
@@ -150,6 +160,14 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	 */
 	function vaa_assert_super_admin( $bool ) {
 		$this->assertEquals( $bool, VAA_API::is_super_admin() );
+	}
+
+	/**
+	 * Assert if the current user is a superior admin within VAA.
+	 * @param bool $bool
+	 */
+	function vaa_assert_superior_admin( $bool ) {
+		$this->assertEquals( $bool, VAA_API::is_superior_admin() );
 	}
 
 }
