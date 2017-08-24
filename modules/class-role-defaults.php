@@ -781,14 +781,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Copy defaults from one role to another (or multiple).
 	 *
 	 * @since   1.7
-	 * @access  private
+	 * @access  public
 	 *
 	 * @param   string        $from_role  The source role defaults.
 	 * @param   string|array  $to_role    The role(s) to copy to.
 	 * @param   string        $method     Clone method.
 	 * @return  array|bool
 	 */
-	private function copy_role_defaults( $from_role, $to_role, $method = '' ) {
+	public function copy_role_defaults( $from_role, $to_role, $method = '' ) {
 		$to_role       = (array) $to_role;
 		$error_list    = array();
 		$role_defaults = $this->get_role_defaults();
@@ -822,11 +822,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
-	 * @access  private
+	 * @access  public
 	 * @param   string|array  $role  Role name, an array of role names or just "__all__" for all roles.
 	 * @return  bool
 	 */
-	private function clear_role_defaults( $role ) {
+	public function clear_role_defaults( $role ) {
 		$role_defaults = $this->get_role_defaults();
 		if ( ! is_array( $role ) ) {
 			if ( isset( $role_defaults ) && '__all__' === $role ) {
@@ -847,19 +847,21 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( $this->get_role_defaults() !== $role_defaults ) {
 			return $this->update_optionData( $role_defaults, 'roles' );
 		}
+		// @todo Currently still returns truewhen a role doesn't exists. Maybe return false?
 		return true; // No changes needed.
 	}
 
 	/**
 	 * Export role defaults.
+	 * Note: Export always returns a full array by default (role as array key) even if you only export a single role.
 	 *
 	 * @since   1.5
 	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
-	 * @access  private
+	 * @access  public
 	 * @param   string  $role  Role name or "__all__" for all roles.
 	 * @return  mixed
 	 */
-	private function export_role_defaults( $role = '__all__' ) {
+	public function export_role_defaults( $role = '__all__' ) {
 		$role_defaults = $this->get_role_defaults();
 		if ( '__all__' !== $role && isset( $role_defaults[ $role ] ) ) {
 			$data = $role_defaults[ $role ];
@@ -877,12 +879,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.5
 	 * @since   1.6.2  Add extra import methods
-	 * @access  private
+	 * @access  public
 	 * @param   array   $data    Data to import.
 	 * @param   string  $method  Import method.
 	 * @return  mixed
 	 */
-	private function import_role_defaults( $data, $method = '' ) {
+	public function import_role_defaults( $data, $method = '' ) {
 		$new_defaults = array();
 		$error_list   = array();
 		if ( empty( $data ) || ! is_array( $data ) ) {

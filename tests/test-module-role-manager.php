@@ -87,6 +87,8 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	/**
 	 * Test import roles.
 	 * @see VAA_View_Admin_As_Role_Manager::import_roles()
+	 * @todo Import methods
+	 * @todo Caps only
 	 */
 	function test_import() {
 		$class = self::get_instance();
@@ -123,6 +125,7 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 		$test_import = get_role( $role );
 
 		$this->assertEquals( $caps, $test_import->capabilities );
+
 	}
 
 	/**

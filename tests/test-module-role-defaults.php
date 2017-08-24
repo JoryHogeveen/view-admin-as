@@ -4,12 +4,6 @@
  *
  * Module: Role Defaults.
  *
- * @todo
- * - Import
- * - Export
- * - Copy
- * - Clear/Delete
- *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  */
@@ -68,6 +62,7 @@ class VAA_Module_Role_Defaults_UnitTest extends WP_UnitTestCase {
 		// Reset.
 		$class->set_meta( array() );
 		$this->assertEquals( $org_meta, $class->get_meta() );
+
 	}
 
 	/**
@@ -122,5 +117,171 @@ class VAA_Module_Role_Defaults_UnitTest extends WP_UnitTestCase {
 		// Reset.
 		$class->set_meta( array() );
 		$this->assertEquals( $org_meta, $class->get_meta() );
+
+	}
+
+	/**
+	 * Tests for importing and exporting.
+	 * @see VAA_View_Admin_As_Role_Defaults::import_role_defaults()
+	 * @see VAA_View_Admin_As_Role_Defaults::export_role_defaults()
+	 */
+	function test_import_export() {
+		$class = self::get_instance();
+
+		// Data only >> invalid
+		$editor_import = array(
+			'admin_color' => 'light',
+			'screen_layout_post' => 4,
+			'meta-box-order_dashboard' => array(
+				'normal' => 'dashboard_right_now,dashboard_maybe_later',
+				'side' => 'dashboard_activity',
+			)
+		);
+
+		// @todo Patch if data only is possible.
+		$result = $class->import_role_defaults( $editor_import );
+		$this->assertNotEquals( true, $result );
+
+		$import = array(
+			'editor' => $editor_import,
+		);
+
+		$result = $class->import_role_defaults( $import );
+		$this->assertEquals( true, $result );
+		$this->assertEquals( $import, $class->get_role_defaults() );
+
+		/**
+		 * Invalid meta key.
+		 */
+		$import['editor']['invalid_key'] = 'nope';
+		$result = $class->import_role_defaults( $import );
+
+		// Should return error list array because of the invalid meta key.
+		$this->assertNotEquals( true, $result );
+
+		// Make sure the key doesn't exists in the role defaults.
+		unset( $import['editor']['invalid_key'] );
+		$this->assertEquals( $import, $class->get_role_defaults() );
+
+		/**
+		 * Import overwrite.
+		 */
+		$overwrite = $import;
+		$overwrite['editor']['admin_color'] = 'dark';
+
+		$result = $class->import_role_defaults( $overwrite, 'merge' );
+		$this->assertEquals( true, $result );
+
+		// Check export import overwrite.
+		$this->assertEquals( $overwrite, $class->export_role_defaults() );
+		$this->assertNotEquals( $import, $class->export_role_defaults() );
+
+		/**
+		 * Import append.
+		 */
+		$result = $class->import_role_defaults( $import, 'append' );
+		$this->assertEquals( true, $result );
+
+		// Check export import append. Editor admin color should still be `dark`.
+		$this->assertEquals( $overwrite, $class->export_role_defaults() );
+		$this->assertNotEquals( $import, $class->export_role_defaults() );
+
+		$import_admin = array(
+			'administrator' => array(
+				'admin_color' => 'keraweb',
+			),
+		);
+		$result = $class->import_role_defaults( $import_admin );
+		$this->assertEquals( true, $result );
+
+		/**
+		 * Check export for a single role.
+		 */
+		$this->assertArrayNotHasKey( 'editor', $class->export_role_defaults( 'administrator' ) );
+		$this->assertEquals( $import_admin, $class->export_role_defaults( 'administrator' ) );
+
+		/**
+		 * Check export for non existing data.
+		 */
+		$this->assertTrue( is_string( $class->export_role_defaults( 'non_existing_role' ) ) );
+
+	}
+
+	/**
+	 * Tests for getting and copying.
+	 * @see VAA_View_Admin_As_Role_Defaults::get_role_defaults()
+	 * @see VAA_View_Admin_As_Role_Defaults::copy_role_defaults()
+	 */
+	function test_get_copy() {
+		$class = self::get_instance();
+
+		/**
+		 * Editor role should still have defaults.
+		 * @see VAA_Module_Role_Defaults_UnitTest::test_import_export
+		 */
+		$defaults = $class->get_role_defaults();
+
+		/**
+		 * Invalid, non existing role.
+		 */
+		$result = $class->copy_role_defaults( 'editor', 'non_existing_role' );
+		$this->assertNotEquals( true, $result );
+
+		/**
+		 * Copy defaults.
+		 */
+		$result = $class->copy_role_defaults( 'editor', 'author' );
+		$this->assertEquals( true, $result );
+
+		// Check if copy was actually successful. Also checks getting role defaults with role parameter.
+		$check = array(
+			'author' => $defaults['editor'],
+		);
+		$this->assertEquals( $check['author'], $class->get_role_defaults( 'author' ) );
+
+		/**
+		 * Check full data.
+		 */
+		$check = array_merge( $check, $defaults );
+		$this->assertEquals( $check, $class->get_role_defaults() );
+
+	}
+
+	/**
+	 * @see VAA_View_Admin_As_Role_Defaults::clear_role_defaults()
+	 */
+	function test_clear() {
+		$class = self::get_instance();
+
+		$defaults = $class->get_role_defaults();
+
+		/**
+		 * Invalid, non existing role.
+		 */
+		$result = $class->clear_role_defaults( 'non_existing_role' );
+		// @todo Currently still returns true, maybe return false if role doesn't exists?
+		$this->assertEquals( true, $result );
+		// Should still be the same.
+		$this->assertEquals( $defaults, $class->get_role_defaults() );
+
+		/**
+		 * Clear defaults, single role.
+		 */
+		$result = $class->clear_role_defaults( 'author' );
+		$this->assertEquals( true, $result );
+
+		$new_defaults = $defaults;
+		unset( $new_defaults['author'] );
+
+		$this->assertEquals( $new_defaults, $class->get_role_defaults() );
+
+		/**
+		 * Clear all.
+		 */
+		$result = $class->clear_role_defaults( '__all__' );
+		$this->assertEquals( true, $result );
+
+		$this->assertEquals( array(), $class->get_role_defaults() );
+
 	}
 }
