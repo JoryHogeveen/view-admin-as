@@ -9,7 +9,6 @@
  * - Export
  * - Copy
  * - Clear/Delete
- * - Update meta
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
@@ -67,7 +66,7 @@ class VAA_Module_Role_Defaults_UnitTest extends WP_UnitTestCase {
 		$this->assertEquals( $check_meta, $class->get_meta() );
 
 		// Reset.
-		$class->set_meta( $org_meta );
+		$class->set_meta( array() );
 		$this->assertEquals( $org_meta, $class->get_meta() );
 	}
 
@@ -78,20 +77,26 @@ class VAA_Module_Role_Defaults_UnitTest extends WP_UnitTestCase {
 	function test_compare_metakey() {
 		$class = self::get_instance();
 
+		$org_meta = $class->get_meta();
+
+		// Valid keys.
 		$check_valid = array(
 			'rich_editing',
-			'metaboxhidden_test', // metaboxhidden_%%
-			'edit_test_per_page', // edit_%%_per_page
+			'metaboxhidden_test', // `metaboxhidden_%%`
+			'edit_test_per_page', // `edit_%%_per_page`
 		);
 
 		foreach ( $check_valid as $check ) {
 			$this->assertTrue( $class->compare_metakey( $check ) );
 		}
 
+		// Invalid keys.
 		$check_invalid = array(
-			'bladibla',
-			'metaboxhidden', // `metaboxhidden_` >> missing underscore.
-			'edit_per_page', // edit_%%_per_page
+			'foo_bar',
+			'metaboxhidden', // `metaboxhidden_%%`
+			'metaboxhidden_', // `metaboxhidden_%%`
+			'edit_per_page', // `edit_%%_per_page`
+			'edit__per_page', // `edit_%%_per_page`
 			'metaboxhidden_%%',
 			'edit_%%_per_page',
 		);
@@ -99,5 +104,23 @@ class VAA_Module_Role_Defaults_UnitTest extends WP_UnitTestCase {
 		foreach ( $check_invalid as $check ) {
 			$this->assertFalse( $class->compare_metakey( $check ) );
 		}
+
+		// Small tests to verify double checks and valid custom meta keys.
+		$check_extra = array(
+			'foo_bar' => true,
+			'edit__per_page' => true,
+			'edit_per_page' => true,
+			'meta-box-order_' => true,
+			'meta-box-order' => true,
+		);
+		$class->set_meta( $check_extra );
+
+		foreach ( array_keys( $check_extra ) as $check ) {
+			$this->assertTrue( $class->compare_metakey( $check ) );
+		}
+
+		// Reset.
+		$class->set_meta( array() );
+		$this->assertEquals( $org_meta, $class->get_meta() );
 	}
 }

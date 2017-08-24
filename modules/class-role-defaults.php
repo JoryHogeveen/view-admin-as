@@ -941,43 +941,67 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @return  bool
 	 */
 	public function compare_metakey( $meta_key_compare ) {
-		$meta_keys = $this->get_meta();
-		if ( is_array( $meta_keys ) ) {
-			foreach ( $meta_keys as $meta_key => $meta_value ) {
-				if ( empty( $meta_value ) || ! is_string( $meta_key ) ) {
-					continue;
-				}
-				$meta_key_parts = explode( '%%', $meta_key );
+		$meta_keys = (array) $this->get_meta();
+		foreach ( $meta_keys as $meta_key => $meta_value ) {
+			if ( empty( $meta_value ) || ! is_string( $meta_key ) ) {
+				continue;
+			}
 
-				$compare_start = true;
-				if ( ! empty( $meta_key_parts[0] ) ) {
-					$compare_start = VAA_API::starts_with( $meta_key_compare, $meta_key_parts[0] );
-				}
-
-				$compare_end = true;
-				if ( ! empty( $meta_key_parts[1] ) ) {
-					$compare_end = VAA_API::ends_with( $meta_key_compare, $meta_key_parts[1] );
-				}
-
-				/**
-				 * Double checks.
-				 * @since 1.7.3
-				 */
-				if ( false !== strpos( $meta_key, '%%' ) ) {
-					// Example 1: `edit_%%_per_page` would otherwise be valid for: `edit_%%_per_page`.
-					if ( $meta_key === $meta_key_compare ) {
-						return false;
-					}
-					// Example 2: `edit_per_page` would otherwise be valid for: `edit_%%_per_page`.
-					$compare_check = str_replace( '__', '_', implode( '', $meta_key_parts ) );
-					if ( $compare_check === $meta_key_compare ) {
-						return false;
-					}
-				}
-
-				if ( true === $compare_start && true === $compare_end ) {
+			if ( false === strpos( $meta_key, '%%' ) ) {
+				// No need for start/end checks. If it's the same, return true, otherwise check the next key.
+				if ( $meta_key === $meta_key_compare ) {
 					return true;
 				}
+				continue;
+			}
+
+			// @since 1.7.3 `edit_%%_per_page` would otherwise be valid for: `edit_%%_per_page`.
+			if ( $meta_key === $meta_key_compare ) {
+				// This is never valid, don't even check other keys.
+				return false;
+			}
+
+			$meta_key_parts = explode( '%%', $meta_key );
+
+			/**
+			 * Double checks.
+			 * Also trims underscores, dashes and spaces.
+			 *
+			 * - `edit_per_page` would otherwise be valid for: `edit_%%_per_page`.
+			 * - `edit__per_page` would otherwise be valid for: `edit_%%_per_page`.
+			 * - `metaboxhidden_` would otherwise be valid for: `metaboxhidden_%%`.
+			 *
+			 * Above checks will validate to true if the keys have been explicitly added.
+			 *
+			 * @since 1.7.3
+			 */
+			$trim = '_- ';
+			// Create compare check without %%.
+			$compare_check = implode( '', $meta_key_parts );
+			$compare_arr = array(
+				$compare_check,
+				trim( $compare_check, $trim ),
+			);
+			// Replace double underscores and dashes.
+			$compare_check = str_replace( array( '__', '--' ), array( '_', '-' ), $compare_check );
+			$compare_arr[] = $compare_check;
+			$compare_arr[] = trim( $compare_check, $trim );
+			if ( in_array( $meta_key_compare, $compare_arr, true ) ) {
+				continue;
+			}
+
+			$compare_start = true;
+			if ( ! empty( $meta_key_parts[0] ) ) {
+				$compare_start = VAA_API::starts_with( $meta_key_compare, $meta_key_parts[0] );
+			}
+
+			$compare_end = true;
+			if ( ! empty( $meta_key_parts[1] ) ) {
+				$compare_end = VAA_API::ends_with( $meta_key_compare, $meta_key_parts[1] );
+			}
+
+			if ( true === $compare_start && true === $compare_end ) {
+				return true;
 			}
 		}
 		return false;
