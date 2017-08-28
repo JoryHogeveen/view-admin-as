@@ -12,6 +12,8 @@
 
 ## Specifications
 
-  - Version:
-  - Platform:
-  - Subsystem:
+  - Plugin Version:
+  - WordPress Version:
+  - Other plugins installed:
+  - Theme:
+  - Browser:
