@@ -21,8 +21,8 @@ When contributing please ensure you follow the guidelines below so that we can k
     * [PHP CS](https://github.com/JoryHogeveen/view-admin-as/blob/master/tests/phpcs.xml)
     * [ESLint](https://github.com/JoryHogeveen/view-admin-as/blob/master/tests/.eslintrc)
     * [CSSLint](https://github.com/JoryHogeveen/view-admin-as/blob/master/tests/.csslintrc)
-* Create a new branch, named according to our [git workflow](git-workflow.md)
-* When committing, reference your issue (if present) and include a note about the fix. Example: `#123-what-is-changed`.
+* Create a new branch, named with a issue prefix (if present) and some keywords on what is changed, example: `#123-what-is-changed`.
+* When committing, reference your issue (if present) and include a note about the fix.
 * Push the changes to the branch you created and submit a pull request for the `dev` branch.
 
 At this point you're waiting on us to merge your pull request. We'll review all pull requests, and make suggestions and changes if necessary.
