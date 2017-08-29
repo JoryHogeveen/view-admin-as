@@ -34,8 +34,12 @@ class VAA_UnitTest_Factory {
 	 */
 	public static $vaa_users = array();
 
+	/**
+	 * VAA_UnitTest_Factory constructor.
+	 */
 	protected function __construct() {
 		wp_set_current_user( 1 );
+		add_filter( 'view_admin_as_superior_admins', array( 'VAA_UnitTest_Factory', 'vaa_filter_superior_admin' ) );
 		self::vaa_reinit();
 		self::add_users();
 	}
@@ -43,9 +47,9 @@ class VAA_UnitTest_Factory {
 	/**
 	 * Set superior admin.
 	 */
-	static function vaa_filter_superior_admin() {
-		$user = get_user_by( 'id', 1 );
-		return $user->ID;
+	static public function vaa_filter_superior_admin() {
+		//$user = get_user_by( 'id', 1 );
+		return 1; //$user->ID;
 	}
 
 	/**
@@ -66,8 +70,6 @@ class VAA_UnitTest_Factory {
 		$vaa_editor   = self::add_user( 'VAA Editor', 'editor', array( 'view_admin_as', 'edit_users', 'manage_network_users' ) );
 		$admin        = self::add_user( 'Administrator', 'administrator' );
 		$super_admin  = self::add_user( 'Super Admin', 'administrator', array(), true );
-
-		add_filter( 'view_admin_as_superior_admins', array( 'VAA_UnitTest_Factory', 'vaa_filter_superior_admin' ) );
 
 		$done = true;
 	}
@@ -122,7 +124,9 @@ class VAA_UnitTest_Factory {
 			$user->display_name
 		) );*/
 
+		// Effectively runs: add_user_to_blog( get_current_blog_id(), $id, $role );
 		$user->set_role( $role );
+
 		if ( ! empty( $capabilities ) ) {
 			foreach( $capabilities as $cap => $grant ) {
 				if ( is_string( $grant ) ) {

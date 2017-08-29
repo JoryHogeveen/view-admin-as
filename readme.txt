@@ -10,6 +10,8 @@ View the WordPress admin as a different role or visitor, switch between users, t
 
 == Description ==
 
+= The ultimate User switcher and Role manager =
+
 This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin without the need to login with a user that has this role!
 
 If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages. You can also switch to a role or temporarily change your own capabilities.
@@ -22,7 +24,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 
 *	Switch between user accounts
 	*	Edit this user's screen preferences and settings
-*	Switch to a role view
+*	Switch between roles
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
 *	Easily switch back anytime
@@ -203,6 +205,7 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 *	**Enhancement:** Prevent duplicate names when fetching capabilities from WP objects.
 *	**Enhancement:** Allow this plugin to be installed as a must-use plugin. [#71](https://github.com/JoryHogeveen/view-admin-as/issues/71)
 	*	More info: [Docs: Install as a must-use plugin](https://github.com/JoryHogeveen/view-admin-as#install-as-a-must-use-plugin) & [WP codex: mu-plugins](https://codex.wordpress.org/Must_Use_Plugins)
+*	**Enhancement:** Role Defaults: Enhance meta key comparison.
 *	**UI:** Option tooltips. [#67](https://github.com/JoryHogeveen/view-admin-as/issues/67)
 *	**UI:** Enhance full popup caps view.
 *	**Refactoring:** Fix base class name.
