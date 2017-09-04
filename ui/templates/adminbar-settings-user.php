@@ -243,7 +243,6 @@ if ( isset( $this ) &&
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'auto-height',
-					'tabindex' => '0',
 				),
 			)
 		);
