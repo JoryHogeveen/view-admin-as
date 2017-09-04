@@ -9,20 +9,6 @@
 class VAA_UnitTest extends WP_UnitTestCase {
 
 	/**
-	 * @var VAA_View_Admin_As
-	 */
-	public $vaa_main = null;
-
-	/**
-	 * @var VAA_View_Admin_As_Store
-	 */
-	public $vaa_store = null;
-
-///////////////////////////////////////////////
-//           VAA TESTS
-///////////////////////////////////////////////
-
-	/**
 	 * Check that activation doesn't break.
 	 */
 	function test_vaa_activated() {
@@ -62,7 +48,6 @@ class VAA_UnitTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * @todo Network installations?
 	 * Tests for when the current user is an editor with VAA capabilities.
 	 */
 	function test_vaa_user_editor_vaa() {
