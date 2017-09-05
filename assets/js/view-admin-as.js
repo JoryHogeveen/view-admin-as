@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.2
+ * @version 1.7.3
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -66,11 +66,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Safely try to parse as JSON. If it isn't JSON it will return the original string.
 	 * @since   1.7
-	 * @param   {string}  val  The string the decode.
+	 * @param   {string}  val  The string to decode.
 	 * @return  {string|object}  Parsed JSON object or original string.
 	 */
 	VAA_View_Admin_As.json_decode = function( val ) {
-		if ( 0 === val.indexOf("{") ) {
+		if ( 0 === val.indexOf("{") || 0 === val.indexOf("[") ) {
 			try {
 				val = JSON.parse( val );
 			} catch ( err ) {
@@ -146,13 +146,35 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 			} );
 
-			// @since  1.6.3  Toggle items on hover.
+			/**
+			 * @since  1.6.3  Toggle items on hover.
+			 * @since  1.7.3  Allow multiple targets + add delay option.
+ 			 */
 			$( VAA_View_Admin_As.prefix + '[vaa-showhide]' ).each( function() {
-				$( $(this).attr('vaa-showhide') ).hide();
-				$(this).on( 'mouseenter', function() {
-					$( $(this).attr('vaa-showhide') ).slideDown('fast');
-				}).on( 'mouseleave', function() {
-					$( $(this).attr('vaa-showhide') ).slideUp('fast');
+				var $this = $( this ),
+					args = VAA_View_Admin_As.json_decode( $this.attr('vaa-showhide') ),
+					delay = 200;
+				if ( 'object' !== typeof args ) {
+					args = { 0: { target: args, delay: delay } };
+				}
+				$.each( args, function( key, data ) {
+					var timeout = null;
+					// Don't validate target property. It's mandatory so let the console notify the developer.
+					if ( ! data.hasOwnProperty( 'delay' ) ) {
+						data.delay = delay;
+					}
+					var $target = $( data.target );
+					$target.hide();
+					$this.on( 'mouseenter', function() {
+						timeout = setTimeout( function() {
+							$target.slideDown('fast');
+						}, data.delay );
+					}).on( 'mouseleave', function() {
+						if ( timeout ) {
+							clearTimeout( timeout );
+						}
+						$target.slideUp('fast');
+					} );
 				} );
 			} );
 

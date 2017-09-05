@@ -5,12 +5,16 @@ View the WordPress admin as a different role or visitor, switch between users, t
 [![WordPress Plugin WP tested version](https://img.shields.io/wordpress/v/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
 [![WordPress Plugin downloads](https://img.shields.io/wordpress/plugin/dt/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
 [![WordPress Plugin rating](https://img.shields.io/wordpress/plugin/r/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
-[![License](https://img.shields.io/badge/license-GPL--2.0%2B-green.svg)](https://github.com/JoryHogeveen/view-admin-as/blob/master/license.txt)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)
 [![Travis](https://secure.travis-ci.org/JoryHogeveen/view-admin-as.png?branch=master)](http://travis-ci.org/JoryHogeveen/view-admin-as)
-[![Code Climate](https://codeclimate.com/github/JoryHogeveen/view-admin-as/badges/gpa.svg)](https://codeclimate.com/github/JoryHogeveen/view-admin-as)
+[![Code Climate](https://codeclimate.com/github/JoryHogeveen/view-admin-as/badges/gpa.svg)](https://codeclimate.com/github/JoryHogeveen/view-admin-as)  
+[![License](https://img.shields.io/badge/license-GPL--2.0%2B-blue.svg)](https://github.com/JoryHogeveen/view-admin-as/blob/master/license.txt)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/1047/badge)](https://bestpractices.coreinfrastructure.org/projects/1047)
+[![Project Stats](https://www.openhub.net/p/view-admin-as/widgets/project_thin_badge.gif)](https://www.openhub.net/p/view-admin-as)
 
 ## Description
+**The ultimate User switcher and Role manager**
+
 This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin without the need to login with a user that has this role!
 
 If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages. You can also switch to a role or temporarily change your own capabilities.
@@ -22,10 +26,11 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 ### Overview / Features
 *	Switch between user accounts
 	*	Edit this user's screen preferences and settings
-*	Switch to a role view
+*	Switch between roles
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
 *	Easily switch back anytime
+*	Completely secure (see *Security* below)
 *	Do this all without logging out and easily go back to your own (default) user view!
 
 ### Module: Role defaults (screen settings)
@@ -44,9 +49,10 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Grant and/or add capabilities to roles
 *	Rename roles
 *	Clone roles
+*	Import/Export roles
 *	Update role capabilities from current view
 
-## Compatibility
+## Compatibility & Integrations
 
 This plugin will work with most other plugins but these are tested:
 
@@ -78,7 +84,7 @@ Please help translating this plugin on [translate.wordpress.org](https://transla
 
 ## Ideas?
 Please let me know by creating a new [issue](https://github.com/JoryHogeveen/view-admin-as/issues/new) and describe your idea.  
-Pull Requests are welcome!
+Pull Requests are very welcome!
 
 ## I can't switch back!
 When a view is selected there is a reset button available on the dropdown.
@@ -92,10 +98,15 @@ Please let me know through the support and add a plugins and themes list! :)
 https://wordpress.org/support/plugin/view-admin-as
 
 ## Security
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
-Only if the above requirements are OK will this plugin do anything.
-Your view is stored separately so your user will keep the normal roles and capabilities.
-All settings, views, capabilities, etc. are checked before applied.
+You have nothing to worry about.  
+All the plugin functionality is only run if the user is logged in AND is allowed to use this plugin (website admin or custom capabilities).  
+**This plugin will do absolutely nothing if the above requirements are not met.**
+
+* Your view is stored separately so your user will keep the normal roles and capabilities.
+* All settings, views, capabilities, etc. are verified before applied.
+* Passwords are not (and cannot be) revealed.
+* Fully written with the WordPress coding and security standards. 
+* Full support for SSL (https).
 
 So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
@@ -107,6 +118,14 @@ Installation of this plugin works like any other plugin out there. Either:
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 Or search for "View Admin As" via your plugins menu.
+
+### Install as a must-use plugin
+Move the `view-admin-as.php` file into the root of your mu-plugins directory, not in the `view-admin-as` subdirectory.  
+This is a limitation of WordPress and probably won't change soon.  
+
+**Example:**  
+All files dir: `/wp-content/mu-plugins/view-admin-as/...`  
+Main file dir: `/wp-content/mu-plugins/view-admin-as.php`  
 
 ### Minimum Requirements
 * WordPress 4.1 or greater (Though I always recommend to update to the latest version!)

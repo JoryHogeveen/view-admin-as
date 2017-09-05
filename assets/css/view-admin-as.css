@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1
- * @version 1.7.2
+ * @version 1.7.3
  * @preserve
  */
 
@@ -47,7 +47,7 @@
  * General
  */
 #wpadminbar #wp-admin-bar-vaa ul li,
-#wpadminbar #wp-admin-bar-vaa .ab-item {clear: both;}
+#wpadminbar #wp-admin-bar-vaa .ab-item {clear: both; z-index: auto;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-item > span {line-height: 26px;}
 #wpadminbar #wp-admin-bar-vaa .ab-item > span.remove {font-size: 16px; line-height: 16px; top: 1px;}
@@ -121,6 +121,35 @@
 #wpadminbar #wp-admin-bar-vaa button.vaa-icon .ab-icon {padding: 0;}
 
 /**
+ * Help tooltips
+ */
+#wpadminbar #wp-admin-bar-vaa .vaa-tooltip {
+	position: absolute !important;
+	display: none;
+	opacity: 0;
+	transition: all .2s;
+	right: 12px;
+	top: 0;
+	padding: 10px 15px;
+	width: 140px;
+	height: auto;
+	font-size: 11px;
+	line-height: 1.2em;
+	text-align: center;
+	white-space: normal;
+	border-radius: 3px;
+	border: 1px solid rgba(175,175,175,0.5);
+	box-shadow: 0 0 15px rgba(0,0,0,0.2);
+	z-index: 99999;
+}
+#wpadminbar #wp-admin-bar-vaa .vaa-help {float: right; text-align: right; padding: 0; font-size: 16px; line-height: inherit !important; margin: 0 0 0 5px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + select,
+#wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + input,
+#wpadminbar #wp-admin-bar-vaa .vaa-help ~ input + label {margin-right: 20px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-help:hover {cursor: help;}
+#wpadminbar #wp-admin-bar-vaa .vaa-help:hover .vaa-tooltip {display: inline-block; opacity: 1;}
+
+/**
  * Auto max height
  * Min height = height of a single node
  */
@@ -150,20 +179,23 @@
 #wpadminbar #wp-admin-bar-vaa input.checkbox,
 #wpadminbar #wp-admin-bar-vaa input.radio {display: inline-block; height: 16px; width: 16px; vertical-align: text-bottom; box-sizing: border-box; cursor: pointer;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox,
-#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {margin: 0 5px 0 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {margin: 0 6px 0 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label *,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label * {line-height: 18px; vertical-align: text-top; display: inline;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label:hover,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label:hover {cursor: pointer;}
-#wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox:first-child,
-#wpadminbar #wp-admin-bar-vaa .ab-item input.radio:first-child {margin: 0 6px 0 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio {border-radius:  100%;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label + br {line-height: 0;}
 
 #wpadminbar #wp-admin-bar-vaa input.checkbox.vaa-right,
 #wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {position: absolute; top: 5px; right: 1em; z-index: 99;}
+
+#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper {line-height: 20px;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper p.description,
+#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper:first-of-type {margin-top: 6px;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper:last-of-type {margin-bottom: 6px;}
 
 /* Multipleselect */
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 6px 0; padding: 0; border: solid transparent; border-width: 0 10px;}
@@ -198,6 +230,7 @@
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive > .ab-sub-wrapper > .ab-submenu {padding: 0;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup {position: fixed; display: block; visibility: visible; overflow: hidden; z-index: 999; max-height: 90%; width: 90%; margin: 5%; top: 0; left: 0; box-shadow: 0 0 50px rgba(0,0,0,0.3);}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup .ab-item {display: block;}
+#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul::after {display: table; clear: both; content: ' ';}
 
 /**
  * Capability nodes
@@ -210,6 +243,7 @@
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #close-caps-popup {display: block;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #open-caps-popup {display: none;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #wp-admin-bar-vaa-caps-select-options .vaa-cap-item {width: 250px; float: left; clear: none;}
+#wpadminbar #wp-admin-bar-vaa.fullPopupActive #wp-admin-bar-vaa-caps .ab-sub-wrapper.fullPopup #wp-admin-bar-vaa-caps-select-options .vaa-cap-item .remove {margin-right: 6px;}
 
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps-popup:hover {cursor: pointer;}
 
@@ -231,6 +265,17 @@
 /**
  * Responsive
  */
+@media screen and (min-width: 783px) {
+	/* Full popup form elements */
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select {float: left; clear: none; width: auto;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input button {margin: 5px 0;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input input,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select select {width: auto;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input input + button.input-overlay,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select select + button.input-overlay {position: static; vertical-align: top;}
+}
+
 @media screen and (max-width: 782px) {
 
 	/**
@@ -244,6 +289,28 @@
 	#wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {content: '';}
 
 	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-hide-responsive {display: none;}
+
+	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item.description,
+	#wpadminbar #wp-admin-bar-vaa .ab-item p.description {display: block !important; padding-left: 0; padding-right: 0;}
+
+	/**
+	 * Help tooltip
+	 */
+	#wpadminbar #wp-admin-bar-vaa .vaa-help {display: block; padding: 8px 0; float: none; text-align: left; margin: 0;}
+	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-help:empty {display: none;}
+	/* Always display tooltip on mobile view. */
+	#wpadminbar #wp-admin-bar-vaa .vaa-tooltip {
+		font-size: 13px;
+		display: inline-block;
+		position: static !important;
+		opacity: 1;
+		border: 0;
+		padding: 0 !important;
+		margin-left: 5px !important;
+		width: auto;
+		vertical-align: text-top;
+		line-height: 20px;
+	}
 
 	/**
 	 * Notices
@@ -290,4 +357,6 @@
 
 	#wpadminbar #wp-admin-bar-vaa input.checkbox.vaa-right,
 	#wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {top: 9px; right: 11px;}
+
+	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper {margin: 6px 0;}
 }

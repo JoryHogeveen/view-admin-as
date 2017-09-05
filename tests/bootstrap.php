@@ -25,12 +25,15 @@ if ( ! $_tests_dir ) {
 define( 'TEST_VAA_PLUGIN_NAME'   , 'view-admin-as.php' );
 define( 'TEST_VAA_PLUGIN_FOLDER' , basename( dirname( __DIR__ ) ) );
 define( 'TEST_VAA_PLUGIN_PATH'   , TEST_VAA_PLUGIN_FOLDER . '/' . TEST_VAA_PLUGIN_NAME );
+define( 'TEST_VAA_DIR', dirname( __FILE__ ) . DIRECTORY_SEPARATOR );
 
 
 // Activates this plugin in WordPress so it can be tested.
 $GLOBALS['wp_tests_options'] = array(
 	'active_plugins' => array( TEST_VAA_PLUGIN_PATH ),
 );
+
+require_once( TEST_VAA_DIR . 'functions.php' );
 
 require_once $_tests_dir . '/includes/functions.php';
 
@@ -43,4 +46,10 @@ require $_tests_dir . '/includes/bootstrap.php';
 
 echo 'Installing View Admin As' . PHP_EOL;
 
-activate_plugin( TEST_VAA_PLUGIN_PATH );
+require_once( TEST_VAA_DIR . 'factory.php' );
+VAA_UnitTest_Factory::get_instance();
+
+if ( ! is_multisite() ) {
+	activate_plugin( TEST_VAA_PLUGIN_PATH );
+}
+

@@ -16,11 +16,11 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @since   1.7  Renamed to VAA_View_Admin_As_UI (previously VAA_View_Admin_As_Admin)
- * @version 1.7.1
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @since   1.7  Renamed from VAA_View_Admin_As_Admin
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 {
 	/**
 	 * Plugin links.
@@ -374,11 +374,11 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Class_Base
 		$options = apply_filters( 'view_admin_as_error_page_options', $options );
 		?>
 		<div>
-			<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) ?>:</h3>
-			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ) ?>
+			<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ); ?>:</h3>
+			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ); ?>
 			<ul>
 				<?php foreach ( $options as $option ) { ?>
-					<li><a href="<?php echo $option['url'] ?>"><?php echo $option['text'] ?></a></li>
+					<li><a href="<?php echo $option['url']; ?>"><?php echo $option['text']; ?></a></li>
 				<?php } ?>
 			</ul>
 		</div>

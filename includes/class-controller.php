@@ -16,10 +16,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.2
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.
@@ -614,11 +614,11 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Class_Base
 		}
 
 		$allowed_keys = array_unique( array_merge(
-		    // View types.
+			// View types.
 			$this->get_view_types(),
 			// Module keys.
-		    array_keys( $this->vaa->get_modules() ),
-		    // VAA core keys.
+			array_keys( $this->vaa->get_modules() ),
+			// VAA core keys.
 			array( 'setting', 'user_setting', 'reset' )
 		) );
 

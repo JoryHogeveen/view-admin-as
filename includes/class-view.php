@@ -17,10 +17,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
- * @version 1.7.2
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
+final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.
@@ -202,6 +202,17 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 		 * @since  0.1
 		 */
 		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
+
+		/**
+		 * Disable super admin status for the current user.
+		 * @since  1.7.3
+		 */
+		if ( ! is_network_admin() &&
+		     VAA_API::is_super_admin( $this->store->get_selectedUser()->ID ) &&
+		     $this->store->get_userSettings( 'disable_super_admin' )
+		) {
+			$this->disable_super_admin();
+		}
 
 		$done = true;
 	}
@@ -454,6 +465,45 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Class_Base
 			return (array) $this->store->get_selectedCaps();
 		}
 		return $allcaps;
+	}
+
+	/**
+	 * Remove the current user from the list of super admins.
+	 * This sets/changes the global $super_admins variable which overwrites the site option.
+	 *
+	 * @since   1.7.3
+	 * @access  public
+	 * @see     grant_super_admin()  >> wp-includes/capabilities.php
+	 * @see     revoke_super_admin() >> wp-includes/capabilities.php
+	 * @see     get_super_admins()   >> wp-includes/capabilities.php
+	 * @see     is_super_admin()     >> wp-includes/capabilities.php
+	 * @link    https://developer.wordpress.org/reference/functions/is_super_admin/
+	 *
+	 * @global  array  $super_admins
+	 * @param   WP_User|int|string  $user   (optional) A user to remove. Both a user object or a user field is accepted.
+	 * @param   string              $field  (optional) A user field key to get the user data by.
+	 */
+	public function disable_super_admin( $user = null, $field = 'id' ) {
+		global $super_admins;
+
+		if ( ! isset( $super_admins ) ) {
+			$super_admins = get_super_admins();
+		}
+
+		$user = ( null !== $user ) ? $user : $this->store->get_selectedUser();
+		if ( ! $user instanceof WP_User ) {
+			$user = get_user_by( $field, $user );
+		}
+
+		// Remove current user from the super admins array.
+		// Effectively disables functions grant_super_admin() and revoke_super_admin().
+		if ( ! empty( $user->user_login ) && is_array( $super_admins ) ) {
+			$key = array_search( $user->user_login, $super_admins, true );
+			if ( false !== $key ) {
+				unset( $super_admins[ $key ] );
+				$GLOBALS['super_admins'] = $super_admins;
+			}
+		}
 	}
 
 	/**

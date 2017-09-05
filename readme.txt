@@ -4,11 +4,14 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLM
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
 Tested up to: 4.8
-Stable tag: 1.7.2
+Requires PHP: 5.2.4
+Stable tag: 1.7.3
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
 == Description ==
+
+= The ultimate User switcher and Role manager =
 
 This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin without the need to login with a user that has this role!
 
@@ -22,10 +25,11 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 
 *	Switch between user accounts
 	*	Edit this user's screen preferences and settings
-*	Switch to a role view
+*	Switch between roles
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
 *	Easily switch back anytime
+*	Completely secure (see *Security* below)
 *	Do this all without logging out and easily go back to your own (default) user view!
 
 = Module: Role defaults (screen settings) =
@@ -45,6 +49,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Grant and/or add capabilities to roles
 *	Rename roles
 *	Clone roles
+*	Import/Export roles
 *	Update role capabilities from current view
 
 = Compatibility & Integrations =
@@ -77,7 +82,8 @@ Please let me know through the support and add a plugins and themes list! :)
 
 = Security =
 
-This plugin will keep your users and data secure, see item **7** at [FAQ](https://wordpress.org/plugins/view-admin-as/faq/) for more info!
+This plugin is completely safe and will keep your users, passwords and data secure.  
+For more info see item **7** at [FAQ](https://wordpress.org/plugins/view-admin-as/faq/)!
 
 = Developer notes =
 
@@ -103,6 +109,14 @@ Or search for "View Admin As" via your plugins menu.
 = Minimum Requirements =
 
 * WordPress 4.1 or greater (Though I always recommend to update to the latest version!)
+
+= Install as a must-use plugin =
+Move the `view-admin-as.php` file into the root of your mu-plugins directory, not in the `view-admin-as` subdirectory.  
+This is a limitation of WordPress and probably won't change soon.  
+
+**Example:**  
+All files dir: `/wp-content/mu-plugins/view-admin-as/...`  
+Main file dir: `/wp-content/mu-plugins/view-admin-as.php`  
 
 == Frequently Asked Questions ==
 
@@ -152,13 +166,21 @@ If that is not the case, please contact me! See next item.
 Please let me know through the support and add a plugins and themes list! :)
 
 = 7. Is this plugin safe? Even for production websites? =
-You have nothing to worry about. All the plugin functionality is only run if a user is logged in AND is allowed to use this plugin (website admin or custom capabilities).
-Only if the above requirements are OK will this plugin do anything.
-Your view is stored separately so your user will keep the normal roles and capabilities.
-All settings, views, capabilities, etc. are checked before applied.
+You have nothing to worry about.  
+All the plugin functionality is only run if the user is logged in AND is allowed to use this plugin (website admin or custom capabilities).  
+**This plugin will do absolutely nothing if the above requirements are not met.**
+
+* Your view is stored separately so your user will keep the normal roles and capabilities.
+* All settings, views, capabilities, etc. are verified before applied.
+* Passwords are not (and cannot be) revealed.
+* Fully written with the WordPress coding and security standards. 
+* Full support for SSL (https).
 
 So basically if your admin users are safe, this plugin will be safe.
 Note: if your admin users aren't safe, this plugin is the last one to worry about ;)
+
+= 8. Does this plugin work as a must-use plugin (mu-plugin)? =
+Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Screenshots ==
 
@@ -175,6 +197,21 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 11. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.7.3 =
+
+*	**Feature:** Role Manager: Import/Export roles. [#51](https://github.com/JoryHogeveen/view-admin-as/issues/51) & [PR #62](https://github.com/JoryHogeveen/view-admin-as/pull/62)
+*	**Feature/Enhancement:** Option to disable super admin status when a view is active and modifies the current user. [#53](https://github.com/JoryHogeveen/view-admin-as/issues/53) & [PR #61](https://github.com/JoryHogeveen/view-admin-as/pull/61)
+*	**Enhancement:** Role Manager: Show custom capabilities that are not yet stored but used in an active caps view [#70](https://github.com/JoryHogeveen/view-admin-as/issues/70)
+*	**Enhancement:** Prevent duplicate names when fetching capabilities from WP objects.
+*	**Enhancement:** Allow this plugin to be installed as a must-use plugin. [#71](https://github.com/JoryHogeveen/view-admin-as/issues/71)
+	*	More info: [Docs: Install as a must-use plugin](https://github.com/JoryHogeveen/view-admin-as#install-as-a-must-use-plugin) & [WP codex: mu-plugins](https://codex.wordpress.org/Must_Use_Plugins)
+*	**Enhancement:** Role Defaults: Enhance meta key comparison.
+*	**UI:** Option tooltips. [#67](https://github.com/JoryHogeveen/view-admin-as/issues/67)
+*	**UI:** Enhance full popup caps view.
+*	**Refactoring:** Fix base class name.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/68)
 
 = 1.7.2 =
 

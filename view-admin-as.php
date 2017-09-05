@@ -3,7 +3,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.2
+ * @version 1.7.3
  * @licence GPL-2.0+
  * @link    https://github.com/JoryHogeveen/view-admin-as
  *
@@ -11,7 +11,7 @@
  * Plugin Name:       View Admin As
  * Plugin URI:        https://wordpress.org/plugins/view-admin-as/
  * Description:       View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
- * Version:           1.7.2
+ * Version:           1.7.3
  * Author:            Jory Hogeveen
  * Author URI:        https://www.keraweb.nl
  * Text Domain:       view-admin-as
@@ -42,15 +42,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die();
 }
 
-if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
+if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as' ) ) {
 
-	define( 'VIEW_ADMIN_AS_VERSION',    '1.7.2' );
+	define( 'VIEW_ADMIN_AS_VERSION',    '1.7.3' );
 	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.7.2' );
+	define( 'VIEW_ADMIN_AS_DOMAIN',     'view-admin-as' );
 	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
 	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_DIR',        plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_URL',        plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
-	define( 'VIEW_ADMIN_AS_DOMAIN',     'view-admin-as' );
+
+	/**
+	 * Added must-use (mu-plugins) compatibility.
+	 * Move this file into the root of your mu-plugins directory, not in the `view-admin-as` subdirectory.
+	 * This is a limitation of WordPress and probably won't change soon.
+	 *
+	 * Plugins dir:   /wp-content/mu-plugins/view-admin-as/...
+	 * This file dir: /wp-content/mu-plugins/view-admin-as.php
+	 *
+	 * @since  1.7.3
+	 */
+	if ( 0 === strpos( VIEW_ADMIN_AS_FILE, WPMU_PLUGIN_DIR ) ) {
+		define( 'VIEW_ADMIN_AS_MU',  true );
+		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' ) );
+		define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' ) );
+	} else {
+		define( 'VIEW_ADMIN_AS_MU',  false );
+		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
+		define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
+	}
+
+	/**
+	 * PHP 5.5+ function.
+	 * @see boolval()
+	 * @todo Move to a separate file?
+	 */
+	if ( ! function_exists( 'boolval' ) ) {
+		function boolval( $val ) {
+			return (bool) $val;
+		}
+	}
 
 	// Include main init class file.
 	require_once( VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php' );
@@ -78,7 +107,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) ) {
 	function view_admin_as_conflict_admin_notice() {
 		echo '<div class="notice-error notice is-dismissible"><p><strong>' . esc_html__( 'View Admin As', 'view-admin-as' ) . ':</strong> '
 			. esc_html__( 'Plugin not activated because of a conflict with an other plugin or theme', 'view-admin-as' )
-		    // Translators: %s stands for the class name.
+			// Translators: %s stands for the class name.
 			. ' <code>(' . sprintf( esc_html__( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')</code></p></div>';
 	}
 	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );

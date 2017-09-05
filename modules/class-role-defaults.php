@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4
- * @version 1.7.2
+ * @version 1.7.3
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
@@ -133,10 +133,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.4    Validate option data.
 		 * @since  1.6    Also calls init().
 		 */
-		if ( $this->get_optionData( 'enable' ) ) {
-			$this->enable = true;
-			$this->init();
-		}
+		$this->set_enable( (bool) $this->get_optionData( 'enable' ), false );
+
+		$this->init();
 
 		/**
 		 * Only allow settings for admin users or users with the correct capabilities.
@@ -161,6 +160,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	private function init() {
 		global $wpdb;
+		static $done = false;
 
 		/**
 		 * Replace %% with the current table prefix and add it to the array of forbidden meta keys.
@@ -172,6 +172,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$this->meta_forbidden[] = str_replace( '%%', (string) $wpdb->get_blog_prefix(), $meta_key );
 			}
 		}
+
 		/**
 		 * Allow users to overwrite the default meta keys.
 		 *
@@ -186,10 +187,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 *
 		 * @since  1.6.3
 		 */
-		$this->set_meta( array_merge(
-			$this->meta_default,
-			( $this->get_optionData( 'meta' ) ) ? (array) $this->get_optionData( 'meta' ) : array()
-		) );
+		$this->set_meta( array_merge( $this->meta_default, (array) $this->get_optionData( 'meta' ) ) );
+
+		// Don't go further if this module is disabled or if it already was initialized.
+		if ( $done || ! $this->is_enabled() ) {
+			return;
+		}
 
 		// Setting: Automatically apply defaults to new users.
 		if ( $this->get_optionData( 'apply_defaults_on_register' ) ) {
@@ -213,6 +216,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.6.2  Move to footer (changed hook).
 		 */
 		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
+
+		$done = true;
 	}
 
 	/**
@@ -283,10 +288,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Get the metadata for meta compare.
 	 *
 	 * @since   1.5
-	 * @access  private
+	 * @access  public
 	 * @return  array   $this->meta  The meta keys.
 	 */
-	private function get_meta() {
+	public function get_meta() {
 		return $this->meta;
 	}
 
@@ -295,11 +300,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Used to enforce only 1 level depth array of strings.
 	 *
 	 * @since   1.5
-	 * @access  private
+	 * @access  public
 	 * @param   array   $var  The new meta keys.
 	 * @return  void
 	 */
-	private function set_meta( $var ) {
+	public function set_meta( $var ) {
 		if ( is_array( $var ) ) {
 			$this->meta = array_merge( $this->meta_default, $this->validate_meta( $var ) );
 			ksort( $this->meta );
@@ -310,11 +315,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Validates meta keys in case forbidden or invalid meta keys are added.
 	 *
 	 * @since   1.5.2
-	 * @access  private
+	 * @access  public
 	 * @param   array   $metas  The meta keys.
 	 * @return  array
 	 */
-	private function validate_meta( $metas ) {
+	public function validate_meta( $metas ) {
 		if ( is_array( $metas ) ) {
 			foreach ( $metas as $meta_key => $meta_value ) {
 				// Remove forbidden or invalid meta keys.
@@ -738,15 +743,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				case 'merge':
 					// Merge and the existing data (keep data that doesn't exist in the import data).
 					$role_defaults[ $role ] = array_merge( $role_defaults[ $role ], $role_data );
-				break;
+					break;
 				case 'append':
 					// Append new data without overwriting the existing data.
 					$role_defaults[ $role ] = array_merge( $role_data, $role_defaults[ $role ] );
-				break;
+					break;
 				default:
 					// Fully Overwrite data for each supplied role.
 					$role_defaults[ $role ] = $role_data;
-				break;
+					break;
 			}
 		}
 		$this->update_optionData( $role_defaults, 'roles', true );
@@ -776,14 +781,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Copy defaults from one role to another (or multiple).
 	 *
 	 * @since   1.7
-	 * @access  private
+	 * @access  public
 	 *
 	 * @param   string        $from_role  The source role defaults.
 	 * @param   string|array  $to_role    The role(s) to copy to.
 	 * @param   string        $method     Clone method.
 	 * @return  array|bool
 	 */
-	private function copy_role_defaults( $from_role, $to_role, $method = '' ) {
+	public function copy_role_defaults( $from_role, $to_role, $method = '' ) {
 		$to_role       = (array) $to_role;
 		$error_list    = array();
 		$role_defaults = $this->get_role_defaults();
@@ -817,11 +822,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
-	 * @access  private
+	 * @access  public
 	 * @param   string|array  $role  Role name, an array of role names or just "__all__" for all roles.
 	 * @return  bool
 	 */
-	private function clear_role_defaults( $role ) {
+	public function clear_role_defaults( $role ) {
 		$role_defaults = $this->get_role_defaults();
 		if ( ! is_array( $role ) ) {
 			if ( isset( $role_defaults ) && '__all__' === $role ) {
@@ -842,19 +847,21 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( $this->get_role_defaults() !== $role_defaults ) {
 			return $this->update_optionData( $role_defaults, 'roles' );
 		}
+		// @todo Currently still returns true when a role doesn't exists. Maybe return false?
 		return true; // No changes needed.
 	}
 
 	/**
 	 * Export role defaults.
+	 * Note: Export always returns a full array by default (role as array key) even if you only export a single role.
 	 *
 	 * @since   1.5
 	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
-	 * @access  private
+	 * @access  public
 	 * @param   string  $role  Role name or "__all__" for all roles.
 	 * @return  mixed
 	 */
-	private function export_role_defaults( $role = '__all__' ) {
+	public function export_role_defaults( $role = '__all__' ) {
 		$role_defaults = $this->get_role_defaults();
 		if ( '__all__' !== $role && isset( $role_defaults[ $role ] ) ) {
 			$data = $role_defaults[ $role ];
@@ -872,12 +879,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.5
 	 * @since   1.6.2  Add extra import methods
-	 * @access  private
+	 * @access  public
 	 * @param   array   $data    Data to import.
 	 * @param   string  $method  Import method.
 	 * @return  mixed
 	 */
-	private function import_role_defaults( $data, $method = '' ) {
+	public function import_role_defaults( $data, $method = '' ) {
 		$new_defaults = array();
 		$error_list   = array();
 		if ( empty( $data ) || ! is_array( $data ) ) {
@@ -925,33 +932,78 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Match the meta key with predefined metakeys.
 	 * %% stands for a wildcard. This function only supports one wildcard!
 	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
 	 * @since   1.4
-	 * @access  private
+	 * @access  public
 	 * @param   string  $meta_key_compare  Meta key.
 	 * @return  bool
 	 */
-	private function compare_metakey( $meta_key_compare ) {
-		$meta_keys = $this->get_meta();
-		if ( is_array( $meta_keys ) ) {
-			foreach ( $meta_keys as $meta_key => $meta_value ) {
-				if ( empty( $meta_value ) || ! is_string( $meta_key ) ) {
-					continue;
-				}
-				$meta_key_parts = explode( '%%', $meta_key );
+	public function compare_metakey( $meta_key_compare ) {
+		$meta_keys = (array) $this->get_meta();
+		foreach ( $meta_keys as $meta_key => $meta_value ) {
+			if ( empty( $meta_value ) || ! is_string( $meta_key ) ) {
+				continue;
+			}
 
-				$compare_start = true;
-				if ( ! empty( $meta_key_parts[0] ) ) {
-					$compare_start = VAA_API::starts_with( $meta_key_compare, $meta_key_parts[0] );
-				}
-
-				$compare_end = true;
-				if ( ! empty( $meta_key_parts[1] ) ) {
-					$compare_end = VAA_API::ends_with( $meta_key_compare, $meta_key_parts[1] );
-				}
-
-				if ( true === $compare_start && true === $compare_end ) {
+			if ( false === strpos( $meta_key, '%%' ) ) {
+				// No need for start/end checks. If it's the same, return true, otherwise check the next key.
+				if ( $meta_key === $meta_key_compare ) {
 					return true;
 				}
+				continue;
+			}
+
+			// @since 1.7.3 `edit_%%_per_page` would otherwise be valid for: `edit_%%_per_page`.
+			if ( $meta_key === $meta_key_compare ) {
+				// This is never valid, don't even check other keys.
+				return false;
+			}
+
+			$meta_key_parts = explode( '%%', $meta_key );
+
+			/**
+			 * Double checks.
+			 * Also trims underscores, dashes and spaces.
+			 *
+			 * - `edit_per_page` would otherwise be valid for: `edit_%%_per_page`.
+			 * - `edit__per_page` would otherwise be valid for: `edit_%%_per_page`.
+			 * - `metaboxhidden_` would otherwise be valid for: `metaboxhidden_%%`.
+			 *
+			 * Above checks will validate to true if the keys have been explicitly added.
+			 *
+			 * @since 1.7.3
+			 */
+			$trim = '_- ';
+			// Create compare check without %%.
+			$compare_check = implode( '', $meta_key_parts );
+			$compare_arr = array(
+				$compare_check,
+				trim( $compare_check, $trim ),
+			);
+			// Replace double underscores and dashes.
+			$compare_check = str_replace( array( '__', '--' ), array( '_', '-' ), $compare_check );
+			$compare_arr[] = $compare_check;
+			$compare_arr[] = trim( $compare_check, $trim );
+			if ( in_array( $meta_key_compare, $compare_arr, true ) ) {
+				continue;
+			}
+
+			$compare_start = true;
+			if ( ! empty( $meta_key_parts[0] ) ) {
+				$compare_start = VAA_API::starts_with( $meta_key_compare, $meta_key_parts[0] );
+			}
+
+			$compare_end = true;
+			if ( ! empty( $meta_key_parts[1] ) ) {
+				$compare_end = VAA_API::ends_with( $meta_key_compare, $meta_key_parts[1] );
+			}
+
+			if ( true === $compare_start && true === $compare_end ) {
+				return true;
 			}
 		}
 		return false;
@@ -981,7 +1033,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare'     => true,
 				'label'       => __( 'Enable role defaults', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Set default screen settings for roles and apply them on users through various bulk and automatic actions', VIEW_ADMIN_AS_DOMAIN ),
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'enable',
 					'refresh' => true,
@@ -1035,7 +1087,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'value'   => $this->get_optionData( 'apply_defaults_on_register' ),
 				'compare' => true,
 				'label'   => __( 'Automatically apply defaults to new users', VIEW_ADMIN_AS_DOMAIN ),
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'apply_defaults_on_register',
 					'refresh' => false,
@@ -1051,12 +1103,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-setting-disable-user-screen-options',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
-				'name'        => $root . '-setting-disable-user-screen-options',
-				'value'       => $this->get_optionData( 'disable_user_screen_options' ),
-				'compare'     => true,
-				'label'       => __( 'Disable screen options', VIEW_ADMIN_AS_DOMAIN ),
-				'description' => __( "Hide the screen options for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
-				'auto-js' => array(
+				'name'          => $root . '-setting-disable-user-screen-options',
+				'value'         => $this->get_optionData( 'disable_user_screen_options' ),
+				'compare'       => true,
+				'label'         => __( 'Disable screen options', VIEW_ADMIN_AS_DOMAIN ),
+				'description'   => __( "Hide the screen options for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
+				'help'          => true,
+				'auto_showhide' => true,
+				'auto_js'       => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'disable_user_screen_options',
 					'refresh' => false,
@@ -1072,12 +1126,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-setting-lock-meta-boxes',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
-				'name'        => $root . '-setting-lock-meta-boxes',
-				'value'       => $this->get_optionData( 'lock_meta_boxes' ),
-				'compare'     => true,
-				'label'       => __( 'Lock meta boxes', VIEW_ADMIN_AS_DOMAIN ),
-				'description' => __( "Lock meta box order and locations for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
-				'auto-js' => array(
+				'name'          => $root . '-setting-lock-meta-boxes',
+				'value'         => $this->get_optionData( 'lock_meta_boxes' ),
+				'compare'       => true,
+				'label'         => __( 'Lock meta boxes', VIEW_ADMIN_AS_DOMAIN ),
+				'description'   => __( "Lock meta box order and locations for all users who can't access role defaults", VIEW_ADMIN_AS_DOMAIN ),
+				'help'          => true,
+				'auto_showhide' => true,
+				'auto_js'       => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'lock_meta_boxes',
 					'refresh' => false,
@@ -1178,7 +1234,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'name'    => $root . '-meta-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'update_meta',
 					'refresh' => false,
@@ -1319,7 +1375,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'name'    => $root . '-bulk-users-apply',
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-primary',
-					'auto-js' => array(
+					'auto_js' => array(
 						'setting' => $this->moduleKey,
 						'key'     => 'apply_defaults_to_users',
 						'refresh' => false,
@@ -1378,7 +1434,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'name'    => $root . '-bulk-roles-apply',
 						'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 						'class'   => 'button-primary',
-						'auto-js' => array(
+						'auto_js' => array(
 							'setting' => $this->moduleKey,
 							'key'     => 'apply_defaults_to_users_by_role',
 							'refresh' => false,
@@ -1478,7 +1534,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'copy',
 						'vaa-showhide' => 'p.vaa-copy-role-defaults-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-copy-roles-copy-merge',
@@ -1488,7 +1544,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'merge',
 						'vaa-showhide' => 'p.vaa-copy-role-defaults-merge-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-copy-roles-copy-append',
@@ -1498,7 +1554,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'append',
 						'vaa-showhide' => 'p.vaa-copy-role-defaults-append-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) )
 				. VAA_View_Admin_As_Form::do_description(
 					__( 'Fully overwrite data', VIEW_ADMIN_AS_DOMAIN ),
@@ -1558,7 +1614,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'name'    => $root . '-export-roles-export',
 					'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-secondary',
-					'auto-js' => array(
+					'auto_js' => array(
 						'setting' => $this->moduleKey,
 						'key'     => 'export_role_defaults',
 						'refresh' => false,
@@ -1632,7 +1688,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'import',
 						'vaa-showhide' => 'p.vaa-import-role-defaults-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-import-roles-import-merge',
@@ -1642,7 +1698,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'merge',
 						'vaa-showhide' => 'p.vaa-import-role-defaults-merge-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) ) . ' '
 				. VAA_View_Admin_As_Form::do_button( array(
 					'name'  => $root . '-import-roles-import-append',
@@ -1652,7 +1708,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 						'vaa-method'   => 'append',
 						'vaa-showhide' => 'p.vaa-import-role-defaults-append-desc',
 					),
-					'auto-js' => $auto_js,
+					'auto_js' => $auto_js,
 				) )
 				. VAA_View_Admin_As_Form::do_description(
 					__( 'Fully overwrite data', VIEW_ADMIN_AS_DOMAIN ),
@@ -1743,7 +1799,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'name'    => $root . '-clear-roles-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',
-				'auto-js' => array(
+				'auto_js' => array(
 					'setting' => $this->moduleKey,
 					'key'     => 'clear_role_defaults',
 					'confirm' => true,

@@ -17,9 +17,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.7
+ * @since   1.7.3  Renamed from VAA_View_Admin_As_Class_Base
+ * @version 1.7.3
  */
-abstract class VAA_View_Admin_As_Class_Base
+abstract class VAA_View_Admin_As_Base
 {
 	/**
 	 * View Admin As object.
@@ -55,16 +56,17 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
 	 */
 	protected function __construct( $vaa = null ) {
-		// Load resources
+		// Load resources.
 		$this->load_vaa( $vaa );
 	}
 
 	/**
-	 * init function to store data from the main class and enable functionality based on the current view.
+	 * Init function to store data from the main class and enable functionality based on the current view.
 	 *
 	 * @since   1.5
 	 * @since   1.6    $vaa param.
 	 * @access  public
+	 * @final
 	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
 	 * @return  void
 	 */
@@ -83,6 +85,7 @@ abstract class VAA_View_Admin_As_Class_Base
 	 *
 	 * @since   1.5
 	 * @access  public
+	 * @final
 	 * @return  bool
 	 */
 	final public function is_vaa_enabled() {
@@ -91,7 +94,7 @@ abstract class VAA_View_Admin_As_Class_Base
 
 	/**
 	 * Check if the AJAX call is ok.
-	 * Must always be used before AJAX data is processed
+	 * Must always be used before AJAX data is processed.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -109,15 +112,15 @@ abstract class VAA_View_Admin_As_Class_Base
 	 * Also checks if VAA is enabled.
 	 *
 	 * @since   1.7
+	 * @access  public
 	 * @param   string  $capability  (optional) The capability to check when the user isn't a super admin.
 	 * @return  bool
 	 */
 	public function current_user_can( $capability = null ) {
 		if ( $capability ) {
 			return ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can( $capability ) ) );
-		} else {
-			return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
 		}
+		return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
 	}
 
 	/**

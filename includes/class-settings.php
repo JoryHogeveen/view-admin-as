@@ -18,20 +18,11 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.2
- * @uses    VAA_View_Admin_As_Class_Base Extends class
+ * @version 1.7.3
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
-
-	/**
-	 * The main VAA settings instance.
-	 *
-	 * @since  1.7
-	 * @static
-	 * @var    VAA_View_Admin_As_Settings
-	 */
-	private static $_vaa_instance = null;
-
+class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
+{
 	/**
 	 * Database option key.
 	 * Always starts with `vaa_`.
@@ -123,26 +114,39 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 
 	/**
 	 * Sets the default data.
+	 *
 	 * @since   1.7
 	 * @access  protected
-	 * @param   string  $id  Identifier for this settings instance.
+	 * @param   string  $id    Identifier for this settings instance.
+	 * @param   array   $args  {
+	 *     (optional) Setting arguments.
+	 *     @type  array  $default  The default settings (option)
+	 *     @type  array  $allowed  The allowed settings (option). Use arrays to define all possible values for a setting.
+	 *     @type  array  $default_user  The default user settings (meta)
+	 *     @type  array  $allowed_user  The allowed user settings (meta). Use arrays to define all possible values for a setting.
+	 * }
 	 */
-	protected function __construct( $id ) {
+	protected function __construct( $id, $args = array() ) {
 		parent::__construct();
 
 		if ( empty( $id ) || ! is_string( $id ) ) {
 			return null;
 		}
 
-		$default = array();
-		$allowed = array();
+		$args = wp_parse_args( $args, array(
+			'default' => array(),
+			'allowed' => array(),
+			'default_user' => array(),
+			'allowed_user' => array(),
+		) );
 
-		$default_user = array();
-		$allowed_user = array();
+		$default = $args['default'];
+		$allowed = $args['allowed'];
 
-		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) && null === self::$_vaa_instance ) {
+		$default_user = $args['default_user'];
+		$allowed_user = $args['allowed_user'];
 
-			self::$_vaa_instance = $this;
+		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) ) {
 
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData( array(
@@ -157,6 +161,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 
 			$default_user = array(
 				'admin_menu_location' => 'top-secondary',
+				'disable_super_admin' => true,
 				'force_group_users'   => false,
 				'freeze_locale'       => false,
 				'hide_front'          => false,
@@ -164,6 +169,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 			);
 			$allowed_user = array(
 				'admin_menu_location' => array( 'top-secondary', 'my-account' ),
+				'disable_super_admin' => array( true, false ),
 				'force_group_users'   => array( true, false ),
 				'freeze_locale'       => array( true, false ),
 				'hide_front'          => array( true, false ),
@@ -174,8 +180,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 			add_filter( 'view_admin_as_validate_view_data_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 			add_filter( 'view_admin_as_validate_view_data_user_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 
-			add_filter( 'view_admin_as_handle_ajax_setting', array( $this, 'filter_store_settings' ), 10, 3 );
-			add_filter( 'view_admin_as_handle_ajax_user_setting', array( $this, 'filter_store_settings' ), 10, 3 );
+			add_filter( 'view_admin_as_handle_ajax_setting', array( $this, 'filter_update_settings' ), 10, 3 );
+			add_filter( 'view_admin_as_handle_ajax_user_setting', array( $this, 'filter_update_settings' ), 10, 3 );
 
 			// Make identifier empty for the filters.
 			$id = '';
@@ -200,6 +206,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 
 			// Append underscore to the identifier for the filters.
 			$id = '_' . $id;
+
 		} // End if().
 
 		/**
@@ -271,18 +278,19 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Validate hook for settings.
 	 *
 	 * @since   1.7
+	 * @since   1.7.3   Renamed from filter_store_settings().
 	 * @param   null    $null  Default return (invalid).
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $key   The data key.
 	 * @return  mixed
 	 */
-	public function filter_store_settings( $null, $data, $key ) {
+	public function filter_update_settings( $null, $data, $key ) {
 		if ( ! empty( $data ) && ! empty( $key ) ) {
 			if ( 'setting' === $key ) {
-				return $this->store_settings( $data, 'global' );
+				return $this->update_settings( $data, 'global' );
 			}
 			if ( 'user_setting' === $key ) {
-				return $this->store_settings( $data, 'user' );
+				return $this->update_settings( $data, 'user' );
 			}
 		}
 		return $null;
@@ -318,7 +326,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 		}
 
 		foreach ( $settings as $setting => $value ) {
-			// Only pass the settings if the key and value matched the data in the allowed settings
+			// Only pass the settings if the key and value matched the data in the allowed settings.
 			if ( ! array_key_exists( $setting, $allowed ) || ! in_array( $value, $allowed[ $setting ], true ) ) {
 				unset( $settings[ $setting ] );
 			}
@@ -331,15 +339,16 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Also merges with the default settings.
 	 *
 	 * @since   1.5
-	 * @since   1.6  Moved to this class from main class.
-	 * @since   1.7  Moved to this class from store class.
+	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.7    Moved to this class from store class.
+	 * @since   1.7.3  Renamed from store_settings().
 	 * @access  public
 	 *
 	 * @param   array   $settings  The new settings.
 	 * @param   string  $type      The type of settings (global / user).
 	 * @return  bool
 	 */
-	public function store_settings( $settings, $type ) {
+	public function update_settings( $settings, $type ) {
 		if ( 'global' === $type ) {
 			$current  = $this->get_settings();
 			$defaults = $this->get_defaultSettings();
@@ -381,9 +390,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Checks if the setting is allowed, otherwise sets it to the default value.
 	 *
 	 * @since   1.7
-	 * @param   array  $settings  The new settings
-	 * @param   array  $defaults  The default settings
-	 * @param   array  $allowed   The allowed settings
+	 * @param   array  $settings  The new settings.
+	 * @param   array  $defaults  The default settings.
+	 * @param   array  $allowed   The allowed settings.
 	 * @return  array
 	 */
 	public function parse_settings( $settings, $defaults, $allowed ) {
@@ -449,7 +458,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 
 			return $success;
 		}
-		// No user or metadata found, no deletion needed
+		// No user or metadata found, no deletion needed.
 		return true;
 	}
 
@@ -469,14 +478,14 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	public function delete_all_user_meta( $reset_only = true ) {
 		global $wpdb;
 		if ( $reset_only ) {
-			// Reset
+			// Reset.
 			return (bool) $wpdb->update(
 				$wpdb->usermeta, // table.
 				array( 'meta_value' => '' ), // data.
 				array( 'meta_key' => $this->get_userMetaKey() ) // where.
 			);
 		} else {
-			// Delete
+			// Delete.
 			return (bool) $wpdb->delete(
 				$wpdb->usermeta, // table.
 				array( 'meta_key' => $this->get_userMetaKey() ) // where.
@@ -588,7 +597,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Set the option key as used in the options table.
 	 * @param   string  $val  Option key.
 	 */
-	public function set_optionKey( $val ) {
+	protected function set_optionKey( $val ) {
 		$this->optionKey = (string) str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $val ) );
 	}
 
@@ -596,26 +605,30 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * Set the option key as used in the options table.
 	 * @param   string  $val  Option key.
 	 */
-	public function set_userMetaKey( $val ) {
+	protected function set_userMetaKey( $val ) {
 		$this->userMetaKey = (string) sanitize_title_with_dashes( $val );
 	}
 
 	/**
 	 * Set the default settings.
-	 * @param   array  $val  Settings.
+	 * @param   array   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_defaultSettings( $val ) {
-		$this->defaultSettings = array_map( 'strval', (array) $val );
+	protected function set_defaultSettings( $val, $key = null, $append = false ) {
+		$this->defaultSettings = VAA_API::set_array_data( $this->defaultSettings, $val, $key, $append );
 	}
 
 	/**
 	 * Set the default user settings.
-	 * @param   array  $val  Settings.
+	 * @param   array   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_defaultUserSettings( $val ) {
-		$this->defaultUserSettings = array_map( 'strval', (array) $val );
+	protected function set_defaultUserSettings( $val, $key = null, $append = false ) {
+		$this->defaultUserSettings = VAA_API::set_array_data( $this->defaultUserSettings, $val, $key, $append );
 	}
 
 	/**
@@ -625,7 +638,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_allowedSettings( $val, $key = null, $append = false ) {
+	protected function set_allowedSettings( $val, $key = null, $append = false ) {
 		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $val, $key, $append );
 	}
 
@@ -636,7 +649,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Class_Base {
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_allowedUserSettings( $val, $key = null, $append = false ) {
+	protected function set_allowedUserSettings( $val, $key = null, $append = false ) {
 		$this->allowedUserSettings = VAA_API::set_array_data( $this->allowedUserSettings, $val, $key, $append );
 	}
 
