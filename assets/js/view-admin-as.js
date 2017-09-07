@@ -352,11 +352,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Add an overlay.
 	 *
-	 * @param   {string}  html  The content to show in the overlay.
+	 * @param   {string|boolean}  html  The content to show in the overlay. Pass `false` to remove the overlay.
 	 * @return  {null}  Nothing.
 	 */
 	VAA_View_Admin_As.overlay = function( html ) {
 		var $overlay = $( '#vaa-overlay' );
+		if ( false === html ) {
+			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
+			return null;
+		}
 		if ( ! $overlay.length ) {
 			html = '<div id="vaa-overlay">' + html + '</div>';
 			$body.append( html );
