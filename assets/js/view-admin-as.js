@@ -30,6 +30,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @property  {string}   __key_already_exists: 'Key already exists.'.
 	 * @property  {string}   __success             'Success'.
 	 * @property  {string}   __confirm             'Are you sure?'.
+	 * @property  {string}   __download            'Download'.
 	 */
 	var VAA_View_Admin_As = {};
 }

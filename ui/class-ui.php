@@ -309,6 +309,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 				'__key_already_exists' => esc_html__( 'Key already exists.', VIEW_ADMIN_AS_DOMAIN ),
 				'__success'            => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
 				'__confirm'            => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
+				'__download'           => esc_html__( 'Download', VIEW_ADMIN_AS_DOMAIN ),
 			)
 		);
 
