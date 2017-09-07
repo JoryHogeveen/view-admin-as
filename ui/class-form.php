@@ -118,6 +118,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *     @type  string  $description    (optional)
 	 *     @type  string  $help           (optional)
 	 *     @type  string  $class          (optional)
+	 *     @type  array   $type           (optional) Optional input type attribute.
 	 *     @type  array   $attr           (optional)
 	 *     @type  array   $auto_js        (optional) See VAA_View_Admin_As_Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide  (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
@@ -133,7 +134,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$placeholder = ( ! empty( $args['placeholder'] ) ) ? $args['placeholder'] : '';
 		$class = ( ! empty( $args['class'] ) ) ? $args['class'] : '';
 
-		$args['attr']['type'] = 'text';
+		$args['attr']['type'] = ( ! empty( $args['type'] ) ) ? $args['type'] : 'text';
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;
 		$args['attr']['placeholder'] = $placeholder;
