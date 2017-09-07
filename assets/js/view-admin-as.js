@@ -732,6 +732,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var val = VAA_View_Admin_As.get_auto_js_values_recursive( data, elem );
 
 			if ( null !== val ) {
+
+				if ( ! setting ) {
+					return null;
+				}
+
 				var view_data = {};
 				view_data[ setting ] = val;
 
