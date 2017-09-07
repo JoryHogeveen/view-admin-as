@@ -1292,6 +1292,61 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
+	 * Read file content and place it in a target value.
+	 * https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+	 * http://www.javascripture.com/FileReader
+	 *
+	 * @todo Is this the correct method name?
+	 *
+	 * @since  1.7.x-dev
+	 * @param  {object}  data  The auto_js data.
+	 */
+	VAA_View_Admin_As.assign_file_content = function( data ) {
+		if ( 'function' !== typeof FileReader ) {
+			// @todo Remove file element on load if the browser doesn't support FileReader.
+			return;
+		}
+		var param    = ( data.hasOwnProperty('param') ) ? data.param : {},
+			$target  = ( param.hasOwnProperty('target') ) ? $( param.target ) : null,
+			$element = ( param.hasOwnProperty('element') ) ? $( param.element )  : null,
+			wait     = true;
+
+		if ( ! $target || ! $element ) {
+			return;
+		}
+
+		var files  = $element[0].files,
+			length = files.length,
+			val    = '';
+
+		if ( length ) {
+			$.each( files, function( key, file ) {
+				var reader = new FileReader();
+				reader.onload = function() { //progressEvent
+					content = VAA_View_Admin_As.json_decode( this.result );
+					if ( 'object' === typeof content ) {
+						// Remove JSON format.
+						content = JSON.stringify( content );
+					}
+					val += content;
+					length--;
+					if ( ! length ) {
+						wait = false;
+					}
+				};
+				reader.readAsText( file );
+			} );
+		}
+
+		var areWeThereYet = setInterval( function() {
+			if ( ! wait ) {
+				$target.val( val );
+				clearInterval( areWeThereYet );
+			}
+		}, 100 );
+	};
+
+	/**
 	 * Auto resize max height elements.
 	 * @since  1.7
 	 * @return {null}  Nothing.

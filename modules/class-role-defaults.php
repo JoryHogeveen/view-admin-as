@@ -1665,10 +1665,32 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-import-roles-input',
 				'parent' => $root . '-import',
 				'title'  => '<textarea id="' . $root . '-import-roles-input" name="role-defaults-import-roles-input" placeholder="'
-							. esc_attr__( 'Paste code here', VIEW_ADMIN_AS_DOMAIN ) . '"></textarea>',
+							. esc_attr__( 'Paste code here or select a file below', VIEW_ADMIN_AS_DOMAIN ) . '"></textarea>',
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-textarea input-role', // vaa-column-one-half vaa-column-last .
+					'class' => 'ab-vaa-textarea input-role',
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-import-roles-file',
+				'parent' => $root . '-import',
+				'title'  => VAA_View_Admin_As_Form::do_input( array(
+					'name'    => $root . '-import-roles-file',
+					'type'    => 'file',
+					'auto_js' => array(
+						'callback' => 'assign_file_content',
+						'param'    => array(
+							'target'  => '#wp-admin-bar-' . $root . '-import-roles-input textarea#' . $root . '-import-roles-input',
+							'element' => '#wp-admin-bar-' . $root . '-import-roles-file input#' . $root . '-import-roles-file',
+						),
+					),
+					'attr' => array(
+						'accept' => 'text/*,.json',
+					),
+				) ),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'ab-vaa-file',
 				),
 			) );
 
