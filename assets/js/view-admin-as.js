@@ -723,6 +723,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				confirm  = ( data.hasOwnProperty( 'confirm' ) ) ? Boolean( data.confirm ) : false,
 				refresh  = ( data.hasOwnProperty( 'refresh' ) ) ? Boolean( data.refresh ) : false;
 
+			// Callback overwrite.
+			if ( data.hasOwnProperty('callback') ) {
+				VAA_View_Admin_As[ data.callback ]( data );
+				return null;
+			}
+
 			var val = VAA_View_Admin_As.get_auto_js_values_recursive( data, elem );
 
 			if ( null !== val ) {
