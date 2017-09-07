@@ -365,6 +365,22 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$overlay.html( html );
 		}
 		$overlay.fadeIn('fast');
+
+		// Remove overlay.
+		$( '.remove', $overlay ).click( function() {
+			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
+			$document.off( 'mouseup.vaa_overlay' );
+		} );
+
+		// Remove overlay on click outside of container.
+		$document.on( 'mouseup.vaa_overlay', function( e ) {
+			$( '.vaa-overlay-container', $overlay ).each( function() {
+				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
+					$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
+					$document.off( 'mouseup.vaa_overlay' );
+				}
+			} );
+		} );
 	};
 
 	/**
@@ -619,20 +635,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$overlay = $( root ),
 			$overlay_container = $( root + ' .vaa-overlay-container' ),
 			$popup_response = $( root + ' .vaa-response-data' );
-
-		// Remove overlay.
-		$( root + ' .vaa-overlay-container .remove' ).click( function() {
-			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
-		} );
-
-		// Remove overlay on click outside of container.
-		$document.on( 'mouseup', function( e ){
-			$( root + ' .vaa-overlay-container' ).each( function(){
-				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
-					$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
-				}
-			} );
-		} );
 
 		var textarea = $( 'textarea', $popup_response );
 		if ( textarea.length ) {
