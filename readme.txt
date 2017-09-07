@@ -38,7 +38,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Apply defaults to a user
 *	Apply defaults to all users of a role
 *	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
-*	Import/Export role defaults
+*	Import/Export/Download role defaults
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
 = Module: Role manager (role editor) =
@@ -49,7 +49,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Grant and/or add capabilities to roles
 *	Rename roles
 *	Clone roles
-*	Import/Export roles
+*	Import/Export/Download roles
 *	Update role capabilities from current view
 
 = Compatibility & Integrations =
