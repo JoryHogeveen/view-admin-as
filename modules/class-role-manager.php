@@ -219,6 +219,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				$success = $this->ajax_data_popup( true, array(
 					'text' => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
 					'textarea' => wp_json_encode( $content ),
+					'filename' => esc_html__( 'Role manager', VIEW_ADMIN_AS_DOMAIN ) . '.json',
 				) );
 			} else {
 				$success = $this->ajax_data_notice( false, array( 'text' => $content ), 'error' );
@@ -1034,6 +1035,23 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'class' => 'auto-height',
 			),
 		) );
+
+		$auto_js = array(
+			'setting' => $this->moduleKey,
+			'key'     => 'export_roles',
+			'refresh' => false,
+			'values'  => array(
+				'role' => array(
+					'element' => '#wp-admin-bar-' . $root . '-export-roles-select select#' . $root . '-export-roles-select',
+					'parser'  => '', // Default.
+				),
+				'caps_only' => array(
+					'element'  => '#wp-admin-bar-' . $root . '-export-roles-caps-only input#' . $root . '-export-roles-caps-only',
+					'parser'   => '', // Default.
+					'required' => false,
+				),
+			),
+		);
 		$admin_bar->add_node( array(
 			'id'     => $root . '-export-roles-export',
 			'parent' => $root . '-export',
@@ -1041,22 +1059,14 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'    => $root . '-export-roles-export',
 				'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',
-				'auto_js' => array(
-					'setting' => $this->moduleKey,
-					'key'     => 'export_roles',
-					'refresh' => false,
-					'values'  => array(
-						'role' => array(
-							'element' => '#wp-admin-bar-' . $root . '-export-roles-select select#' . $root . '-export-roles-select',
-							'parser'  => '', // Default.
-						),
-						'caps_only' => array(
-							'element'  => '#wp-admin-bar-' . $root . '-export-roles-caps-only input#' . $root . '-export-roles-caps-only',
-							'parser'   => '', // Default.
-							'required' => false,
-						),
-					),
-				),
+				'auto_js' => $auto_js,
+			) ) . ' ' . VAA_View_Admin_As_Form::do_button( array(
+				'name'    => $root . '-export-roles-download',
+				'label'   => __( 'Download', VIEW_ADMIN_AS_DOMAIN ),
+				'class'   => 'button-secondary',
+				'auto_js' => array_merge( $auto_js, array(
+					'download' => true,
+				) ),
 			) ),
 			'href'   => false,
 			'meta'   => array(

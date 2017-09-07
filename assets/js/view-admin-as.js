@@ -452,7 +452,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 
 				if ( success ) {
-					if ( refresh ) {
+					// @todo Enhance download handler.
+					if ( 'download' === refresh ) {
+						VAA_View_Admin_As.download( data );
+						VAA_View_Admin_As.overlay( false );
+						return;
+					} else if ( refresh ) {
 						VAA_View_Admin_As.refresh( data );
 						return;
 					} else {
@@ -664,6 +669,50 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
+	 * Download text content as a file.
+	 * @since  1.7.3
+	 * @see    VAA_View_Admin_As.ajax
+	 * @param  {object|string}  data  Data to use.
+	 * @return {null}  Nothing.
+	 */
+	VAA_View_Admin_As.download = function( data ) {
+		var content = '',
+			filename = '';
+		if ( 'string' === typeof data ) {
+			content = data;
+		} else {
+			if ( data.hasOwnProperty( 'download' ) ) {
+				content = String( data.download );
+			} else if ( data.hasOwnProperty( 'textarea' ) ) {
+				content = String( data.textarea );
+			} else if ( data.hasOwnProperty( 'content' ) ) {
+				content = String( data.content );
+			}
+		}
+
+		// Maybe format JSON data.
+		content = VAA_View_Admin_As.json_decode( content );
+		if ( 'object' === typeof content ) {
+			content = JSON.stringify( content, null, '\t' );
+		}
+
+		if ( ! content ) {
+			return null; //@todo Notice.
+		}
+
+		if ( data.hasOwnProperty( 'filename' ) ) {
+			filename = data.filename;
+		}
+
+		// https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+		var link = 'data:application/octet-stream;charset=utf-8,' + encodeURIComponent( content );
+
+		$body.append( '<a id="vaa_temp_download" href="' + link + '" download="' + String( filename ) + '"></a>' );
+		document.getElementById('vaa_temp_download').click();
+		$( 'a#vaa_temp_download' ).remove();
+	};
+
+	/**
 	 * Automatic option handling.
 	 * @since  1.7.2
 	 * @return {null}  Nothing.
@@ -712,7 +761,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *     }
 		 * }
 		 * @param  {mixed}  elem  The element (runs through $() function).
-		 * @return {object} Nothing.
+		 * @return {null} Nothing.
 		 */
 		VAA_View_Admin_As.do_auto_js = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
@@ -739,6 +788,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 				var view_data = {};
 				view_data[ setting ] = val;
+
+				// @todo Enhance download handler.
+				if ( data.hasOwnProperty( 'download' ) && data.download ) {
+					refresh = 'download';
+				}
 
 				if ( confirm ) {
 					confirm = VAA_View_Admin_As.item_confirm( $elem.parent(), VAA_View_Admin_As.__confirm );
