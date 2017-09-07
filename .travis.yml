@@ -37,10 +37,13 @@ matrix:
       env: WP_VERSION=latest WP_MULTISITE=0
     - php: 5.3
       env: WP_VERSION=4.1 WP_MULTISITE=0
+      dist: precise
     - php: 5.2
       env: WP_VERSION=latest WP_MULTISITE=0
+      dist: precise
     - php: 5.2
       env: WP_VERSION=4.1 WP_MULTISITE=0
+      dist: precise
 
 ## Cache composer bits
 cache:
