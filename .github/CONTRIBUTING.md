@@ -14,16 +14,17 @@ When contributing please ensure you follow the guidelines below so that we can k
 ## Making Changes
 
 * Fork the repository on GitHub
+* Create a new branch, named with a issue prefix (if present) and some keywords on what is changed.
+  * Example: `#123-what-is-changed`.
 * Make the changes to your forked repository's code
+  * When committing, reference your issue (if present) and include a note about the fix.
   * Ensure you stick to the [WordPress Coding Standards](http://codex.wordpress.org/WordPress_Coding_Standards)
   * This repository contains all files needed to properly configure your IDE with the correct coding standards and code style configuration.
     * [PHP MD](https://github.com/JoryHogeveen/view-admin-as/blob/master/tests/phpmd.xml)
     * [PHP CS](https://github.com/JoryHogeveen/view-admin-as/blob/master/tests/phpcs.xml)
     * [ESLint](https://github.com/JoryHogeveen/view-admin-as/blob/master/tests/.eslintrc)
     * [CSSLint](https://github.com/JoryHogeveen/view-admin-as/blob/master/tests/.csslintrc)
-* Create a new branch, named with a issue prefix (if present) and some keywords on what is changed.
-  * Example: `#123-what-is-changed`.
-* When committing, reference your issue (if present) and include a note about the fix.
+* If the changes are a new feature make sure you add PHP Unit tests or at least contribute in creating tests.
 * Push the changes to the branch you created and submit a pull request for the `dev` branch.
 
 At this point you're waiting on us to merge your pull request. We'll review all pull requests, and make suggestions and changes if necessary.
