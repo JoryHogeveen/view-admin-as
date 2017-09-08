@@ -13,6 +13,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * Add or remove roles and grant or deny them capabilities.
  *
+ * Disable some PHPMD checks for this class.
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @todo Refactor to enable above checks?
+ *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7

@@ -351,7 +351,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	/**
 	 * Add an overlay.
-	 *
+	 * @since   1.7
 	 * @param   {string|boolean}  html  The content to show in the overlay. Pass `false` to remove the overlay.
 	 * @return  {null}  Nothing.
 	 */
@@ -359,6 +359,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		var $overlay = $( '#vaa-overlay' );
 		if ( false === html ) {
 			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
+			$document.off( 'mouseup.vaa_overlay' );
 			return null;
 		}
 		if ( ! $overlay.length ) {
@@ -372,16 +373,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Remove overlay.
 		$( '.remove', $overlay ).click( function() {
-			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
-			$document.off( 'mouseup.vaa_overlay' );
+			VAA_View_Admin_As.overlay( false );
 		} );
 
 		// Remove overlay on click outside of container.
 		$document.on( 'mouseup.vaa_overlay', function( e ) {
 			$( '.vaa-overlay-container', $overlay ).each( function() {
 				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
-					$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
-					$document.off( 'mouseup.vaa_overlay' );
+					VAA_View_Admin_As.overlay( false );
+					return false;
 				}
 			} );
 		} );
@@ -437,10 +437,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					data = {},
 					display = false;
 
-				if ( true === VAA_View_Admin_As._debug ) {
-					// Show debug info in console.
-					console.log( response );
-				}
+				// Maybe show debug info in console.
+				VAA_View_Admin_As.debug( response );
 
 				if ( response.hasOwnProperty( 'data' ) ) {
 					if ( 'object' === typeof response.data ) {
@@ -488,7 +486,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Reload the page or optionally redirect the user.
 	 * @since  1.7
-	 * @see    VAA_View_Admin_As.ajax
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Info for the redirect: { redirect: URL }
 	 * @return {null}  Nothing.
 	 */
@@ -513,7 +511,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show global notice.
 	 * @since  1.0
-	 * @see    VAA_View_Admin_As.ajax
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
@@ -550,7 +548,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show notice for an item node.
 	 * @since  1.7
-	 * @see    VAA_View_Admin_As.ajax
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {string}  parent   The HTML element selector to add the notice to (selector or jQuery object).
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
@@ -592,7 +590,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show popup with return content.
 	 * @since  1.5
-	 * @see    VAA_View_Admin_As.ajax
+	 * @since  1.7  Renamed from overlay()
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Data to use.
 	 * @param  {string}  type  The notice/overlay type (notice, error, message, warning, success).
 	 * @return {null}  Nothing.
@@ -671,7 +670,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Download text content as a file.
 	 * @since  1.7.3
-	 * @see    VAA_View_Admin_As.ajax
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object|string}  data  Data to use.
 	 * @return {null}  Nothing.
 	 */
@@ -1300,6 +1299,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 *
 	 * @since  1.7.x-dev
 	 * @param  {object}  data  The auto_js data.
+	 * @return {null}  Nothing.
 	 */
 	VAA_View_Admin_As.assign_file_content = function( data ) {
 		if ( 'function' !== typeof FileReader ) {
@@ -1380,6 +1380,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}, 100 );
 	};
 	$window.on( 'resize', VAA_View_Admin_As.autoMaxHeight );
+
+	/**
+	 * Maybe show a debug message.
+	 * @since  1.7.4
+	 * @param  {mixed} message The data to debug.
+	 * @return {null}  Nothing.
+	 */
+	VAA_View_Admin_As.debug = function( message ) {
+		if ( true === VAA_View_Admin_As._debug ) {
+			// Show debug info in console.
+			console.log( message );
+		}
+	};
 
 	// We require a nonce to use this plugin.
 	if ( VAA_View_Admin_As.hasOwnProperty( '_vaa_nonce' ) ) {
