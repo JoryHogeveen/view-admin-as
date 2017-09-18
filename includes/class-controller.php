@@ -270,7 +270,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			$this->store->set_view( $data, $type, true );
 			$success = true;
 		}
-		if ( $success && 'visitor' === $type ) {
+		if ( $success && 'visitor' === $type && VAA_API::is_admin() ) {
 			$success = array(
 				'success' => true,
 				'data' => array(

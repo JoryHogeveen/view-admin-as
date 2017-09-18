@@ -522,6 +522,9 @@ final class VAA_API
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
@@ -540,6 +543,9 @@ final class VAA_API
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
@@ -558,6 +564,9 @@ final class VAA_API
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
@@ -581,6 +590,9 @@ final class VAA_API
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
 	 * @return  bool
@@ -597,6 +609,9 @@ final class VAA_API
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
 	 * @return  bool
@@ -613,6 +628,9 @@ final class VAA_API
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $key    The key to check.
 	 * @param   string  $type   The type of request.
 	 * @return  bool
@@ -624,6 +642,26 @@ final class VAA_API
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Enhanced is_admin() function with AJAX support.
+	 *
+	 * @see is_admin()
+	 *
+	 * @since   1.7.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_admin() {
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
+			return is_admin();
+		}
+		// It's an ajax call, is_admin() would always return `true`. Compare the referrer url with the admin url.
+		return ( false !== strpos( (string) wp_get_referer(), admin_url() ) );
 	}
 
 } // End class VAA_API.
