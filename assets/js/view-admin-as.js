@@ -1255,7 +1255,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			e.preventDefault();
 			var role = $( root_prefix + ' select#' + prefix + '-edit-role' ).val(),
-				refresh = false;
+				refresh = ( VAA_View_Admin_As.view.hasOwnProperty( 'role' ) && role === VAA_View_Admin_As.view.role );
 			if ( ! role ) {
 				return false;
 			}
