@@ -216,7 +216,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			return $success;
 		}
 
-		// @since  1.7.x  Export
+		// @since  1.7.3  Export
 		if ( VAA_API::array_has( $data, 'export_roles', array( 'validation' => 'is_array' ) ) ) {
 			$content = $this->export_roles( $data['export_roles'] );
 			if ( is_array( $content ) ) {
@@ -230,7 +230,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			}
 		}
 
-		// @since  1.7.x  Import
+		// @since  1.7.3  Import
 		if ( VAA_API::array_has( $data, 'import_roles', array( 'validation' => 'is_array' ) ) ) {
 			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
 			$content = $this->import_roles( $data['import_roles'] );
@@ -490,7 +490,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Import role(s).
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.3
 	 * @access  public
 	 * @param   array  $args  {
 	 *     @type  array   $data       The import data.
@@ -547,7 +547,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Export role(s).
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.3
 	 * @access  public
 	 * @param   array   $args  {
 	 *     @type  string  $role       Role name or "__all__" for all roles.

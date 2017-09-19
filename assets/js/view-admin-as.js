@@ -590,7 +590,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show popup with return content.
 	 * @since  1.5
-	 * @since  1.7  Renamed from overlay()
+	 * @since  1.7  Renamed from VAA_View_Admin_As.overlay()
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Data to use.
 	 * @param  {string}  type  The notice/overlay type (notice, error, message, warning, success).
@@ -669,7 +669,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	/**
 	 * Download text content as a file.
-	 * @since  1.7.3
+	 * @since  1.7.4
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object|string}  data  Data to use.
 	 * @return {null}  Nothing.
@@ -1297,7 +1297,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 *
 	 * @todo Is this the correct method name?
 	 *
-	 * @since  1.7.x-dev
+	 * @since  1.7.4
 	 * @param  {object}  data  The auto_js data.
 	 * @return {null}  Nothing.
 	 */
