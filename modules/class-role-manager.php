@@ -54,7 +54,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * The WP_Roles object.
 	 *
 	 * @since  1.7
-	 * @var    WP_Roles
+	 * @var    \WP_Roles
 	 */
 	public $wp_roles = null;
 
@@ -63,7 +63,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * These roles cannot be removed.
 	 *
 	 * @since  1.7
-	 * @var    array
+	 * @var    string[]
 	 */
 	private $protected_roles = array();
 
@@ -115,7 +115,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  private
-	 * @global  WP_Roles  $wp_roles
+	 * @global  \WP_Roles  $wp_roles
 	 * @return  void
 	 */
 	private function init() {
@@ -360,7 +360,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			// Only leave granted capabilities.
 			// @todo Option to deny capability (like Members).
 			$capabilities = array_filter( $capabilities );
-			// @see wp-includes/capabilities.php
+			// @see  wp-includes/capabilities.php
 			$new_role = add_role( $role, $role_name, $capabilities );
 
 			if ( $new_role ) {
@@ -380,9 +380,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   WP_Role  $role          The role object.
-	 * @param   array    $capabilities  The new role capabilities.
-	 * @param   string   $method        Update method.
+	 * @param   \WP_Role  $role          The role object.
+	 * @param   array     $capabilities  The new role capabilities.
+	 * @param   string    $method        Update method.
 	 * @return  bool
 	 */
 	public function update_role_caps( $role, $capabilities, $method = '' ) {
@@ -441,8 +441,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   string  $role          The source role slug/ID.
-	 * @param   string  $new_name      The new role label.
+	 * @param   string  $role      The source role slug/ID.
+	 * @param   string  $new_name  The new role label.
 	 * @return  bool|string
 	 */
 	public function rename_role( $role, $new_name ) {
@@ -639,8 +639,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @see     'vaa_admin_bar_modules' action
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa-settings).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa-settings).
 	 * @return  void
 	 */
 	public function admin_bar_menu_modules( $admin_bar, $root ) {
@@ -677,8 +677,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa).
 	 * @return  void
 	 */
 	public function admin_bar_menu( $admin_bar, $root ) {
@@ -719,10 +719,10 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
-	 * @see     admin_bar_menu()
+	 * @see     VAA_View_Admin_As_Role_Manager::admin_bar_menu()
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa).
 	 * @return  void
 	 */
 	private function admin_bar_menu_bulk_actions( $admin_bar, $root ) {
@@ -1307,10 +1307,10 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @see     'vaa_admin_bar_menu' action
+	 * @see     'vaa_admin_bar_caps_manager_before' action
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa).
 	 * @return  void
 	 */
 	public function admin_bar_menu_caps( $admin_bar, $root ) {
@@ -1440,7 +1440,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Role_Manager
+	 * @return  $this  VAA_View_Admin_As_Role_Manager
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

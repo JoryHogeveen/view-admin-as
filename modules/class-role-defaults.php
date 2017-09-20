@@ -56,7 +56,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since  1.4
 	 * @see    $meta_default
-	 * @var    array
+	 * @var    bool[]  Meta key as array key.
 	 */
 	private $meta = array();
 
@@ -66,7 +66,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since  1.4
 	 * @since  1.5.2  Set both values and keys to fix problem with unsetting a key through the filter.
-	 * @var    array
+	 * @var    bool[]  Meta key as array key.
 	 */
 	private $meta_default = array(
 		'admin_color'            => true,  // The admin color.
@@ -84,7 +84,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * %% gets replaced with the table prefix and added to this array on class construction.
 	 *
 	 * @since  1.5.2
-	 * @var    array
+	 * @var    string[]
 	 */
 	private $meta_forbidden = array(
 		'vaa-view-admin-as',  // Meta value for this plugin.
@@ -155,7 +155,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @global  wpdb  $wpdb
+	 * @global  \wpdb  $wpdb
 	 * @return  void
 	 */
 	private function init() {
@@ -289,7 +289,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.5
 	 * @access  public
-	 * @return  array   $this->meta  The meta keys.
+	 * @return  bool[]  $this->meta  The meta keys as array keys.
 	 */
 	public function get_meta() {
 		return $this->meta;
@@ -317,7 +317,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.5.2
 	 * @access  public
 	 * @param   array   $metas  The meta keys.
-	 * @return  array
+	 * @return  string[]  Meta key as array key.
 	 */
 	public function validate_meta( $metas ) {
 		if ( is_array( $metas ) ) {
@@ -506,9 +506,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  public
-	 * @see     update_user_with_role_defaults_multisite_register()
-	 * @see     apply_defaults_to_users_by_role()
-	 * @see     ajax_handler()
+	 * @see     VAA_View_Admin_As_Role_Defaults::update_user_with_role_defaults_multisite_register()
+	 * @see     VAA_View_Admin_As_Role_Defaults::apply_defaults_to_users_by_role()
+	 * @see     VAA_View_Admin_As_Role_Defaults::ajax_handler()
 	 *
 	 * @see     'user_register' action
 	 * @link    https://developer.wordpress.org/reference/hooks/user_register/
@@ -572,7 +572,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.4
 	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
 	 * @access  private
-	 * @param   string|array  $role  Role name, an array of role names or just "__all__" for all roles.
+	 * @param   string|string[]  $role  Role name, an array of role names or just "__all__" for all roles.
 	 * @return  bool
 	 */
 	private function apply_defaults_to_users_by_role( $role ) {
@@ -608,7 +608,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @see     vaa_init()
+	 * @see     VAA_View_Admin_As_Role_Defaults::vaa_init()
 	 * @return  void
 	 */
 	private function init_store_role_defaults() {
@@ -645,7 +645,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.4
 	 * @since   1.5.3   Stop checking $single parameter.
 	 * @access  public
-	 * @see     init_store_role_defaults()
+	 * @see     VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
 	 * @see     'get_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
@@ -674,7 +674,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  public
-	 * @see     init_store_role_defaults()
+	 * @see     VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
 	 * @see     'update_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
@@ -702,8 +702,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.6.3  Multiple get methods (parameters are now optional).
 	 * @access  public
 	 *
-	 * @param   string  $role      Role name.
-	 * @param   string  $meta_key  Meta key.
+	 * @param   string  $role      (optional) Role name.
+	 * @param   string  $meta_key  (optional) Meta key.
 	 * @return  mixed
 	 */
 	public function get_role_defaults( $role = null, $meta_key = null ) {
@@ -728,7 +728,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.7
 	 * @access  private
 	 * @param   array   $new_defaults  New role defaults (requires a full array of roles with data).
-	 * @param   string  $method        Method to be used. (merge, append, default).
+	 * @param   string  $method        (optional) Method to be used. (merge, append, default).
 	 */
 	private function set_role_defaults( $new_defaults, $method = '' ) {
 		if ( empty( $new_defaults ) ) {
@@ -786,7 +786,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @param   string        $from_role  The source role defaults.
 	 * @param   string|array  $to_role    The role(s) to copy to.
-	 * @param   string        $method     Clone method.
+	 * @param   string        $method     (optional) Clone method.
 	 * @return  array|bool
 	 */
 	public function copy_role_defaults( $from_role, $to_role, $method = '' ) {
@@ -824,7 +824,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.4
 	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
 	 * @access  public
-	 * @param   string|array  $role  Role name, an array of role names or just "__all__" for all roles.
+	 * @param   string|string[]  $role  Role name, an array of role names or just "__all__" for all roles.
 	 * @return  bool
 	 */
 	public function clear_role_defaults( $role ) {
@@ -859,7 +859,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.5
 	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
 	 * @access  public
-	 * @param   string  $role  Role name or "__all__" for all roles.
+	 * @param   string  $role  (optional) Role name or "__all__" for all roles.
 	 * @return  mixed
 	 */
 	public function export_role_defaults( $role = '__all__' ) {
@@ -882,7 +882,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.6.2  Add extra import methods
 	 * @access  public
 	 * @param   array   $data    Data to import.
-	 * @param   string  $method  Import method.
+	 * @param   string  $method  (optional) Import method.
 	 * @return  mixed
 	 */
 	public function import_role_defaults( $data, $method = '' ) {
@@ -1017,8 +1017,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @see     'vaa_admin_bar_modules' action
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa-settings).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa-settings).
 	 * @return  void
 	 */
 	public function admin_bar_menu_modules( $admin_bar, $root ) {
@@ -1057,11 +1057,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @since   1.5.2   Changed hook to vaa_admin_bar_settings_after (previous: 'vaa_admin_bar_roles_before').
+	 * @since   1.6.1   Changed hook to vaa_admin_bar_menu
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa).
 	 * @return  void
 	 */
 	public function admin_bar_menu( $admin_bar, $root ) {
@@ -1265,10 +1266,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
-	 * @see     admin_bar_menu()
+	 * @see     VAA_View_Admin_As_Role_Defaults::admin_bar_menu()
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa).
 	 * @return  void
 	 */
 	private function admin_bar_menu_bulk_actions( $admin_bar, $root ) {
@@ -1859,7 +1860,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Role_Defaults
+	 * @return  $this  VAA_View_Admin_As_Role_Defaults
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

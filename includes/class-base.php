@@ -42,7 +42,7 @@ abstract class VAA_View_Admin_As_Base
 	 * Custom capabilities.
 	 *
 	 * @since  1.6
-	 * @var    array
+	 * @var    string[]
 	 */
 	protected $capabilities = array();
 
@@ -130,7 +130,7 @@ abstract class VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @param   array  $caps  The capabilities.
-	 * @return  array
+	 * @return  string[]
 	 */
 	public function add_capabilities( $caps ) {
 		foreach ( (array) $this->capabilities as $cap ) {

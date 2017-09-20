@@ -53,7 +53,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @since  1.3.4
 	 * @since  1.6    Moved to this class from main class.
 	 * @since  1.7    Moved to this class from store class.
-	 * @var    bool
+	 * @var    string
 	 */
 	protected $userMetaKey = null;
 
@@ -419,7 +419,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @access  public
 	 *
 	 * @param   int|string  $user_id     ID of the user being deleted/removed (pass `all` for all users).
-	 * @param   object      $user        User object provided by the wp_login hook.
+	 * @param   \WP_User    $user        User object provided by the wp_login hook.
 	 * @param   bool        $reset_only  Only reset (not delete) the user meta.
 	 * @return  bool
 	 */
@@ -596,6 +596,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Set the option key as used in the options table.
 	 * @param   string  $val  Option key.
+	 * @return  void
 	 */
 	protected function set_optionKey( $val ) {
 		$this->optionKey = (string) str_replace( array( ' ', '-' ), '_', sanitize_title_with_dashes( $val ) );
@@ -604,6 +605,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Set the option key as used in the options table.
 	 * @param   string  $val  Option key.
+	 * @return  void
 	 */
 	protected function set_userMetaKey( $val ) {
 		$this->userMetaKey = (string) sanitize_title_with_dashes( $val );

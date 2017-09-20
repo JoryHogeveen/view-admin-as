@@ -40,7 +40,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.6.4
 	 * @see    restrict-user-access/app.php -> get_levels()
-	 * @var    array of WP_Post objects (RUA access level post type)
+	 * @var    \WP_Post[]  Array of WP_Post objects (RUA access level post type)
 	 */
 	private $levels;
 
@@ -58,7 +58,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 
 	/**
 	 * @since  1.6.4
-	 * @var    object  The post type object of the level types.
+	 * @var    \WP_Post_Type  The post type object of the level types.
 	 */
 	private $levelPostType;
 
@@ -70,13 +70,13 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 
 	/**
 	 * @since  1.6.4
-	 * @var    RUA_App
+	 * @var    \RUA_App
 	 */
 	private $ruaApp;
 
 	/**
 	 * @since  1.7.2
-	 * @var    RUA_Level_Manager
+	 * @var    \RUA_Level_Manager
 	 */
 	private $ruaLevelManager;
 
@@ -176,7 +176,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 				 * @since  1.7.2
 				 * @link   https://github.com/JoryHogeveen/view-admin-as/issues/56#issuecomment-299077527
 				 * @link   https://github.com/intoxstudio/restrict-user-access/pull/11
-				 * @see    RUA_Level_Manager::add_filters()
+				 * @see    \RUA_Level_Manager::add_filters()
 				 */
 				$this->ruaLevelManager->reset_user_levels_caps( $this->store->get_selectedUser()->ID );
 			}
@@ -186,7 +186,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 				 * Remove the whole filter when the caps view is selected.
 				 * @since  1.7.2
 				 * @link   https://github.com/JoryHogeveen/view-admin-as/issues/56#issuecomment-299077527
-				 * @see    RUA_Level_Manager::add_filters()
+				 * @see    \RUA_Level_Manager::add_filters()
 				 */
 				remove_filter( 'user_has_cap', array( $this->ruaLevelManager, 'user_level_has_cap' ), 9 );
 			}
@@ -197,8 +197,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * Update the current user's WP_User instance with the current view data.
 	 *
 	 * @since   1.6.4
-	 * @param   WP_User  $user        User object.
-	 * @param   bool     $accessible  Are the WP_User properties accessible?
+	 * @param   \WP_User  $user        User object.
+	 * @param   bool      $accessible  Are the WP_User properties accessible?
 	 */
 	public function modify_user( $user, $accessible ) {
 
@@ -249,8 +249,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * Add view type.
 	 *
 	 * @since   1.6.4
-	 * @param   array  $types  Existing view types.
-	 * @return  array
+	 * @param   string[]  $types  Existing view types.
+	 * @return  string[]
 	 */
 	public function add_view_type( $types ) {
 		$types[] = $this->viewKey;
@@ -339,10 +339,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item.
-	 * @param   string        $role       (optional) Role name.
-	 * @param   WP_Role       $role_obj   (optional) Role object.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item.
+	 * @param   string         $role       (optional) Role name.
+	 * @param   \WP_Role       $role_obj   (optional) Role object.
 	 */
 	public function admin_bar_menu( $admin_bar, $root, $role = null, $role_obj = null ) {
 		$view_name = 'Access Levels';
@@ -400,8 +400,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 		 *
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
 		 */
 		do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar, $root );
 
@@ -457,8 +457,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 		 *
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
 		 */
 		do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar, $root );
 	}
@@ -468,8 +468,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item.
 	 */
 	public function admin_bar_roles_after( $admin_bar, $root ) {
 
@@ -582,7 +582,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_RUA
+	 * @return  $this  VAA_View_Admin_As_RUA
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

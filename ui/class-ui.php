@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * Plugin links.
 	 *
 	 * @since  1.6.1
-	 * @var    array
+	 * @var    array[]
 	 */
 	private $links = array();
 
@@ -79,8 +79,8 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.3   Check whether to place link + reset link for current user.
 	 * @access  public
-	 * @param   array    $actions  The existing actions.
-	 * @param   WP_User  $user     The user object.
+	 * @param   array     $actions  The existing actions.
+	 * @param   \WP_User  $user     The user object.
 	 * @return  array
 	 */
 	public function filter_user_row_actions( $actions, $user ) {
@@ -129,8 +129,8 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * Show row meta on the plugin screen.
 	 *
 	 * @since   1.6.1
-	 * @param   array   $links  The existing links.
-	 * @param   string  $file   The plugin file.
+	 * @param   array[]  $links  The existing links.
+	 * @param   string   $file   The plugin file.
 	 * @return  array
 	 */
 	public function action_plugin_row_meta( $links, $file ) {
@@ -147,7 +147,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.2  Added Slack channel link
-	 * @return  array
+	 * @return  array[]
 	 */
 	public function get_links() {
 		if ( ! empty( $this->links ) ) {
@@ -233,6 +233,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @see     wp_admin_canonical_url()
+	 * @return  void
 	 */
 	public function remove_query_args() {
 		$removable_query_args = $this->filter_removable_query_args( array() );
@@ -372,7 +373,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		 *         @type  string  $url   The link.
 		 *     }
 		 * }
-		 * @return array
+		 * @return array[]
 		 */
 		$options = apply_filters( 'view_admin_as_error_page_options', $options );
 		?>
@@ -399,7 +400,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_UI
+	 * @return  $this  VAA_View_Admin_As_UI
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

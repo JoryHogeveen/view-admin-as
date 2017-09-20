@@ -30,7 +30,7 @@ class VAA_UnitTest_Factory {
 	public static $store = null;
 
 	/**
-	 * @var array
+	 * @var \WP_User[]
 	 */
 	public static $vaa_users = array();
 
@@ -81,7 +81,7 @@ class VAA_UnitTest_Factory {
 	 * @param   string  $role          (optional) Only needed for a new user.
 	 * @param   array   $capabilities  (optional) Only needed for a new user.
 	 * @param   bool    $super_admin   (optional) Only needed for a new user.
-	 * @return  WP_User
+	 * @return  \WP_User
 	 */
 	static function set_current_user( $name, $role = '', $capabilities = array(), $super_admin = false ) {
 		global $current_user;
@@ -111,7 +111,7 @@ class VAA_UnitTest_Factory {
 	 * @param   string  $role
 	 * @param   array   $capabilities
 	 * @param   bool    $super_admin
-	 * @return  WP_User
+	 * @return  \WP_User
 	 */
 	static function add_user( $name, $role = '', $capabilities = array(), $super_admin = false ) {
 		$username = strtolower( preg_replace( "/[^a-zA-Z0-9]+/", "", $name ) );
@@ -156,7 +156,7 @@ class VAA_UnitTest_Factory {
 	 * Get an already loaded user.
 	 * @param  mixed   $value
 	 * @param  string  $field
-	 * @return WP_User|null
+	 * @return \WP_User|null
 	 */
 	static function get_user( $value, $field = 'ID' ) {
 

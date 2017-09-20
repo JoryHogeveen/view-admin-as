@@ -108,8 +108,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @see     init()
 	 *
-	 * @param   array  $caps  The capabilities.
-	 * @param   array  $args  Pass arguments to get only certain capabilities.
+	 * @param   array   $caps  The capabilities.
+	 * @param   bool[]  $args  Pass arguments to get only certain capabilities.
 	 * @return  array
 	 */
 	public function get_capabilities( $caps = array(), $args = array() ) {
@@ -344,6 +344,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	/**
 	 * Add our capabilities to our own group in the Members plugin.
 	 *
+	 * @see  members_register_cap_group()
+	 *
 	 * @since   1.6
 	 * @access  public
 	 * @see     init()
@@ -411,7 +413,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Compat
+	 * @return  $this  VAA_View_Admin_As_Compat
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

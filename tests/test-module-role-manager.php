@@ -58,6 +58,7 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 	function test_export() {
 		$class = self::get_instance();
 
+		// Full export.
 		$export = $class->export_roles( array( 'role' => '__all__' ) );
 		$roles = array_keys( $export );
 		$compare = array(
@@ -70,6 +71,7 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 
 		$this->assertEquals( $roles, $compare );
 
+		// Single role export.
 		$export = $class->export_roles( array( 'role' => 'editor' ) );
 
 		$roles = array_keys( $export );
@@ -77,6 +79,7 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 
 		$this->assertEquals( $roles, $compare );
 
+		// Non-existing role export.
 		$export = $class->export_roles( array( 'role' => 'non_existing_role' ) );
 		$compare = __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
 

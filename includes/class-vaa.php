@@ -41,7 +41,10 @@ final class VAA_View_Admin_As
 	 * Var that holds all the notices.
 	 *
 	 * @since  1.5.1
-	 * @var    array
+	 * @var    array[] {
+	 *     @type  string  $message  The notice message.
+	 *     @type  string  $type     (optional) The WP notice type class(es).
+	 * }
 	 */
 	private $notices = array();
 
@@ -73,7 +76,7 @@ final class VAA_View_Admin_As
 	 * VAA UI classes that are loaded.
 	 *
 	 * @since  1.5
-	 * @see    load_ui()
+	 * @see    VAA_View_Admin_As::load_ui()
 	 * @var    array of objects
 	 */
 	private $ui = array();
@@ -82,8 +85,8 @@ final class VAA_View_Admin_As
 	 * Other VAA modules that are loaded.
 	 *
 	 * @since  1.4
-	 * @see    load_modules()
-	 * @see    register_module()
+	 * @see    VAA_View_Admin_As::load_modules()
+	 * @see    VAA_View_Admin_As::register_module()
 	 * @var    array of objects
 	 */
 	private $modules = array();
@@ -148,7 +151,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  private
-	 * @return  bool
+	 * @return  bool  Load successfully completed?
 	 */
 	private function load() {
 
@@ -529,7 +532,7 @@ final class VAA_View_Admin_As
 	 * @since   1.6.1
 	 * @access  public
 	 * @param   string  $key  (optional) UI class name.
-	 * @return  array|object
+	 * @return  object[]|object
 	 */
 	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
@@ -542,7 +545,7 @@ final class VAA_View_Admin_As
 	 * @since   1.5
 	 * @access  public
 	 * @param   string  $key  (optional) The module key.
-	 * @return  array|object
+	 * @return  object[]|object
 	 */
 	public function get_modules( $key = null ) {
 		return VAA_API::get_array_data( $this->modules, $key );
@@ -643,7 +646,7 @@ final class VAA_View_Admin_As
 		if ( ! empty( $notice['message'] ) ) {
 			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : '';
 			$this->notices[ $id ] = array(
-				'type' => $notice['type'],
+				'type'    => $notice['type'],
 				'message' => $notice['message'],
 			);
 		}
@@ -714,7 +717,7 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 * @static
 	 * @see     View_Admin_As()
-	 * @return  VAA_View_Admin_As
+	 * @return  $this  VAA_View_Admin_As
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {

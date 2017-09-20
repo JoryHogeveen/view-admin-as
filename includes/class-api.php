@@ -24,6 +24,8 @@ final class VAA_API
 	 * Check if the user is a super admin.
 	 * It will validate the original user while in a view and no parameter is passed.
 	 *
+	 * @see  VAA_View_Admin_As_Store::is_super_admin()
+	 *
 	 * @since   1.6.3
 	 * @access  public
 	 * @static
@@ -92,7 +94,7 @@ final class VAA_API
 		 *
 		 * @since  1.5.2
 		 * @param  array
-		 * @return array requires a returned array of user ID's
+		 * @return int[] Requires a returned array of user ID's
 		 */
 		$superior_admins = array_unique( array_map( 'absint', array_filter(
 			(array) apply_filters( 'view_admin_as_superior_admins', array() ),
@@ -104,6 +106,8 @@ final class VAA_API
 
 	/**
 	 * Check if the provided data is the same as the current view.
+	 *
+	 * @see  VAA_View_Admin_As_Controller::is_current_view()
 	 *
 	 * @since   1.7.1
 	 * @access  public
@@ -128,6 +132,8 @@ final class VAA_API
 	/**
 	 * Similar function to current_user_can().
 	 *
+	 * @see  VAA_View_Admin_As_View::current_view_can()
+	 *
 	 * @since   1.7.2
 	 * @access  public
 	 * @static
@@ -148,6 +154,8 @@ final class VAA_API
 
 	/**
 	 * Is the current user modified?
+	 *
+	 * @see  VAA_View_Admin_As_View::current_view_can()
 	 *
 	 * @since   1.7.2
 	 * @access  public

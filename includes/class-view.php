@@ -288,9 +288,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * Allow other modules to hook after the initial changes to the current user.
 		 *
 		 * @since  1.6.3
-		 * @since  1.6.4    Changed name (was: `vaa_view_admin_as_modify_current_user`).
-		 * @param  WP_User  $user        The modified user object.
-		 * @param  bool     $accessible  Are the needed WP_User properties and methods accessible?
+		 * @since  1.6.4     Changed name (was: `vaa_view_admin_as_modify_current_user`).
+		 * @param  \WP_User  $user        The modified user object.
+		 * @param  bool      $accessible  Are the needed WP_User properties and methods accessible?
 		 */
 		do_action( 'vaa_view_admin_as_modify_user', $user, $accessible );
 	}
@@ -421,7 +421,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 			 * - Groups - Overwrites our filtered capabilities. (fixed in Groups module).
 			 *
 			 * @since  1.7.2
-			 * @see    WP_User::has_cap()
+			 * @see    \WP_User::has_cap()
 			 */
 			$filter_caps = apply_filters(
 				'user_has_cap',
@@ -451,12 +451,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @since   1.6.3
 	 * @access  public
 	 *
-	 * @param   array    $allcaps  All the capabilities of the user.
-	 * @param   array    $caps     Actual capabilities for meta capability.
-	 * @param   array    $args     [0] Requested capability.
-	 *                             [1] User ID.
-	 *                             [2] Associated object ID.
-	 * @param   WP_User  $user     (WP 3.7+) The user object.
+	 * @param   array     $allcaps  All the capabilities of the user.
+	 * @param   array     $caps     Actual capabilities for meta capability.
+	 * @param   array     $args     [0] Requested capability.
+	 *                              [1] User ID.
+	 *                              [2] Associated object ID.
+	 * @param   \WP_User  $user     (WP 3.7+) The user object.
 	 * @return  array
 	 */
 	public function filter_user_has_cap( $allcaps, $caps, $args, $user = null ) {
@@ -480,8 +480,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @link    https://developer.wordpress.org/reference/functions/is_super_admin/
 	 *
 	 * @global  array  $super_admins
-	 * @param   WP_User|int|string  $user   (optional) A user to remove. Both a user object or a user field is accepted.
-	 * @param   string              $field  (optional) A user field key to get the user data by.
+	 * @param   \WP_User|int|string  $user   (optional) A user to remove. Both a user object or a user field is accepted.
+	 * @param   string               $field  (optional) A user field key to get the user data by.
 	 */
 	public function disable_super_admin( $user = null, $field = 'id' ) {
 		global $super_admins;
@@ -550,6 +550,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.1
 	 * @access  public
+	 * @return  bool  Will return false when used with older WP versions.
 	 */
 	public function freeze_locale() {
 		if ( function_exists( 'get_user_locale' ) && function_exists( 'switch_to_locale' ) ) {
@@ -571,7 +572,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_View
+	 * @return  $this  VAA_View_Admin_As_View
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

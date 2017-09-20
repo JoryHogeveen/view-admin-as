@@ -5,9 +5,9 @@
  * @since    1.7
  * @version  1.7.2
  *
- * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
- * @var  string        $root       The current root item.
- * @var  string        $main_root  The main VAA root item.
+ * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
+ * @var  string         $root       The current root item.
+ * @var  string         $main_root  The main VAA root item.
  */
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {

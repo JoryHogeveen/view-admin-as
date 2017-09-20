@@ -262,7 +262,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @param   null    $null  Null.
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $type  The view type.
-	 * @return  mixed
+	 * @return  bool|array
 	 */
 	public function filter_update_view( $null, $data, $type ) {
 		$success = $null;
@@ -289,7 +289,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @param   null    $null  Null.
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $type  The view type.
-	 * @return  bool
+	 * @return  bool|array
 	 */
 	public function filter_update_view_caps( $null, $data, $type ) {
 		$success = $null;
@@ -384,7 +384,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @return  array
+	 * @return  string[]
 	 */
 	public function get_view_types() {
 		static $view_types;
@@ -605,7 +605,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7
 	 * @param   array  $data  Input data.
-	 * @return  mixed
+	 * @return  array
 	 */
 	public function validate_data_keys( $data ) {
 
@@ -741,7 +741,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Controller
+	 * @return  $this  VAA_View_Admin_As_Controller
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {
