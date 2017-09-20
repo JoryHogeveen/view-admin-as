@@ -945,8 +945,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	public function compare_metakey( $meta_key_compare ) {
 		$meta_keys = (array) $this->get_meta();
-		foreach ( $meta_keys as $meta_key => $meta_value ) {
-			if ( empty( $meta_value ) || ! is_string( $meta_key ) ) {
+		foreach ( $meta_keys as $meta_key => $enabled ) {
+			if ( empty( $enabled ) || ! is_string( $meta_key ) ) {
 				continue;
 			}
 
@@ -1205,13 +1205,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			),
 		) );
 		$meta_select_content = '';
-		foreach ( $this->get_meta() as $metakey => $value ) {
+		foreach ( $this->get_meta() as $metakey => $enabled ) {
 			$meta_select_content .=
 				'<div class="ab-item vaa-item">'
 				. VAA_View_Admin_As_Form::do_checkbox( array(
 					'name'           => 'role-defaults-meta-select[]',
 					'id'             => $root . '-meta-select-' . $metakey,
-					'value'          => $value,
+					'value'          => $enabled,
 					'compare'        => true,
 					'checkbox_value' => $metakey,
 					'label'          => $metakey,

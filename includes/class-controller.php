@@ -503,7 +503,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( null === $user ) {
 			$user = $this->store->get_curUser();
 		}
-		if ( isset( $user->ID ) ) {
+		if ( ! empty( $user->ID ) ) {
 			// Do not use the store as it currently doesn't support a different user ID.
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// Check if this user session has metadata.
@@ -541,7 +541,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( null === $user ) {
 			$user = $this->store->get_curUser();
 		}
-		if ( isset( $user->ID ) ) {
+		if ( ! empty( $user->ID ) ) {
 			// Do not use the store as it currently doesn't support a different user ID.
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, loop it.
@@ -583,7 +583,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( null === $user ) {
 			$user = $this->store->get_curUser();
 		}
-		if ( isset( $user->ID ) ) {
+		if ( ! empty( $user->ID ) ) {
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, reset it.
 			if ( isset( $meta['views'] ) ) {

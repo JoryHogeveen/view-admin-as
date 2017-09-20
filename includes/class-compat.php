@@ -374,6 +374,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @return  array
 	 */
 	public function filter_ure_capabilities_groups_tree( $groups ) {
+		$groups = (array) $groups;
 		$groups['view_admin_as'] = array(
 			'caption' => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 			'parent'  => 'custom',

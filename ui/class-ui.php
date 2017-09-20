@@ -150,58 +150,60 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @return  array
 	 */
 	public function get_links() {
-		if ( empty( $this->links ) ) {
-			$this->links = array(
-				'support' => array(
-					'title' => __( 'Support', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Need support?', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-testimonial',
-					'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
-				),
-				'slack' => array(
-					'title' => __( 'Slack', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Quick help via Slack', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-format-chat',
-					'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
-				),
-				'review' => array(
-					'title' => __( 'Review', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Give 5 stars on WordPress.org!', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-star-filled',
-					'url'   => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
-				),
-				'translate' => array(
-					'title' => __( 'Translate', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Help translating this plugin!', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-translation',
-					'url'   => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
-				),
-				'issue' => array(
-					'title' => __( 'Report issue', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Have ideas or a bug report?', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-lightbulb',
-					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/issues',
-				),
-				'docs' => array(
-					'title' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-book-alt',
-					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
-				),
-				'github' => array(
-					'title' => __( 'GitHub', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Follow development on GitHub', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-editor-code',
-					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
-				),
-				'donate' => array(
-					'title' => __( 'Donate', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Buy me a coffee!', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-smiley',
-					'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
-				),
-			);
-		} // End if().
+		if ( ! empty( $this->links ) ) {
+			return $this->links;
+		}
+
+		$this->links = array(
+			'support' => array(
+				'title' => __( 'Support', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Need support?', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-testimonial',
+				'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
+			),
+			'slack' => array(
+				'title' => __( 'Slack', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Quick help via Slack', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-format-chat',
+				'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
+			),
+			'review' => array(
+				'title' => __( 'Review', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Give 5 stars on WordPress.org!', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-star-filled',
+				'url'   => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
+			),
+			'translate' => array(
+				'title' => __( 'Translate', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Help translating this plugin!', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-translation',
+				'url'   => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
+			),
+			'issue' => array(
+				'title' => __( 'Report issue', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Have ideas or a bug report?', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-lightbulb',
+				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/issues',
+			),
+			'docs' => array(
+				'title' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-book-alt',
+				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
+			),
+			'github' => array(
+				'title' => __( 'GitHub', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Follow development on GitHub', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-editor-code',
+				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
+			),
+			'donate' => array(
+				'title' => __( 'Donate', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Buy me a coffee!', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-smiley',
+				'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
+			),
+		);
 
 		return $this->links;
 	}
