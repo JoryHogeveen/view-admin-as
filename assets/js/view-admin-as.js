@@ -24,6 +24,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @property  {array}    settings_user  The user settings.
 	 * @property  {array}    view           The current view (empty if no view is active).
 	 * @property  {array}    view_types     The available view types.
+	 * @property  {string}   _loader_icon   The loader icon URL.
 	 * @property  {string}   _vaa_nonce
 	 * @property  {boolean}  _debug
 	 * @property  {string}   __no_users_found      'No users found.'.
@@ -398,8 +399,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		$( '.vaa-notice', '#wpadminbar' ).remove();
 		// @todo dashicon loader?
-		var loader_icon = VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif';
-		VAA_View_Admin_As.overlay( '<span class="vaa-loader-icon" style="background-image: url('+loader_icon+')"></span>' );
+		var loader_icon = '';
+		if ( VAA_View_Admin_As._loader_icon ) {
+			loader_icon = ' style="background-image: url(' + VAA_View_Admin_As._loader_icon + ')"';
+		}
+		VAA_View_Admin_As.overlay( '<span class="vaa-loader-icon"'+loader_icon+'></span>' );
 
 		var post_data = {
 			'action': 'view_admin_as',
