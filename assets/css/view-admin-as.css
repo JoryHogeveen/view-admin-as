@@ -59,7 +59,9 @@
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item * {font-style: italic !important;}
 
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent > * {opacity: 0.5; transition: opacity 0.2s;}
-#wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent:hover > * {opacity: 1;}
+#wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent:hover > *,
+#wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent .active,
+#wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent .active ~ * {opacity: 1;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results {margin: 6px 0; padding: 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results:empty {display: none;}
