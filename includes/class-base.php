@@ -142,9 +142,9 @@ abstract class VAA_View_Admin_As_Base
 	/**
 	 * Magic method to output a string if trying to use the object as a string.
 	 *
-	 * @since  1.5.1
-	 * @access public
-	 * @return string
+	 * @since   1.5.1
+	 * @access  public
+	 * @return  string
 	 */
 	public function __toString() {
 		return get_class( $this );
@@ -153,9 +153,9 @@ abstract class VAA_View_Admin_As_Base
 	/**
 	 * Magic method to keep the object from being cloned.
 	 *
-	 * @since  1.5.1
-	 * @access public
-	 * @return void
+	 * @since   1.5.1
+	 * @access  public
+	 * @return  void
 	 */
 	public function __clone() {
 		_doing_it_wrong(
@@ -168,9 +168,9 @@ abstract class VAA_View_Admin_As_Base
 	/**
 	 * Magic method to keep the object from being unserialized.
 	 *
-	 * @since  1.5.1
-	 * @access public
-	 * @return void
+	 * @since   1.5.1
+	 * @access  public
+	 * @return  void
 	 */
 	public function __wakeup() {
 		_doing_it_wrong(
@@ -183,11 +183,11 @@ abstract class VAA_View_Admin_As_Base
 	/**
 	 * Magic method to prevent a fatal error when calling a method that does not exist.
 	 *
-	 * @since  1.5.1
-	 * @access public
-	 * @param  string  $method  The method name.
-	 * @param  array   $args    The method arguments.
-	 * @return null
+	 * @since   1.5.1
+	 * @access  public
+	 * @param   string  $method  The method name.
+	 * @param   array   $args    The method arguments.
+	 * @return  null
 	 */
 	public function __call( $method = '', $args = array() ) {
 		_doing_it_wrong(

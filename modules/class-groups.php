@@ -10,8 +10,6 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Groups', 'get_instance' ) );
-
 /**
  * Compatibility class for the Groups plugin
  *
