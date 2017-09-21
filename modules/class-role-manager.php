@@ -106,8 +106,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 		$this->init();
 
-		add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-		add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
+		$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+		$this->add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
 	}
 
 	/**
@@ -160,19 +160,19 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		if ( VAA_API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section.
-			add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
+			$this->add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
 		}
 
 		// Add adminbar menu items in role section.
 		if ( $this->is_enabled() ) {
 
 			// Show the admin bar node.
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 6, 2 );
-			add_action( 'vaa_admin_bar_caps_manager_before', array( $this, 'admin_bar_menu_caps' ), 6, 2 );
+			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 6, 2 );
+			$this->add_action( 'vaa_admin_bar_caps_manager_before', array( $this, 'admin_bar_menu_caps' ), 6, 2 );
 
 			// Add custom capabilities.
 			if ( $this->store->get_view( 'caps' ) ) {
-				add_filter( 'view_admin_as_get_capabilities', array( $this, 'filter_custom_view_capabilities' ), 11, 2 );
+				$this->add_filter( 'view_admin_as_get_capabilities', array( $this, 'filter_custom_view_capabilities' ), 11, 2 );
 			}
 		}
 	}

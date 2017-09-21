@@ -52,16 +52,16 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		parent::__construct( $vaa );
 
 		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
-			add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
+			$this->add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
 		}
-		add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
-		add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
-		add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
+		$this->add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
+		$this->add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
+		$this->add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		$this->add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		$this->add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
+		$this->add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 
 		/**
 		 * Compat with front and WP version lower than 4.2.0.
@@ -69,7 +69,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		 * @link   https://developer.wordpress.org/reference/functions/wp_admin_canonical_url/
 		 */
 		if ( ! is_admin() || ! VAA_API::validate_wp_version( '4.2' ) ) {
-			add_action( 'wp_head', array( $this, 'remove_query_args' ) );
+			$this->add_action( 'wp_head', array( $this, 'remove_query_args' ) );
 		}
 	}
 

@@ -53,7 +53,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function init() {
 
-		add_action( 'vaa_view_admin_as_init', array( $this, 'init_after' ) );
+		$this->add_action( 'vaa_view_admin_as_init', array( $this, 'init_after' ) );
 
 		/**
 		 * Add our caps to the members plugin.
@@ -65,21 +65,21 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		 *
 		 * @since  1.6
 		 */
-		add_filter( 'members_get_capabilities', array( $this, 'get_vaa_capabilities' ) );
-		add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
+		$this->add_filter( 'members_get_capabilities', array( $this, 'get_vaa_capabilities' ) );
+		$this->add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
 
 		/**
 		 * Add our caps to the User Role Editor plugin (URE).
 		 * @since  1.6.4
 		 */
-		add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
-		add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
+		$this->add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
+		$this->add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
 
 		/**
 		 * Get caps from other plugins.
 		 * @since  1.5
 		 */
-		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
+		$this->add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
 
 	}
 
@@ -97,7 +97,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		     (int) $this->store->get_curUser()->ID === (int) $this->store->get_selectedUser()->ID
 		) {
 			// Only apply the filter if the current user is modified.
-			add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
+			$this->add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
 		}
 	}
 

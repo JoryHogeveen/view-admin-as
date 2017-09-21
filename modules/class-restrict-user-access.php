@@ -129,16 +129,16 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 
 			$this->store_levels();
 
-			add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
+			$this->add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
 
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
-			add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_roles_after' ), 10, 2 );
+			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
+			$this->add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_roles_after' ), 10, 2 );
 
-			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
-			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
+			$this->add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
+			$this->add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
 		}
 
-		add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
+		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 	}
 
 	/**
@@ -154,17 +154,17 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$this->selectedLevel     = $this->store->get_view( $this->viewKey );
 			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
 
-			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
+			$this->add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
 			$this->vaa->view()->init_user_modifications();
-			add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
+			$this->add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
 
-			add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
+			$this->add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
 			// Administrators can see all restricted content in RUA.
 			if ( $this->store->get_view() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
 				// Not a view with administrator capability == no global access.
-				add_filter( 'rua/user/global-access', '__return_false' );
+				$this->add_filter( 'rua/user/global-access', '__return_false' );
 			}
 		}
 

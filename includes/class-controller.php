@@ -52,14 +52,14 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		parent::__construct( $vaa );
 
 		// When a user logs in or out, reset the view to default.
-		add_action( 'wp_login',  array( $this, 'cleanup_views' ), 10, 2 );
-		add_action( 'wp_login',  array( $this, 'reset_view' ), 10, 2 );
-		add_action( 'wp_logout', array( $this, 'reset_view' ) );
+		$this->add_action( 'wp_login',  array( $this, 'cleanup_views' ), 10, 2 );
+		$this->add_action( 'wp_login',  array( $this, 'reset_view' ), 10, 2 );
+		$this->add_action( 'wp_logout', array( $this, 'reset_view' ) );
 
 		// Not needed, the delete_user actions already remove all metadata, keep code for possible future use.
-		//add_action( 'remove_user_from_blog', array( $this->store, 'delete_user_meta' ) );
-		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
-		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
+		//$this->add_action( 'remove_user_from_blog', array( $this->store, 'delete_user_meta' ) );
+		//$this->add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
+		//$this->add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
 
 		/**
 		 * Change expiration time for view meta.
@@ -103,19 +103,19 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		}
 
 		// Reset hook.
-		add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
+		$this->add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
 
 		// Validation hooks.
-		add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
-		add_filter( 'view_admin_as_validate_view_data_caps', array( $this, 'validate_view_data_caps' ), 10, 2 );
-		add_filter( 'view_admin_as_validate_view_data_role', array( $this, 'validate_view_data_role' ), 10, 2 );
-		add_filter( 'view_admin_as_validate_view_data_user', array( $this, 'validate_view_data_user' ), 10, 2 );
+		$this->add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
+		$this->add_filter( 'view_admin_as_validate_view_data_caps', array( $this, 'validate_view_data_caps' ), 10, 2 );
+		$this->add_filter( 'view_admin_as_validate_view_data_role', array( $this, 'validate_view_data_role' ), 10, 2 );
+		$this->add_filter( 'view_admin_as_validate_view_data_user', array( $this, 'validate_view_data_user' ), 10, 2 );
 
 		// Update hooks.
-		add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
+		$this->add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 3 );
+		$this->add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 3 );
+		$this->add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 3 );
+		$this->add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
 
 		// Get the current view.
 		$this->store->set_view( $this->get_view() );
@@ -125,8 +125,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			$this->ajax_view_admin_as();
 		} else {
 			// Admin selector ajax return (fallback).
-			add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
-			//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+			$this->add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+			//$this->add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 		}
 	}
 

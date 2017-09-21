@@ -130,7 +130,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		if ( $this->store->get_userSettings( 'freeze_locale' )
 			&& (int) $this->store->get_curUser()->ID !== (int) $this->store->get_selectedUser()->ID
 		) {
-			add_action( 'init', array( $this, 'freeze_locale' ), 0 );
+			$this->add_action( 'init', array( $this, 'freeze_locale' ), 0 );
 		}
 	}
 
@@ -148,26 +148,26 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 
 		$this->is_user_modified = true;
 
-		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_user' ), 99 );
+		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_user' ), 99 );
 
 		/**
 		 * Make sure the $current_user view data isn't overwritten again by switch_blog functions.
 		 * @see    This filter is documented in wp-includes/ms-blogs.php
 		 * @since  1.6.3
 		 */
-		add_action( 'switch_blog', array( $this, 'modify_user' ) );
+		$this->add_action( 'switch_blog', array( $this, 'modify_user' ) );
 
 		/**
 		 * Prevent some meta updates for the current user while in modification to the current user are active.
 		 * @since  1.6.3
 		 */
-		add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
+		$this->add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
 
 		/**
 		 * Get capabilities and user level from current user view object instead of database.
 		 * @since  1.6.4
 		 */
-		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
+		$this->add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
 		// `user_has_cap` priority.
 		$priority = -999999999;
@@ -193,7 +193,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * @since  1.7.2  Changed priority to set is at the beginning instead of as last
 		 *                to allow other plugins to filter based on the modified user.
 		 */
-		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), $priority, 4 );
+		$this->add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), $priority, 4 );
 
 		/**
 		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
@@ -201,7 +201,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 *
 		 * @since  0.1
 		 */
-		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
+		$this->add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
 
 		/**
 		 * Disable super admin status for the current user.

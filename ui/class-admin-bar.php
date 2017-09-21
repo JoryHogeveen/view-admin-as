@@ -61,7 +61,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		parent::__construct( $vaa );
 
 		if ( $this->is_vaa_enabled() ) {
-			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+			$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
 	}
 
@@ -85,32 +85,32 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		}
 
 		// Add the default nodes to the WP admin bar.
-		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ) );
-		add_action( 'vaa_toolbar_menu', array( $this, 'admin_bar_menu' ), 10, 2 );
+		$this->add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ) );
+		$this->add_action( 'vaa_toolbar_menu', array( $this, 'admin_bar_menu' ), 10, 2 );
 
 		// Add the global nodes to the admin bar.
-		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_info' ), 1 );
-		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_settings' ), 2 );
-		add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_modules' ), 1, 2 );
+		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_info' ), 1 );
+		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_settings' ), 2 );
+		$this->add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_modules' ), 1, 2 );
 
 		// Add the caps nodes to the admin bar.
-		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_caps' ), 10 );
+		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_caps' ), 10 );
 
 		if ( ! is_network_admin() ) {
 
 			// Add the roles nodes to the admin bar.
 			// Roles are not used on network pages.
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_roles' ), 20 );
+			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_roles' ), 20 );
 
 			// Add the visitor view nodes under roles.
 			// There are no outside visitors on network pages.
-			add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_menu_visitor' ), 10, 2 );
+			$this->add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_menu_visitor' ), 10, 2 );
 			// Fallback action for when there are no roles available.
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_visitor' ), 31 );
+			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_visitor' ), 31 );
 		}
 
 		// Add the users nodes to the admin bar.
-		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_users' ), 30 );
+		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_users' ), 30 );
 	}
 
 	/**

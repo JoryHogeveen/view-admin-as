@@ -82,14 +82,14 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 
 			$this->store_groups();
 
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
-			add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
+			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
+			$this->add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
 
-			add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
-			add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
+			$this->add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
+			$this->add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
 		}
 
-		add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
+		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 	}
 
 	/**
@@ -105,20 +105,20 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 
 			$this->reset_groups_user();
 
-			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
+			$this->add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
 			$this->vaa->view()->init_user_modifications();
-			add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
+			$this->add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
 
-			add_filter( 'groups_post_access_user_can_read_post', array( $this, 'groups_post_access_user_can_read_post' ), 99, 3 );
+			$this->add_filter( 'groups_post_access_user_can_read_post', array( $this, 'groups_post_access_user_can_read_post' ), 99, 3 );
 
 			/**
 			 * Replicate 404 page when the selected user has no access to read.
 			 * I use this since I can't hook into the `posts_where` filter from Groups.
 			 * @see VAA_View_Admin_As_Groups::groups_post_access_user_can_read_post()
 			 */
-			add_action( 'wp', array( $this, 'post_access_404' ) );
-			//add_filter( 'groups_post_access_posts_where_apply', '__return_false' );
+			$this->add_action( 'wp', array( $this, 'post_access_404' ) );
+			//$this->add_filter( 'groups_post_access_posts_where_apply', '__return_false' );
 
 			remove_shortcode( 'groups_member' );
 			remove_shortcode( 'groups_non_member' );
@@ -126,13 +126,13 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			add_shortcode( 'groups_non_member', array( $this, 'shortcode_groups_non_member' ) );
 
 			// Filter user-group relationships.
-			//add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
+			//$this->add_filter( 'groups_user_is_member', array( $this, 'groups_user_is_member' ), 20, 3 );
 		}
 
 		// Filter group capabilities.
 		if ( VAA_API::is_user_modified() ) {
-			add_filter( 'groups_group_can', array( $this, 'groups_group_can' ), 20, 3 );
-			add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
+			$this->add_filter( 'groups_group_can', array( $this, 'groups_group_can' ), 20, 3 );
+			$this->add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
 		}
 	}
 

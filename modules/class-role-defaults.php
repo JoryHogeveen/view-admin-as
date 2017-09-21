@@ -122,7 +122,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since 1.6
 		 */
 		$this->capabilities = array( 'view_admin_as_role_defaults' );
-		add_filter( 'view_admin_as_add_capabilities', array( $this, 'add_capabilities' ) );
+		$this->add_filter( 'view_admin_as_add_capabilities', array( $this, 'add_capabilities' ) );
 
 		// Load data.
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
@@ -145,8 +145,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.5.3    Disable for network pages.
 		 */
 		if ( ! is_network_admin() && $this->current_user_can( 'view_admin_as_role_defaults' ) ) {
-			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-			add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
+			$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+			$this->add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
 		}
 	}
 
@@ -197,15 +197,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		// Setting: Automatically apply defaults to new users.
 		if ( $this->get_optionData( 'apply_defaults_on_register' ) ) {
 			if ( is_multisite() ) {
-				add_action( 'add_user_to_blog', array( $this, 'update_user_with_role_defaults_multisite_register' ), 100, 3 );
+				$this->add_action( 'add_user_to_blog', array( $this, 'update_user_with_role_defaults_multisite_register' ), 100, 3 );
 			} else {
-				add_action( 'user_register', array( $this, 'update_user_with_role_defaults' ), 100, 1 );
+				$this->add_action( 'user_register', array( $this, 'update_user_with_role_defaults' ), 100, 1 );
 			}
 		}
 
 		// Setting: Hide the screen options for all users who can't access role defaults.
 		if ( $this->get_optionData( 'disable_user_screen_options' ) && ! $this->current_user_can( 'view_admin_as_role_defaults' ) ) {
-			add_filter( 'screen_options_show_screen', '__return_false', 100 );
+			$this->add_filter( 'screen_options_show_screen', '__return_false', 100 );
 		}
 
 		/**
@@ -215,7 +215,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.6
 		 * @since  1.6.2  Move to footer (changed hook).
 		 */
-		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
+		$this->add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
 
 		$done = true;
 	}
@@ -233,7 +233,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( VAA_API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section.
-			add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
+			$this->add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
 		}
 
 		// Add adminbar menu items in role section.
@@ -243,7 +243,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$this->init_store_role_defaults();
 
 			// Show the admin bar node.
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 5, 2 );
+			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 5, 2 );
 		}
 	}
 
@@ -613,9 +613,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	private function init_store_role_defaults() {
 		if ( $this->store->get_view( 'role' ) && $this->is_enabled() ) {
-			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
-			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
-			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
+			$this->add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
+			$this->add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
+			$this->add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
 		}
 	}
 

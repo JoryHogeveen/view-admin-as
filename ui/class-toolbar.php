@@ -68,7 +68,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		$this->vaa_store = view_admin_as()->store();
 
 		if ( ! is_admin() ) {
-			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+			view_admin_as()->hooks()->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 		}
 	}
 
@@ -81,7 +81,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @return  void
 	 */
 	public function vaa_init() {
-		add_action( 'init', array( $this, 'vaa_toolbar_init' ) );
+		view_admin_as()->hooks()->add_action( 'init', array( $this, 'vaa_toolbar_init' ) );
 	}
 
 	/**
@@ -103,7 +103,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 			wp_enqueue_script( 'admin-bar' );
 			wp_enqueue_style( 'admin-bar' );
 
-			add_action( 'wp_footer', array( $this, 'vaa_toolbar_render' ), 100 );
+			view_admin_as()->hooks()->add_action( 'wp_footer', array( $this, 'vaa_toolbar_render' ), 100 );
 		}
 	}
 
