@@ -140,6 +140,28 @@ abstract class VAA_View_Admin_As_Base
 	}
 
 	/**
+	 * Add a new action to this plugin hooks registry.
+	 *
+	 * @since   1.8
+	 * @see     VAA_View_Admin_As_Hooks::add_action()
+	 * @inheritdoc
+	 */
+	public function add_action( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
+		view_admin_as()->hooks()->add_action( $hook, $callback, $priority, $accepted_args );
+	}
+
+	/**
+	 * Add a new filter to this plugin hooks registry.
+	 *
+	 * @since   1.8
+	 * @see     VAA_View_Admin_As_Hooks::add_filter()
+	 * @inheritdoc
+	 */
+	public function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
+		view_admin_as()->hooks()->add_filter( $hook, $callback, $priority, $accepted_args );
+	}
+
+	/**
 	 * Magic method to output a string if trying to use the object as a string.
 	 *
 	 * @since   1.5.1
