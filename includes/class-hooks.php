@@ -231,4 +231,122 @@ class VAA_View_Admin_As_Hooks
 		return $hooks;
 	}
 
+	/**
+	 * Remove all plugin hooks from the collection registered with WordPress.
+	 *
+	 * @since   1.8
+	 * @param   string    $hook      (optional) The name of the WordPress action.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 */
+	public function remove_own_hooks( $hook = null, $priority = false ) {
+		$this->remove_own_actions( $hook, $priority );
+		$this->remove_own_filters( $hook, $priority );
+	}
+
+	/**
+	 * Remove all plugin actions from the collection registered with WordPress.
+	 *
+	 * @since   1.8
+	 * @param   string    $hook      (optional) The name of the WordPress action.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 */
+	public function remove_own_actions( $hook = null, $priority = false ) {
+		$this->_actions = $this->_remove_own( $this->_actions, $hook, $priority, 'remove_action' );
+	}
+
+	/**
+	 * Remove all plugin filters from the collection registered with WordPress.
+	 *
+	 * @since   1.8
+	 * @param   string    $hook      (optional) The name of the WordPress filter.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 */
+	public function remove_own_filters( $hook = null, $priority = false ) {
+		$this->_filters = $this->_remove_own( $this->_filters, $hook, $priority, 'remove_filter' );
+	}
+
+	/**
+	 * A utility function that is used to remove all registered plugin hooks from a single collection.
+	 *
+	 * @since   1.8
+	 * @access  protected
+	 * @param   array[]   $hooks     The collection of hooks (that is, actions or filters).
+	 * @param   string    $hook      The name of the WordPress filter.
+	 * @param   int|bool  $priority  The priority at which the function should be fired.
+	 * @param   callable  $function  The function to use for removal.
+	 * @return  array  The collection of actions and filters registered with WordPress.
+	 */
+	protected function _remove_own( $hooks, $hook, $priority, $function ) {
+		// Remove specific priority from hook.
+		if ( false !== $priority ) {
+			if ( isset( $hooks[ $hook ][ $priority ] ) ) {
+				foreach ( (array) $hooks[ $hook ][ $priority ] as $args ) {
+					// Remove it from WordPress.
+					$this->$function( $hook, $args['callback'], $priority );
+				}
+				unset( $hooks[ $hook ][ $priority ] );
+			}
+			return $hooks;
+		}
+		// Remove specific hook.
+		if ( null !== $hook ) {
+			if ( isset( $hooks[ $hook ] ) ) {
+				foreach ( (array) $hooks[ $hook ] as $priority => $foo ) {
+					$hooks = $this->_remove_own( $hooks, $hook, $priority, $function );
+				}
+				unset( $hooks[ $hook ] );
+			}
+			return $hooks;
+		}
+		// Remove everything.
+		foreach ( (array) $hooks as $hook => $foo ) {
+			$hooks = $this->_remove_own( $hooks, $hook, false, $function );
+		}
+		return array(); // Should be empty by now.
+	}
+
+	/**
+	 * Validates the priority value.
+	 * If it's passed as `null` it will attempt to find it.
+	 *
+	 * @since   1.8
+	 * @param   array[]   $hooks     The collection of hooks (that is, actions or filters).
+	 * @param   string    $hook      The name of the WordPress filter.
+	 * @param   callable  $callback  The callable.
+	 * @param   int       $priority  The priority at which the function should be fired.
+	 * @return  int  Default is 10.
+	 */
+	protected function _validate_priority( $hooks, $hook, $callback, $priority ) {
+		if ( null === $priority ) {
+			$priority = $this->_find_priority( $hooks, $hook, $callback );
+			if ( ! $priority ) {
+				return 10;
+			}
+		}
+		return (int) $priority;
+	}
+
+	/**
+	 * Finds the priority of a hook if unknown.
+	 *
+	 * @since   1.8
+	 * @param   array[]   $hooks     The collection of hooks (that is, actions or filters).
+	 * @param   string    $hook      The name of the WordPress filter.
+	 * @param   callable  $callback  The callable.
+	 * @return  int
+	 */
+	protected function _find_priority( $hooks, $hook, $callback ) {
+		if ( ! isset( $hooks[ $hook ] ) ) {
+			return null;
+		}
+		foreach ( (array) $hooks[ $hook ] as $priority => $registered ) {
+			foreach ( $registered as $args ) {
+				if ( $callback === $args['callback'] ) {
+					return $priority;
+				}
+			}
+		}
+		return null;
+	}
+
 } // End class VAA_View_Admin_As_Hooks.
