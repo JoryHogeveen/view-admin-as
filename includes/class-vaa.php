@@ -49,6 +49,14 @@ final class VAA_View_Admin_As
 	private $notices = array();
 
 	/**
+	 * VAA Hooks.
+	 *
+	 * @since  1.8
+	 * @var    VAA_View_Admin_As_Hooks
+	 */
+	private $hooks = null;
+
+	/**
 	 * VAA Store.
 	 *
 	 * @since  1.6
@@ -165,6 +173,10 @@ final class VAA_View_Admin_As
 				'class' => 'VAA_View_Admin_As_Base',
 			),
 			array(
+				'file'  => 'includes/class-hooks.php',
+				'class' => 'VAA_View_Admin_As_Hooks',
+			),
+			array(
 				'file'  => 'includes/class-settings.php',
 				'class' => 'VAA_View_Admin_As_Settings',
 			),
@@ -213,6 +225,7 @@ final class VAA_View_Admin_As
 	 */
 	private function run() {
 
+		$this->hooks      = new VAA_View_Admin_As_Hooks();
 		$this->store      = VAA_View_Admin_As_Store::get_instance( $this );
 		$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
 		$this->view       = VAA_View_Admin_As_View::get_instance( $this );
@@ -490,6 +503,17 @@ final class VAA_View_Admin_As
 				load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
 			}
 		}
+	}
+
+	/**
+	 * Get the hooks class.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @return  VAA_View_Admin_As_Hooks
+	 */
+	public function hooks() {
+		return $this->hooks;
 	}
 
 	/**
