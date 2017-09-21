@@ -52,9 +52,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	if ( ! VAA_View_Admin_As.hasOwnProperty( '_debug' ) ) {
 		VAA_View_Admin_As._debug = false;
 	}
-	VAA_View_Admin_As._debug = Boolean( parseInt( VAA_View_Admin_As._debug, 10 ) );
 
-	if ( ! VAA_View_Admin_As.hasOwnProperty( 'ajaxurl' ) && 'undefined' !== typeof ajaxurl ) {
+	if ( ! VAA_View_Admin_As.hasOwnProperty( 'ajaxurl' ) ) {
+		if ( 'undefined' === typeof ajaxurl ) {
+			// Does not work with websites in sub-folders.
+			var ajaxurl = window.location.origin + '/wp-admin/admin-ajax.php';
+		}
 		VAA_View_Admin_As.ajaxurl = ajaxurl;
 	}
 
@@ -87,7 +90,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * BASE INIT.
 	 * @since   1.5.1
-	 * @return  {null}  Nothing.
+	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init = function() {
 
@@ -292,7 +295,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MOBILE INIT.
 	 * @since   1.7
-	 * @return  {null}  Nothing.
+	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.mobile = function() {
 		var $root = $( '.vaa-mobile ' + VAA_View_Admin_As.prefix );
@@ -362,14 +365,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * Add an overlay.
 	 * @since   1.7
 	 * @param   {string|boolean}  html  The content to show in the overlay. Pass `false` to remove the overlay.
-	 * @return  {null}  Nothing.
+	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.overlay = function( html ) {
 		var $overlay = $( '#vaa-overlay' );
 		if ( false === html ) {
 			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
 			$document.off( 'mouseup.vaa_overlay' );
-			return null;
+			return;
 		}
 		if ( ! $overlay.length ) {
 			html = '<div id="vaa-overlay">' + html + '</div>';
@@ -401,7 +404,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 *
 	 * @param   {object}   data     The data to send, view format: { VIEW_TYPE : VIEW_TYPE_DATA }
 	 * @param   {boolean}  refresh  Reload/redirect the page?
-	 * @return  {null}  Nothing.
+	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.ajax = function( data, refresh ) {
 
@@ -500,7 +503,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @since  1.7
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Info for the redirect: { redirect: URL }
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.refresh = function( data ) {
 		if ( data.hasOwnProperty( 'redirect' ) ) {
@@ -527,7 +530,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.notice = function( notice, type, timeout ) {
 		var root = '#wpadminbar .vaa-notice',
@@ -565,7 +568,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.item_notice = function( parent, notice, type, timeout ) {
 		var root = '.vaa-notice',
@@ -606,7 +609,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Data to use.
 	 * @param  {string}  type  The notice/overlay type (notice, error, message, warning, success).
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.popup = function( data, type ) {
 		type = ( 'undefined' === typeof type ) ? 'notice' : type;
@@ -684,7 +687,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @since  1.7.4
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object|string}  data  Data to use.
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.download = function( data ) {
 		var content = '',
@@ -708,7 +711,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}
 
 		if ( ! content ) {
-			return null; //@todo Notice.
+			return; //@todo Notice.
 		}
 
 		if ( data.hasOwnProperty( 'filename' ) ) {
@@ -726,7 +729,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Automatic option handling.
 	 * @since  1.7.2
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init_auto_js = function() {
 
@@ -772,11 +775,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *     }
 		 * }
 		 * @param  {mixed}  elem  The element (runs through $() function).
-		 * @return {null} Nothing.
+		 * @return {void} Nothing.
 		 */
 		VAA_View_Admin_As.do_auto_js = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
-				return null;
+				return;
 			}
 			var $elem    = $( elem ),
 				setting  = ( data.hasOwnProperty( 'setting' ) ) ? String( data.setting ) : null,
@@ -786,7 +789,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			// Callback overwrite.
 			if ( data.hasOwnProperty('callback') ) {
 				VAA_View_Admin_As[ data.callback ]( data );
-				return null;
+				return;
 			}
 
 			var val = VAA_View_Admin_As.get_auto_js_values_recursive( data, elem );
@@ -794,7 +797,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( null !== val ) {
 
 				if ( ! setting ) {
-					return null;
+					return;
 				}
 
 				var view_data = {};
@@ -991,7 +994,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * USERS.
 	 * Extra functions for user views.
 	 * @since  1.2
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
@@ -1035,7 +1038,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * CAPABILITIES.
 	 * @since  1.3
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
@@ -1183,7 +1186,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Defaults.
 	 * @since  1.4
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
@@ -1233,7 +1236,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Manager.
 	 * @since  1.7
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_manager = function() {
 
@@ -1315,7 +1318,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 *
 	 * @since  1.7.4
 	 * @param  {object}  data  The auto_js data.
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.assign_file_content = function( data ) {
 		if ( 'function' !== typeof FileReader ) {
@@ -1339,7 +1342,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$.each( files, function( key, file ) {
 				var reader = new FileReader();
 				reader.onload = function() { //progressEvent
-					content = VAA_View_Admin_As.json_decode( this.result );
+					var content = VAA_View_Admin_As.json_decode( this.result );
 					if ( 'object' === typeof content ) {
 						// Remove JSON format.
 						content = JSON.stringify( content );
