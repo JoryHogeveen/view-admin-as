@@ -181,8 +181,14 @@ class VAA_UnitTest_Factory {
 	 * Re-init VAA.
 	 */
 	static function vaa_reinit() {
-		remove_all_actions( 'vaa_view_admin_as_init' );
 		self::$vaa = view_admin_as();
+
+		// Once loaded the first time, remove existing VAA filters.
+		if ( self::$vaa->hooks() ) {
+			self::$vaa->hooks()->remove_own_filters();
+		}
+		self::clear_did_action();
+
 		self::$vaa->init( true );
 
 		self::$store = self::$vaa->store();
@@ -204,6 +210,27 @@ class VAA_UnitTest_Factory {
 		}
 
 		//echo PHP_EOL . 'View Admin As re-init done.' . PHP_EOL;
+	}
+
+	/**
+	 * Clear did_action() returns after reinit.
+	 */
+	static function clear_did_action() {
+		global $wp_actions;
+		$find = array(
+			'view_admin_as',
+			'vaa_view_admin_as',
+			'vaa_admin_bar',
+			'_view_admin_as',
+			'_vaa_view_admin_as',
+		);
+		foreach ( $wp_actions as $key => $counter ) {
+			foreach( $find as $compare ) {
+				if ( 0 === strpos( $key, $compare ) ) {
+					unset( $wp_actions[ $key ] );
+				}
+			}
+		}
 	}
 
 	public static function get_instance() {
