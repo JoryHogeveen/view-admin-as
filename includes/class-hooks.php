@@ -349,4 +349,90 @@ class VAA_View_Admin_As_Hooks
 		return null;
 	}
 
+	/**
+	 * Return all registered hooks data.
+	 * Can be used for debugging.
+	 *
+	 * @since   1.8
+	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
+	 *                               Order: hook type >> hook name >> priority >> function id >> hook args.
+	 *                               In case of a string it will stand for the hook type.
+	 * @param   bool  $objects  Return the full object of a callback? Default is false, can cause PHP memory issues.
+	 * @return  array[]|mixed
+	 */
+	public function _get_hooks( $keys = null, $objects = false ) {
+		$data = array(
+			'actions' => $this->_actions,
+			'filters' => $this->_filters,
+		);
+		if ( ! $objects ) {
+			// Don't return full objects.
+			foreach ( $data as $type => $hooks ) {
+				$data[ $type ] = $this->_convert_callback( $hooks );
+			}
+		}
+		if ( $keys ) {
+			$keys = (array) $keys;
+			foreach ( $keys as $key ) {
+				$data = VAA_API::get_array_data( $data, $key );
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * Return all registered actions.
+	 * Can be used for debugging.
+	 *
+	 * @since   1.8
+	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
+	 *                               Order: hook name >> priority >> function id >> hook args.
+	 *                               In case of a string it will stand for the hook name.
+	 * @param   bool  $objects  Return the full object of a callback? Default is false, can cause PHP memory issues.
+	 * @return  array[]|mixed
+	 */
+	public function _get_actions( $keys = null, $objects = false ) {
+		$keys = (array) $keys;
+		array_unshift( $keys, 'actions' );
+		return $this->_get_hooks( $keys, $objects );
+	}
+
+	/**
+	 * Return all registered filters.
+	 * Can be used for debugging.
+	 *
+	 * @since   1.8
+	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
+	 *                               Order: hook name >> priority >> function id >> hook args.
+	 *                               In case of a string it will stand for the hook name.
+	 * @param   bool  $objects  Return the full object of a callback? Default is false, can cause PHP memory issues.
+	 * @return  array[]|mixed
+	 */
+	public function _get_filters( $keys = null, $objects = false ) {
+		$keys = (array) $keys;
+		array_unshift( $keys, 'filters' );
+		return $this->_get_hooks( $keys, $objects );
+	}
+
+	/**
+	 * Convert object type callbacks into object class names instead of full object data.
+	 * @since   1.8
+	 * @param   array[]  $hooks  The collection of hooks (that is, actions or filters).
+	 * @return  array[]
+	 */
+	protected function _convert_callback( $hooks ) {
+		foreach ( (array) $hooks as $hook => $priorities ) {
+			foreach ( $priorities as $priority => $registered ) {
+				foreach ( $registered as $id => $args ) {
+					if ( is_array( $args['callback'] ) ) {
+						if ( is_object( $args['callback'][0] ) ) {
+							$hooks[ $hook ][ $priority ][ $id ]['callback'][0] = get_class( $args['callback'][0] );
+						}
+					}
+				}
+			}
+		}
+		return $hooks;
+	}
+
 } // End class VAA_View_Admin_As_Hooks.
