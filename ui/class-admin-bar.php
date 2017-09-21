@@ -180,10 +180,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 
 		if ( empty( $root ) ) {
 			$root = 'top-secondary';
-			if ( $this->store->get_userSettings( 'admin_menu_location' )
-			     && in_array( $this->store->get_userSettings( 'admin_menu_location' ), $this->store->get_allowedUserSettings( 'admin_menu_location' ), true )
-			) {
-				$root = $this->store->get_userSettings( 'admin_menu_location' );
+			$location = $this->store->get_userSettings( 'admin_menu_location' );
+			if ( $location && in_array( $location, $this->store->get_allowedUserSettings( 'admin_menu_location' ), true ) ) {
+				$root = $location;
 			}
 		}
 
@@ -196,7 +195,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => self::$root,
 			'parent' => $root,
-			'title'  => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
+			'title'  => '<span class="ab-label">' . $title . '</span>' . VAA_View_Admin_As_Form::do_icon(
+				$icon,
+				array( 'class' => 'alignright' )
+			),
 			'href'   => false,
 			'meta'   => array(
 				'title'    => $tooltip,

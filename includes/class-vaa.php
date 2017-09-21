@@ -77,7 +77,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since  1.5
 	 * @see    VAA_View_Admin_As::load_ui()
-	 * @var    array of objects
+	 * @var    object[]
 	 */
 	private $ui = array();
 
@@ -87,7 +87,7 @@ final class VAA_View_Admin_As
 	 * @since  1.4
 	 * @see    VAA_View_Admin_As::load_modules()
 	 * @see    VAA_View_Admin_As::register_module()
-	 * @var    array of objects
+	 * @var    object[]
 	 */
 	private $modules = array();
 
@@ -694,8 +694,12 @@ final class VAA_View_Admin_As
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
 				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
-					// Translators: %1$s stands for "WordPress", %2$s stands for the version.
-					. sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', $min_wp_version ),
+					. sprintf(
+				        // Translators: %1$s stands for "WordPress", %2$s stands for the version.
+						__( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ),
+						'WordPress',
+						$min_wp_version
+				    ),
 			) );
 			$valid = false;
 		}
