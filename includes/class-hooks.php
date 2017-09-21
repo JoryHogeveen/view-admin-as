@@ -51,19 +51,19 @@ class VAA_View_Admin_As_Hooks
 	 * @return  string
 	 */
 	protected function _get_identifier( $hook, $callback, $priority ) {
-		// Fallback since `_wp_filter_build_unique_id()` is a private WP function.
-		if ( ! function_exists( '_wp_filter_build_unique_id' ) ) {
-			if ( is_array( $callback ) ) {
-				if ( is_object( $callback[0] ) ) {
-					$callback[0] = get_class( $callback[0] );
-					$callback = implode( '->', $callback );
-				} else {
-					$callback = implode( '::', $callback );
-				}
-			}
-			return $callback;
+		if ( function_exists( '_wp_filter_build_unique_id' ) ) {
+			return _wp_filter_build_unique_id( $hook, $callback, $priority );
 		}
-		return _wp_filter_build_unique_id( $hook, $callback, $priority );
+		// Fallback since `_wp_filter_build_unique_id()` is a private WP function.
+		if ( is_array( $callback ) ) {
+			if ( is_object( $callback[0] ) ) {
+				$callback[0] = get_class( $callback[0] );
+				$callback = implode( '->', $callback );
+			} else {
+				$callback = implode( '::', $callback );
+			}
+		}
+		return $callback;
 	}
 
 	/**
