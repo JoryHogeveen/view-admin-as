@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.3
+ * @version 1.7.4
  */
 final class VAA_View_Admin_As
 {
@@ -385,8 +385,8 @@ final class VAA_View_Admin_As
 	 * Load the user interface.
 	 *
 	 * @since   1.5
-	 * @since   1.5.1   added notice on class name conflict.
-	 * @since   1.6     added our toolbar class.
+	 * @since   1.5.1   Added notice on class name conflict.
+	 * @since   1.6     Added our toolbar class.
 	 * @access  private
 	 * @return  void
 	 */
@@ -405,11 +405,15 @@ final class VAA_View_Admin_As
 				'file'  => 'ui/class-admin-bar.php',
 				'class' => 'VAA_View_Admin_As_Admin_Bar',
 			),
-			'toolbar' => array(
+		);
+
+		// Compat for < 4.2 since it breaks due to WP calling require() instead of require_once().
+		if ( VAA_API::validate_wp_version( '4.2' ) ) {
+			$includes['toolbar'] = array(
 				'file'  => 'ui/class-toolbar.php',
 				'class' => 'VAA_View_Admin_As_Toolbar',
-			),
-		);
+			);
+		}
 
 		// Include UI files and add them to the `ui` property.
 		$this->load_files( $includes, $this->ui );
@@ -465,7 +469,7 @@ final class VAA_View_Admin_As
 	 * Load plugin textdomain.
 	 *
 	 * @since   1.2
-	 * @since   1.6    Hooked into init hook, check for is_enabled() required.
+	 * @since   1.6  Hooked into init hook, check for is_enabled() required.
 	 * @access  public
 	 * @return  void
 	 */
@@ -527,6 +531,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.1
 	 * @access  public
+	 * @see     VAA_View_Admin_As::load_ui()
 	 * @param   string  $key  (optional) UI class name.
 	 * @return  object[]|object
 	 */
@@ -540,6 +545,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.5
 	 * @access  public
+	 * @see     VAA_View_Admin_As::load_modules()
 	 * @param   string  $key  (optional) The module key.
 	 * @return  object[]|object
 	 */
@@ -712,7 +718,7 @@ final class VAA_View_Admin_As
 	 * @since   1.4.1
 	 * @access  public
 	 * @static
-	 * @see     View_Admin_As()
+	 * @see     view_admin_as()
 	 * @return  $this  VAA_View_Admin_As
 	 */
 	public static function get_instance() {
