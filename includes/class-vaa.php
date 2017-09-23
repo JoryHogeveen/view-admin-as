@@ -655,11 +655,11 @@ final class VAA_View_Admin_As
 			), $notice );
 
 			if ( $notice['prepend'] ) {
-				$notice['prepend'] = '<strong>' . $notice['prepend'] . ':</strong> ';
+				$notice['message'] = '<strong>' . $notice['prepend'] . ':</strong> ' . $notice['message'];
 			}
 			$this->notices[ $id ] = array(
 				'type'    => $notice['type'],
-				'message' => $notice['prepend'] . $notice['message'],
+				'message' => $notice['message'],
 			);
 		}
 	}
