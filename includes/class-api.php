@@ -13,10 +13,15 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * API class that holds general functions.
  *
+ * Disable some PHPMD checks for this class.
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @todo Refactor to enable above checks?
+ *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.3
+ * @version 1.7.4
  */
 final class VAA_API
 {
@@ -472,8 +477,8 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function starts_with( $haystack, $needle ) {
-		// search backwards starting from haystack length characters from the end.
-		return '' === $needle || strrpos( $haystack, $needle, -strlen( $haystack ) ) !== false;
+		// Search backwards starting from haystack length characters from the end.
+		return '' === $needle || 0 === strpos( $haystack, $needle );
 	}
 
 	/**
@@ -490,9 +495,8 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function ends_with( $haystack, $needle ) {
-		// search forward starting from end minus needle length characters.
-		// @codingStandardsIgnoreLine >> yeah yeah, I know...
-		return '' === $needle || ( ( $temp = strlen( $haystack ) - strlen( $needle ) ) >= 0 && strpos( $haystack, $needle, $temp ) !== false);
+		// Search forward starting from end minus needle length characters.
+		return '' === $needle || ( strlen( $haystack ) - strlen( $needle ) === strrpos( $haystack, $needle ) );
 	}
 
 	/**

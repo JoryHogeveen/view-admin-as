@@ -16,15 +16,27 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 	 * @see VAA_API::ends_with()
 	 */
 	function test_end_starts_with() {
+
 		$this->assertTrue(  VAA_API::starts_with( 'test_string', 'te' ) );
 		$this->assertTrue(  VAA_API::starts_with( 'test_string', 'test_s' ) );
+		$this->assertTrue(  VAA_API::starts_with( 'test_string', 'test_string' ) );
+		$this->assertFalse( VAA_API::starts_with( 'test_string', 'est' ) );
 		$this->assertFalse( VAA_API::starts_with( 'test_string', 'est_s' ) );
 		$this->assertFalse( VAA_API::starts_with( 'test_string', 'string' ) );
+
+		$this->assertTrue(  VAA_API::ends_with( 'test_string', 'ing' ) );
+		$this->assertTrue(  VAA_API::ends_with( 'test_string', '_string' ) );
+		$this->assertTrue(  VAA_API::ends_with( 'test_string', 'test_string' ) );
 		$this->assertFalse( VAA_API::ends_with( 'test_string', 'te' ) );
 		$this->assertFalse( VAA_API::ends_with( 'test_string', 'test_s' ) );
-		$this->assertFalse( VAA_API::ends_with( 'test_string', 'est_s' ) );
-		$this->assertTrue(  VAA_API::ends_with( 'test_string', '_string' ) );
-		$this->assertTrue(  VAA_API::ends_with( 'test_string', 'ing' ) );
+		$this->assertFalse( VAA_API::ends_with( 'test_string', 'rin' ) );
+
+		// Double check for when a search string occurs multiple times.
+		$this->assertTrue(  VAA_API::starts_with( 'test_test_string', 'test' ) );
+		$this->assertFalse( VAA_API::starts_with( 'test_string_string', 'string' ) );
+		$this->assertTrue(  VAA_API::ends_with( 'test_string_string', 'string' ) );
+		$this->assertFalse( VAA_API::ends_with( 'test_test_string', 'test' ) );
+
 	}
 
 	/**
@@ -137,6 +149,7 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 		if ( is_callable( array( $this, 'doing_it_wrong_run' ) ) ) {
 			add_action( 'doing_it_wrong_run', array( $this, 'doing_it_wrong_run' ) );
 		}
+
 	}
 
 	/**
