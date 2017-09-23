@@ -233,12 +233,12 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		// get_wordpress_capabilities() will find them.
 
 		// @since  1.7.1  Gravity Forms.
-		if ( is_callable( array( 'GFCommon', 'all_caps' ) ) ) {
+		if ( VAA_API::exists_callable( array( 'GFCommon', 'all_caps' ) ) ) {
 			$caps = array_merge( (array) GFCommon::all_caps(), $caps );
 		}
 
 		// @since  1.7.1  User Role Editor.
-		if ( is_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
+		if ( VAA_API::exists_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
 			$caps = array_merge( (array) URE_Own_Capabilities::get_caps(), $caps );
 		}
 		$caps = apply_filters( 'ure_full_capabilites', $caps );
@@ -249,7 +249,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		}
 
 		// @since  1.7.1  User Roles and Capabilities.
-		if ( is_callable( array( 'Solvease_Roles_Capabilities_User_Caps', 'solvease_roles_capabilities_caps' ) ) ) {
+		if ( VAA_API::exists_callable( array( 'Solvease_Roles_Capabilities_User_Caps', 'solvease_roles_capabilities_caps' ) ) ) {
 			$caps = array_merge( (array) Solvease_Roles_Capabilities_User_Caps::solvease_roles_capabilities_caps(), $caps );
 		}
 
@@ -351,18 +351,18 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @see     init()
 	 */
 	public function action_members_register_cap_group() {
-
-		if ( function_exists( 'members_register_cap_group' ) ) {
-			// Register the vaa group.
-			members_register_cap_group( 'view_admin_as',
-				array(
-					'label'      => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
-					'caps'       => $this->get_vaa_capabilities(),
-					'icon'       => 'dashicons-visibility',
-					'diff_added' => true,
-				)
-			);
+		if ( ! function_exists( 'members_register_cap_group' ) ) {
+			return;
 		}
+		// Register the vaa group.
+		members_register_cap_group( 'view_admin_as',
+			array(
+				'label'      => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
+				'caps'       => $this->get_vaa_capabilities(),
+				'icon'       => 'dashicons-visibility',
+				'diff_added' => true,
+			)
+		);
 	}
 
 	/**

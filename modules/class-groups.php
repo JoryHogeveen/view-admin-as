@@ -69,11 +69,13 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) &&
-		     defined( 'GROUPS_ADMINISTER_GROUPS' ) &&
-		     current_user_can( GROUPS_ADMINISTER_GROUPS ) &&
-		     ! is_network_admin()
-		) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), true ) ) {
+			return;
+		}
+
+		$access_cap = ( defined( 'GROUPS_ADMINISTER_GROUPS' ) ) ? GROUPS_ADMINISTER_GROUPS : 'manage_options';
+
+		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
 
 			$this->vaa->register_module( array(
 				'id'       => $this->viewKey,
@@ -147,7 +149,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @param   int  $user_id
 	 */
 	public function reset_groups_user( $user_id = null ) {
-		if ( ! is_callable( array( 'Groups_User', 'clear_cache' ) ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_User', 'clear_cache' ), true ) ) {
 			return;
 		}
 
@@ -328,7 +330,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 		if ( $this->store->get_selectedUser()->ID !== $user_id || ! $this->selectedGroup ) {
 			return $result;
 		}
-		if ( ! is_callable( 'Groups_Post_Access', 'get_read_group_ids' ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_Post_Access', 'get_read_group_ids' ), true ) ) {
 			return $result;
 		}
 

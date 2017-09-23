@@ -107,11 +107,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		if ( ! is_callable( array( 'RUA_App', 'instance' ) ) ) {
+		if ( ! VAA_API::exists_callable( array( 'RUA_App', 'instance' ), true ) ) {
 			return;
 		}
-
 		$this->ruaApp = RUA_App::instance();
+
 		if ( isset( $this->ruaApp->level_manager ) ) {
 			$this->ruaLevelManager = $this->ruaApp->level_manager;
 		}

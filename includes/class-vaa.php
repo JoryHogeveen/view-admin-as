@@ -371,7 +371,7 @@ final class VAA_View_Admin_As
 			$this->include_file( VIEW_ADMIN_AS_DIR . $inc['file'], $class );
 
 			// If it's a class file, add the class instance to the group.
-			if ( ! empty( $class ) && is_callable( array( $class, 'get_instance' ) ) ) {
+			if ( ! empty( $class ) && VAA_API::exists_callable( array( $class, 'get_instance' ) ) ) {
 				$group[ $key ] = call_user_func( array( $class, 'get_instance' ), $this );
 			}
 		}
@@ -432,14 +432,14 @@ final class VAA_View_Admin_As
 			),
 		);
 
-		if ( is_callable( array( 'RUA_App', 'instance' ) ) ) {
+		if ( VAA_API::exists_callable( array( 'RUA_App', 'instance' ) ) ) {
 			$includes['rua_level'] = array(
 				'file'  => 'modules/class-restrict-user-access.php',
 				'class' => 'VAA_View_Admin_As_RUA',
 			);
 		}
 
-		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
+		if ( VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
 			$includes['groups'] = array(
 				'file'  => 'modules/class-groups.php',
 				'class' => 'VAA_View_Admin_As_Groups',

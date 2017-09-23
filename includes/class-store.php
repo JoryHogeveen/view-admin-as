@@ -779,7 +779,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_data( $type, $val, $key = null, $append = false ) {
-		if ( is_callable( array( $this, 'set_' . $type ) ) ) {
+		if ( VAA_API::exists_callable( array( $this, 'set_' . $type ) ) ) {
 			$method = 'set_' . $type;
 			$this->$method( $val, $key, $append );
 			return;
