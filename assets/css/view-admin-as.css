@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1
- * @version 1.7.3
+ * @version 1.7.4
  * @preserve
  */
 
@@ -96,6 +96,7 @@
 #wpadminbar #wp-admin-bar-vaa > .ab-item > .ab-label {float: left;} /* IE fix */
 #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {top: 2px;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .ab-icon.alignright {float: right; margin-right: 0; margin-left: 6px;}
+#wpadminbar > #wp-toolbar > #wp-admin-bar-root-default #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon, /* Fix when located on admin bar default */
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {float: none; font-size: 16px; line-height: 16px; vertical-align: text-bottom; font-weight: normal !important; padding: 0;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before {display: none;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 10px; padding-right: 10px;}
@@ -146,7 +147,15 @@
 	box-shadow: 0 0 15px rgba(0,0,0,0.2);
 	z-index: 99999;
 }
-#wpadminbar #wp-admin-bar-vaa .vaa-help {float: right; text-align: right; padding: 0; font-size: 16px; line-height: inherit !important; margin: 0 0 0 5px;}
+#wpadminbar > #wp-toolbar > #wp-admin-bar-root-default #wp-admin-bar-vaa .vaa-help, /* Fix when located on admin bar default */
+#wpadminbar #wp-admin-bar-vaa .vaa-help {
+	float: right;
+	text-align: right;
+	padding: 0;
+	font-size: 16px;
+	line-height: inherit !important;
+	margin: 0 0 0 5px
+}
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + select,
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + input,
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ input + label {margin-right: 20px;}
