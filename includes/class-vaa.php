@@ -589,7 +589,7 @@ final class VAA_View_Admin_As
 					__( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
 					'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
 				),
-		) );
+		), false );
 	}
 
 	/**
@@ -621,8 +621,7 @@ final class VAA_View_Admin_As
 		);
 		$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
 
-		$notice['message'] = '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-			. $notice['message']
+		$notice['message'] = $notice['message']
 			. ' <a href="' . $report_link . '" target="_blank">'
 			. __( 'Click here to report this error!', VIEW_ADMIN_AS_DOMAIN )
 			. '</a>';
@@ -641,15 +640,24 @@ final class VAA_View_Admin_As
 	 *     Required array.
 	 *     @type  string  $message  The notice message.
 	 *     @type  string  $type     (optional) The WP notice type class(es).
+	 *     @type  string  $prepend  (optional) Prepend the message (bold). Default: View Admin As.
+	 *                              Pass `false` or `null` to remove.
 	 * }
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
 		if ( ! empty( $notice['message'] ) ) {
-			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : '';
+			$notice = array_merge( array(
+				'type' => '',
+				'prepend' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
+			), $notice );
+
+			if ( $notice['prepend'] ) {
+				$notice['prepend'] = '<strong>' . $notice['prepend'] . ':</strong> ';
+			}
 			$this->notices[ $id ] = array(
 				'type'    => $notice['type'],
-				'message' => $notice['message'],
+				'message' => $notice['prepend'] . $notice['message'],
 			);
 		}
 	}
@@ -691,13 +699,12 @@ final class VAA_View_Admin_As
 		if ( version_compare( $wp_version, $min_wp_version, '<' ) ) {
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
-				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
-					. sprintf(
-				        // Translators: %1$s stands for "WordPress", %2$s stands for the version.
-						__( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ),
-						'WordPress',
-						$min_wp_version
-				    ),
+				'message' => sprintf(
+			        // Translators: %1$s stands for "WordPress", %2$s stands for the version.
+					__( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ),
+					'WordPress',
+					$min_wp_version
+			    ),
 			) );
 			$valid = false;
 		}
