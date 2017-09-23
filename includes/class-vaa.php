@@ -96,14 +96,20 @@ final class VAA_View_Admin_As
 	 * Private to make sure it isn't declared elsewhere.
 	 *
 	 * @since   0.1
-	 * @since   1.3.3   changes init hook to plugins_loaded for theme compatibility.
-	 * @since   1.4.1   creates instance.
-	 * @since   1.5     make private.
-	 * @since   1.5.1   added notice on class name conflict + validate versions.
+	 * @since   1.3.3   Changes init hook to plugins_loaded for theme compatibility.
+	 * @since   1.4.1   Creates instance.
+	 * @since   1.5     Make private.
+	 * @since   1.5.1   Added notice on class name conflict + validate versions.
 	 * @access  private
 	 */
 	private function __construct() {
 		self::$_instance = $this;
+
+		add_action( 'init', array( $this, 'load_textdomain' ) );
+
+		if ( is_admin() ) {
+			add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
+		}
 
 		// Returns false on conflict.
 		if ( ! $this->validate_versions() ) {
@@ -221,9 +227,6 @@ final class VAA_View_Admin_As
 		VAA_View_Admin_As_Update::get_instance( $this )->maybe_db_update();
 
 		if ( $this->is_enabled() ) {
-
-			add_action( 'init', array( $this, 'load_textdomain' ) );
-			add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
 
 			if ( VAA_View_Admin_As_Update::$fresh_install ) {
 				$this->welcome_notice();
@@ -468,7 +471,7 @@ final class VAA_View_Admin_As
 	 */
 	public function load_textdomain() {
 
-		if ( ! $this->is_enabled() ) {
+		if ( ! $this->is_enabled() && empty( $this->notices ) ) {
 			return;
 		}
 
@@ -655,10 +658,6 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function do_admin_notices() {
-		// Only show notices if the plugin functionalities are enabled.
-		if ( ! $this->is_enabled() ) {
-			return;
-		}
 		foreach ( $this->notices as $notice ) {
 			if ( isset( $notice['type'] ) && ! empty( $notice['message'] ) ) {
 				echo '<div class="' . $notice['type'] . ' notice is-dismissible"><p>' . $notice['message'] . '</p></div>';
