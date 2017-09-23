@@ -325,9 +325,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		if ( is_callable( array( $this->vaa->get_ui( 'ui' ), 'get_links' ) ) ) {
 			$info_links = $this->vaa->get_ui( 'ui' )->get_links();
 
+			$admin_bar->add_group( array(
+				'id'     => $root . '-links',
+				'parent' => $root,
+			) );
+
 			foreach ( $info_links as $id => $link ) {
 				$admin_bar->add_node( array(
-					'parent' => $root,
+					'parent' => $root . '-links',
 					'id'     => $root . '-' . $id,
 					'title'  => self::do_icon( $link['icon'] ) . $link['description'],
 					'href'   => esc_url( $link['url'] ),
