@@ -105,14 +105,8 @@ final class VAA_View_Admin_As
 	private function __construct() {
 		self::$_instance = $this;
 
-		add_action( 'init', array( $this, 'load_textdomain' ) );
-
-		if ( is_admin() ) {
-			add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
-		}
-
 		// Returns false on conflict.
-		if ( ! (boolean) $this->validate_versions() ) {
+		if ( ! $this->validate_versions() ) {
 			return;
 		}
 
@@ -227,6 +221,9 @@ final class VAA_View_Admin_As
 		VAA_View_Admin_As_Update::get_instance( $this )->maybe_db_update();
 
 		if ( $this->is_enabled() ) {
+
+			add_action( 'init', array( $this, 'load_textdomain' ) );
+			add_action( 'admin_notices', array( $this, 'do_admin_notices' ) );
 
 			if ( VAA_View_Admin_As_Update::$fresh_install ) {
 				$this->welcome_notice();
@@ -471,24 +468,20 @@ final class VAA_View_Admin_As
 	 */
 	public function load_textdomain() {
 
-		if ( $this->is_enabled() ) {
+		if ( ! $this->is_enabled() ) {
+			return;
+		}
 
-			/**
-			 * Keep the third parameter pointing to the languages folder within this plugin
-			 * to enable support for custom .mo files.
-			 *
-			 * @see https://make.wordpress.org/core/2016/07/06/i18n-improvements-in-4-6/
-			 */
-			load_plugin_textdomain( 'view-admin-as', false, VIEW_ADMIN_AS_DIR . 'languages/' );
+		load_plugin_textdomain( VIEW_ADMIN_AS_DOMAIN );
 
-			/**
-			 * Frontend translation of roles is not working by default (Darn you WordPress!).
-			 * Needs to be in init action to work.
-			 * @see  https://core.trac.wordpress.org/ticket/37539
-			 */
-			if ( ! is_admin() ) {
-				load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
-			}
+		/**
+		 * Frontend translation of roles is not working by default (Darn you WordPress!).
+		 * Needs to be in init action to work.
+		 * @see  https://core.trac.wordpress.org/ticket/37539
+		 */
+		$wp_mo = WP_LANG_DIR . '/admin-' . get_locale() . '.mo';
+		if ( ! is_admin() && file_exists( $wp_mo ) ) {
+			load_textdomain( 'default', $wp_mo );
 		}
 	}
 
