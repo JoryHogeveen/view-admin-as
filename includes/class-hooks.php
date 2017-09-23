@@ -55,6 +55,12 @@ class VAA_View_Admin_As_Hooks
 			return _wp_filter_build_unique_id( $hook, $callback, $priority );
 		}
 		// Fallback since `_wp_filter_build_unique_id()` is a private WP function.
+		if ( is_string( $callback ) ) {
+			return $callback;
+		}
+		if ( is_object( $callback ) ) {
+			$callback = array( $callback, '' );
+		}
 		if ( is_array( $callback ) ) {
 			if ( is_object( $callback[0] ) ) {
 				$callback[0] = get_class( $callback[0] );
@@ -63,7 +69,7 @@ class VAA_View_Admin_As_Hooks
 				$callback = implode( '::', $callback );
 			}
 		}
-		return $callback;
+		return (string) $callback;
 	}
 
 	/**
