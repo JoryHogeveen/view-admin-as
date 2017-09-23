@@ -589,7 +589,8 @@ final class VAA_View_Admin_As
 					__( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
 					'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
 				),
-		), false );
+			'prepend' => false,
+		) );
 	}
 
 	/**
@@ -604,6 +605,8 @@ final class VAA_View_Admin_As
 	 *     Required array.
 	 *     @type  string  $message  The notice message.
 	 *     @type  string  $type     (optional) The WP notice type class(es).
+	 *     @type  string  $prepend  (optional) Prepend the message (bold). Default: View Admin As.
+	 *                              Pass `false` or `null` to remove.
 	 * }
 	 * @return  void
 	 */
