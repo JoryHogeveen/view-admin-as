@@ -373,9 +373,7 @@ class VAA_View_Admin_As_Hooks
 		);
 		if ( ! $objects ) {
 			// Don't return full objects.
-			foreach ( $data as $type => $hooks ) {
-				$data[ $type ] = $this->_convert_callback( $hooks );
-			}
+			$data = $this->_convert_callback( $data );
 		}
 		if ( $keys ) {
 			$keys = (array) $keys;
@@ -421,21 +419,19 @@ class VAA_View_Admin_As_Hooks
 	}
 
 	/**
-	 * Convert object type callbacks into object class names instead of full object data.
+	 * Convert object types into object class names instead of full object data.
 	 * @since   1.8
-	 * @param   array[]  $hooks  The collection of hooks (that is, actions or filters).
-	 * @return  array[]
+	 * @param   array  $hooks  The collection of hooks (that is, actions or filters).
+	 * @return  array
 	 */
 	protected function _convert_callback( $hooks ) {
-		foreach ( (array) $hooks as $hook => $priorities ) {
-			foreach ( $priorities as $priority => $registered ) {
-				foreach ( $registered as $id => $args ) {
-					if ( is_array( $args['callback'] ) ) {
-						if ( is_object( $args['callback'][0] ) ) {
-							$hooks[ $hook ][ $priority ][ $id ]['callback'][0] = get_class( $args['callback'][0] );
-						}
-					}
-				}
+		foreach ( (array) $hooks as $key => $val ) {
+			if ( is_object( $val ) ) {
+				$hooks[ $key ] = get_class( $val );
+				continue;
+			}
+			if ( is_array( $val ) ) {
+				$hooks[ $key ] = $this->_convert_callback( $val );
 			}
 		}
 		return $hooks;
