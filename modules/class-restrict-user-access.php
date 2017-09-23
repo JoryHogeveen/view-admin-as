@@ -149,6 +149,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 */
 	public function do_view() {
 
+		if ( ! VAA_API::exists_callable( array( 'WPCALoader', 'load' ), true ) ) {
+			return;
+		}
+		WPCALoader::load();
+
 		if ( $this->get_levels( $this->store->get_view( $this->viewKey ) ) ) {
 
 			$this->selectedLevel     = $this->store->get_view( $this->viewKey );
