@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
@@ -102,6 +102,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	public function do_view() {
 
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
+
+			if ( ! VAA_API::exists_callable( array( 'Groups_Group' ), true ) ) {
+				return;
+			}
 
 			$this->selectedGroup = new Groups_Group( $this->store->get_view( $this->viewKey ) );
 

@@ -333,7 +333,11 @@ final class VAA_API
 			}
 
 			// Notify user if in debug mode
-			_doing_it_wrong( __METHOD__, 'View Admin As: Key <code>' . (string) $key . '</code> does not exist', null );
+			_doing_it_wrong(
+				__METHOD__,
+				'View Admin As: Key <code>' . (string) $key . '</code> does not exist',
+				null
+			);
 
 			// return no changes if key is not found or appending is not allowed.
 			return $array;
@@ -529,7 +533,7 @@ final class VAA_API
 	}
 
 	/**
-	 * Enhancement for is_callable(), also check for method_exists() when an array is passed.
+	 * Enhancement for is_callable(), also check for class_exists() or method_exists() when an array is passed.
 	 * Prevents incorrect `true` when a class has a __call() method.
 	 * Can also handle error notices.
 	 *
@@ -543,7 +547,7 @@ final class VAA_API
 		$pass = is_callable( $callable, $syntax_only );
 		if ( is_array( $callable ) ) {
 			if ( 1 === count( $callable ) ) {
-				$pass = function_exists( $callable[0] );
+				$pass = class_exists( $callable[0] );
 			} else {
 				$pass = method_exists( $callable[0], $callable[1] );
 			}

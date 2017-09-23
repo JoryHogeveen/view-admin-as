@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
@@ -149,12 +149,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 */
 	public function do_view() {
 
-		if ( ! VAA_API::exists_callable( array( 'WPCALoader', 'load' ), true ) ) {
-			return;
-		}
-		WPCALoader::load();
-
 		if ( $this->get_levels( $this->store->get_view( $this->viewKey ) ) ) {
+
+			if ( ! VAA_API::exists_callable( array( 'WPCALoader', 'load' ), true ) ) {
+				return;
+			}
+			WPCALoader::load();
 
 			$this->selectedLevel     = $this->store->get_view( $this->viewKey );
 			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
@@ -173,7 +173,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			}
 		}
 
-		if ( VAA_API::is_user_modified() && isset( $this->ruaLevelManager ) ) {
+		if ( VAA_API::is_user_modified() && is_object( $this->ruaLevelManager ) ) {
 
 			if ( is_callable( array( $this->ruaLevelManager, 'reset_user_levels_caps' ) ) ) {
 				/**
