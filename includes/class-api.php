@@ -538,9 +538,9 @@ final class VAA_API
 	 * Can also handle error notices.
 	 *
 	 * @since   1.7.4
-	 * @param   callable  $callable     The callable data.
-	 * @param   bool      $do_notice    Add an error notice when it isn't?
-	 * @param   bool      $syntax_only  See is_callable() docs.
+	 * @param   callable|array  $callable     The callable data.
+	 * @param   bool            $do_notice    Add an error notice when it isn't?
+	 * @param   bool            $syntax_only  See is_callable() docs.
 	 * @return  bool
 	 */
 	public static function exists_callable( $callable, $do_notice = false, $syntax_only = false ) {

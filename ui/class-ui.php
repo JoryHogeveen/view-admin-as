@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Renamed from VAA_View_Admin_As_Admin
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
@@ -129,6 +129,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * Show row meta on the plugin screen.
 	 *
 	 * @since   1.6.1
+	 * @see     WP_Plugins_List_Table::single_row()
 	 * @param   array[]  $links  The existing links.
 	 * @param   string   $file   The plugin file.
 	 * @return  array
@@ -328,15 +329,16 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @since   1.6     More options and better description.
 	 * @since   1.7     Moved to this class from main class.
 	 * @access  public
+	 * @see     wp_die()
 	 *
-	 * @param   string  $function_name  function callback.
-	 * @return  string  $function_name  function callback.
+	 * @param   callable  $callback  WP die callback.
+	 * @return  callable  $callback  WP die callback.
 	 */
-	public function die_handler( $function_name ) {
+	public function die_handler( $callback ) {
 
 		// Only do something if a view is selected.
 		if ( ! $this->store->get_view() ) {
-			return $function_name;
+			return $callback;
 		}
 
 		$options = array();
@@ -389,7 +391,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		</div>
 		<hr>
 		<?php
-		return $function_name;
+		return $callback;
 	}
 
 	/**

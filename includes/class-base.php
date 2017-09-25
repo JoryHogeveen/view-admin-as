@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.5
  * @since   1.7.3  Renamed from VAA_View_Admin_As_Class_Base
- * @version 1.7.3
+ * @version 1.7.4
  */
 abstract class VAA_View_Admin_As_Base
 {
