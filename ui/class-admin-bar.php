@@ -40,6 +40,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	public static $root = 'vaa';
 
 	/**
+	 * Admin bar parent item ID.
+	 *
+	 * @since  1.7.4
+	 * @static
+	 * @var    string
+	 */
+	public static $parent = 'top-secondary';
+
+	/**
 	 * Group the users under their roles?
 	 *
 	 * @since  1.5
@@ -84,8 +93,25 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			$this->groupUserRoles = true;
 		}
 
+		$priority = 10;
+		$location = $this->store->get_userSettings( 'admin_menu_location' );
+		if ( $location && in_array( $location, $this->store->get_allowedUserSettings( 'admin_menu_location' ), true ) ) {
+			self::$parent = $location;
+			if ( 'my-account' === $location ) {
+				$priority = -10;
+			}
+		}
+		/**
+		 * Set the priority in which the adminbar root node is added.
+		 * @since  1.7.4
+		 * @param  int     $priority
+		 * @param  string  $parent  The main VAA node parent.
+		 * @return int
+		 */
+		$priority = (int) apply_filters( 'vaa_admin_bar_priority', $priority, self::$parent );
+
 		// Add the default nodes to the WP admin bar.
-		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ) );
+		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ), $priority );
 		add_action( 'vaa_toolbar_menu', array( $this, 'admin_bar_menu' ), 10, 2 );
 
 		// Add the global nodes to the admin bar.
@@ -179,11 +205,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$title = $this->get_admin_bar_menu_title();
 
 		if ( empty( $root ) ) {
-			$root = 'top-secondary';
-			$location = $this->store->get_userSettings( 'admin_menu_location' );
-			if ( $location && in_array( $location, $this->store->get_allowedUserSettings( 'admin_menu_location' ), true ) ) {
-				$root = $location;
-			}
+			$root = self::$parent;
 		}
 
 		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
