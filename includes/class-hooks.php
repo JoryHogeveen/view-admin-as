@@ -47,7 +47,7 @@ class VAA_View_Admin_As_Hooks
 	 * @see     _wp_filter_build_unique_id()
 	 * @param   string    $hook      The name of the WordPress hook (that is, actions or filters).
 	 * @param   callable  $callback  The callable.
-	 * @param   int       $priority  The priority at which the function would be fired. Default is 10.
+	 * @param   int       $priority  The priority at which the function would be fired. Default: 10.
 	 * @return  string
 	 */
 	protected function _get_identifier( $hook, $callback, $priority ) {
@@ -79,8 +79,8 @@ class VAA_View_Admin_As_Hooks
 	 * @see     add_action()
 	 * @param   string    $hook           The name of the WordPress action.
 	 * @param   callable  $callback       The callable.
-	 * @param   int       $priority       (optional) The priority at which the function should be fired. Default is 10.
-	 * @param   int       $accepted_args  (optional) The number of arguments that should be passed to the $callback. Default is 1.
+	 * @param   int       $priority       (optional) The priority at which the function should be fired. Default: 10.
+	 * @param   int       $accepted_args  (optional) The number of arguments that should be passed to the $callback. Default: 1.
 	 */
 	public function add_action( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
 		add_action( $hook, $callback, $priority, $accepted_args );
@@ -94,8 +94,8 @@ class VAA_View_Admin_As_Hooks
 	 * @see     add_filter()
 	 * @param   string    $hook           The name of the WordPress filter.
 	 * @param   callable  $callback       The callable.
-	 * @param   int       $priority       (optional) The priority at which the function should be fired. Default is 10.
-	 * @param   int       $accepted_args  (optional) The number of arguments that should be passed to the $callback. Default is 1
+	 * @param   int       $priority       (optional) The priority at which the function should be fired. Default: 10.
+	 * @param   int       $accepted_args  (optional) The number of arguments that should be passed to the $callback. Default: 1.
 	 */
 	public function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
 		add_filter( $hook, $callback, $priority, $accepted_args );
@@ -138,7 +138,7 @@ class VAA_View_Admin_As_Hooks
 	 * @see     remove_action()
 	 * @param   string    $hook      The name of the WordPress action.
 	 * @param   callable  $callback  The callable.
-	 * @param   int       $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 * @param   int       $priority  (optional) The priority at which the function would be fired. Default: 10.
 	 */
 	public function remove_action( $hook, $callback, $priority = 10 ) {
 		$priority = $this->_validate_priority( $this->_actions, $hook, $callback, $priority );
@@ -153,7 +153,7 @@ class VAA_View_Admin_As_Hooks
 	 * @see     remove_filter()
 	 * @param   string    $hook      The name of the WordPress filter.
 	 * @param   callable  $callback  The callable.
-	 * @param   int       $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 * @param   int       $priority  (optional) The priority at which the function would be fired. Default: 10.
 	 */
 	public function remove_filter( $hook, $callback, $priority = 10 ) {
 		$priority = $this->_validate_priority( $this->_filters, $hook, $callback, $priority );
@@ -185,7 +185,7 @@ class VAA_View_Admin_As_Hooks
 	 *
 	 * @since   1.8
 	 * @param   string    $hook      The name of the WordPress action.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
 	 */
 	public function remove_all_hooks( $hook, $priority = false ) {
 		$this->remove_all_actions( $hook, $priority );
@@ -198,7 +198,7 @@ class VAA_View_Admin_As_Hooks
 	 * @since   1.8
 	 * @see     remove_all_actions()
 	 * @param   string    $hook      The name of the WordPress action.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
 	 */
 	public function remove_all_actions( $hook, $priority = false ) {
 		remove_all_actions( $hook, $priority );
@@ -211,7 +211,7 @@ class VAA_View_Admin_As_Hooks
 	 * @since   1.8
 	 * @see     remove_all_filters()
 	 * @param   string    $hook      The name of the WordPress filter.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
 	 */
 	public function remove_all_filters( $hook, $priority = false ) {
 		remove_all_filters( $hook, $priority );
@@ -242,7 +242,7 @@ class VAA_View_Admin_As_Hooks
 	 *
 	 * @since   1.8
 	 * @param   string    $hook      (optional) The name of the WordPress action.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
 	 */
 	public function remove_own_hooks( $hook = null, $priority = false ) {
 		$this->remove_own_actions( $hook, $priority );
@@ -254,7 +254,7 @@ class VAA_View_Admin_As_Hooks
 	 *
 	 * @since   1.8
 	 * @param   string    $hook      (optional) The name of the WordPress action.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
 	 */
 	public function remove_own_actions( $hook = null, $priority = false ) {
 		$this->_actions = $this->_remove_own( $this->_actions, $hook, $priority, 'remove_action' );
@@ -265,7 +265,7 @@ class VAA_View_Admin_As_Hooks
 	 *
 	 * @since   1.8
 	 * @param   string    $hook      (optional) The name of the WordPress filter.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default is 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
 	 */
 	public function remove_own_filters( $hook = null, $priority = false ) {
 		$this->_filters = $this->_remove_own( $this->_filters, $hook, $priority, 'remove_filter' );
@@ -320,7 +320,7 @@ class VAA_View_Admin_As_Hooks
 	 * @param   string    $hook      The name of the WordPress filter.
 	 * @param   callable  $callback  The callable.
 	 * @param   int       $priority  The priority at which the function should be fired.
-	 * @return  int  Default is 10.
+	 * @return  int  Default: 10.
 	 */
 	protected function _validate_priority( $hooks, $hook, $callback, $priority ) {
 		if ( null === $priority ) {
@@ -363,7 +363,7 @@ class VAA_View_Admin_As_Hooks
 	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
 	 *                               Order: hook type >> hook name >> priority >> function id >> hook args.
 	 *                               In case of a string it will stand for the hook type.
-	 * @param   bool  $objects  Return the full object of a callback? Default is false, can cause PHP memory issues.
+	 * @param   bool  $objects  Return the full object of a callback? Default: false, can cause PHP memory issues.
 	 * @return  array[]|mixed
 	 */
 	public function _get_hooks( $keys = null, $objects = false ) {
@@ -392,7 +392,7 @@ class VAA_View_Admin_As_Hooks
 	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
 	 *                               Order: hook name >> priority >> function id >> hook args.
 	 *                               In case of a string it will stand for the hook name.
-	 * @param   bool  $objects  Return the full object of a callback? Default is false, can cause PHP memory issues.
+	 * @param   bool  $objects  Return the full object of a callback? Default: false, can cause PHP memory issues.
 	 * @return  array[]|mixed
 	 */
 	public function _get_actions( $keys = null, $objects = false ) {
@@ -409,7 +409,7 @@ class VAA_View_Admin_As_Hooks
 	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
 	 *                               Order: hook name >> priority >> function id >> hook args.
 	 *                               In case of a string it will stand for the hook name.
-	 * @param   bool  $objects  Return the full object of a callback? Default is false, can cause PHP memory issues.
+	 * @param   bool  $objects  Return the full object of a callback? Default: false, can cause PHP memory issues.
 	 * @return  array[]|mixed
 	 */
 	public function _get_filters( $keys = null, $objects = false ) {
