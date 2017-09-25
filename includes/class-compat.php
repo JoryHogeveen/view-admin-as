@@ -81,6 +81,16 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		 */
 		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
 
+		/**
+		 * WP Admin UI Customize.
+		 * @since  1.7.4
+		 */
+		// wauc_admin_bar_default_load
+		add_filter( 'wauc_admin_bar_menu_add_nodes', array( $this, 'filter_wauc_admin_bar_menu_add_nodes' ), 10, 2 );
+		add_filter( 'wauc_admin_bar_filter_load', array( $this, 'filter_wauc_admin_bar_filter_load' ) );
+		add_filter( 'wauc_admin_bar_menu_widget_no_submenu', array( $this, 'filter_wauc_admin_bar_menu_widget_no_submenu' ) );
+		add_filter( 'wauc_admin_bar_menu_widget_title_readonly_vaa', '__return_true' );
+
 	}
 
 	/**
@@ -402,6 +412,108 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			$groups[] = 'view_admin_as';
 		}
 		return $groups;
+	}
+
+	/**
+	 * Force user setting location when WAUC is active.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
+	 * @since   1.7.4
+	 * @access  public
+	 * @see     WP_Admin_UI_Customize::admin_bar_menu()
+	 * @param   array  $wauc_nodes
+	 * @param   array  $all_nodes
+	 * @return  array
+	 */
+	public function filter_wauc_admin_bar_menu_add_nodes( $wauc_nodes, $all_nodes ) {
+
+		$admin_menu_location = $this->store->get_userSettings( 'admin_menu_location' );
+		$vaa_root = VAA_View_Admin_As_Admin_Bar::$root;
+
+		$check = array(
+			'depth' => 'main',
+		);
+		if ( 'my-account' === $admin_menu_location ) {
+			$check['depth'] = 'sub';
+			$check['location'] = 'right';
+			$check['parent'] = $admin_menu_location;
+		}
+
+		// Compat when this node is added twice.
+		foreach ( $wauc_nodes as $location => $levels ) {
+			foreach ( $levels as $depth => $nodes ) {
+				foreach ( $nodes as $id => $node ) {
+					if ( isset( $node['id'] ) && $vaa_root === $node['id'] ) {
+
+						$current = array(
+							'depth' => $depth,
+							'location' => $location,
+							'parent' => $node['parent'],
+						);
+
+						foreach ( $check as $key => $val ) {
+							if ( $val !== $current[ $key ] ) {
+								unset( $wauc_nodes[ $location ][ $depth ][ $id ] );
+								break;
+							}
+						}
+
+					}
+				}
+			}
+		}
+
+		// Make sure all VAA nodes will be added.
+		$wauc_nodes['vaa'] = array( 'sub' => array() );
+		foreach ( $all_nodes as $node ) {
+			$id = ( ! empty( $node->id ) ) ? $node->id : null;
+			if ( $vaa_root !== $id && 0 === strpos( $id, $vaa_root ) ) {
+				$wauc_nodes['vaa']['sub'][] = (array) $node;
+			}
+		}
+
+		return $wauc_nodes;
+	}
+
+	/**
+	 * Remove our nodes from the WAUC admin bar editor.
+	 * @since   1.7.4
+	 * @access  public
+	 * @see     WP_Admin_UI_Customize::admin_bar_filter_load()
+	 * @param   array  $all_nodes
+	 * @return  array
+	 */
+	public function filter_wauc_admin_bar_filter_load( $all_nodes ) {
+
+		$slug = VAA_View_Admin_As_Admin_Bar::$root;
+		$subs = array( 'sub', 'sub2', 'sub3', 'sub4' );
+
+		foreach ( $subs as $sub ) {
+			if ( empty( $all_nodes['right'][ $sub ] ) ) {
+				continue;
+			}
+			foreach ( $all_nodes['right'][ $sub ] as $node_id => $node ) {
+				if ( 0 === strpos( $node->parent , $slug ) ) {
+					unset( $all_nodes['right'][ $sub ][ $node_id ] );
+				}
+			}
+		}
+		return $all_nodes;
+	}
+
+	/**
+	 * Remove submenu options for WAUC.
+	 * @since   1.7.4
+	 * @see     WP_Admin_UI_Customize::admin_bar_menu_widget()
+	 * @param   array  $no_submenu
+	 * @return  array
+	 */
+	public function filter_wauc_admin_bar_menu_widget_no_submenu( $no_submenu ) {
+		$no_submenu[] = VAA_View_Admin_As_Admin_Bar::$root;
+		return $no_submenu;
 	}
 
 	/**
