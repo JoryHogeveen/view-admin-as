@@ -780,10 +780,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 				'id'     => $root . '-searchusers',
 				'parent' => $root,
 				'title'  => self::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) )
-				. self::do_input( array(
-					'name' => $root . '-searchusers',
-					'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
-				) ),
+					. self::do_input( array(
+						'name'        => $root . '-searchusers',
+						'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
+					) ),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'ab-vaa-search search-users',

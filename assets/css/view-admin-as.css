@@ -75,7 +75,8 @@
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
-#wpadminbar #wp-admin-bar-vaa .ab-item .description:first-child {margin-bottom: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description:first-child:not(:only-child) {margin-bottom: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description .ab-icon {line-height: 1; font-size: 1em; padding: 1px 0; margin-right: 3px;}
 
 /* First level group titles */
 #wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}

@@ -419,7 +419,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 					$current_group = Groups_Group::read_by_name( $group );
 				}
 				if ( $current_group && $current_group->group_id === $selected_group->group_id ) {
-					$show_content = ( $reverse ) ? false : true;
+					$show_content = ! $reverse;
 					break;
 				}
 			}
@@ -494,7 +494,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	public function vaa_viewing_as_title( $title ) {
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
 			// Translators: %s stands for "Group" (translated with the Groups domain).
-			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->translate_groups( 'Group' ) ) . ': '
+			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->translate_remote( 'Group' ) ) . ': '
 			         . $this->get_groups( $this->store->get_view( $this->viewKey ) )->name;
 		}
 		return $title;
@@ -528,11 +528,24 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			'id'     => $root . '-title',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' )
-			            . $this->translate_groups( 'Groups' ),
+			            . $this->translate_remote( 'Groups' ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				'tabindex' => '0',
+			),
+		) );
+
+		$admin_bar->add_node( array(
+			'id'     => $root . '-admin',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_description(
+				VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
+				. __( 'Plugin', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $this->translate_remote( 'Groups' )
+			),
+			'href'   => admin_url( 'admin.php?page=groups-admin' ),
+			'meta'   => array(
+				'class'  => 'auto-height',
 			),
 		) );
 
@@ -634,7 +647,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @param   string  $string  The string.
 	 * @return  string
 	 */
-	public function translate_groups( $string ) {
+	public function translate_remote( $string ) {
 		$domain = ( defined( 'GROUPS_PLUGIN_DOMAIN' ) ) ? GROUPS_PLUGIN_DOMAIN : 'groups';
 		// @codingStandardsIgnoreLine >> Prevent groups translation from getting parsed by translate.wordpress.org
 		return __( $string, $domain );

@@ -383,6 +383,19 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 				),
 			) );
 
+			$admin_bar->add_node( array(
+				'id'     => $root . '-admin',
+				'parent' => $root,
+				'title'  => VAA_View_Admin_As_Form::do_description(
+					VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
+					. __( 'Plugin', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $this->translate_remote( 'Restrict User Access' )
+				),
+				'href'   => admin_url( 'admin.php?page=wprua' ),
+				'meta'   => array(
+					'class'  => 'auto-height',
+				),
+			) );
+
 		} else {
 
 			$admin_bar->add_node( array(
@@ -576,6 +589,19 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 		}
 
 		return $caps;
+	}
+
+	/**
+	 * Translate with another domain.
+	 *
+	 * @since   1.7.4
+	 * @param   string  $string  The string.
+	 * @return  string
+	 */
+	public function translate_remote( $string ) {
+		$domain = ( defined( 'RUA_App::DOMAIN' ) ) ? RUA_App::DOMAIN : 'restrict-user-access';
+		// @codingStandardsIgnoreLine >> Prevent groups translation from getting parsed by translate.wordpress.org
+		return __( $string, $domain );
 	}
 
 	/**
