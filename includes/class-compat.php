@@ -488,16 +488,19 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function filter_wauc_admin_bar_filter_load( $all_nodes ) {
 
-		$slug = VAA_View_Admin_As_Admin_Bar::$root;
-		$subs = array( 'sub', 'sub2', 'sub3', 'sub4' );
+		if ( empty( $all_nodes['right'] ) ) {
+			return $all_nodes;
+		}
 
-		foreach ( $subs as $sub ) {
-			if ( empty( $all_nodes['right'][ $sub ] ) ) {
+		$slug = VAA_View_Admin_As_Admin_Bar::$root;
+
+		foreach ( (array) $all_nodes['right'] as $location => $nodes ) {
+			if ( 0 !== strpos( $location, 'sub' ) ) {
 				continue;
 			}
-			foreach ( $all_nodes['right'][ $sub ] as $node_id => $node ) {
-				if ( 0 === strpos( $node->parent , $slug ) ) {
-					unset( $all_nodes['right'][ $sub ][ $node_id ] );
+			foreach ( $nodes as $key => $node ) {
+				if ( 0 === strpos( $node->id , $slug . '-' ) && 0 === strpos( $node->id , $slug ) ) {
+					unset( $all_nodes['right'][ $location ][ $key ] );
 				}
 			}
 		}
