@@ -93,9 +93,10 @@
 /**
  * Icon fixes
  */
-#wpadminbar #wp-admin-bar-vaa > .ab-item > .ab-label {float: left;} /* IE fix */
-#wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {top: 2px;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .ab-icon.alignright {float: right; margin-right: 0; margin-left: 6px;}
+#wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {top: 2px;}
+#wpadminbar #wp-admin-bar-vaa > .ab-item .ab-label {float: left;} /* IE fix */
+#wpadminbar #wp-admin-bar-vaa > .ab-item .ab-label .ab-icon {margin-right: -3px;}
 #wpadminbar > #wp-toolbar > #wp-admin-bar-root-default #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon, /* Fix when located on admin bar default */
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {float: none; font-size: 16px; line-height: 16px; vertical-align: text-bottom; font-weight: normal !important; padding: 0;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before {display: none;}
@@ -265,8 +266,9 @@
 /**
  * Location: My Account;
  */
-#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item > .ab-label {line-height: 26px;}
-#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item > .ab-icon {top: 0;}
+#wpadminbar #wp-admin-bar-my-account-default {z-index: 999999;} /* Box shadow fix */
+#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item .ab-label {line-height: 26px;}
+#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item .ab-icon {top: 0;}
 
 /**
  * Our custom frontend toolbar

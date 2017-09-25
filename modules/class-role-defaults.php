@@ -632,6 +632,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$title .= VAA_View_Admin_As_Form::do_icon( 'dashicons-welcome-view-site', array(
 			'title' => __( 'Recording screen changes for role defaults', VIEW_ADMIN_AS_DOMAIN )
 					   . ': ' . $this->store->get_rolenames( $role ),
+			'class' => 'alignright',
 		) );
 		return $title;
 	}
