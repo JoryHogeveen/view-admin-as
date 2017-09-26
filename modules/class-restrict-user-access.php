@@ -118,14 +118,26 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 		}
 		$this->ruaApp = RUA_App::instance();
 
-		if ( isset( $this->ruaApp->level_manager ) ) {
-			$this->ruaLevelManager = $this->ruaApp->level_manager;
+		if ( ! is_object( $this->ruaApp->level_manager ) ) {
+			return;
 		}
+		$this->ruaLevelManager = $this->ruaApp->level_manager;
 
-		$access_cap            = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_options';
 		$this->ruaMetaPrefix   = ( defined( 'RUA_App::META_PREFIX' ) ) ? RUA_App::META_PREFIX : '_ca_';
 		$this->ruaTypeRestrict = ( defined( 'RUA_App::TYPE_RESTRICT' ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
 		$this->ruaScreen       = ( defined( 'RUA_App::BASE_SCREEN' ) ) ? RUA_App::BASE_SCREEN : 'wprua';
+
+		$this->init();
+	}
+
+	/**
+	 * Setup module and hooks.
+	 *
+	 * @since   1.7.4
+	 * @access  private
+	 */
+	private function init() {
+		$access_cap = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_options';
 
 		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
 

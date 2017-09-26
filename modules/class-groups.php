@@ -79,6 +79,17 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			return;
 		}
 
+		$this->init();
+	}
+
+	/**
+	 * Setup module and hooks.
+	 *
+	 * @since   1.7.4
+	 * @access  private
+	 */
+	private function init() {
+
 		$access_cap = ( defined( 'GROUPS_ADMINISTER_GROUPS' ) ) ? GROUPS_ADMINISTER_GROUPS : 'manage_options';
 
 		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
