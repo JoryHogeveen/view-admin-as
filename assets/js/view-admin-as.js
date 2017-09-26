@@ -28,7 +28,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @property  {string}   _vaa_nonce
 	 * @property  {boolean}  _debug
 	 * @property  {string}   __no_users_found      'No users found.'.
-	 * @property  {string}   __key_already_exists: 'Key already exists.'.
+	 * @property  {string}   __key_already_exists  'Key already exists.'.
 	 * @property  {string}   __success             'Success'.
 	 * @property  {string}   __confirm             'Are you sure?'.
 	 * @property  {string}   __download            'Download'.

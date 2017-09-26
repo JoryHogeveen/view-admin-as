@@ -82,7 +82,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
 
 		/**
-		 * WP Admin UI Customize.
+		 * WP Admin UI Customize 1.5.11+.
 		 * @since  1.7.4
 		 */
 		// wauc_admin_bar_default_load
@@ -499,7 +499,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 				continue;
 			}
 			foreach ( $nodes as $key => $node ) {
-				if ( 0 === strpos( $node->id , $slug . '-' ) && 0 === strpos( $node->id , $slug ) ) {
+				// Check if node ID starts with `vaa-` and node parent starts with `vaa`.
+				if ( 0 === strpos( $node->id , $slug . '-' ) && 0 === strpos( $node->parent , $slug ) ) {
 					unset( $all_nodes['right'][ $location ][ $key ] );
 				}
 			}

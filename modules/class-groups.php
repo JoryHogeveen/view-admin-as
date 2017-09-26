@@ -55,6 +55,12 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	private $viewKey = 'groups';
 
 	/**
+	 * @since  1.7.4
+	 * @var    string
+	 */
+	private $groupsScreen = 'groups-admin';
+
+	/**
 	 * Populate the instance and validate Groups plugin.
 	 *
 	 * @since   1.7.2
@@ -541,9 +547,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_description(
 				VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
-				. __( 'Plugin', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $this->translate_remote( 'Groups' )
+				. __( 'Plugin' ) . ': ' . $this->translate_remote( 'Groups' )
 			),
-			'href'   => admin_url( 'admin.php?page=groups-admin' ),
+			'href'   => menu_page_url( $this->groupsScreen, false ),
 			'meta'   => array(
 				'class'  => 'auto-height',
 			),

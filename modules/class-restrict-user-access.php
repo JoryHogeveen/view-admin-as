@@ -93,6 +93,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	private $ruaTypeRestrict;
 
 	/**
+	 * @since  1.7.4
+	 * @var    string
+	 */
+	private $ruaScreen;
+
+	/**
 	 * Populate the instance and validate RUA plugin is active.
 	 *
 	 * @since   1.6.4
@@ -119,6 +125,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 		$access_cap            = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_options';
 		$this->ruaMetaPrefix   = ( defined( 'RUA_App::META_PREFIX' ) ) ? RUA_App::META_PREFIX : '_ca_';
 		$this->ruaTypeRestrict = ( defined( 'RUA_App::TYPE_RESTRICT' ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
+		$this->ruaScreen       = ( defined( 'RUA_App::BASE_SCREEN' ) ) ? RUA_App::BASE_SCREEN : 'wprua';
 
 		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
 
@@ -388,9 +395,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 				'parent' => $root,
 				'title'  => VAA_View_Admin_As_Form::do_description(
 					VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
-					. __( 'Plugin', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $this->translate_remote( 'Restrict User Access' )
+					. __( 'Plugin' ) . ': ' . $this->translate_remote( 'Restrict User Access' )
 				),
-				'href'   => admin_url( 'admin.php?page=wprua' ),
+				'href'   => menu_page_url( $this->ruaScreen, false ),
 				'meta'   => array(
 					'class'  => 'auto-height',
 				),
