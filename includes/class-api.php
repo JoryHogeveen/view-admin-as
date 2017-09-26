@@ -538,14 +538,18 @@ final class VAA_API
 	 * Can also handle error notices.
 	 *
 	 * @since   1.7.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   callable|array  $callable     The callable data.
-	 * @param   bool            $do_notice    Add an error notice when it isn't?
+	 * @param   bool|string     $do_notice    Add an error notice when it isn't?
 	 * @param   bool            $syntax_only  See is_callable() docs.
 	 * @return  bool
 	 */
 	public static function exists_callable( $callable, $do_notice = false, $syntax_only = false ) {
 		$pass = is_callable( $callable, $syntax_only );
-		if ( is_array( $callable ) ) {
+		if ( $pass && is_array( $callable ) ) {
 			if ( 1 === count( $callable ) ) {
 				$pass = class_exists( $callable[0] );
 			} else {
@@ -559,20 +563,42 @@ final class VAA_API
 			return false;
 		}
 		if ( ! is_string( $do_notice ) ) {
-			if ( is_array( $callable ) ) {
-				if ( is_object( $callable[0] ) ) {
-					$callable[0] = get_class( $callable[0] );
-					$callable = implode( '->', $callable );
-				} else {
-					$callable = implode( '::', $callable );
-				}
-			}
-			$do_notice = $callable . ' not does not exists or is not callable.';
+			$callable = self::callable_to_string( $callable );
+			$do_notice = '<code>' . $callable . '</code> does not exists or is not callable.';
 		}
 		view_admin_as()->add_error_notice( $callable, array(
 			'message' => $do_notice,
 		) );
 		return false;
+	}
+
+	/**
+	 * Convert callable variable to string for display.
+	 *
+	 * @since   1.7.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   callable|array  $callable
+	 * @return  string
+	 */
+	public static function callable_to_string( $callable ) {
+		if ( is_string( $callable ) ) {
+			return $callable;
+		}
+		if ( is_object( $callable ) ) {
+			$callable = array( $callable, '' );
+		}
+		if ( is_array( $callable ) ) {
+			if ( is_object( $callable[0] ) ) {
+				$callable[0] = get_class( $callable[0] );
+				$callable = implode( '->', $callable );
+			} else {
+				$callable = implode( '::', $callable );
+			}
+		}
+		return (string) $callable;
 	}
 
 	/**
