@@ -52,18 +52,28 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 
 	/**
 	 * Added must-use (mu-plugins) compatibility.
+	 *
+	 * @since  1.7.3
 	 * Move this file into the root of your mu-plugins directory, not in the `view-admin-as` subdirectory.
 	 * This is a limitation of WordPress and probably won't change soon.
-	 *
+	 * @example
 	 * Plugins dir:   /wp-content/mu-plugins/view-admin-as/...
 	 * This file dir: /wp-content/mu-plugins/view-admin-as.php
 	 *
-	 * @since  1.7.3
+	 * @since  1.7.4  Compatibility with mu-plugin loader scripts.
+	 * @example  https://gist.github.com/JoryHogeveen/b91d144c9916df430c821fcd834a9667
 	 */
 	if ( 0 === strpos( VIEW_ADMIN_AS_FILE, WPMU_PLUGIN_DIR ) ) {
 		define( 'VIEW_ADMIN_AS_MU',  true );
-		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' ) );
-		define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' ) );
+		if ( basename( VIEW_ADMIN_AS_FILE ) === VIEW_ADMIN_AS_BASENAME ) {
+			// This file is in the mu root folder.
+			define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' ) );
+			define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) . trailingslashit( 'view-admin-as' ) );
+		} else {
+			// This file is in the VAA folder, probably loaded using a mu-plugin loader.
+			define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
+			define( 'VIEW_ADMIN_AS_URL', plugin_dir_url( VIEW_ADMIN_AS_FILE ) );
+		}
 	} else {
 		define( 'VIEW_ADMIN_AS_MU',  false );
 		define( 'VIEW_ADMIN_AS_DIR', plugin_dir_path( VIEW_ADMIN_AS_FILE ) );
