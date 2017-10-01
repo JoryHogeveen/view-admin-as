@@ -202,12 +202,13 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 = 1.7.4 =
 
-*	**Enhancement:** Role defaults / Role manager: download export data as file + import from file. [#73](https://github.com/JoryHogeveen/view-admin-as/issues/73)
+*	**Feature:** Role defaults / Role manager: download export data as file + import from file. [#73](https://github.com/JoryHogeveen/view-admin-as/issues/73)
 *	**Enhancement:** Refresh page instead of redirect to home when switching to a site visitor on the frontend. [#76](https://github.com/JoryHogeveen/view-admin-as/issues/76)
 *	**Enhancement:** Role Manager: Refresh the page if a role is updated while active in the current view.
 *	**Enhancement:** jQuery selector performance.
 *	**Compatibility:** WP Admin UI Customize admin bar editor. [#40](https://github.com/JoryHogeveen/view-admin-as/issues/40) & [WAUC/#1](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/1)
 *	**Compatibility:** Fix issue with Restrict User Access. [RUA/#15](https://github.com/intoxstudio/restrict-user-access/issues/15)
+*	**Compatibility:** Must-use plugin loader scripts.
 *	**UI:** The almighty View Admin As loader icon.
 *	**UI:** Full opacity when semi-transparent group nodes are opened.
 *	**UI:** Admin page links for Groups and Restrict User Access modules.

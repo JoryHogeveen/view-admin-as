@@ -254,7 +254,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		$caps = apply_filters( 'ure_full_capabilites', $caps );
 
 		// @since  1.7.1  WPFront User Role Editor.
-		if ( class_exists( 'WPFront_User_Role_Editor' ) && isset( WPFront_User_Role_Editor::$ROLE_CAPS ) ) {
+		if ( class_exists( 'WPFront_User_Role_Editor' ) && ! empty( WPFront_User_Role_Editor::$ROLE_CAPS ) ) {
 			$caps = array_merge( (array) WPFront_User_Role_Editor::$ROLE_CAPS, $caps );
 		}
 
@@ -307,7 +307,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 					'manage_tags',
 					*/
 				),
-				// @see bp-core-caps.php >> bp_get_community_caps().
+				// @see bp_get_community_caps() >> bp-core-caps.php.
 				apply_filters( 'bp_get_community_caps', array() ),
 				$caps
 			);
