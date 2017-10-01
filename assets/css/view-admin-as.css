@@ -66,11 +66,13 @@
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results {margin: 6px 0; padding: 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results:empty {display: none;}
 
-/* Auto add spacing to first level sub groups */
+/* Spacing for first level sub groups */
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-spacing-top,
 #wpadminbar #wp-admin-bar-vaa > div > ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
-/* Auto remove spacing from second level sub groups */
-#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary + ul.ab-sub-secondary {padding-top: 0;}
+/* Spacing for second level sub groups and lower */
+#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary {padding: 3px 0 4px;}
+#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary li.active ~ li:last-child {padding-bottom: 3px;}
+#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 2px;}
 
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
 
