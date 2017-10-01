@@ -595,9 +595,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_group( array(
 			'id'     => $root . '-select',
 			'parent' => $root . '-manager',
-			'meta'   => array(
-				'class' => 'ab-sub-secondary ab-vaa-spacing-top',
-			),
 		) );
 
 		// Used in templates

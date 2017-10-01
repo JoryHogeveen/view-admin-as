@@ -1157,7 +1157,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-meta',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1336,7 +1336,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-bulk-users',
 				'parent' => $root,
 				'meta'   => array(
-					'class' => 'ab-sub-secondary',
+					'class' => 'ab-sub-secondary vaa-toggle-group',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1404,7 +1404,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'id'     => $root . '-bulk-roles',
 					'parent' => $root,
 					'meta'   => array(
-						'class' => 'ab-sub-secondary',
+						'class' => 'ab-sub-secondary vaa-toggle-group',
 					),
 				) );
 				$admin_bar->add_node( array(
@@ -1472,7 +1472,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-copy',
 				'parent' => $root,
 				'meta'   => array(
-					'class' => 'ab-sub-secondary',
+					'class' => 'ab-sub-secondary vaa-toggle-group',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1584,7 +1584,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-export',
 				'parent' => $root,
 				'meta'   => array(
-					'class' => 'ab-sub-secondary',
+					'class' => 'ab-sub-secondary vaa-toggle-group',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1649,7 +1649,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-import',
 				'parent' => $root,
 				'meta'   => array(
-					'class' => 'ab-sub-secondary',
+					'class' => 'ab-sub-secondary vaa-toggle-group',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1800,7 +1800,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-clear',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary vaa-sub-transparent',
+				'class' => 'ab-sub-secondary vaa-toggle-group vaa-sub-transparent',
 			),
 		) );
 		$admin_bar->add_node( array(

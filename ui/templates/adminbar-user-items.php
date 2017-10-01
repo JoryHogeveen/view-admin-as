@@ -55,7 +55,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 						'id' => $group,
 						'parent' => $parent,
 						'meta'   => array(
-							'class' => 'ab-sub-secondary vaa-auto-max-height',
+							'class' => 'vaa-auto-max-height',
 						),
 					) );
 				}

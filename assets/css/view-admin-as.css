@@ -58,24 +58,36 @@
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item * {font-style: italic !important;}
 
+/* Semi transparent groups */
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent > * {opacity: 0.5; transition: opacity 0.2s;}
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent:hover > *,
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent .active,
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent .active ~ * {opacity: 1;}
 
+/* Search results */
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results {margin: 6px 0; padding: 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results:empty {display: none;}
 
 /* Spacing for first level sub groups */
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-spacing-top,
-#wpadminbar #wp-admin-bar-vaa > div > ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
+#wpadminbar #wp-admin-bar-vaa ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
 /* Spacing for second level sub groups and lower */
-#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary {padding: 3px 0 4px;}
-#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary li.active ~ li:last-child {padding-bottom: 3px;}
-#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 2px;}
+#wpadminbar #wp-admin-bar-vaa .menupop ul + ul,
+#wpadminbar #wp-admin-bar-vaa .menupop ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 2px;}
+/* Spacing for third level sub groups and lower */
+#wpadminbar #wp-admin-bar-vaa .menupop .menupop ul + ul,
+#wpadminbar #wp-admin-bar-vaa .menupop .menupop ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 1px;}
+/* Remove unneeded spacing */
+#wpadminbar #wp-admin-bar-vaa ul:not(.ab-sub-secondary) + ul.ab-sub-secondary,
+#wpadminbar #wp-admin-bar-vaa ul.ab-sub-secondary + ul:not(.ab-sub-secondary) {margin-top: 0;}
 
+/* Toggle groups */
+#wpadminbar #wp-admin-bar-vaa .menupop .ab-sub-wrapper ul.vaa-toggle-group {padding: 3px 0 4px;}
+#wpadminbar #wp-admin-bar-vaa .menupop .ab-sub-wrapper ul.vaa-toggle-group li.active ~ li:last-child {padding-bottom: 3px;}
+
+/* Auto height */
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
 
+/* Descriptions */
 #wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .description:first-child:not(:only-child) {margin-bottom: 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .description .ab-icon {line-height: 1; font-size: 1em; padding: 1px 0; margin-right: 3px;}
