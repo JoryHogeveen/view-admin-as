@@ -556,20 +556,20 @@ final class VAA_API
 				$pass = method_exists( $callable[0], $callable[1] );
 			}
 		}
-		if ( $pass ) {
-			return true;
+		if ( ! $pass && $do_notice ) {
+			if ( ! is_string( $do_notice ) ) {
+				$callable = self::callable_to_string( $callable );
+				$do_notice = sprintf(
+					// Translators: %s stands for the requested class, method or function.
+					__( '%s does not exists or is not callable.', VIEW_ADMIN_AS_DOMAIN ),
+					'<code>' . $callable . '</code>'
+				);
+			}
+			view_admin_as()->add_error_notice( $callable, array(
+				'message' => $do_notice,
+			) );
 		}
-		if ( ! $do_notice ) {
-			return false;
-		}
-		if ( ! is_string( $do_notice ) ) {
-			$callable = self::callable_to_string( $callable );
-			$do_notice = '<code>' . $callable . '</code> does not exists or is not callable.';
-		}
-		view_admin_as()->add_error_notice( $callable, array(
-			'message' => $do_notice,
-		) );
-		return false;
+		return (boolean) $pass;
 	}
 
 	/**

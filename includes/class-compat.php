@@ -116,7 +116,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @see     init()
+	 * @see     VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   array   $caps  The capabilities.
 	 * @param   bool[]  $args  Pass arguments to get only certain capabilities.
@@ -151,7 +151,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.7.3  Renamed from add_capabilities().
 	 * @access  public
-	 * @see     init()
+	 * @see     VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   array  $caps  The capabilities.
 	 * @return  array
@@ -334,7 +334,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6    Moved to this class from main class.
 	 * @since   1.6.2  Check for all provided capabilities.
 	 * @access  public
-	 * @see     init()
+	 * @see     VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   bool   $bool  Boolean provided by the pods_is_admin hook (not used).
 	 * @param   array  $caps  String or Array provided by the pods_is_admin hook.
@@ -358,7 +358,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @see     init()
+	 * @see     VAA_View_Admin_As_Compat::init()
 	 */
 	public function action_members_register_cap_group() {
 		if ( ! function_exists( 'members_register_cap_group' ) ) {
@@ -380,7 +380,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @see     init()
+	 * @see     VAA_View_Admin_As_Compat::init()
 	 * @see     URE_Capabilities_Groups_Manager::get_groups_tree()
 	 * @param   array  $groups  Current groups
 	 * @return  array
@@ -400,7 +400,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @see     init()
+	 * @see     VAA_View_Admin_As_Compat::init()
 	 * @see     URE_Capabilities_Groups_Manager::get_cap_groups()
 	 * @param   array   $groups  Current capability groups
 	 * @param   string  $cap_id  Capability identifier
