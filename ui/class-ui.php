@@ -159,7 +159,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 			'support' => array(
 				'title' => __( 'Support', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Need support?', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-testimonial',
+				'icon'  => 'dashicons-sos',
 				'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
 			),
 			'slack' => array(
