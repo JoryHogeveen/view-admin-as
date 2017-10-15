@@ -90,6 +90,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		add_filter( 'wauc_admin_bar_filter_load', array( $this, 'filter_wauc_admin_bar_filter_load' ) );
 		add_filter( 'wauc_admin_bar_menu_widget_no_submenu', array( $this, 'filter_wauc_admin_bar_menu_widget_no_submenu' ) );
 		add_filter( 'wauc_admin_bar_menu_widget_title_readonly_vaa', '__return_true' );
+		add_filter( 'wauc_admin_bar_menu_widget_disable_target_vaa', '__return_true' );
 
 	}
 
