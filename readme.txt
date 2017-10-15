@@ -212,6 +212,7 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 *	**UI:** The almighty View Admin As loader icon.
 *	**UI:** Full opacity when semi-transparent group nodes are opened.
 *	**UI:** Admin page links for Groups and Restrict User Access modules.
+*	**UI:** Resizable checkbox wrappers.
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/75)
 

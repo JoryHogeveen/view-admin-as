@@ -239,6 +239,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 			} );
 
+			// @since  1.7.4  Auto resizable.
+			$( VAA_View_Admin_As.prefix + '.vaa-resizable' ).each( function() {
+				var $this = $( this ),
+					height = $this.css( 'max-height' );
+				$this.css( {
+					'max-height': 'none',
+					'height': height,
+					'resize': 'vertical'
+				} );
+			} );
+
 		} ); // End window.load.
 
 		// Process reset.

@@ -1227,7 +1227,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'title'  => $meta_select_content,
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-multipleselect vaa-small',
+				'class' => 'ab-vaa-multipleselect vaa-small vaa-resizable',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1368,7 +1368,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'title'  => implode( '', $users_check_content ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-multipleselect vaa-small',
+					'class' => 'ab-vaa-multipleselect vaa-small vaa-resizable',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1504,7 +1504,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'title'  => implode( '', $role_check_content ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-multipleselect vaa-small',
+					'class' => 'ab-vaa-multipleselect vaa-small vaa-resizable',
 				),
 			) );
 
