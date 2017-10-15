@@ -206,7 +206,8 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 *	**Enhancement:** Refresh page instead of redirect to home when switching to a site visitor on the frontend. [#76](https://github.com/JoryHogeveen/view-admin-as/issues/76)
 *	**Enhancement:** Role Manager: Refresh the page if a role is updated while active in the current view.
 *	**Enhancement:** jQuery selector performance.
-*	**Compatibility:** WP Admin UI Customize admin bar editor. [#40](https://github.com/JoryHogeveen/view-admin-as/issues/40) & [WAUC/#1](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/1)
+*	**Compatibility:** [WP 4.9 capabilities](https://make.wordpress.org/core/2017/10/15/improvements-for-roles-and-capabilities-in-4-9/).
+*	**Compatibility:** WP Admin UI Customize admin bar editor. [#40](https://github.com/JoryHogeveen/view-admin-as/issues/40) & [WAUC/#1](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/1) & [WAUC/#2](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/2)
 *	**Compatibility:** Fix issue with Restrict User Access. [RUA/#15](https://github.com/intoxstudio/restrict-user-access/issues/15)
 *	**Compatibility:** Must-use plugin loader scripts.
 *	**UI:** The almighty View Admin As loader icon.

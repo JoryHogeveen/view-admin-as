@@ -201,6 +201,19 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		}
 
 		/**
+		 * Other WordPress capabilities.
+		 * @since  1.7.4
+		 */
+		$caps = array_merge( array(
+			// @since  4.9
+			'activate_plugin',
+			'deactivate_plugin',
+			'deactivate_plugins',
+			'install_languages',
+			'update_languages',
+		), $caps );
+
+		/**
 		 * Network capabilities.
 		 * @since  1.5.3
 		 * @since  1.7.2  Added new WP 4.8 caps.
