@@ -204,6 +204,12 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 				'icon'  => 'dashicons-smiley',
 				'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
 			),
+			'plugins' => array(
+				'title' => __( 'Plugins', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Check out my other plugins', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-admin-plugins',
+				'url'   => 'https://profiles.wordpress.org/keraweb/#content-plugins',
+			),
 		);
 
 		return $this->links;
