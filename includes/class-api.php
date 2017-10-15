@@ -602,7 +602,7 @@ final class VAA_API
 	}
 
 	/**
-	 * AJAX Request validator. Verifies caller and nonce.
+	 * AJAX request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
 	 * @since   1.7
@@ -623,7 +623,7 @@ final class VAA_API
 	}
 
 	/**
-	 * AJAX Request validator. Verifies caller and nonce.
+	 * Normal request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
 	 * @since   1.7
@@ -671,7 +671,7 @@ final class VAA_API
 	}
 
 	/**
-	 * AJAX Request check.
+	 * AJAX request check.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -690,7 +690,7 @@ final class VAA_API
 	}
 
 	/**
-	 * Normal Request check.
+	 * Normal request check.
 	 *
 	 * @since   1.7
 	 * @access  public
