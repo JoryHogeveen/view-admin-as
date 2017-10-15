@@ -693,6 +693,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				$data = array_intersect_key( $data, $this->store->get_caps() );
 			}
 
+			// @since  1.7.4  Forbidden capabilities.
+			unset( $data['do_not_allow'] );
+			unset( $data['vaa_do_not_allow'] );
+
 			return $data;
 		}
 		return $null;
