@@ -24,6 +24,7 @@ With the "Role defaults" module you can set default screen settings for roles an
 It also features a "Role manager" module to add, edit or remove roles and grant or deny them capabilities.
 
 ### Overview / Features
+
 *	Switch between user accounts
 	*	Edit this user's screen preferences and settings
 *	Switch between roles
@@ -34,11 +35,13 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Do this all without logging out and easily go back to your own (default) user view!
 
 ### Module: Role defaults (screen settings)
+
 *	Set default screen settings for roles
 *	Apply defaults to a user
 *	Apply defaults to all users of a role
 *	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
-*	Import/Export/Download role defaults
+*	Copy defaults from one role to another (or multiple)
+*	Import/Export role defaults, can also download (and upload) setting files
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
 ### Module: Role manager (role editor)
@@ -49,7 +52,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Grant and/or add capabilities to roles
 *	Rename roles
 *	Clone roles
-*	Import/Export/Download roles
+*	Import/Export roles, can also download (and upload) setting files
 *	Update role capabilities from current view
 
 ## Compatibility & Integrations
@@ -69,6 +72,7 @@ This plugin will work with most other plugins but these are tested:
 *	**User Role Editor** *(Pro version not verified)*
 *	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
 *	**WPFront User Role Editor**
+*	**WP Admin UI Customize 1.5.11+**
 
 Full list of tested plugins and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)
 
