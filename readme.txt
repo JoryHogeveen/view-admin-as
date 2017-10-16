@@ -209,6 +209,7 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 *	**Compatibility:** [WP 4.9 capabilities](https://make.wordpress.org/core/2017/10/15/improvements-for-roles-and-capabilities-in-4-9/).
 *	**Compatibility:** WP Admin UI Customize admin bar editor. [#40](https://github.com/JoryHogeveen/view-admin-as/issues/40) & [WAUC/#1](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/1) & [WAUC/#2](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/2)
 *	**Compatibility:** Fix issue with Restrict User Access. [RUA/#15](https://github.com/intoxstudio/restrict-user-access/issues/15)
+*	**Compatibility:** Fetch all capabilities from Yoast SEO (5.5+).
 *	**Compatibility:** Must-use plugin loader scripts.
 *	**UI:** The almighty View Admin As loader icon.
 *	**UI:** Full opacity when semi-transparent group nodes are opened.
