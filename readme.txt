@@ -71,6 +71,7 @@ This plugin will work with most other plugins but these are tested:
 *	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
 *	**WPFront User Role Editor**
 *	**WP Admin UI Customize 1.5.11+**
+*	**Yoast SEO**
 
 Full list of tested plugins and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)
 
