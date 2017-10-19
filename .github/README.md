@@ -12,6 +12,8 @@ View the WordPress admin as a different role or visitor, switch between users, t
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/1047/badge)](https://bestpractices.coreinfrastructure.org/projects/1047)
 [![Project Stats](https://www.openhub.net/p/view-admin-as/widgets/project_thin_badge.gif)](https://www.openhub.net/p/view-admin-as)
 
+![View Admin As](https://raw.githubusercontent.com/JoryHogeveen/view-admin-as/master/.github/assets/banner-1544x500.jpg)  
+
 ## Description
 **The ultimate User switcher and Role manager**
 
