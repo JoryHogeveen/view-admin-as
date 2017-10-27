@@ -113,7 +113,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		if ( ! VAA_API::exists_callable( array( 'RUA_App', 'instance' ), true ) ) {
+		if ( ! VAA_API::exists_callable( array( 'RUA_App', 'instance' ), 'debug' ) ) {
 			return;
 		}
 		$this->ruaApp = RUA_App::instance();
@@ -170,7 +170,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 
 		if ( $this->get_levels( $this->store->get_view( $this->viewKey ) ) ) {
 
-			if ( ! VAA_API::exists_callable( array( 'WPCALoader', 'load' ), true ) ) {
+			if ( ! VAA_API::exists_callable( array( 'WPCALoader', 'load' ), 'debug' ) ) {
 				return;
 			}
 			WPCALoader::load();

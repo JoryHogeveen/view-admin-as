@@ -75,7 +75,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		if ( ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), true ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), 'debug' ) ) {
 			return;
 		}
 
@@ -120,7 +120,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
 
-			if ( ! VAA_API::exists_callable( array( 'Groups_Group' ), true ) ) {
+			if ( ! VAA_API::exists_callable( array( 'Groups_Group' ), 'debug' ) ) {
 				return;
 			}
 
@@ -170,7 +170,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @param   int  $user_id
 	 */
 	public function reset_groups_user( $user_id = null ) {
-		if ( ! VAA_API::exists_callable( array( 'Groups_User', 'clear_cache' ), true ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_User', 'clear_cache' ), 'debug' ) ) {
 			return;
 		}
 
@@ -351,7 +351,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 		if ( $this->store->get_selectedUser()->ID !== $user_id || ! $this->selectedGroup ) {
 			return $result;
 		}
-		if ( ! VAA_API::exists_callable( array( 'Groups_Post_Access', 'get_read_group_ids' ), true ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_Post_Access', 'get_read_group_ids' ), 'debug' ) ) {
 			return $result;
 		}
 

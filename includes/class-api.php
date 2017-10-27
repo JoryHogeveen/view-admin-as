@@ -544,6 +544,7 @@ final class VAA_API
 	 *
 	 * @param   callable|array  $callable     The callable data.
 	 * @param   bool|string     $do_notice    Add an error notice when it isn't?
+	 *                                        Pass `debug` to only show notice when WP_DEBUG is enabled.
 	 * @param   bool            $syntax_only  See is_callable() docs.
 	 * @return  bool
 	 */
@@ -557,6 +558,9 @@ final class VAA_API
 			}
 		}
 		if ( ! $pass && $do_notice ) {
+			if ( 'debug' === $do_notice ) {
+				$do_notice = ( defined( 'WP_DEBUG' ) && WP_DEBUG );
+			}
 			if ( ! is_string( $do_notice ) ) {
 				$callable = self::callable_to_string( $callable );
 				$do_notice = sprintf(
