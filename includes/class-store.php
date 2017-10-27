@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
@@ -55,11 +55,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since  1.7
 	 * @var    array {
 	 *     Default view data.
-	 *     @type  array  $caps       Since 1.3    Array of available capabilities.
-	 *     @type  array  $roles      Since 0.1    Array of available roles (WP_Role objects).
-	 *     @type  array  $rolenames  Since 1.6.4  Array of role names (used for role translations).
-	 *     @type  array  $users      Since 0.1    Array of available users (WP_User objects).
-	 *     @type  array  $userids    Since 0.1    Array of available user ID's (key) and display names (value).
+	 *     @type  bool[]      $caps       Since 1.3    Array of available capabilities.
+	 *     @type  \WP_Role[]  $roles      Since 0.1    Array of available roles (WP_Role objects).
+	 *     @type  string[]    $rolenames  Since 1.6.4  Array of role names (used for role translations).
+	 *     @type  \WP_User[]  $users      Since 0.1    Array of available users (WP_User objects).
+	 *     @type  string[]    $userids    Since 0.1    Array of available user ID's (key) and display names (value).
 	 * }
 	 */
 	private $data = array(
@@ -75,7 +75,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class.
-	 * @var    WP_User
+	 * @var    \WP_User
 	 */
 	private $curUser;
 
@@ -123,7 +123,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class.
-	 * @var    WP_User
+	 * @var    \WP_User
 	 */
 	private $selectedUser;
 
@@ -131,7 +131,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * The selected capabilities (if a view is selected).
 	 *
 	 * @since  1.6.2
-	 * @var    array
+	 * @var    bool[]
 	 */
 	private $selectedCaps = array();
 
@@ -234,7 +234,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since   1.5.2  Get role objects instead of arrays.
 	 * @since   1.6    Moved to this class from main class.
 	 * @access  public
-	 * @global  WP_Roles  $wp_roles
+	 * @global  \WP_Roles  $wp_roles
 	 * @return  void
 	 */
 	public function store_roles() {
@@ -291,7 +291,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since   1.6    Moved to this class from main class.
 	 * @since   1.6.2  Reduce user queries to 1 for non-network pages with custom query handling.
 	 * @access  public
-	 * @global  wpdb  $wpdb
+	 * @global  \wpdb  $wpdb
 	 * @return  void
 	 */
 	public function store_users() {
@@ -496,11 +496,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @internal
 	 *
 	 * @since   1.6.2
-	 * @see     wp-includes/class-wp-user.php WP_User->_init_caps()
-	 * @see     get_user_metadata filter in get_metadata()
+	 * @see     \WP_User->_init_caps() >> wp-includes/class-wp-user.php
+	 * @see     get_metadata() >> `get_user_metadata` filter
 	 * @link    https://developer.wordpress.org/reference/functions/get_metadata/
 	 *
-	 * @global  wpdb    $wpdb
+	 * @global  \wpdb    $wpdb
 	 * @param   null    $null      The value get_metadata() should return.
 	 * @param   int     $user_id   Object ID.
 	 * @param   string  $meta_key  Meta key.
@@ -532,8 +532,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *
 	 * @see     store_users()
 	 *
-	 * @param   array  $users  Array of user objects (WP_User).
-	 * @return  array  $users
+	 * @param   \WP_User[]  $users  Array of user objects (WP_User).
+	 * @return  \WP_User[]  $users
 	 */
 	public function filter_sort_users_by_role( $users ) {
 		if ( ! $this->get_roles() ) {
@@ -590,7 +590,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get current user.
-	 * @return  WP_User  $curUser  Current user object.
+	 * @return  \WP_User  $curUser  Current user object.
 	 */
 	public function get_curUser() {
 		return $this->curUser;
@@ -644,7 +644,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Get available capabilities.
 	 * @param   string  $key  Cap name.
-	 * @return  mixed   Array of capabilities or a single capability value.
+	 * @return  bool[]|bool  Array of capabilities or a single capability value.
 	 */
 	public function get_caps( $key = null ) {
 		return $this->get_data( 'caps', $key );
@@ -653,7 +653,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Get available roles.
 	 * @param   string  $key  Role slug/key.
-	 * @return  mixed   Array of role objects or a single role object.
+	 * @return  \WP_Role[]|\WP_Role  Array of role objects or a single role object.
 	 */
 	public function get_roles( $key = null ) {
 		return $this->get_data( 'roles', $key );
@@ -665,7 +665,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since   1.6.4
 	 * @param   string  $key        Role slug.
 	 * @param   bool    $translate  Translate the role name?
-	 * @return  array|string
+	 * @return  string[]|string
 	 */
 	public function get_rolenames( $key = null, $translate = true ) {
 		$val = $this->get_data( 'rolenames', $key );
@@ -684,7 +684,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Get available users.
 	 * @param   string  $key  User key.
-	 * @return  mixed   Array of user objects or a single user object.
+	 * @return  \WP_User[]|\WP_User  Array of user objects or a single user object.
 	 */
 	public function get_users( $key = null ) {
 		return $this->get_data( 'users', $key );
@@ -695,7 +695,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @todo    Remove in future.
 	 * @deprecated
 	 * @param   string  $key  User key.
-	 * @return  mixed   Array of user display names or a single user display name.
+	 * @return  string[]|string  Array of user display names or a single user display name.
 	 */
 	public function get_userids( $key = null ) {
 		return $this->get_data( 'userids', $key );
@@ -704,7 +704,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Get selected capabilities of a view.
 	 * @param   string  $key  Cap name.
-	 * @return  mixed   Array of capabilities or a single capability value.
+	 * @return  bool[]|bool  Array of capabilities or a single capability value.
 	 */
 	public function get_selectedCaps( $key = null ) {
 		return VAA_API::get_array_data( $this->selectedCaps, $key );
@@ -712,7 +712,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get the selected user object of a view.
-	 * @return  WP_User
+	 * @return  \WP_User
 	 */
 	public function get_selectedUser() {
 		return $this->selectedUser;
@@ -779,7 +779,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_data( $type, $val, $key = null, $append = false ) {
-		if ( is_callable( array( $this, 'set_' . $type ) ) ) {
+		if ( VAA_API::exists_callable( array( $this, 'set_' . $type ) ) ) {
 			$method = 'set_' . $type;
 			$this->$method( $val, $key, $append );
 			return;
@@ -900,7 +900,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Store
+	 * @return  $this  VAA_View_Admin_As_Store
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

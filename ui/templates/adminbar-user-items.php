@@ -3,11 +3,11 @@
  * Add user items.
  *
  * @since    1.7
- * @version  1.7.2
+ * @version  1.7.4
  *
- * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
- * @var  string        $root       The current root item.
- * @var  string        $main_root  The main VAA root item.
+ * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
+ * @var  string         $root       The current root item.
+ * @var  string         $main_root  The main VAA root item.
  */
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
@@ -55,7 +55,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 						'id' => $group,
 						'parent' => $parent,
 						'meta'   => array(
-							'class' => 'ab-sub-secondary vaa-auto-max-height',
+							'class' => 'vaa-auto-max-height',
 						),
 					) );
 				}

@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
@@ -262,7 +262,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @param   null    $null  Null.
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $type  The view type.
-	 * @return  mixed
+	 * @return  bool|array
 	 */
 	public function filter_update_view( $null, $data, $type ) {
 		$success = $null;
@@ -270,7 +270,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			$this->store->set_view( $data, $type, true );
 			$success = true;
 		}
-		if ( $success && 'visitor' === $type ) {
+		if ( $success && 'visitor' === $type && VAA_API::is_admin() ) {
 			$success = array(
 				'success' => true,
 				'data' => array(
@@ -289,7 +289,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @param   null    $null  Null.
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $type  The view type.
-	 * @return  bool
+	 * @return  bool|array
 	 */
 	public function filter_update_view_caps( $null, $data, $type ) {
 		$success = $null;
@@ -384,7 +384,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @return  array
+	 * @return  string[]
 	 */
 	public function get_view_types() {
 		static $view_types;
@@ -503,7 +503,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( null === $user ) {
 			$user = $this->store->get_curUser();
 		}
-		if ( isset( $user->ID ) ) {
+		if ( ! empty( $user->ID ) ) {
 			// Do not use the store as it currently doesn't support a different user ID.
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// Check if this user session has metadata.
@@ -541,7 +541,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( null === $user ) {
 			$user = $this->store->get_curUser();
 		}
-		if ( isset( $user->ID ) ) {
+		if ( ! empty( $user->ID ) ) {
 			// Do not use the store as it currently doesn't support a different user ID.
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, loop it.
@@ -583,7 +583,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( null === $user ) {
 			$user = $this->store->get_curUser();
 		}
-		if ( isset( $user->ID ) ) {
+		if ( ! empty( $user->ID ) ) {
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, reset it.
 			if ( isset( $meta['views'] ) ) {
@@ -605,7 +605,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7
 	 * @param   array  $data  Input data.
-	 * @return  mixed
+	 * @return  array
 	 */
 	public function validate_data_keys( $data ) {
 
@@ -693,6 +693,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				$data = array_intersect_key( $data, $this->store->get_caps() );
 			}
 
+			// @since  1.7.4  Forbidden capabilities.
+			unset( $data['do_not_allow'] );
+			unset( $data['vaa_do_not_allow'] );
+
 			return $data;
 		}
 		return $null;
@@ -741,7 +745,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Controller
+	 * @return  $this  VAA_View_Admin_As_Controller
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

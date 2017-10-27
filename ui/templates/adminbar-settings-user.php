@@ -3,15 +3,16 @@
  * Add user setting items.
  *
  * @since    1.7.2
- * @version  1.7.3
+ * @version  1.7.4
  *
- * @var  WP_Admin_Bar  $admin_bar  The toolbar object.
- * @var  string        $root       The current root item.
- * @var  string        $main_root  The main VAA root item.
+ * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
+ * @var  string         $root       The current root item.
+ * @var  string         $main_root  The main VAA root item.
  *
  * Settings order:
  * - admin_menu_location
  * - view_mode
+ * - disable_super_admin
  * - hide_front
  * - freeze_locale
  * - force_group_users

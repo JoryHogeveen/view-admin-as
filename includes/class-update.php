@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
@@ -114,7 +114,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 * Changes yes/no options to boolean types.
 	 *
 	 * @since   1.7.2
-	 * @global  wpdb  $wpdb
+	 * @global  \wpdb  $wpdb
 	 * @access  private
 	 * @return  void
 	 */
@@ -152,7 +152,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Update
+	 * @return  $this  VAA_View_Admin_As_Update
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

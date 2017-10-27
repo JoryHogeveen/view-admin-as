@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.3
+ * @version 1.7.4
  */
 final class VAA_View_Admin_As
 {
@@ -41,7 +41,10 @@ final class VAA_View_Admin_As
 	 * Var that holds all the notices.
 	 *
 	 * @since  1.5.1
-	 * @var    array
+	 * @var    array[] {
+	 *     @type  string  $message  The notice message.
+	 *     @type  string  $type     (optional) The WP notice type class(es).
+	 * }
 	 */
 	private $notices = array();
 
@@ -73,8 +76,8 @@ final class VAA_View_Admin_As
 	 * VAA UI classes that are loaded.
 	 *
 	 * @since  1.5
-	 * @see    load_ui()
-	 * @var    array of objects
+	 * @see    VAA_View_Admin_As::load_ui()
+	 * @var    object[]
 	 */
 	private $ui = array();
 
@@ -82,9 +85,9 @@ final class VAA_View_Admin_As
 	 * Other VAA modules that are loaded.
 	 *
 	 * @since  1.4
-	 * @see    load_modules()
-	 * @see    register_module()
-	 * @var    array of objects
+	 * @see    VAA_View_Admin_As::load_modules()
+	 * @see    VAA_View_Admin_As::register_module()
+	 * @var    object[]
 	 */
 	private $modules = array();
 
@@ -93,10 +96,10 @@ final class VAA_View_Admin_As
 	 * Private to make sure it isn't declared elsewhere.
 	 *
 	 * @since   0.1
-	 * @since   1.3.3   changes init hook to plugins_loaded for theme compatibility.
-	 * @since   1.4.1   creates instance.
-	 * @since   1.5     make private.
-	 * @since   1.5.1   added notice on class name conflict + validate versions.
+	 * @since   1.3.3   Changes init hook to plugins_loaded for theme compatibility.
+	 * @since   1.4.1   Creates instance.
+	 * @since   1.5     Make private.
+	 * @since   1.5.1   Added notice on class name conflict + validate versions.
 	 * @access  private
 	 */
 	private function __construct() {
@@ -109,7 +112,7 @@ final class VAA_View_Admin_As
 		}
 
 		// Returns false on conflict.
-		if ( ! (boolean) $this->validate_versions() ) {
+		if ( ! $this->validate_versions() ) {
 			return;
 		}
 
@@ -148,7 +151,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  private
-	 * @return  bool
+	 * @return  bool  Load successfully completed?
 	 */
 	private function load() {
 
@@ -371,7 +374,7 @@ final class VAA_View_Admin_As
 			$this->include_file( VIEW_ADMIN_AS_DIR . $inc['file'], $class );
 
 			// If it's a class file, add the class instance to the group.
-			if ( ! empty( $class ) && is_callable( array( $class, 'get_instance' ) ) ) {
+			if ( ! empty( $class ) && VAA_API::exists_callable( array( $class, 'get_instance' ) ) ) {
 				$group[ $key ] = call_user_func( array( $class, 'get_instance' ), $this );
 			}
 		}
@@ -382,8 +385,8 @@ final class VAA_View_Admin_As
 	 * Load the user interface.
 	 *
 	 * @since   1.5
-	 * @since   1.5.1   added notice on class name conflict.
-	 * @since   1.6     added our toolbar class.
+	 * @since   1.5.1   Added notice on class name conflict.
+	 * @since   1.6     Added our toolbar class.
 	 * @access  private
 	 * @return  void
 	 */
@@ -402,11 +405,15 @@ final class VAA_View_Admin_As
 				'file'  => 'ui/class-admin-bar.php',
 				'class' => 'VAA_View_Admin_As_Admin_Bar',
 			),
-			'toolbar' => array(
+		);
+
+		// Compat for < 4.2 since it breaks due to WP calling require() instead of require_once().
+		if ( VAA_API::validate_wp_version( '4.2' ) ) {
+			$includes['toolbar'] = array(
 				'file'  => 'ui/class-toolbar.php',
 				'class' => 'VAA_View_Admin_As_Toolbar',
-			),
-		);
+			);
+		}
 
 		// Include UI files and add them to the `ui` property.
 		$this->load_files( $includes, $this->ui );
@@ -432,14 +439,14 @@ final class VAA_View_Admin_As
 			),
 		);
 
-		if ( is_callable( array( 'RUA_App', 'instance' ) ) ) {
+		if ( VAA_API::exists_callable( array( 'RUA_App', 'instance' ) ) ) {
 			$includes['rua_level'] = array(
 				'file'  => 'modules/class-restrict-user-access.php',
 				'class' => 'VAA_View_Admin_As_RUA',
 			);
 		}
 
-		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
+		if ( VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
 			$includes['groups'] = array(
 				'file'  => 'modules/class-groups.php',
 				'class' => 'VAA_View_Admin_As_Groups',
@@ -462,30 +469,26 @@ final class VAA_View_Admin_As
 	 * Load plugin textdomain.
 	 *
 	 * @since   1.2
-	 * @since   1.6    Hooked into init hook, check for is_enabled() required.
+	 * @since   1.6  Hooked into init hook, check for is_enabled() required.
 	 * @access  public
 	 * @return  void
 	 */
 	public function load_textdomain() {
 
-		if ( $this->is_enabled() ) {
+		if ( ! $this->is_enabled() && empty( $this->notices ) ) {
+			return;
+		}
 
-			/**
-			 * Keep the third parameter pointing to the languages folder within this plugin
-			 * to enable support for custom .mo files.
-			 *
-			 * @see https://make.wordpress.org/core/2016/07/06/i18n-improvements-in-4-6/
-			 */
-			load_plugin_textdomain( 'view-admin-as', false, VIEW_ADMIN_AS_DIR . 'languages/' );
+		load_plugin_textdomain( VIEW_ADMIN_AS_DOMAIN );
 
-			/**
-			 * Frontend translation of roles is not working by default (Darn you WordPress!).
-			 * Needs to be in init action to work.
-			 * @see  https://core.trac.wordpress.org/ticket/37539
-			 */
-			if ( ! is_admin() ) {
-				load_textdomain( 'default', WP_LANG_DIR . '/admin-' . get_locale() . '.mo' );
-			}
+		/**
+		 * Frontend translation of roles is not working by default (Darn you WordPress!).
+		 * Needs to be in init action to work.
+		 * @see  https://core.trac.wordpress.org/ticket/37539
+		 */
+		$wp_mo = WP_LANG_DIR . '/admin-' . get_locale() . '.mo';
+		if ( ! is_admin() && file_exists( $wp_mo ) ) {
+			load_textdomain( 'default', $wp_mo );
 		}
 	}
 
@@ -528,8 +531,9 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.1
 	 * @access  public
+	 * @see     VAA_View_Admin_As::load_ui()
 	 * @param   string  $key  (optional) UI class name.
-	 * @return  array|object
+	 * @return  object|object[]
 	 */
 	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
@@ -541,8 +545,9 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.5
 	 * @access  public
+	 * @see     VAA_View_Admin_As::load_modules()
 	 * @param   string  $key  (optional) The module key.
-	 * @return  array|object
+	 * @return  object|object[]
 	 */
 	public function get_modules( $key = null ) {
 		return VAA_API::get_array_data( $this->modules, $key );
@@ -578,12 +583,12 @@ final class VAA_View_Admin_As
 	public function welcome_notice() {
 		$this->add_notice( 'vaa-welcome', array(
 			'type' => 'notice-success',
-			'message' => '<strong>' . __( 'Thank you for installing View Admin As!', VIEW_ADMIN_AS_DOMAIN ) . '</strong> '
-				. sprintf(
-					// Translators: %s stands for `Dashboard` (link element).
-					__( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
-					'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
-				),
+			'message' => sprintf(
+				// Translators: %s stands for `Dashboard` (link element).
+				__( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
+				'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
+			),
+			'prepend' => __( 'Thank you for installing View Admin As!', VIEW_ADMIN_AS_DOMAIN ),
 		) );
 	}
 
@@ -599,6 +604,8 @@ final class VAA_View_Admin_As
 	 *     Required array.
 	 *     @type  string  $message  The notice message.
 	 *     @type  string  $type     (optional) The WP notice type class(es).
+	 *     @type  string  $prepend  (optional) Prepend the message (bold). Default: View Admin As.
+	 *                              Pass `false` or `null` to remove.
 	 * }
 	 * @return  void
 	 */
@@ -616,8 +623,7 @@ final class VAA_View_Admin_As
 		);
 		$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
 
-		$notice['message'] = '<strong>' . __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ':</strong> '
-			. $notice['message']
+		$notice['message'] = $notice['message']
 			. ' <a href="' . $report_link . '" target="_blank">'
 			. __( 'Click here to report this error!', VIEW_ADMIN_AS_DOMAIN )
 			. '</a>';
@@ -636,14 +642,23 @@ final class VAA_View_Admin_As
 	 *     Required array.
 	 *     @type  string  $message  The notice message.
 	 *     @type  string  $type     (optional) The WP notice type class(es).
+	 *     @type  string  $prepend  (optional) Prepend the message (bold). Default: View Admin As.
+	 *                              Pass `false` or `null` to remove.
 	 * }
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
 		if ( ! empty( $notice['message'] ) ) {
-			$notice['type'] = ( ! empty( $notice['type'] ) ) ? $notice['type'] : '';
+			$notice = array_merge( array(
+				'type' => '',
+				'prepend' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
+			), $notice );
+
+			if ( $notice['prepend'] ) {
+				$notice['message'] = '<strong>' . $notice['prepend'] . ':</strong> ' . $notice['message'];
+			}
 			$this->notices[ $id ] = array(
-				'type' => $notice['type'],
+				'type'    => $notice['type'],
 				'message' => $notice['message'],
 			);
 		}
@@ -659,10 +674,6 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function do_admin_notices() {
-		// Only show notices if the plugin functionalities are enabled.
-		if ( ! $this->is_enabled() ) {
-			return;
-		}
 		foreach ( $this->notices as $notice ) {
 			if ( isset( $notice['type'] ) && ! empty( $notice['message'] ) ) {
 				echo '<div class="' . $notice['type'] . ' notice is-dismissible"><p>' . $notice['message'] . '</p></div>';
@@ -690,9 +701,12 @@ final class VAA_View_Admin_As
 		if ( version_compare( $wp_version, $min_wp_version, '<' ) ) {
 			$this->add_notice( 'wp-version', array(
 				'type' => 'notice-error',
-				'message' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': '
-					// Translators: %1$s stands for "WordPress", %2$s stands for the version.
-					. sprintf( __( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ), 'WordPress', $min_wp_version ),
+				'message' => sprintf(
+			        // Translators: %1$s stands for "WordPress", %2$s stands for the version.
+					__( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ),
+					'WordPress',
+					$min_wp_version
+			    ),
 			) );
 			$valid = false;
 		}
@@ -713,8 +727,8 @@ final class VAA_View_Admin_As
 	 * @since   1.4.1
 	 * @access  public
 	 * @static
-	 * @see     View_Admin_As()
-	 * @return  VAA_View_Admin_As
+	 * @see     view_admin_as()
+	 * @return  $this  VAA_View_Admin_As
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {

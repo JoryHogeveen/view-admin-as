@@ -3,9 +3,9 @@ Contributors: keraweb
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
-Tested up to: 4.8
+Tested up to: 4.9
 Requires PHP: 5.2.4
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -38,7 +38,8 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Apply defaults to a user
 *	Apply defaults to all users of a role
 *	Apply defaults when registering a new user (in a multisite this is done when a user is added to its first blog)
-*	Import/Export role defaults
+*	Copy defaults from one role to another (or multiple)
+*	Import/Export role defaults, can also download (and upload) setting files
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
 = Module: Role manager (role editor) =
@@ -49,7 +50,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Grant and/or add capabilities to roles
 *	Rename roles
 *	Clone roles
-*	Import/Export roles
+*	Import/Export roles, can also download (and upload) setting files
 *	Update role capabilities from current view
 
 = Compatibility & Integrations =
@@ -69,6 +70,8 @@ This plugin will work with most other plugins but these are tested:
 *	**User Role Editor** *(Pro version not verified)*
 *	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
 *	**WPFront User Role Editor**
+*	**WP Admin UI Customize 1.5.11+**
+*	**Yoast SEO**
 
 Full list of tested plugins and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)
 
@@ -173,7 +176,7 @@ All the plugin functionality is only run if the user is logged in AND is allowed
 * Your view is stored separately so your user will keep the normal roles and capabilities.
 * All settings, views, capabilities, etc. are verified before applied.
 * Passwords are not (and cannot be) revealed.
-* Fully written with the WordPress coding and security standards. 
+* Fully written with the WordPress coding and security standards.
 * Full support for SSL (https).
 
 So basically if your admin users are safe, this plugin will be safe.
@@ -198,11 +201,29 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
+= 1.7.4 =
+
+*	**Feature:** Role defaults / Role manager: download export data as file + import from file. [#73](https://github.com/JoryHogeveen/view-admin-as/issues/73)
+*	**Enhancement:** Refresh page instead of redirect to home when switching to a site visitor on the frontend. [#76](https://github.com/JoryHogeveen/view-admin-as/issues/76)
+*	**Enhancement:** Role Manager: Refresh the page if a role is updated while active in the current view.
+*	**Enhancement:** jQuery selector performance.
+*	**Compatibility:** [WP 4.9 capabilities](https://make.wordpress.org/core/2017/10/15/improvements-for-roles-and-capabilities-in-4-9/).
+*	**Compatibility:** WP Admin UI Customize admin bar editor. [#40](https://github.com/JoryHogeveen/view-admin-as/issues/40) & [WAUC/#1](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/1) & [WAUC/#2](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/2)
+*	**Compatibility:** Fix issue with Restrict User Access. [RUA/#15](https://github.com/intoxstudio/restrict-user-access/issues/15)
+*	**Compatibility:** Fetch all capabilities from Yoast SEO (5.5+).
+*	**Compatibility:** Must-use plugin loader scripts.
+*	**UI:** The almighty View Admin As loader icon.
+*	**UI:** Full opacity when semi-transparent group nodes are opened.
+*	**UI:** Admin page links for Groups and Restrict User Access modules.
+*	**UI:** Resizable checkbox wrappers.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/75)
+
 = 1.7.3 =
 
 *	**Feature:** Role Manager: Import/Export roles. [#51](https://github.com/JoryHogeveen/view-admin-as/issues/51) & [PR #62](https://github.com/JoryHogeveen/view-admin-as/pull/62)
 *	**Feature/Enhancement:** Option to disable super admin status when a view is active and modifies the current user. [#53](https://github.com/JoryHogeveen/view-admin-as/issues/53) & [PR #61](https://github.com/JoryHogeveen/view-admin-as/pull/61)
-*	**Enhancement:** Role Manager: Show custom capabilities that are not yet stored but used in an active caps view [#70](https://github.com/JoryHogeveen/view-admin-as/issues/70)
+*	**Enhancement:** Role Manager: Show custom capabilities that are not yet stored but used in an active caps view. [#70](https://github.com/JoryHogeveen/view-admin-as/issues/70)
 *	**Enhancement:** Prevent duplicate names when fetching capabilities from WP objects.
 *	**Enhancement:** Allow this plugin to be installed as a must-use plugin. [#71](https://github.com/JoryHogeveen/view-admin-as/issues/71)
 	*	More info: [Docs: Install as a must-use plugin](https://github.com/JoryHogeveen/view-admin-as#install-as-a-must-use-plugin) & [WP codex: mu-plugins](https://codex.wordpress.org/Must_Use_Plugins)

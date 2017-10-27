@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.3
+ * @version 1.7.4
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -24,33 +24,40 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @property  {array}    settings_user  The user settings.
 	 * @property  {array}    view           The current view (empty if no view is active).
 	 * @property  {array}    view_types     The available view types.
+	 * @property  {string}   _loader_icon   The loader icon URL.
 	 * @property  {string}   _vaa_nonce
 	 * @property  {boolean}  _debug
 	 * @property  {string}   __no_users_found      'No users found.'.
-	 * @property  {string}   __key_already_exists: 'Key already exists.'.
+	 * @property  {string}   __key_already_exists  'Key already exists.'.
 	 * @property  {string}   __success             'Success'.
 	 * @property  {string}   __confirm             'Are you sure?'.
+	 * @property  {string}   __download            'Download'.
 	 */
 	var VAA_View_Admin_As = {};
 }
 
 ( function( $ ) {
 
-	var $document = $( document ),
-		$window = $( window ),
-		$body = $('body');
-
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
 	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
+
+	var $document = $( document ),
+		$window = $( window ),
+		$body = $('body'),
+		$vaa = $( VAA_View_Admin_As.prefix );
+
 	VAA_View_Admin_As.maxHeightListenerElements = null;
 	VAA_View_Admin_As._mobile = false;
 
 	if ( ! VAA_View_Admin_As.hasOwnProperty( '_debug' ) ) {
 		VAA_View_Admin_As._debug = false;
 	}
-	VAA_View_Admin_As._debug = Boolean( parseInt( VAA_View_Admin_As._debug, 10 ) );
 
-	if ( ! VAA_View_Admin_As.hasOwnProperty( 'ajaxurl' ) && 'undefined' !== typeof ajaxurl ) {
+	if ( ! VAA_View_Admin_As.hasOwnProperty( 'ajaxurl' ) ) {
+		if ( 'undefined' === typeof ajaxurl ) {
+			// Does not work with websites in sub-folders.
+			var ajaxurl = window.location.origin + '/wp-admin/admin-ajax.php';
+		}
 		VAA_View_Admin_As.ajaxurl = ajaxurl;
 	}
 
@@ -83,7 +90,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * BASE INIT.
 	 * @since   1.5.1
-	 * @return  {null}  Nothing.
+	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init = function() {
 
@@ -94,6 +101,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Functionality that require the document to be fully loaded.
 		$window.on( 'load', function() {
+
+			// Preload loader icon.
+			if ( VAA_View_Admin_As._loader_icon ) {
+				var loader_icon = new Image();
+				loader_icon.src = VAA_View_Admin_As._loader_icon;
+			}
 
 			VAA_View_Admin_As.init_auto_js();
 
@@ -226,10 +239,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} );
 			} );
 
+			// @since  1.7.4  Auto resizable.
+			$( VAA_View_Admin_As.prefix + '.vaa-resizable' ).each( function() {
+				var $this = $( this ),
+					height = $this.css( 'max-height' );
+				$this.css( {
+					'max-height': 'none',
+					'height': height,
+					'resize': 'vertical'
+				} );
+			} );
+
 		} ); // End window.load.
 
 		// Process reset.
-		$document.on( 'click touchend', VAA_View_Admin_As.prefix + '.vaa-reset-item > .ab-item', function( e ) {
+		$vaa.on( 'click touchend', '.vaa-reset-item > .ab-item', function( e ) {
 			e.preventDefault();
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -244,7 +268,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// @since  1.6.2  Process basic views.
 		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
-			$document.on( 'click touchend', VAA_View_Admin_As.prefix + '.vaa-' + type + '-item > a.ab-item', function( e ) {
+			$vaa.on( 'click touchend', '.vaa-' + type + '-item > a.ab-item', function( e ) {
 				if ( true === VAA_View_Admin_As._touchmove ) {
 					return;
 				}
@@ -270,7 +294,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.6.3  Removable items.
-		$document.on( 'click touchend', VAA_View_Admin_As.prefix + '.remove', function( e ) {
+		$vaa.on( 'click touchend', '.remove', function( e ) {
 			e.preventDefault();
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
@@ -282,13 +306,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MOBILE INIT.
 	 * @since   1.7
-	 * @return  {null}  Nothing.
+	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.mobile = function() {
-		var prefix = '.vaa-mobile ' + VAA_View_Admin_As.prefix;
+		var $root = $( '.vaa-mobile ' + VAA_View_Admin_As.prefix );
 
 		// @since  1.7  Fix for clicking within sub secondary elements. Overwrites WP core 'hover' functionality.
-		$document.on( 'click touchend', prefix + ' > .ab-sub-wrapper .ab-item', function( e ) {
+		$root.on( 'click touchend', ' > .ab-sub-wrapper .ab-item', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -310,7 +334,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 * @since  1.7  Mimic default form handling because this gets overwritten by WP core.
 		 */
 		// Form elements.
-		$document.on( 'click touchend', prefix + 'input, ' + prefix + 'textarea, ' + prefix + 'select', function( e ) {
+		$root.on( 'click touchend', 'input, textarea, select', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -337,7 +361,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return true;
 		} );
 		// Labels.
-		$document.on( 'click touchend', prefix + 'label', function( e ) {
+		$root.on( 'click touchend', 'label', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -350,12 +374,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	/**
 	 * Add an overlay.
-	 *
-	 * @param   {string}  html  The content to show in the overlay.
-	 * @return  {null}  Nothing.
+	 * @since   1.7
+	 * @param   {string|boolean}  html  The content to show in the overlay. Pass `false` to remove the overlay.
+	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.overlay = function( html ) {
 		var $overlay = $( '#vaa-overlay' );
+		if ( false === html ) {
+			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
+			$document.off( 'mouseup.vaa_overlay' );
+			return;
+		}
 		if ( ! $overlay.length ) {
 			html = '<div id="vaa-overlay">' + html + '</div>';
 			$body.append( html );
@@ -364,6 +393,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$overlay.html( html );
 		}
 		$overlay.fadeIn('fast');
+
+		// Remove overlay.
+		$( '.remove', $overlay ).click( function() {
+			VAA_View_Admin_As.overlay( false );
+		} );
+
+		// Remove overlay on click outside of container.
+		$document.on( 'mouseup.vaa_overlay', function( e ) {
+			$( '.vaa-overlay-container', $overlay ).each( function() {
+				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
+					VAA_View_Admin_As.overlay( false );
+					return false;
+				}
+			} );
+		} );
 	};
 
 	/**
@@ -371,14 +415,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 *
 	 * @param   {object}   data     The data to send, view format: { VIEW_TYPE : VIEW_TYPE_DATA }
 	 * @param   {boolean}  refresh  Reload/redirect the page?
-	 * @return  {null}  Nothing.
+	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.ajax = function( data, refresh ) {
 
 		$( '.vaa-notice', '#wpadminbar' ).remove();
 		// @todo dashicon loader?
-		var loader_icon = VAA_View_Admin_As.siteurl + '/wp-includes/images/spinner-2x.gif';
-		VAA_View_Admin_As.overlay( '<span class="vaa-loader-icon" style="background-image: url('+loader_icon+')"></span>' );
+		var loader_icon = '';
+		if ( VAA_View_Admin_As._loader_icon ) {
+			loader_icon = ' style="background-image: url(' + VAA_View_Admin_As._loader_icon + ')"';
+		}
+		VAA_View_Admin_As.overlay( '<span class="vaa-loader-icon"'+loader_icon+'></span>' );
 
 		var post_data = {
 			'action': 'view_admin_as',
@@ -402,12 +449,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		if ( $( VAA_View_Admin_As.prefix + '#vaa-settings-view-mode-single' ).is(':checked') && isView ) {
 
 			$body.append('<form id="vaa_single_mode_form" style="display:none;" method="post"></form>');
-			var form = $('#vaa_single_mode_form');
-			form.append('<input type="hidden" name="action" value="' + post_data.action + '">');
-			form.append('<input type="hidden" name="_vaa_nonce" value="' + post_data._vaa_nonce + '">');
-			form.append('<input id="data" type="hidden" name="view_admin_as">');
-			form.find('#data').val( post_data.view_admin_as );
-			form.submit();
+			var $form = $('#vaa_single_mode_form');
+			$form.append('<input type="hidden" name="action" value="' + post_data.action + '">');
+			$form.append('<input type="hidden" name="_vaa_nonce" value="' + post_data._vaa_nonce + '">');
+			$form.append('<input id="data" type="hidden" name="view_admin_as">');
+			$form.find('#data').val( post_data.view_admin_as );
+			$form.submit();
 
 		} else {
 
@@ -416,10 +463,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					data = {},
 					display = false;
 
-				if ( true === VAA_View_Admin_As._debug ) {
-					// Show debug info in console.
-					console.log( response );
-				}
+				// Maybe show debug info in console.
+				VAA_View_Admin_As.debug( response );
 
 				if ( response.hasOwnProperty( 'data' ) ) {
 					if ( 'object' === typeof response.data ) {
@@ -431,7 +476,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 
 				if ( success ) {
-					if ( refresh ) {
+					// @todo Enhance download handler.
+					if ( 'download' === refresh ) {
+						VAA_View_Admin_As.download( data );
+						VAA_View_Admin_As.overlay( false );
+						return;
+					} else if ( refresh ) {
 						VAA_View_Admin_As.refresh( data );
 						return;
 					} else {
@@ -462,9 +512,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Reload the page or optionally redirect the user.
 	 * @since  1.7
-	 * @see    VAA_View_Admin_As.ajax
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Info for the redirect: { redirect: URL }
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.refresh = function( data ) {
 		if ( data.hasOwnProperty( 'redirect' ) ) {
@@ -487,11 +537,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show global notice.
 	 * @since  1.0
-	 * @see    VAA_View_Admin_As.ajax
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.notice = function( notice, type, timeout ) {
 		var root = '#wpadminbar .vaa-notice',
@@ -524,12 +574,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show notice for an item node.
 	 * @since  1.7
-	 * @see    VAA_View_Admin_As.ajax
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {string}  parent   The HTML element selector to add the notice to (selector or jQuery object).
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.item_notice = function( parent, notice, type, timeout ) {
 		var root = '.vaa-notice',
@@ -566,10 +616,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Show popup with return content.
 	 * @since  1.5
-	 * @see    VAA_View_Admin_As.ajax
+	 * @since  1.7  Renamed from VAA_View_Admin_As.overlay()
+	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Data to use.
 	 * @param  {string}  type  The notice/overlay type (notice, error, message, warning, success).
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.popup = function( data, type ) {
 		type = ( 'undefined' === typeof type ) ? 'notice' : type;
@@ -614,24 +665,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		/*
 		 * Overlay handlers.
 		 */
-		var root = 'body #vaa-overlay',
+		var root = '#vaa-overlay',
 			$overlay = $( root ),
 			$overlay_container = $( root + ' .vaa-overlay-container' ),
 			$popup_response = $( root + ' .vaa-response-data' );
-
-		// Remove overlay.
-		$( root + ' .vaa-overlay-container .remove' ).click( function() {
-			$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
-		} );
-
-		// Remove overlay on click outside of container.
-		$document.on( 'mouseup', function( e ){
-			$( root + ' .vaa-overlay-container' ).each( function(){
-				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
-					$overlay.fadeOut( 'fast', function() { $(this).remove(); } );
-				}
-			} );
-		} );
 
 		var textarea = $( 'textarea', $popup_response );
 		if ( textarea.length ) {
@@ -657,9 +694,53 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
+	 * Download text content as a file.
+	 * @since  1.7.4
+	 * @see    VAA_View_Admin_As.ajax()
+	 * @param  {object|string}  data  Data to use.
+	 * @return {void}  Nothing.
+	 */
+	VAA_View_Admin_As.download = function( data ) {
+		var content = '',
+			filename = '';
+		if ( 'string' === typeof data ) {
+			content = data;
+		} else {
+			if ( data.hasOwnProperty( 'download' ) ) {
+				content = String( data.download );
+			} else if ( data.hasOwnProperty( 'textarea' ) ) {
+				content = String( data.textarea );
+			} else if ( data.hasOwnProperty( 'content' ) ) {
+				content = String( data.content );
+			}
+		}
+
+		// Maybe format JSON data.
+		content = VAA_View_Admin_As.json_decode( content );
+		if ( 'object' === typeof content ) {
+			content = JSON.stringify( content, null, '\t' );
+		}
+
+		if ( ! content ) {
+			return; //@todo Notice.
+		}
+
+		if ( data.hasOwnProperty( 'filename' ) ) {
+			filename = data.filename;
+		}
+
+		// https://stackoverflow.com/questions/3665115/create-a-file-in-memory-for-user-to-download-not-through-server
+		var link = 'data:application/octet-stream;charset=utf-8,' + encodeURIComponent( content );
+
+		$body.append( '<a id="vaa_temp_download" href="' + link + '" download="' + String( filename ) + '"></a>' );
+		document.getElementById('vaa_temp_download').click();
+		$( 'a#vaa_temp_download' ).remove();
+	};
+
+	/**
 	 * Automatic option handling.
 	 * @since  1.7.2
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init_auto_js = function() {
 
@@ -705,22 +786,38 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *     }
 		 * }
 		 * @param  {mixed}  elem  The element (runs through $() function).
-		 * @return {object} Nothing.
+		 * @return {void} Nothing.
 		 */
 		VAA_View_Admin_As.do_auto_js = function( data, elem ) {
 			if ( 'object' !== typeof data ) {
-				return null;
+				return;
 			}
 			var $elem    = $( elem ),
 				setting  = ( data.hasOwnProperty( 'setting' ) ) ? String( data.setting ) : null,
 				confirm  = ( data.hasOwnProperty( 'confirm' ) ) ? Boolean( data.confirm ) : false,
 				refresh  = ( data.hasOwnProperty( 'refresh' ) ) ? Boolean( data.refresh ) : false;
 
+			// Callback overwrite.
+			if ( data.hasOwnProperty('callback') ) {
+				VAA_View_Admin_As[ data.callback ]( data );
+				return;
+			}
+
 			var val = VAA_View_Admin_As.get_auto_js_values_recursive( data, elem );
 
 			if ( null !== val ) {
+
+				if ( ! setting ) {
+					return;
+				}
+
 				var view_data = {};
 				view_data[ setting ] = val;
+
+				// @todo Enhance download handler.
+				if ( data.hasOwnProperty( 'download' ) && data.download ) {
+					refresh = 'download';
+				}
 
 				if ( confirm ) {
 					confirm = VAA_View_Admin_As.item_confirm( $elem.parent(), VAA_View_Admin_As.__confirm );
@@ -908,15 +1005,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * USERS.
 	 * Extra functions for user views.
 	 * @since  1.2
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
 		var root = VAA_View_Admin_As.root + '-users',
-			root_prefix = VAA_View_Admin_As.prefix + root;
+			root_prefix = VAA_View_Admin_As.prefix + root,
+			$root = $( root_prefix );
 
 		// Search users.
-		$document.on( 'keyup', root_prefix + ' .ab-vaa-search.search-users input', function() {
+		$root.on( 'keyup', '.ab-vaa-search.search-users input', function() {
 			$( VAA_View_Admin_As.prefix + ' .ab-vaa-search .ab-vaa-results' ).empty();
 			var input_text = $(this).val();
 			if ( 1 <= input_text.length ) {
@@ -925,7 +1023,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( -1 < name.toLowerCase().indexOf( input_text.toLowerCase() ) ) {
 						var exists = false;
 						$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results .vaa-user-item .ab-item' ).each(function() {
-							if ( -1 < $(this).text().indexOf(name) ) {
+							if ( -1 < $(this).text().indexOf( name ) ) {
 								exists = $(this);
 							}
 						} );
@@ -951,12 +1049,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * CAPABILITIES.
 	 * @since  1.3
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
 		var root = VAA_View_Admin_As.root + '-caps',
-			root_prefix = VAA_View_Admin_As.prefix + root;
+			root_prefix = VAA_View_Admin_As.prefix + root,
+			$root = $( root_prefix );
 
 		VAA_View_Admin_As.caps_filter_settings = {
 			selectedRole : 'default',
@@ -1022,20 +1121,20 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		};
 
 		// Enlarge caps.
-		$document.on( 'click', root_prefix + ' #open-caps-popup', function() {
+		$root.on( 'click', '#open-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
 			$( root_prefix + '-manager > .ab-sub-wrapper' ).addClass('fullPopup');
 			VAA_View_Admin_As.autoMaxHeight();
 		} );
 		// Undo enlarge caps.
-		$document.on( 'click', root_prefix + ' #close-caps-popup', function() {
+		$root.on( 'click', '#close-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
 			$( root_prefix + '-manager > .ab-sub-wrapper' ).removeClass('fullPopup');
 			VAA_View_Admin_As.autoMaxHeight();
 		} );
 
 		// Select role capabilities.
-		$document.on( 'change', root_prefix + ' .ab-vaa-select.select-role-caps select', function() {
+		$root.on( 'change', '.ab-vaa-select.select-role-caps select', function() {
 			VAA_View_Admin_As.caps_filter_settings.selectedRole = $(this).val();
 
 			if ( 'default' === VAA_View_Admin_As.caps_filter_settings.selectedRole ) {
@@ -1050,13 +1149,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// Filter capabilities with text input.
-		$document.on( 'keyup', root_prefix + ' .ab-vaa-filter input', function() {
+		$root.on( 'keyup', '.ab-vaa-filter input', function() {
 			VAA_View_Admin_As.caps_filter_settings.filterString = $(this).val();
 			VAA_View_Admin_As.filter_capabilities();
 		} );
 
 		// Select all capabilities.
-		$document.on( 'click touchend', root_prefix + ' button#select-all-caps', function( e ) {
+		$root.on( 'click touchend', 'button#select-all-caps', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -1070,7 +1169,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// Deselect all capabilities.
-		$document.on( 'click touchend', root_prefix + ' button#deselect-all-caps', function( e ) {
+		$root.on( 'click touchend', 'button#deselect-all-caps', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -1084,7 +1183,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// Process view: capabilities.
-		$document.on( 'click touchend', root_prefix + ' button#apply-caps-view', function( e ) {
+		$root.on( 'click touchend', 'button#apply-caps-view', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -1098,16 +1197,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Defaults.
 	 * @since  1.4
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
 		var root = VAA_View_Admin_As.root + '-role-defaults',
 			prefix = 'vaa-role-defaults',
-			root_prefix = VAA_View_Admin_As.prefix + root;
+			root_prefix = VAA_View_Admin_As.prefix + root,
+			$root = $( root_prefix );
 
 		// @since  1.6.3  Add new meta.
-		$document.on( 'click touchend', root_prefix + '-meta-add button#' + prefix + '-meta-add', function( e ) {
+		$root.on( 'click touchend', root + '-meta-add button#' + prefix + '-meta-add', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -1124,7 +1224,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.4  Filter users.
-		$document.on( 'keyup', root_prefix + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
+		$root.on( 'keyup', root + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
 			e.preventDefault();
 			if ( 1 <= $(this).val().length ) {
 				var input_text = $(this).val();
@@ -1147,7 +1247,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Manager.
 	 * @since  1.7
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_manager = function() {
 
@@ -1156,10 +1256,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		var root = VAA_View_Admin_As.root + '-caps-manager-role-manager',
 			prefix = 'vaa-caps-manager-role-manager',
-			root_prefix = VAA_View_Admin_As.prefix + root;
+			root_prefix = VAA_View_Admin_As.prefix + root,
+			$root = $( root_prefix );
 
 		// @since  1.7  Update capabilities when selecting a role.
-		$document.on( 'change', root_prefix + ' select#' + prefix + '-edit-role', function() {
+		$root.on( 'change', 'select#' + prefix + '-edit-role', function() {
 			var $this = $(this),
 				role  = $this.val(),
 				caps  = {},
@@ -1178,13 +1279,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.7  Add/Modify roles.
-		$document.on( 'click touchend', root_prefix + ' button#' + prefix + '-save-role', function( e ) {
+		$root.on( 'click touchend', 'button#' + prefix + '-save-role', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
 			e.preventDefault();
 			var role = $( root_prefix + ' select#' + prefix + '-edit-role' ).val(),
-				refresh = false;
+				refresh = ( VAA_View_Admin_As.view.hasOwnProperty( 'role' ) && role === VAA_View_Admin_As.view.role );
 			if ( ! role ) {
 				return false;
 			}
@@ -1201,7 +1302,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.7  Add new capabilities.
-		$document.on( 'click touchend', root_prefix + '-new-cap button#' + prefix + '-add-cap', function( e ) {
+		$root.on( 'click touchend', root + '-new-cap button#' + prefix + '-add-cap', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -1217,6 +1318,62 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				$( VAA_View_Admin_As.root + '-caps-select-options > .ab-item' ).prepend( item );
 			}
 		} );
+	};
+
+	/**
+	 * Read file content and place it in a target value.
+	 * https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+	 * http://www.javascripture.com/FileReader
+	 *
+	 * @todo Is this the correct method name?
+	 *
+	 * @since  1.7.4
+	 * @param  {object}  data  The auto_js data.
+	 * @return {void}  Nothing.
+	 */
+	VAA_View_Admin_As.assign_file_content = function( data ) {
+		if ( 'function' !== typeof FileReader ) {
+			// @todo Remove file element on load if the browser doesn't support FileReader.
+			return;
+		}
+		var param    = ( data.hasOwnProperty('param') ) ? data.param : {},
+			$target  = ( param.hasOwnProperty('target') ) ? $( param.target ) : null,
+			$element = ( param.hasOwnProperty('element') ) ? $( param.element )  : null,
+			wait     = true;
+
+		if ( ! $target || ! $element ) {
+			return;
+		}
+
+		var files  = $element[0].files,
+			length = files.length,
+			val    = '';
+
+		if ( length ) {
+			$.each( files, function( key, file ) {
+				var reader = new FileReader();
+				reader.onload = function() { //progressEvent
+					var content = VAA_View_Admin_As.json_decode( this.result );
+					if ( 'object' === typeof content ) {
+						// Remove JSON format.
+						content = JSON.stringify( content );
+					}
+					val += content;
+					length--;
+					if ( ! length ) {
+						wait = false;
+					}
+				};
+				reader.readAsText( file );
+			} );
+		}
+
+		var areWeThereYet = setInterval( function() {
+			if ( ! wait ) {
+				$target.val( val );
+				clearInterval( areWeThereYet );
+			}
+		}, 100 );
 	};
 
 	/**
@@ -1253,6 +1410,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}, 100 );
 	};
 	$window.on( 'resize', VAA_View_Admin_As.autoMaxHeight );
+
+	/**
+	 * Maybe show a debug message.
+	 * @since  1.7.4
+	 * @param  {mixed} message The data to debug.
+	 * @return {null}  Nothing.
+	 */
+	VAA_View_Admin_As.debug = function( message ) {
+		if ( true === VAA_View_Admin_As._debug ) {
+			// Show debug info in console.
+			console.log( message );
+		}
+	};
 
 	// We require a nonce to use this plugin.
 	if ( VAA_View_Admin_As.hasOwnProperty( '_vaa_nonce' ) ) {

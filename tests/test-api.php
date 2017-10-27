@@ -12,25 +12,37 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 
 	/**
 	 * Test methods:
-	 * - starts_with( $haystack, $needle )
-	 * - ends_with( $haystack, $needle )
+	 * @see VAA_API::starts_with()
+	 * @see VAA_API::ends_with()
 	 */
 	function test_end_starts_with() {
+
 		$this->assertTrue(  VAA_API::starts_with( 'test_string', 'te' ) );
 		$this->assertTrue(  VAA_API::starts_with( 'test_string', 'test_s' ) );
+		$this->assertTrue(  VAA_API::starts_with( 'test_string', 'test_string' ) );
+		$this->assertFalse( VAA_API::starts_with( 'test_string', 'est' ) );
 		$this->assertFalse( VAA_API::starts_with( 'test_string', 'est_s' ) );
 		$this->assertFalse( VAA_API::starts_with( 'test_string', 'string' ) );
+
+		$this->assertTrue(  VAA_API::ends_with( 'test_string', 'ing' ) );
+		$this->assertTrue(  VAA_API::ends_with( 'test_string', '_string' ) );
+		$this->assertTrue(  VAA_API::ends_with( 'test_string', 'test_string' ) );
 		$this->assertFalse( VAA_API::ends_with( 'test_string', 'te' ) );
 		$this->assertFalse( VAA_API::ends_with( 'test_string', 'test_s' ) );
-		$this->assertFalse( VAA_API::ends_with( 'test_string', 'est_s' ) );
-		$this->assertTrue(  VAA_API::ends_with( 'test_string', '_string' ) );
-		$this->assertTrue(  VAA_API::ends_with( 'test_string', 'ing' ) );
+		$this->assertFalse( VAA_API::ends_with( 'test_string', 'rin' ) );
+
+		// Double check for when a search string occurs multiple times.
+		$this->assertTrue(  VAA_API::starts_with( 'test_test_string', 'test' ) );
+		$this->assertFalse( VAA_API::starts_with( 'test_string_string', 'string' ) );
+		$this->assertTrue(  VAA_API::ends_with( 'test_string_string', 'string' ) );
+		$this->assertFalse( VAA_API::ends_with( 'test_test_string', 'test' ) );
+
 	}
 
 	/**
 	 * Test methods:
-	 * - is_request( $key = null, $type = 'post' )
-	 * - get_request( $nonce, $key = null, $type = 'post' )
+	 * @see VAA_API::is_request()
+	 * @see VAA_API::get_request()
 	 */
 	function test_requests() {
 
@@ -78,7 +90,7 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 
 	/**
 	 * Test method:
-	 * - set_array_data( $array, $key = null )
+	 * @see VAA_API::get_array_data()
 	 */
 	function test_get_array_data() {
 
@@ -113,7 +125,7 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 
 	/**
 	 * Test method:
-	 * - set_array_data( $array, $var, $key = null, $append = false )
+	 * @see VAA_API::set_array_data()
 	 */
 	function test_set_array_data() {
 
@@ -137,11 +149,12 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 		if ( is_callable( array( $this, 'doing_it_wrong_run' ) ) ) {
 			add_action( 'doing_it_wrong_run', array( $this, 'doing_it_wrong_run' ) );
 		}
+
 	}
 
 	/**
 	 * Test method:
-	 * - array_equal( $array1, $array2 )
+	 * @see VAA_API::array_equal()
 	 */
 	function test_array_equal() {
 
@@ -212,7 +225,7 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 
 	/**
 	 * Test method:
-	 * - set_array_data( $array, $var, $key = null, $append = false )
+	 * @see VAA_API::set_array_data()
 	 */
 	function test_array_has() {
 

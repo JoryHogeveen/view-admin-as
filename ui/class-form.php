@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
@@ -118,6 +118,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *     @type  string  $description    (optional)
 	 *     @type  string  $help           (optional)
 	 *     @type  string  $class          (optional)
+	 *     @type  array   $type           (optional) Optional input type attribute.
 	 *     @type  array   $attr           (optional)
 	 *     @type  array   $auto_js        (optional) See VAA_View_Admin_As_Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide  (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
@@ -133,7 +134,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$placeholder = ( ! empty( $args['placeholder'] ) ) ? $args['placeholder'] : '';
 		$class = ( ! empty( $args['class'] ) ) ? $args['class'] : '';
 
-		$args['attr']['type'] = 'text';
+		$args['attr']['type'] = ( ! empty( $args['type'] ) ) ? $args['type'] : 'text';
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;
 		$args['attr']['placeholder'] = $placeholder;
@@ -607,6 +608,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *         }
 	 *     }
 	 * }
+	 * @return  void
 	 */
 	public static function enable_auto_showhide( $target, &$trigger_attr = array(), &$target_attr = array(), $args = array() ) {
 		if ( ! empty( $args ) && empty( $args['auto_showhide'] ) ) {
@@ -650,7 +652,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 *
 	 * @param   array  $attr  The current attributes.
 	 * @param   array  $new   The new attributes. Attribute names as key.
-	 * @return  array
+	 * @return  string[]
 	 */
 	public static function merge_attr( $attr, $new ) {
 		foreach ( $new as $key => $value ) {
@@ -705,7 +707,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @static
 	 *
 	 * @param   VAA_View_Admin_As  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Form
+	 * @return  $this  VAA_View_Admin_As_Form
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

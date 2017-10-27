@@ -13,16 +13,23 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * API class that holds general functions.
  *
+ * Disable some PHPMD checks for this class.
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @todo Refactor to enable above checks?
+ *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.3
+ * @version 1.7.4
  */
 final class VAA_API
 {
 	/**
 	 * Check if the user is a super admin.
 	 * It will validate the original user while in a view and no parameter is passed.
+	 *
+	 * @see  VAA_View_Admin_As_Store::is_super_admin()
 	 *
 	 * @since   1.6.3
 	 * @access  public
@@ -92,7 +99,7 @@ final class VAA_API
 		 *
 		 * @since  1.5.2
 		 * @param  array
-		 * @return array requires a returned array of user ID's
+		 * @return int[] Requires a returned array of user ID's
 		 */
 		$superior_admins = array_unique( array_map( 'absint', array_filter(
 			(array) apply_filters( 'view_admin_as_superior_admins', array() ),
@@ -104,6 +111,8 @@ final class VAA_API
 
 	/**
 	 * Check if the provided data is the same as the current view.
+	 *
+	 * @see  VAA_View_Admin_As_Controller::is_current_view()
 	 *
 	 * @since   1.7.1
 	 * @access  public
@@ -128,6 +137,8 @@ final class VAA_API
 	/**
 	 * Similar function to current_user_can().
 	 *
+	 * @see  VAA_View_Admin_As_View::current_view_can()
+	 *
 	 * @since   1.7.2
 	 * @access  public
 	 * @static
@@ -148,6 +159,8 @@ final class VAA_API
 
 	/**
 	 * Is the current user modified?
+	 *
+	 * @see  VAA_View_Admin_As_View::current_view_can()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -320,7 +333,11 @@ final class VAA_API
 			}
 
 			// Notify user if in debug mode
-			_doing_it_wrong( __METHOD__, 'View Admin As: Key <code>' . (string) $key . '</code> does not exist', null );
+			_doing_it_wrong(
+				__METHOD__,
+				'View Admin As: Key <code>' . (string) $key . '</code> does not exist',
+				null
+			);
 
 			// return no changes if key is not found or appending is not allowed.
 			return $array;
@@ -464,8 +481,8 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function starts_with( $haystack, $needle ) {
-		// search backwards starting from haystack length characters from the end.
-		return '' === $needle || strrpos( $haystack, $needle, -strlen( $haystack ) ) !== false;
+		// Search backwards starting from haystack length characters from the end.
+		return '' === $needle || 0 === strpos( $haystack, $needle );
 	}
 
 	/**
@@ -482,9 +499,8 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function ends_with( $haystack, $needle ) {
-		// search forward starting from end minus needle length characters.
-		// @codingStandardsIgnoreLine >> yeah yeah, I know...
-		return '' === $needle || ( ( $temp = strlen( $haystack ) - strlen( $needle ) ) >= 0 && strpos( $haystack, $needle, $temp ) !== false);
+		// Search forward starting from end minus needle length characters.
+		return '' === $needle || ( strlen( $haystack ) - strlen( $needle ) === strrpos( $haystack, $needle ) );
 	}
 
 	/**
@@ -517,11 +533,87 @@ final class VAA_API
 	}
 
 	/**
-	 * AJAX Request validator. Verifies caller and nonce.
+	 * Enhancement for is_callable(), also check for class_exists() or method_exists() when an array is passed.
+	 * Prevents incorrect `true` when a class has a __call() method.
+	 * Can also handle error notices.
+	 *
+	 * @since   1.7.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   callable|array  $callable     The callable data.
+	 * @param   bool|string     $do_notice    Add an error notice when it isn't?
+	 *                                        Pass `debug` to only show notice when WP_DEBUG is enabled.
+	 * @param   bool            $syntax_only  See is_callable() docs.
+	 * @return  bool
+	 */
+	public static function exists_callable( $callable, $do_notice = false, $syntax_only = false ) {
+		$pass = is_callable( $callable, $syntax_only );
+		if ( $pass && is_array( $callable ) ) {
+			if ( 1 === count( $callable ) ) {
+				$pass = class_exists( $callable[0] );
+			} else {
+				$pass = method_exists( $callable[0], $callable[1] );
+			}
+		}
+		if ( ! $pass && $do_notice ) {
+			if ( 'debug' === $do_notice ) {
+				$do_notice = ( defined( 'WP_DEBUG' ) && WP_DEBUG );
+			}
+			if ( ! is_string( $do_notice ) ) {
+				$callable = self::callable_to_string( $callable );
+				$do_notice = sprintf(
+					// Translators: %s stands for the requested class, method or function.
+					__( '%s does not exists or is not callable.', VIEW_ADMIN_AS_DOMAIN ),
+					'<code>' . $callable . '</code>'
+				);
+			}
+			view_admin_as()->add_error_notice( $callable, array(
+				'message' => $do_notice,
+			) );
+		}
+		return (boolean) $pass;
+	}
+
+	/**
+	 * Convert callable variable to string for display.
+	 *
+	 * @since   1.7.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   callable|array  $callable
+	 * @return  string
+	 */
+	public static function callable_to_string( $callable ) {
+		if ( is_string( $callable ) ) {
+			return $callable;
+		}
+		if ( is_object( $callable ) ) {
+			$callable = array( $callable, '' );
+		}
+		if ( is_array( $callable ) ) {
+			if ( is_object( $callable[0] ) ) {
+				$callable[0] = get_class( $callable[0] );
+				$callable = implode( '->', $callable );
+			} else {
+				$callable = implode( '::', $callable );
+			}
+		}
+		return (string) $callable;
+	}
+
+	/**
+	 * AJAX request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
@@ -535,11 +627,14 @@ final class VAA_API
 	}
 
 	/**
-	 * AJAX Request validator. Verifies caller and nonce.
+	 * Normal request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
@@ -558,6 +653,9 @@ final class VAA_API
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $nonce  The nonce to validate
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
@@ -577,10 +675,13 @@ final class VAA_API
 	}
 
 	/**
-	 * AJAX Request check.
+	 * AJAX request check.
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
 	 * @return  bool
@@ -593,10 +694,13 @@ final class VAA_API
 	}
 
 	/**
-	 * Normal Request check.
+	 * Normal request check.
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $key    The key to fetch.
 	 * @param   string  $type   The type of request.
 	 * @return  bool
@@ -613,6 +717,9 @@ final class VAA_API
 	 *
 	 * @since   1.7
 	 * @access  public
+	 * @static
+	 * @api
+	 *
 	 * @param   string  $key    The key to check.
 	 * @param   string  $type   The type of request.
 	 * @return  bool
@@ -624,6 +731,26 @@ final class VAA_API
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Enhanced is_admin() function with AJAX support.
+	 *
+	 * @see is_admin()
+	 *
+	 * @since   1.7.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_admin() {
+		if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
+			return is_admin();
+		}
+		// It's an ajax call, is_admin() would always return `true`. Compare the referrer url with the admin url.
+		return ( false !== strpos( (string) wp_get_referer(), admin_url() ) );
 	}
 
 } // End class VAA_API.

@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Renamed from VAA_View_Admin_As_Admin
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * Plugin links.
 	 *
 	 * @since  1.6.1
-	 * @var    array
+	 * @var    array[]
 	 */
 	private $links = array();
 
@@ -79,8 +79,8 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.3   Check whether to place link + reset link for current user.
 	 * @access  public
-	 * @param   array    $actions  The existing actions.
-	 * @param   WP_User  $user     The user object.
+	 * @param   array     $actions  The existing actions.
+	 * @param   \WP_User  $user     The user object.
 	 * @return  array
 	 */
 	public function filter_user_row_actions( $actions, $user ) {
@@ -129,8 +129,9 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * Show row meta on the plugin screen.
 	 *
 	 * @since   1.6.1
-	 * @param   array   $links  The existing links.
-	 * @param   string  $file   The plugin file.
+	 * @see     WP_Plugins_List_Table::single_row()
+	 * @param   array[]  $links  The existing links.
+	 * @param   string   $file   The plugin file.
 	 * @return  array
 	 */
 	public function action_plugin_row_meta( $links, $file ) {
@@ -147,61 +148,69 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.2  Added Slack channel link
-	 * @return  array
+	 * @return  array[]
 	 */
 	public function get_links() {
-		if ( empty( $this->links ) ) {
-			$this->links = array(
-				'support' => array(
-					'title' => __( 'Support', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Need support?', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-testimonial',
-					'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
-				),
-				'slack' => array(
-					'title' => __( 'Slack', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Quick help via Slack', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-format-chat',
-					'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
-				),
-				'review' => array(
-					'title' => __( 'Review', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Give 5 stars on WordPress.org!', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-star-filled',
-					'url'   => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
-				),
-				'translate' => array(
-					'title' => __( 'Translate', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Help translating this plugin!', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-translation',
-					'url'   => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
-				),
-				'issue' => array(
-					'title' => __( 'Report issue', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Have ideas or a bug report?', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-lightbulb',
-					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/issues',
-				),
-				'docs' => array(
-					'title' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-book-alt',
-					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
-				),
-				'github' => array(
-					'title' => __( 'GitHub', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Follow development on GitHub', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-editor-code',
-					'url'   => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
-				),
-				'donate' => array(
-					'title' => __( 'Donate', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Buy me a coffee!', VIEW_ADMIN_AS_DOMAIN ),
-					'icon'  => 'dashicons-smiley',
-					'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
-				),
-			);
-		} // End if().
+		if ( ! empty( $this->links ) ) {
+			return $this->links;
+		}
+
+		$this->links = array(
+			'support' => array(
+				'title' => __( 'Support', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Need support?', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-sos',
+				'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
+			),
+			'slack' => array(
+				'title' => __( 'Slack', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Quick help via Slack', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-format-chat',
+				'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
+			),
+			'review' => array(
+				'title' => __( 'Review', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Give 5 stars on WordPress.org!', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-star-filled',
+				'url'   => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
+			),
+			'translate' => array(
+				'title' => __( 'Translate', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Help translating this plugin!', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-translation',
+				'url'   => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
+			),
+			'issue' => array(
+				'title' => __( 'Report issue', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Have ideas or a bug report?', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-lightbulb',
+				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/issues',
+			),
+			'docs' => array(
+				'title' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-book-alt',
+				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
+			),
+			'github' => array(
+				'title' => __( 'GitHub', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Follow development on GitHub', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-editor-code',
+				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
+			),
+			'donate' => array(
+				'title' => __( 'Donate', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Buy me a coffee!', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-smiley',
+				'url'   => 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest',
+			),
+			'plugins' => array(
+				'title' => __( 'Plugins', VIEW_ADMIN_AS_DOMAIN ),
+				'description' => __( 'Check out my other plugins', VIEW_ADMIN_AS_DOMAIN ),
+				'icon'  => 'dashicons-admin-plugins',
+				'url'   => 'https://profiles.wordpress.org/keraweb/#content-plugins',
+			),
+		);
 
 		return $this->links;
 	}
@@ -231,6 +240,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @see     wp_admin_canonical_url()
+	 * @return  void
 	 */
 	public function remove_query_args() {
 		$removable_query_args = $this->filter_removable_query_args( array() );
@@ -302,13 +312,15 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 				'view'          => $this->store->get_view(),
 				'view_types'    => $this->vaa->controller()->get_view_types(),
 				// Other.
-				'_debug'     => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
-				'_vaa_nonce' => $this->store->get_nonce( true ),
+				'_loader_icon' => VIEW_ADMIN_AS_URL . 'assets/img/loader.gif',
+				'_debug'       => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
+				'_vaa_nonce'   => $this->store->get_nonce( true ),
 				// i18n.
 				'__no_users_found'     => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
 				'__key_already_exists' => esc_html__( 'Key already exists.', VIEW_ADMIN_AS_DOMAIN ),
 				'__success'            => esc_html__( 'Success', VIEW_ADMIN_AS_DOMAIN ),
 				'__confirm'            => esc_html__( 'Are you sure?', VIEW_ADMIN_AS_DOMAIN ),
+				'__download'           => esc_html__( 'Download', VIEW_ADMIN_AS_DOMAIN ),
 			)
 		);
 
@@ -323,15 +335,16 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @since   1.6     More options and better description.
 	 * @since   1.7     Moved to this class from main class.
 	 * @access  public
+	 * @see     wp_die()
 	 *
-	 * @param   string  $function_name  function callback.
-	 * @return  string  $function_name  function callback.
+	 * @param   callable  $callback  WP die callback.
+	 * @return  callable  $callback  WP die callback.
 	 */
-	public function die_handler( $function_name ) {
+	public function die_handler( $callback ) {
 
 		// Only do something if a view is selected.
 		if ( ! $this->store->get_view() ) {
-			return $function_name;
+			return $callback;
 		}
 
 		$options = array();
@@ -369,7 +382,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		 *         @type  string  $url   The link.
 		 *     }
 		 * }
-		 * @return array
+		 * @return array[]
 		 */
 		$options = apply_filters( 'view_admin_as_error_page_options', $options );
 		?>
@@ -377,14 +390,14 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 			<h3><?php esc_html_e( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ); ?>:</h3>
 			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ); ?>
 			<ul>
-				<?php foreach ( $options as $option ) { ?>
-					<li><a href="<?php echo $option['url']; ?>"><?php echo $option['text']; ?></a></li>
-				<?php } ?>
+			<?php foreach ( $options as $option ) { ?>
+				<li><a href="<?php echo $option['url']; ?>"><?php echo $option['text']; ?></a></li>
+			<?php } ?>
 			</ul>
 		</div>
 		<hr>
 		<?php
-		return $function_name;
+		return $callback;
 	}
 
 	/**
@@ -396,7 +409,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_UI
+	 * @return  $this  VAA_View_Admin_As_UI
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

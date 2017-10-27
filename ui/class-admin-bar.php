@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.7.2
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Form Extends class
  */
 final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
@@ -38,6 +38,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @var    string
 	 */
 	public static $root = 'vaa';
+
+	/**
+	 * Admin bar parent item ID.
+	 *
+	 * @since  1.7.4
+	 * @static
+	 * @var    string
+	 */
+	public static $parent = 'top-secondary';
 
 	/**
 	 * Group the users under their roles?
@@ -84,8 +93,25 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			$this->groupUserRoles = true;
 		}
 
+		$priority = 10;
+		$location = $this->store->get_userSettings( 'admin_menu_location' );
+		if ( $location && in_array( $location, $this->store->get_allowedUserSettings( 'admin_menu_location' ), true ) ) {
+			self::$parent = $location;
+			if ( 'my-account' === $location ) {
+				$priority = -10;
+			}
+		}
+		/**
+		 * Set the priority in which the adminbar root node is added.
+		 * @since  1.7.4
+		 * @param  int     $priority
+		 * @param  string  $parent  The main VAA node parent.
+		 * @return int
+		 */
+		$priority = (int) apply_filters( 'vaa_admin_bar_priority', $priority, self::$parent );
+
 		// Add the default nodes to the WP admin bar.
-		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ) );
+		add_action( 'admin_bar_menu', array( $this, 'admin_bar_menu' ), $priority );
 		add_action( 'vaa_toolbar_menu', array( $this, 'admin_bar_menu' ), 10, 2 );
 
 		// Add the global nodes to the admin bar.
@@ -118,7 +144,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 *
 	 * @since   1.7.2
 	 * @access  private
-	 * @see     admin_bar_menu()
+	 * @see     VAA_View_Admin_As_Admin_Bar::admin_bar_menu()
 	 * @return  string
 	 */
 	private function get_admin_bar_menu_title() {
@@ -164,8 +190,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @access  public
 	 * @see     'admin_bar_menu' action
 	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item ID/Name. If set it will overwrite the user setting.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item ID/Name. If set it will overwrite the user setting.
 	 * @return  void
 	 */
 	public function admin_bar_menu( $admin_bar, $root = '' ) {
@@ -179,12 +205,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$title = $this->get_admin_bar_menu_title();
 
 		if ( empty( $root ) ) {
-			$root = 'top-secondary';
-			if ( $this->store->get_userSettings( 'admin_menu_location' )
-			     && in_array( $this->store->get_userSettings( 'admin_menu_location' ), $this->store->get_allowedUserSettings( 'admin_menu_location' ), true )
-			) {
-				$root = $this->store->get_userSettings( 'admin_menu_location' );
-			}
+			$root = self::$parent;
 		}
 
 		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
@@ -196,7 +217,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => self::$root,
 			'parent' => $root,
-			'title'  => '<span class="ab-label">' . $title . '</span><span class="ab-icon alignright dashicons ' . $icon . '"></span>',
+			'title'  => '<span class="ab-label">' . $title . '</span>' . VAA_View_Admin_As_Form::do_icon(
+				$icon,
+				array( 'class' => 'alignright' )
+			),
 			'href'   => false,
 			'meta'   => array(
 				'title'    => $tooltip,
@@ -210,9 +234,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        self::$root  The current root item.
-		 * @param   string        self::$root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         self::$root  The current root item.
+		 * @param   string         self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_menu_before', $admin_bar, self::$root, self::$root );
 
@@ -247,9 +271,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        self::$root  The current root item.
-		 * @param   string        self::$root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         self::$root  The current root item.
+		 * @param   string         self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_menu', $admin_bar, self::$root, self::$root );
 
@@ -261,7 +285,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @since   1.6
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @return  void
 	 */
 	public function admin_bar_menu_info( $admin_bar ) {
@@ -313,19 +337,24 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.6
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
-		 * @param   string        self::$root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
+		 * @param   string         self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_info_before', $admin_bar, $root, self::$root );
 
 		// Add the general admin links.
-		if ( is_callable( array( $this->vaa->get_ui( 'ui' ), 'get_links' ) ) ) {
+		if ( VAA_API::exists_callable( array( $this->vaa->get_ui( 'ui' ), 'get_links' ), true ) ) {
 			$info_links = $this->vaa->get_ui( 'ui' )->get_links();
+
+			$admin_bar->add_group( array(
+				'id'     => $root . '-links',
+				'parent' => $root,
+			) );
 
 			foreach ( $info_links as $id => $link ) {
 				$admin_bar->add_node( array(
-					'parent' => $root,
+					'parent' => $root . '-links',
 					'id'     => $root . '-' . $id,
 					'title'  => self::do_icon( $link['icon'] ) . $link['description'],
 					'href'   => esc_url( $link['url'] ),
@@ -343,9 +372,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.6
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
-		 * @param   string        self::$root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
+		 * @param   string         self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_info_after', $admin_bar, $root, self::$root );
 
@@ -357,7 +386,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @since   1.5
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @return  void
 	 */
 	public function admin_bar_menu_settings( $admin_bar ) {
@@ -381,9 +410,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
-		 * @param   string        self::$root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
+		 * @param   string         self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_settings_before', $admin_bar, $root, self::$root );
 
@@ -396,9 +425,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
-		 * @param   string        self::$root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
+		 * @param   string         self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_settings_after', $admin_bar, $root, self::$root );
 	}
@@ -409,8 +438,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @since   1.7.1
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The current root item.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The current root item.
 	 * @return  void
 	 */
 	public function admin_bar_menu_modules( $admin_bar, $root ) {
@@ -447,9 +476,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.7.1
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
-		 * @param   string        self::$root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
+		 * @param   string         self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_modules', $admin_bar, $root, self::$root );
 	}
@@ -460,7 +489,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @since   1.5
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @return  void
 	 */
 	public function admin_bar_menu_caps( $admin_bar ) {
@@ -471,7 +500,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * Make sure we have the latest added capabilities.
 		 * It can be that a plugin/theme adds a capability after the initial call to store_caps (hook: 'plugins_loaded').
 		 *
-		 * @see    VAA_View_Admin_As->run()
+		 * @see    VAA_View_Admin_As::run()
 		 * @since  1.4.1
 		 */
 		$this->store->store_caps();
@@ -507,9 +536,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $root       The current root item.
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $root       The current root item.
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, $main_root );
 
@@ -557,18 +586,15 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.7
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $root       The current root item. ($root.'-manager')
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $root       The current root item. ($root.'-manager')
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_caps_manager_before', $admin_bar, $root . '-manager', $main_root );
 
 		$admin_bar->add_group( array(
 			'id'     => $root . '-select',
 			'parent' => $root . '-manager',
-			'meta'   => array(
-				'class' => 'ab-sub-secondary ab-vaa-spacing-top',
-			),
 		) );
 
 		// Used in templates
@@ -580,9 +606,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.7
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $parent     The current root item.
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $parent     The current root item.
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $parent, $main_root );
 
@@ -595,9 +621,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.7
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $parent     The current root item.
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $parent     The current root item.
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $parent, $main_root );
 
@@ -610,9 +636,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $root       The current root item.
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $root       The current root item.
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_caps_after', $admin_bar, $root, $main_root );
 
@@ -625,7 +651,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @since   1.5
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @return  void
 	 */
 	public function admin_bar_menu_roles( $admin_bar ) {
@@ -636,7 +662,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * Make sure we have the latest added roles.
 		 * It can be that a plugin/theme adds a role after the initial call to store_roles (hook: 'plugins_loaded').
 		 *
-		 * @see    VAA_View_Admin_As->run()
+		 * @see    VAA_View_Admin_As::run()
 		 * @since  1.6.3
 		 */
 		$this->store->store_roles();
@@ -672,9 +698,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $root       The current root item.
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $root       The current root item.
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_roles_before', $admin_bar, $main_root );
 
@@ -687,9 +713,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $root       The current root item.
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $root       The current root item.
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_roles_after', $admin_bar, $root, $main_root );
 
@@ -702,7 +728,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @since   1.5
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @return  void
 	 */
 	public function admin_bar_menu_users( $admin_bar ) {
@@ -740,9 +766,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $root       The current root item.
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $root       The current root item.
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
 
@@ -751,10 +777,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 				'id'     => $root . '-searchusers',
 				'parent' => $root,
 				'title'  => self::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) )
-				. self::do_input( array(
-					'name' => $root . '-searchusers',
-					'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
-				) ),
+					. self::do_input( array(
+						'name'        => $root . '-searchusers',
+						'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
+					) ),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'ab-vaa-search search-users',
@@ -772,9 +798,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 * @since   1.5
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-		 * @param   string        $root       The current root item.
-		 * @param   string        $main_root  The main root item.
+		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+		 * @param   string         $root       The current root item.
+		 * @param   string         $main_root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, $main_root );
 
@@ -787,8 +813,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @since   1.6.2
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       (optional) The root item.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       (optional) The root item.
 	 * @return  void
 	 */
 	public function admin_bar_menu_visitor( $admin_bar, $root = '' ) {
@@ -839,7 +865,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class
-	 * @return  VAA_View_Admin_As_Admin_Bar
+	 * @return  $this  VAA_View_Admin_As_Admin_Bar
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

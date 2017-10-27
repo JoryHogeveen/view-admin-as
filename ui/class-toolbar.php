@@ -22,9 +22,9 @@ if ( class_exists( 'WP_Admin_Bar' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.3
+ * @version 1.7.4
  * @see     wp-includes/class-wp-admin-bar.php
- * @uses    WP_Admin_Bar Extends class
+ * @uses    \WP_Admin_Bar Extends class
  */
 final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 {
@@ -149,7 +149,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Toolbar
+	 * @return  $this  VAA_View_Admin_As_Toolbar
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

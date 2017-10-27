@@ -13,10 +13,14 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * Add or remove roles and grant or deny them capabilities.
  *
+ * Disable some PHPMD checks for this class.
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @todo Refactor to enable above checks?
+ *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.2
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
@@ -50,7 +54,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * The WP_Roles object.
 	 *
 	 * @since  1.7
-	 * @var    WP_Roles
+	 * @var    \WP_Roles
 	 */
 	public $wp_roles = null;
 
@@ -59,7 +63,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * These roles cannot be removed.
 	 *
 	 * @since  1.7
-	 * @var    array
+	 * @var    string[]
 	 */
 	private $protected_roles = array();
 
@@ -111,7 +115,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  private
-	 * @global  WP_Roles  $wp_roles
+	 * @global  \WP_Roles  $wp_roles
 	 * @return  void
 	 */
 	private function init() {
@@ -212,20 +216,21 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			return $success;
 		}
 
-		// @since  1.7.x  Export
+		// @since  1.7.3  Export
 		if ( VAA_API::array_has( $data, 'export_roles', array( 'validation' => 'is_array' ) ) ) {
 			$content = $this->export_roles( $data['export_roles'] );
 			if ( is_array( $content ) ) {
 				$success = $this->ajax_data_popup( true, array(
 					'text' => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
 					'textarea' => wp_json_encode( $content ),
+					'filename' => esc_html__( 'Role manager', VIEW_ADMIN_AS_DOMAIN ) . '.json',
 				) );
 			} else {
 				$success = $this->ajax_data_notice( false, array( 'text' => $content ), 'error' );
 			}
 		}
 
-		// @since  1.7.x  Import
+		// @since  1.7.3  Import
 		if ( VAA_API::array_has( $data, 'import_roles', array( 'validation' => 'is_array' ) ) ) {
 			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
 			$content = $this->import_roles( $data['import_roles'] );
@@ -355,7 +360,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			// Only leave granted capabilities.
 			// @todo Option to deny capability (like Members).
 			$capabilities = array_filter( $capabilities );
-			// @see wp-includes/capabilities.php
+			// @see  wp-includes/capabilities.php
 			$new_role = add_role( $role, $role_name, $capabilities );
 
 			if ( $new_role ) {
@@ -375,9 +380,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   WP_Role  $role          The role object.
-	 * @param   array    $capabilities  The new role capabilities.
-	 * @param   string   $method        Update method.
+	 * @param   \WP_Role  $role          The role object.
+	 * @param   array     $capabilities  The new role capabilities.
+	 * @param   string    $method        Update method.
 	 * @return  bool
 	 */
 	public function update_role_caps( $role, $capabilities, $method = '' ) {
@@ -436,8 +441,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   string  $role          The source role slug/ID.
-	 * @param   string  $new_name      The new role label.
+	 * @param   string  $role      The source role slug/ID.
+	 * @param   string  $new_name  The new role label.
 	 * @return  bool|string
 	 */
 	public function rename_role( $role, $new_name ) {
@@ -485,7 +490,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Import role(s).
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.3
 	 * @access  public
 	 * @param   array  $args  {
 	 *     @type  array   $data       The import data.
@@ -542,7 +547,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Export role(s).
 	 *
-	 * @since   1.7.x
+	 * @since   1.7.3
 	 * @access  public
 	 * @param   array   $args  {
 	 *     @type  string  $role       Role name or "__all__" for all roles.
@@ -634,8 +639,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @see     'vaa_admin_bar_modules' action
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa-settings).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa-settings).
 	 * @return  void
 	 */
 	public function admin_bar_menu_modules( $admin_bar, $root ) {
@@ -672,8 +677,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa).
 	 * @return  void
 	 */
 	public function admin_bar_menu( $admin_bar, $root ) {
@@ -714,10 +719,10 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
-	 * @see     admin_bar_menu()
+	 * @see     VAA_View_Admin_As_Role_Manager::admin_bar_menu()
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa).
 	 * @return  void
 	 */
 	private function admin_bar_menu_bulk_actions( $admin_bar, $root ) {
@@ -757,7 +762,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-apply-view',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -834,7 +839,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-rename',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -911,7 +916,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-clone',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -995,7 +1000,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-export',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1034,6 +1039,23 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'class' => 'auto-height',
 			),
 		) );
+
+		$auto_js = array(
+			'setting' => $this->moduleKey,
+			'key'     => 'export_roles',
+			'refresh' => false,
+			'values'  => array(
+				'role' => array(
+					'element' => '#wp-admin-bar-' . $root . '-export-roles-select select#' . $root . '-export-roles-select',
+					'parser'  => '', // Default.
+				),
+				'caps_only' => array(
+					'element'  => '#wp-admin-bar-' . $root . '-export-roles-caps-only input#' . $root . '-export-roles-caps-only',
+					'parser'   => '', // Default.
+					'required' => false,
+				),
+			),
+		);
 		$admin_bar->add_node( array(
 			'id'     => $root . '-export-roles-export',
 			'parent' => $root . '-export',
@@ -1041,22 +1063,14 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'name'    => $root . '-export-roles-export',
 				'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',
-				'auto_js' => array(
-					'setting' => $this->moduleKey,
-					'key'     => 'export_roles',
-					'refresh' => false,
-					'values'  => array(
-						'role' => array(
-							'element' => '#wp-admin-bar-' . $root . '-export-roles-select select#' . $root . '-export-roles-select',
-							'parser'  => '', // Default.
-						),
-						'caps_only' => array(
-							'element'  => '#wp-admin-bar-' . $root . '-export-roles-caps-only input#' . $root . '-export-roles-caps-only',
-							'parser'   => '', // Default.
-							'required' => false,
-						),
-					),
-				),
+				'auto_js' => $auto_js,
+			) ) . ' ' . VAA_View_Admin_As_Form::do_button( array(
+				'name'    => $root . '-export-roles-download',
+				'label'   => __( 'Download', VIEW_ADMIN_AS_DOMAIN ),
+				'class'   => 'button-secondary',
+				'auto_js' => array_merge( $auto_js, array(
+					'download' => true,
+				) ),
 			) ),
 			'href'   => false,
 			'meta'   => array(
@@ -1071,7 +1085,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-import',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1089,10 +1103,32 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-import-roles-input',
 			'parent' => $root . '-import',
 			'title'  => '<textarea id="' . $root . '-import-roles-input" name="role-manager-import-roles-input" placeholder="'
-			            . esc_attr__( 'Paste code here', VIEW_ADMIN_AS_DOMAIN ) . '"></textarea>',
+			            . esc_attr__( 'Paste code here or select a file below', VIEW_ADMIN_AS_DOMAIN ) . '"></textarea>',
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-textarea input-role', // vaa-column-one-half vaa-column-last .
+				'class' => 'ab-vaa-textarea input-role',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-import-roles-file',
+			'parent' => $root . '-import',
+			'title'  => VAA_View_Admin_As_Form::do_input( array(
+				'name'    => $root . '-import-roles-file',
+				'type'    => 'file',
+				'auto_js' => array(
+					'callback' => 'assign_file_content',
+					'param'    => array(
+						'target'  => '#wp-admin-bar-' . $root . '-import-roles-input textarea#' . $root . '-import-roles-input',
+						'element' => '#wp-admin-bar-' . $root . '-import-roles-file input#' . $root . '-import-roles-file',
+					),
+				),
+				'attr' => array(
+					'accept' => 'text/*,.json',
+				),
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-file',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1208,7 +1244,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-delete',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary vaa-sub-transparent',
+				'class' => 'ab-sub-secondary vaa-toggle-group vaa-sub-transparent',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1271,10 +1307,10 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @see     'vaa_admin_bar_menu' action
+	 * @see     'vaa_admin_bar_caps_manager_before' action
 	 *
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item (vaa).
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item (vaa).
 	 * @return  void
 	 */
 	public function admin_bar_menu_caps( $admin_bar, $root ) {
@@ -1282,9 +1318,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_group( array(
 			'id'     => $root . '-role-manager',
 			'parent' => $root,
-			'meta'   => array(
-				'class' => 'ab-vaa-spacing-top',
-			),
 		) );
 
 		$root = $root . '-role-manager';
@@ -1404,7 +1437,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Role_Manager
+	 * @return  $this  VAA_View_Admin_As_Role_Manager
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

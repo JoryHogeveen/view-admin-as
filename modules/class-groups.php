@@ -10,8 +10,6 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Groups', 'get_instance' ) );
-
 /**
  * Compatibility class for the Groups plugin
  *
@@ -20,7 +18,7 @@ add_action( 'vaa_view_admin_as_modules_loaded', array( 'VAA_View_Admin_As_Groups
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
@@ -38,15 +36,15 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * The existing groups.
 	 *
 	 * @since  1.7.2
-	 * @see    Groups_Group >> groups/lib/core/class-groups-group.php
-	 * @var    array of objects: Groups_Group
+	 * @see    \Groups_Group >> groups/lib/core/class-groups-group.php
+	 * @var    \Groups_Group[]
 	 */
 	private $groups;
 
 	/**
 	 * @since  1.7.2
-	 * @see    Groups_Group >> groups/lib/core/class-groups-group.php
-	 * @var    Groups_Group
+	 * @see    \Groups_Group >> groups/lib/core/class-groups-group.php
+	 * @var    \Groups_Group
 	 */
 	private $selectedGroup;
 
@@ -55,6 +53,12 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @var    string
 	 */
 	private $viewKey = 'groups';
+
+	/**
+	 * @since  1.7.4
+	 * @var    string
+	 */
+	private $groupsScreen = 'groups-admin';
 
 	/**
 	 * Populate the instance and validate Groups plugin.
@@ -71,11 +75,24 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) &&
-		     defined( 'GROUPS_ADMINISTER_GROUPS' ) &&
-		     current_user_can( GROUPS_ADMINISTER_GROUPS ) &&
-		     ! is_network_admin()
-		) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), 'debug' ) ) {
+			return;
+		}
+
+		$this->init();
+	}
+
+	/**
+	 * Setup module and hooks.
+	 *
+	 * @since   1.7.4
+	 * @access  private
+	 */
+	private function init() {
+
+		$access_cap = ( defined( 'GROUPS_ADMINISTER_GROUPS' ) ) ? GROUPS_ADMINISTER_GROUPS : 'manage_options';
+
+		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
 
 			$this->vaa->register_module( array(
 				'id'       => $this->viewKey,
@@ -102,6 +119,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	public function do_view() {
 
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
+
+			if ( ! VAA_API::exists_callable( array( 'Groups_Group' ), 'debug' ) ) {
+				return;
+			}
 
 			$this->selectedGroup = new Groups_Group( $this->store->get_view( $this->viewKey ) );
 
@@ -141,12 +162,15 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	/**
 	 * Reset Groups_User data for the selected user.
 	 *
+	 * @see  \Groups_Cache
+	 * @see  \Groups_User
+	 *
 	 * @since   1.7.2
 	 * @access  public
 	 * @param   int  $user_id
 	 */
 	public function reset_groups_user( $user_id = null ) {
-		if ( ! is_callable( array( 'Groups_User', 'clear_cache' ) ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_User', 'clear_cache' ), 'debug' ) ) {
 			return;
 		}
 
@@ -190,8 +214,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.2
 	 * @access  public
-	 * @param   WP_User  $user        User object.
-	 * @param   bool     $accessible  Are the WP_User properties accessible?
+	 * @param   \WP_User  $user        User object.
+	 * @param   bool      $accessible  Are the WP_User properties accessible?
 	 */
 	public function modify_user( $user, $accessible ) {
 
@@ -200,8 +224,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			$group_caps = (array) $this->selectedGroup->capabilities_deep;
 			foreach ( $group_caps as $group_cap ) {
 				/**
-				 * @see    Groups_Capability::create()
-				 * @see    Groups_Capability::__get()
+				 * @see    \Groups_Capability::create()
+				 * @see    \Groups_Capability::__get()
 				 * @param  int     $capability_id
 				 * @param  string  $capability
 				 * @param  string  $class
@@ -232,7 +256,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * Filter the user-group relation.
 	 *
 	 * @todo https://github.com/itthinx/groups/pull/59
-	 * @see  Groups_User_Group::read() >> groups/lib/core/class-groups-user-group.php
+	 * @see  \Groups_User_Group::read() >> groups/lib/core/class-groups-user-group.php
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -254,13 +278,13 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	/**
 	 * Filter for the current view.
 	 *
-	 * @see  Groups_User::can() >> groups/lib/core/class-groups-user.php
+	 * @see  \Groups_User::can() >> groups/lib/core/class-groups-user.php
 	 *
 	 * @since   1.7.2
 	 * @access  public
-	 * @param   bool          $result  Current result.
-	 * @param   Groups_Group  $object  (not used) Group object.
-	 * @param   string        $cap     Capability.
+	 * @param   bool           $result  Current result.
+	 * @param   \Groups_Group  $object  (not used) Group object.
+	 * @param   string         $cap     Capability.
 	 * @return  bool
 	 */
 	public function groups_user_can( $result, $object = null, $cap = '' ) {
@@ -294,13 +318,13 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	/**
 	 * Filter for the current view.
 	 *
-	 * @see  Groups_Group::can() >> groups/lib/core/class-groups-group.php
+	 * @see  \Groups_Group::can() >> groups/lib/core/class-groups-group.php
 	 *
 	 * @since   1.7.2
 	 * @access  public
-	 * @param   bool          $result  Current result.
-	 * @param   Groups_Group  $object  Group object.
-	 * @param   string        $cap     Capability.
+	 * @param   bool           $result  Current result.
+	 * @param   \Groups_Group  $object  Group object.
+	 * @param   string         $cap     Capability.
 	 * @return  bool
 	 */
 	public function groups_group_can( $result, $object = null, $cap = '' ) {
@@ -314,7 +338,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	/**
 	 * Filter whether the user can do something with a post.
 	 *
-	 * @see  Groups_Post_Access::user_can_read_post()
+	 * @see  \Groups_Post_Access::user_can_read_post()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -327,7 +351,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 		if ( $this->store->get_selectedUser()->ID !== $user_id || ! $this->selectedGroup ) {
 			return $result;
 		}
-		if ( ! is_callable( 'Groups_Post_Access', 'get_read_group_ids' ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_Post_Access', 'get_read_group_ids' ), 'debug' ) ) {
 			return $result;
 		}
 
@@ -360,7 +384,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	/**
 	 * Our own implementation for the groups_member shortcode.
 	 *
-	 * @see  Groups_Access_Shortcodes::groups_member()
+	 * @see  \Groups_Access_Shortcodes::groups_member()
 	 *
 	 * @since   1.7.2
 	 * @param   array   $atts
@@ -374,7 +398,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	/**
 	 * Our own implementation for the groups_non_member shortcode.
 	 *
-	 * @see  Groups_Access_Shortcodes::groups_non_member()
+	 * @see  \Groups_Access_Shortcodes::groups_non_member()
 	 *
 	 * @since   1.7.2
 	 * @param   array   $atts
@@ -412,7 +436,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 					$current_group = Groups_Group::read_by_name( $group );
 				}
 				if ( $current_group && $current_group->group_id === $selected_group->group_id ) {
-					$show_content = ( $reverse ) ? false : true;
+					$show_content = ! $reverse;
 					break;
 				}
 			}
@@ -430,8 +454,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * Add view type.
 	 *
 	 * @since   1.7.2
-	 * @param   array  $types  Existing view types.
-	 * @return  array
+	 * @param   string[]  $types  Existing view types.
+	 * @return  string[]
 	 */
 	public function add_view_type( $types ) {
 		$types[] = $this->viewKey;
@@ -487,7 +511,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	public function vaa_viewing_as_title( $title ) {
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
 			// Translators: %s stands for "Group" (translated with the Groups domain).
-			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->translate_groups( 'Group' ) ) . ': '
+			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->translate_remote( 'Group' ) ) . ': '
 			         . $this->get_groups( $this->store->get_view( $this->viewKey ) )->name;
 		}
 		return $title;
@@ -498,8 +522,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.2
 	 * @access  public
-	 * @param   WP_Admin_Bar  $admin_bar  The toolbar object.
-	 * @param   string        $root       The root item.
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item.
 	 */
 	public function admin_bar_menu( $admin_bar, $root ) {
 
@@ -521,11 +545,24 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			'id'     => $root . '-title',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' )
-			            . $this->translate_groups( 'Groups' ),
+			            . $this->translate_remote( 'Groups' ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				'tabindex' => '0',
+			),
+		) );
+
+		$admin_bar->add_node( array(
+			'id'     => $root . '-admin',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_description(
+				VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
+				. __( 'Plugin' ) . ': ' . $this->translate_remote( 'Groups' )
+			),
+			'href'   => menu_page_url( $this->groupsScreen, false ),
+			'meta'   => array(
+				'class'  => 'auto-height',
 			),
 		) );
 
@@ -534,8 +571,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 		 *
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
 		 */
 		do_action( 'vaa_admin_bar_groups_before', $admin_bar, $root );
 
@@ -581,8 +618,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 		 *
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
-		 * @param   WP_Admin_Bar  $admin_bar   The toolbar object.
-		 * @param   string        $root        The current root item.
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
 		 */
 		do_action( 'vaa_admin_bar_groups_after', $admin_bar, $root );
 	}
@@ -627,7 +664,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @param   string  $string  The string.
 	 * @return  string
 	 */
-	public function translate_groups( $string ) {
+	public function translate_remote( $string ) {
 		$domain = ( defined( 'GROUPS_PLUGIN_DOMAIN' ) ) ? GROUPS_PLUGIN_DOMAIN : 'groups';
 		// @codingStandardsIgnoreLine >> Prevent groups translation from getting parsed by translate.wordpress.org
 		return __( $string, $domain );
@@ -642,7 +679,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @static
 	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  VAA_View_Admin_As_Groups
+	 * @return  $this  VAA_View_Admin_As_Groups
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {
