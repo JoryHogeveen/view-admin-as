@@ -62,6 +62,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		 *  - WPFront User Role Editor
 		 *  - Capability Manager Enhanced >> Own filter: `capsman_get_capabilities`
 		 *  - Pods
+		 *  - Yoast SEO 5.8+
 		 *
 		 * @since  1.6
 		 */
@@ -327,13 +328,18 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			);
 		} // End if().
 
-		// @since  1.7.4  Yoast SEO 5.5+
-		// @todo Update when PR is merged: https://github.com/Yoast/wordpress-seo/pull/7937
-		$caps = array_merge( array(
-			'wpseo_bulk_edit',
-			'wpseo_edit_advanced_metadata',
-			'wpseo_manage_options',
-		), $caps );
+		// @since  1.7.4  Yoast SEO 5.5+  Load integration on front end.
+		if ( ! is_admin() && VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Integration', 'register_hooks' ) ) ) {
+			/**
+			 * Registers the capabilities in the `members_get_capabilities` filter.
+			 * @since Yoast SEO 5.8+
+			 * @link https://github.com/Yoast/wordpress-seo/pull/7937
+			 */
+			if ( VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Factory', 'get' ), 'debug' ) ) {
+				$wpseo = new WPSEO_Capability_Manager_Integration( WPSEO_Capability_Manager_Factory::get() );
+				$wpseo->register_hooks();
+			}
+		}
 
 		// Members.
 		if ( function_exists( 'members_get_plugin_capabilities' ) ) {
