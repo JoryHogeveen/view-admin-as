@@ -52,7 +52,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 * @since  1.7.5
 	 * @var    string
 	 */
-	protected $optionKey = 'vaa_languages';
+	protected $optionKey = 'languages';
 
 	/**
 	 * @since  1.7.5
@@ -317,7 +317,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		$existing = (array) $this->store->get_optionData( 'languages' );
+		$existing = (array) $this->store->get_optionData( $this->optionKey );
 		$languages = $existing;
 
 		if ( array_diff_key( array_flip( $installed ), $existing ) ) {
@@ -334,7 +334,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 		}
 
 		if ( $languages !== $existing ) {
-			$this->store->update_optionData( $this->languages, 'languages', true );
+			$this->store->update_optionData( $this->languages, $this->optionKey, true );
 		}
 	}
 
