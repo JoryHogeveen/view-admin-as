@@ -17,9 +17,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7.5
  * @version 1.7.5
- * @uses    VAA_View_Admin_As_Module Extends class
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Module
+final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.
@@ -319,8 +319,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Module
 			return;
 		}
 
-		$this->set_optionData( get_option( $this->get_optionKey() ) );
-		$existing = (array) $this->get_optionData( 'languages' );
+		$existing = (array) $this->store->get_optionData( 'languages' );
 		$languages = $existing;
 
 		if ( array_diff_key( array_flip( $installed ), $existing ) ) {
@@ -336,7 +335,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Module
 		}
 
 		if ( $languages !== $existing ) {
-			$this->update_optionData( $this->languages, 'languages', true );
+			$this->store->update_optionData( $this->languages, 'languages', true );
 		}
 	}
 
