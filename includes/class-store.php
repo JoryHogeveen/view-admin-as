@@ -167,9 +167,9 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		$this->curUserData = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
-		$this->set_optionData( get_option( $this->get_optionKey() ) );
+		$this->store_optionData( VAA_View_Admin_As::is_network_active() );
 		// Get database settings of the current user.
-		$this->set_userMeta( get_user_meta( $this->get_curUser()->ID, $this->get_userMetaKey(), true ) );
+		$this->store_userMeta( get_current_user_id() );
 
 		$done = true;
 	}
