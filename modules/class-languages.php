@@ -251,7 +251,15 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			),
 		) );
 
-		$parent = $root . '-title';
+		$admin_bar->add_group( array(
+			'id' => $root . '-languages',
+			'parent' => $root . '-title',
+			'meta'   => array(
+				'class' => 'vaa-auto-max-height',
+			),
+		) );
+
+		$parent = $root . '-languages';
 
 		/**
 		 * Add items at the beginning of the rua group.
