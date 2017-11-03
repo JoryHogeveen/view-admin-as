@@ -93,163 +93,174 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init = function() {
+		$window.on( 'load', VAA_View_Admin_As.load );
+	};
+
+	/**
+	 * Functionality that require the document to be fully loaded.
+	 * @since   1.7.5
+	 * @return  {void}  Nothing.
+	 */
+	VAA_View_Admin_As.load = function() {
 
 		VAA_View_Admin_As.init_caps();
 		VAA_View_Admin_As.init_users();
 		VAA_View_Admin_As.init_module_role_defaults();
 		VAA_View_Admin_As.init_module_role_manager();
 
-		// Functionality that require the document to be fully loaded.
-		$window.on( 'load', function() {
+		// Preload loader icon.
+		if ( VAA_View_Admin_As._loader_icon ) {
+			var loader_icon = new Image();
+			loader_icon.src = VAA_View_Admin_As._loader_icon;
+		}
 
-			// Preload loader icon.
-			if ( VAA_View_Admin_As._loader_icon ) {
-				var loader_icon = new Image();
-				loader_icon.src = VAA_View_Admin_As._loader_icon;
+		// IE fix: Admin Bar hover on form select elements.
+		/*
+		$( '.menupop select', $vaa ).on( 'mouseenter', function() {
+			$(this).parentsUntil( '#wpadminbar', '.menupop' ).addClass('vaa-hover');
+		} ).on( 'mouseleave', function() {
+			$(this).parentsUntil( '#wpadminbar', '.menupop' ).removeClass('vaa-hover');
+		} );
+		*/
+
+		VAA_View_Admin_As.init_auto_js();
+
+		// Load autoMaxHeight elements.
+		VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
+
+		// Toggle content with title.
+		$( VAA_View_Admin_As.prefix + '.ab-vaa-toggle' ).each( function() {
+			var $this   = $(this),
+				$toggle = $this.parent().children().not('.ab-vaa-toggle');
+			if ( ! $this.hasClass('active') ) {
+				$toggle.hide();
 			}
 
-			VAA_View_Admin_As.init_auto_js();
-
-			// Load autoMaxHeight elements.
-			VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
-
-			// Toggle content with title.
-			$( VAA_View_Admin_As.prefix + '.ab-vaa-toggle' ).each( function() {
-				var $this   = $(this),
-					$toggle = $this.parent().children().not('.ab-vaa-toggle');
-				if ( ! $this.hasClass('active') ) {
-					$toggle.hide();
+			$this.on( 'click touchend', function( e ) {
+				e.preventDefault();
+				e.stopPropagation();
+				if ( true === VAA_View_Admin_As._touchmove ) {
+					return;
 				}
-
-				$this.on( 'click touchend', function( e ) {
-					e.preventDefault();
-					e.stopPropagation();
-					if ( true === VAA_View_Admin_As._touchmove ) {
-						return;
-					}
-					if ( $(this).hasClass('active') ) {
-						$toggle.slideUp('fast');
-						$(this).removeClass('active');
-					} else {
-						$toggle.slideDown('fast');
-						$(this).addClass('active');
-					}
-					VAA_View_Admin_As.autoMaxHeight();
-				} );
-
-				// @since  1.6.1  Keyboard a11y.
-				$this.on( 'keyup', function( e ) {
-					e.preventDefault();
-					/**
-					 * @see  https://api.jquery.com/keyup/
-					 * 13 = enter
-					 * 32 = space
-					 * 38 = arrow up
-					 * 40 = arrow down
-					 */
-					var key = parseInt( e.which, 10 );
-					if ( $(this).hasClass('active') && ( 13 === key || 32 === key || 38 === key ) ) {
-						$toggle.slideUp('fast');
-						$(this).removeClass('active');
-					} else if ( 13 === key || 32 === key || 40 === key ) {
-						$toggle.slideDown('fast');
-						$(this).addClass('active');
-					}
-					VAA_View_Admin_As.autoMaxHeight();
-				} );
+				if ( $(this).hasClass('active') ) {
+					$toggle.slideUp('fast');
+					$(this).removeClass('active');
+				} else {
+					$toggle.slideDown('fast');
+					$(this).addClass('active');
+				}
+				VAA_View_Admin_As.autoMaxHeight();
 			} );
 
-			/**
-			 * @since  1.6.3  Toggle items on hover.
-			 * @since  1.7.3  Allow multiple targets + add delay option.
- 			 */
-			$( VAA_View_Admin_As.prefix + '[vaa-showhide]' ).each( function() {
-				var $this = $( this ),
-					args = VAA_View_Admin_As.json_decode( $this.attr('vaa-showhide') ),
-					delay = 200;
-				if ( 'object' !== typeof args ) {
-					args = { 0: { target: args, delay: delay } };
+			// @since  1.6.1  Keyboard a11y.
+			$this.on( 'keyup', function( e ) {
+				e.preventDefault();
+				/**
+				 * @see  https://api.jquery.com/keyup/
+				 * 13 = enter
+				 * 32 = space
+				 * 38 = arrow up
+				 * 40 = arrow down
+				 */
+				var key = parseInt( e.which, 10 );
+				if ( $(this).hasClass('active') && ( 13 === key || 32 === key || 38 === key ) ) {
+					$toggle.slideUp('fast');
+					$(this).removeClass('active');
+				} else if ( 13 === key || 32 === key || 40 === key ) {
+					$toggle.slideDown('fast');
+					$(this).addClass('active');
 				}
-				$.each( args, function( key, data ) {
-					var timeout = null;
-					// Don't validate target property. It's mandatory so let the console notify the developer.
-					if ( ! data.hasOwnProperty( 'delay' ) ) {
-						data.delay = delay;
+				VAA_View_Admin_As.autoMaxHeight();
+			} );
+		} );
+
+		/**
+		 * @since  1.6.3  Toggle items on hover.
+		 * @since  1.7.3  Allow multiple targets + add delay option.
+         */
+		$( VAA_View_Admin_As.prefix + '[vaa-showhide]' ).each( function() {
+			var $this = $( this ),
+				args = VAA_View_Admin_As.json_decode( $this.attr('vaa-showhide') ),
+				delay = 200;
+			if ( 'object' !== typeof args ) {
+				args = { 0: { target: args, delay: delay } };
+			}
+			$.each( args, function( key, data ) {
+				var timeout = null;
+				// Don't validate target property. It's mandatory so let the console notify the developer.
+				if ( ! data.hasOwnProperty( 'delay' ) ) {
+					data.delay = delay;
+				}
+				var $target = $( data.target );
+				$target.hide();
+				$this.on( 'mouseenter', function() {
+					timeout = setTimeout( function() {
+						$target.slideDown('fast');
+					}, data.delay );
+				}).on( 'mouseleave', function() {
+					if ( timeout ) {
+						clearTimeout( timeout );
 					}
-					var $target = $( data.target );
-					$target.hide();
-					$this.on( 'mouseenter', function() {
-						timeout = setTimeout( function() {
-							$target.slideDown('fast');
-						}, data.delay );
-					}).on( 'mouseleave', function() {
-						if ( timeout ) {
-							clearTimeout( timeout );
-						}
-						$target.slideUp('fast');
-					} );
+					$target.slideUp('fast');
 				} );
 			} );
+		} );
 
-			// @since  1.7  Conditional items.
-			$( VAA_View_Admin_As.prefix + '[vaa-condition-target]' ).each( function() {
-				var $this    = $(this),
-					$target  = $( $this.attr( 'vaa-condition-target' ) ),
-					checkbox = ( 'checkbox' === $target.attr('type') ),
-					compare  = $this.attr( 'vaa-condition' );
-				if ( checkbox ) {
-					if ( 'undefined' !== typeof compare ) {
-						compare = Boolean( compare );
-					} else {
-						compare = true;
-					}
+		// @since  1.7  Conditional items.
+		$( VAA_View_Admin_As.prefix + '[vaa-condition-target]' ).each( function() {
+			var $this    = $(this),
+				$target  = $( $this.attr( 'vaa-condition-target' ) ),
+				checkbox = ( 'checkbox' === $target.attr('type') ),
+				compare  = $this.attr( 'vaa-condition' );
+			if ( checkbox ) {
+				if ( 'undefined' !== typeof compare ) {
+					compare = Boolean( compare );
+				} else {
+					compare = true;
 				}
-				$this.hide();
-				$target.on( 'change', function() {
+			}
+			$this.hide();
+			$target.on( 'change', function() {
 
-					if ( checkbox && $target.is(':checked') ) {
-						if ( compare ) {
-							$this.slideDown('fast');
-						} else {
-							$this.slideUp('fast');
-						}
-					} else if ( ! checkbox && compare === $target.val() ) {
+				if ( checkbox && $target.is(':checked') ) {
+					if ( compare ) {
 						$this.slideDown('fast');
 					} else {
 						$this.slideUp('fast');
 					}
+				} else if ( ! checkbox && compare === $target.val() ) {
+					$this.slideDown('fast');
+				} else {
+					$this.slideUp('fast');
+				}
 
-					VAA_View_Admin_As.autoMaxHeight();
+				VAA_View_Admin_As.autoMaxHeight();
 
-				} ).trigger('change'); // Trigger on load.
+			} ).trigger('change'); // Trigger on load.
+		} );
+
+		// @since  1.7  Init mobile fixes.
+		if ( $body.hasClass('mobile') || 783 > $body.innerWidth() ) {
+			$body.addClass('vaa-mobile');
+			VAA_View_Admin_As._mobile = true;
+			VAA_View_Admin_As.mobile();
+		}
+
+		// @since  1.7.1  Auto max height trigger.
+		VAA_View_Admin_As.maxHeightListenerElements.each( function() {
+			$(this).parents('.menupop').on( 'mouseenter', VAA_View_Admin_As.autoMaxHeight );
+		} );
+
+		// @since  1.7.4  Auto resizable.
+		$( VAA_View_Admin_As.prefix + '.vaa-resizable' ).each( function() {
+			var $this = $( this ),
+				height = $this.css( 'max-height' );
+			$this.css( {
+				'max-height': 'none',
+				'height': height,
+				'resize': 'vertical'
 			} );
-
-			// @since  1.7  Init mobile fixes.
-			if ( $body.hasClass('mobile') || 783 > $body.innerWidth() ) {
-				$body.addClass('vaa-mobile');
-				VAA_View_Admin_As._mobile = true;
-				VAA_View_Admin_As.mobile();
-			}
-
-			// @since  1.7.1  Auto max height trigger.
-			VAA_View_Admin_As.maxHeightListenerElements.each( function() {
-				$(this).parents('.menupop').on( 'mouseenter', function() {
-					VAA_View_Admin_As.autoMaxHeight();
-				} );
-			} );
-
-			// @since  1.7.4  Auto resizable.
-			$( VAA_View_Admin_As.prefix + '.vaa-resizable' ).each( function() {
-				var $this = $( this ),
-					height = $this.css( 'max-height' );
-				$this.css( {
-					'max-height': 'none',
-					'height': height,
-					'resize': 'vertical'
-				} );
-			} );
-
-		} ); // End window.load.
+		} );
 
 		// Process reset.
 		$vaa.on( 'click touchend', '.vaa-reset-item > .ab-item', function( e ) {
