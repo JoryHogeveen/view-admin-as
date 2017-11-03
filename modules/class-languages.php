@@ -263,7 +263,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Module
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_locale_before', $admin_bar, $root );
+		do_action( 'vaa_admin_bar_languages_before', $admin_bar, $root );
 
 		// Add the levels.
 		foreach ( $this->get_languages() as $locale => $language ) {
@@ -302,7 +302,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Module
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_locale_after', $admin_bar, $root );
+		do_action( 'vaa_admin_bar_languages_after', $admin_bar, $root );
 	}
 
 	/**
