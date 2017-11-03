@@ -103,6 +103,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.load = function() {
 
+		// Selector sometimes only works after window load (frontend).
+		if ( ! $vaa.length ) {
+			$vaa = $( VAA_View_Admin_As.prefix );
+		}
+
 		VAA_View_Admin_As.init_caps();
 		VAA_View_Admin_As.init_users();
 		VAA_View_Admin_As.init_module_role_defaults();
