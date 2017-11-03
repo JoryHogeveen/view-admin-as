@@ -248,7 +248,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		if ( $body.hasClass('mobile') || 783 > $body.innerWidth() ) {
 			$body.addClass('vaa-mobile');
 			VAA_View_Admin_As._mobile = true;
-			VAA_View_Admin_As.mobile();
+			VAA_View_Admin_As.init_touch();
 		}
 
 		// @since  1.7.1  Auto max height trigger.
@@ -319,11 +319,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
-	 * MOBILE INIT.
+	 * Initialize for touch devices.
 	 * @since   1.7
+	 * @since   1.7.5   Renamed from VAA_View_Admin_As.mobile()
 	 * @return  {void}  Nothing.
 	 */
-	VAA_View_Admin_As.mobile = function() {
+	VAA_View_Admin_As.init_touch = function() {
 		var $root = $( '.vaa-mobile ' + VAA_View_Admin_As.prefix );
 
 		// @since  1.7  Fix for clicking within sub secondary elements. Overwrites WP core 'hover' functionality.
