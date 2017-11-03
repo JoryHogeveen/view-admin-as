@@ -44,7 +44,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	var $document = $( document ),
 		$window = $( window ),
 		$body = $('body'),
-		$vaa = $( VAA_View_Admin_As.prefix );
+		$vaa = $( VAA_View_Admin_As.prefix ); // Validated in load().
 
 	VAA_View_Admin_As.maxHeightListenerElements = null;
 	VAA_View_Admin_As._mobile = false;
@@ -88,20 +88,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
-	 * BASE INIT.
+	 * Plugin initializer.
 	 * @since   1.5.1
+	 * @since   1.7.5   Called on window load.
 	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init = function() {
-		$window.on( 'load', VAA_View_Admin_As.load );
-	};
-
-	/**
-	 * Functionality that require the document to be fully loaded.
-	 * @since   1.7.5
-	 * @return  {void}  Nothing.
-	 */
-	VAA_View_Admin_As.load = function() {
 
 		// Selector sometimes only works after window load (frontend).
 		if ( ! $vaa.length ) {
@@ -1442,7 +1434,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	// We require a nonce to use this plugin.
 	if ( VAA_View_Admin_As.hasOwnProperty( '_vaa_nonce' ) ) {
-		VAA_View_Admin_As.init();
+		$window.on( 'load', VAA_View_Admin_As.init );
 	}
 
 } ( jQuery ) );
