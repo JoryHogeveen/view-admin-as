@@ -437,6 +437,10 @@ final class VAA_View_Admin_As
 				'file'  => 'modules/class-role-manager.php',
 				'class' => 'VAA_View_Admin_As_Role_Manager',
 			),
+			'language_switcher' => array(
+				'file'  => 'modules/class-languages.php',
+				'class' => 'VAA_View_Admin_As_Languages',
+			),
 		);
 
 		if ( VAA_API::exists_callable( array( 'RUA_App', 'instance' ) ) ) {
