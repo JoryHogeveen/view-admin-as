@@ -725,6 +725,22 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Is this plugin network enabled.
+	 *
+	 * @since   1.7.5
+	 * @return  bool
+	 */
+	public static function is_network_active() {
+		static $check;
+		if ( is_bool( $check ) ) {
+			return $check;
+		}
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		$check = (bool) is_plugin_active_for_network( VIEW_ADMIN_AS_BASENAME );
+		return $check;
+	}
+
+	/**
 	 * Main View Admin As instance.
 	 * Ensures only one instance of View Admin As is loaded or can be loaded.
 	 *

@@ -24,6 +24,26 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 {
 	/**
+	 * Is this option for a network installation?
+	 * Can only be set with set_for_network().
+	 *
+	 * @since  1.7.5
+	 * @see    VAA_View_Admin_As_Settings::store_optionData()
+	 * @var    bool
+	 */
+	protected $for_network = false;
+
+	/**
+	 * The user ID for whom this metadata is for.
+	 * Can only be set with store_userMeta().
+	 *
+	 * @since  1.7.5
+	 * @see    VAA_View_Admin_As_Settings::store_userMeta()
+	 * @var    int
+	 */
+	protected $for_user = null;
+
+	/**
 	 * Database option key.
 	 * Always starts with `vaa_`.
 	 * Keys are parsed with underscores as spacing.
@@ -150,13 +170,13 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData( array(
-				'db_version',
+				'db_version' => null,
 			) );
 
 			$this->set_userMetaKey( 'vaa-view-admin-as' );
 			$this->set_userMeta( array(
-				'settings',
-				'views',
+				'settings' => null,
+				'views' => null,
 			) );
 
 			$default_user = array(
@@ -714,6 +734,35 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	}
 
 	/**
+	 * Store the option data.
+	 * @param   bool  $network  Is network option?
+	 * @since   1.7.x
+	 */
+	protected function store_optionData( $network = false ) {
+		$this->set_for_network( $network );
+
+		if ( $this->is_for_network() ) {
+			$this->set_optionData( get_site_option( $this->get_optionKey() ) );
+		} else {
+			$this->set_optionData( get_option( $this->get_optionKey() ) );
+		}
+	}
+
+	/**
+	 * Store the user meta.
+	 * @since   1.7.x
+	 * @param   int   $user_id  The user ID this metadata is for.
+	 * @param   bool  $single NOT SUPPORTED YET!
+	 */
+	protected function store_userMeta( $user_id, $single = true ) {
+		if ( ! is_int( $user_id ) ) {
+			return;
+		}
+		$this->for_user = $user_id;
+		$this->set_userMeta( get_user_meta( $this->for_user, $this->get_userMetaKey(), true ) );
+	}
+
+	/**
 	 * Update the plugin option data.
 	 * @param   mixed   $val     Data.
 	 * @param   string  $key     (optional) Data key.
@@ -722,6 +771,10 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 */
 	public function update_optionData( $val, $key = null, $append = false ) {
 		$this->set_optionData( $val, $key, $append );
+
+		if ( $this->is_for_network() ) {
+			return update_site_option( $this->get_optionKey(), $this->get_optionData() );
+		}
 		return update_option( $this->get_optionKey(), $this->get_optionData() );
 	}
 
@@ -734,7 +787,25 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 */
 	public function update_userMeta( $val, $key = null, $append = false ) {
 		$this->set_userMeta( $val, $key, $append );
-		return update_user_meta( get_current_user_id(), $this->get_userMetaKey(), $this->get_userMeta() );
+		return update_user_meta( $this->for_user, $this->get_userMetaKey(), $this->get_userMeta() );
+	}
+
+	/**
+	 * Set whether this instance if for a network option.
+	 * @since   1.7.x
+	 * @param   bool  $bool
+	 */
+	protected function set_for_network( $bool ) {
+		$this->for_network = (bool) $bool;
+	}
+
+	/**
+	 * Set whether this instance if for a network option.
+	 * @since   1.7.x
+	 * @return  bool
+	 */
+	public function is_for_network() {
+		return (bool) $this->for_network;
 	}
 
 } // End class VAA_View_Admin_As_Settings.
