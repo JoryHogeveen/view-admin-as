@@ -124,7 +124,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 
 			$this->add_filter( 'locale', array( $this, 'filter_locale' ) );
 			// Run after "Freeze locale" setting.
-			$this->add_action( 'init', array( $this, 'switch_to_locale' ), 11 );
+			$this->add_action( 'init', array( $this, 'action_switch_to_locale' ), 11 );
 		}
 	}
 
@@ -145,10 +145,8 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.5
 	 * @access  public
-	 * param   string  $locale
-	 * @return  string
 	 */
-	public function switch_to_locale() {
+	public function action_switch_to_locale() {
 		switch_to_locale( $this->selectedLanguage );
 	}
 
@@ -323,6 +321,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 		$languages = $existing;
 
 		if ( array_diff_key( array_flip( $installed ), $existing ) ) {
+			// New languages detected. Call the WP API to get language info.
 			$languages = $this->get_wp_languages( $languages );
 		}
 
