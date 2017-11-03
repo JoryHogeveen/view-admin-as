@@ -204,7 +204,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						compare = true;
 					}
 				}
-				function check_conditional() {
+				$this.hide();
+				$target.on( 'change', function() {
+
 					if ( checkbox && $target.is(':checked') ) {
 						if ( compare ) {
 							$this.slideDown('fast');
@@ -216,13 +218,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					} else {
 						$this.slideUp('fast');
 					}
-				}
-				$this.hide();
-				check_conditional();
-				$target.on( 'change', function() {
-					check_conditional();
+
 					VAA_View_Admin_As.autoMaxHeight();
-				} );
+
+				} ).trigger('change'); // Trigger on load.
 			} );
 
 			// @since  1.7  Init mobile fixes.
