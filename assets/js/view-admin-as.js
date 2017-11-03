@@ -134,7 +134,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
 
 		// Toggle content with title.
-		$( VAA_View_Admin_As.prefix + '.ab-vaa-toggle' ).each( function() {
+		$( '.ab-vaa-toggle', $vaa ).each( function() {
 			var $this   = $(this),
 				$toggle = $this.parent().children().not('.ab-vaa-toggle');
 			if ( ! $this.hasClass('active') ) {
@@ -183,7 +183,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 * @since  1.6.3  Toggle items on hover.
 		 * @since  1.7.3  Allow multiple targets + add delay option.
          */
-		$( VAA_View_Admin_As.prefix + '[vaa-showhide]' ).each( function() {
+		$( '[vaa-showhide]', $vaa ).each( function() {
 			var $this = $( this ),
 				args = VAA_View_Admin_As.json_decode( $this.attr('vaa-showhide') ),
 				delay = 200;
@@ -212,7 +212,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.7  Conditional items.
-		$( VAA_View_Admin_As.prefix + '[vaa-condition-target]' ).each( function() {
+		$( '[vaa-condition-target]', $vaa ).each( function() {
 			var $this    = $(this),
 				$target  = $( $this.attr( 'vaa-condition-target' ) ),
 				checkbox = ( 'checkbox' === $target.attr('type') ),
@@ -257,7 +257,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.7.4  Auto resizable.
-		$( VAA_View_Admin_As.prefix + '.vaa-resizable' ).each( function() {
+		$( '.vaa-resizable', $vaa ).each( function() {
 			var $this = $( this ),
 				height = $this.css( 'max-height' );
 			$this.css( {
