@@ -239,7 +239,12 @@ final class VAA_API
 		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
 		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
 		if ( empty( $url ) ) {
-			$url = is_network_admin() ? network_admin_url() : admin_url();
+			if ( is_admin() ) {
+				$url = is_network_admin() ? network_admin_url() : admin_url();
+			} else {
+				// Since  1.7.5  Frontend url.
+				$url = get_site_url();
+			}
 		}
 
 		$url = add_query_arg( $params, ( $url ) ? $url : false );
