@@ -269,7 +269,8 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			$view_data  = array( $this->viewKey => $view_value );
 			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = VAA_View_Admin_As_Form::do_view_title( $language . ' (' . $locale . ')', $this->viewKey, $view_value );
+			$title = ( $locale !== $language ) ? $language . ' (' . $locale . ')' : $locale;
+			$title = VAA_View_Admin_As_Form::do_view_title( $title, $this->viewKey, $view_value );
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->viewKey ) ) {
 				if ( VAA_API::is_current_view( $view_value, $this->viewKey ) ) {
@@ -362,7 +363,11 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 		}
 
 		foreach ( $wp_languages as $locale => $language_info ) {
-			$languages[ $locale ] = $language_info['native_name'];
+			$name = $locale;
+			if ( isset( $language_info['native_name'] ) ) {
+				$name = $language_info['native_name'];
+			}
+			$languages[ $locale ] = $name;
 		}
 
 		return $languages;
