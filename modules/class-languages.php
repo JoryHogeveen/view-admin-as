@@ -277,7 +277,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			$view_data  = array( $this->viewKey => $view_value );
 			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = ( $locale !== $language ) ? $language . ' (' . $locale . ')' : $locale;
+			$title = ( $locale !== $language ) ? '<code>' . $locale . '</code> | ' . $language : $locale;
 			$title = VAA_View_Admin_As_Form::do_view_title( $title, $this->viewKey, $view_value );
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->viewKey ) ) {
