@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.4
+ * @version 1.7.5
  * @preserve
  */
 /* eslint-enable no-extra-semi */

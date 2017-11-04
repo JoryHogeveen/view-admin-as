@@ -165,7 +165,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	/**
 	 * Validate data for this view type
 	 *
-	 * @since   1.7
+	 * @since   1.7.5
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
 	 * @return  mixed
