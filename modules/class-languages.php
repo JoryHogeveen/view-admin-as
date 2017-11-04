@@ -342,6 +342,9 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			}
 		}
 
+		// Same order as WordPress.
+		ksort( $this->languages );
+
 		if ( $languages !== $existing ) {
 			$this->store->update_optionData( $this->languages, $this->optionKey, true );
 		}
