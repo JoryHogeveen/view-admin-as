@@ -101,16 +101,20 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$vaa = $( VAA_View_Admin_As.prefix );
 		}
 
-		VAA_View_Admin_As.init_caps();
-		VAA_View_Admin_As.init_users();
-		VAA_View_Admin_As.init_module_role_defaults();
-		VAA_View_Admin_As.init_module_role_manager();
-
 		// Preload loader icon.
 		if ( VAA_View_Admin_As._loader_icon ) {
 			var loader_icon = new Image();
 			loader_icon.src = VAA_View_Admin_As._loader_icon;
 		}
+
+		// Load autoMaxHeight elements.
+		VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
+
+		VAA_View_Admin_As.init_caps();
+		VAA_View_Admin_As.init_users();
+		VAA_View_Admin_As.init_module_role_defaults();
+		VAA_View_Admin_As.init_module_role_manager();
+		VAA_View_Admin_As.init_auto_js();
 
 		// IE fix: Admin Bar hover on form select elements.
 		/*
@@ -120,11 +124,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$(this).parentsUntil( '#wpadminbar', '.menupop' ).removeClass('vaa-hover');
 		} );
 		*/
-
-		VAA_View_Admin_As.init_auto_js();
-
-		// Load autoMaxHeight elements.
-		VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
 
 		// Toggle content with title.
 		$( '.ab-vaa-toggle', $vaa ).each( function() {
@@ -1007,7 +1006,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 
 			return val;
-		}
+		};
 	};
 
 	/**
@@ -1038,18 +1037,18 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						} );
 						var role = $(this).parents('.vaa-role-item').children('.ab-item').attr('rel');
 						if ( false !== exists && exists.length ) {
-							exists.find('.user-role').text( exists.find('.user-role').text().replace(')', ', ' + role + ')') );
+							exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
 						} else {
 							$(this).clone()
 							       .appendTo( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
 							       .children('.ab-item')
-							       .append(' &nbsp; <span class="user-role">(' + role + ')</span>');
+							       .append( ' &nbsp; <span class="user-role">(' + role + ')</span>' );
 						}
 					}
 				} );
 				if ( '' === $.trim( $( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' ).html() ) ) {
 					$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
-						.append('<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>');
+						.append( '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>' );
 				}
 			}
 		} );
