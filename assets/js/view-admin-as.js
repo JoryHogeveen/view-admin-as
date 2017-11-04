@@ -73,10 +73,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Safely try to parse as JSON. If it isn't JSON it will return the original string.
 	 * @since   1.7
+	 * @since   1.7.5  Renamed from VAA_View_Admin_As.json_decode()
 	 * @param   {string}  val  The string to decode.
 	 * @return  {string|object}  Parsed JSON object or original string.
 	 */
-	VAA_View_Admin_As.json_decode = function( val ) {
+	VAA_View_Admin_As.maybe_json_decode = function( val ) {
 		if ( 0 === val.indexOf("{") || 0 === val.indexOf("[") ) {
 			try {
 				val = JSON.parse( val );
@@ -177,7 +178,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
          */
 		$( '[vaa-showhide]', $vaa ).each( function() {
 			var $this = $( this ),
-				args = VAA_View_Admin_As.json_decode( $this.attr('vaa-showhide') ),
+				args = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-showhide') ),
 				delay = 200;
 			if ( 'object' !== typeof args ) {
 				args = { 0: { target: args, delay: delay } };
@@ -292,7 +293,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( ! val ) {
 						val = $this.find('.vaa-view-data').attr('vaa-view-value');
 					}
-					view_data[ type ] = VAA_View_Admin_As.json_decode( val );
+					view_data[ type ] = VAA_View_Admin_As.maybe_json_decode( val );
 					view_data = ( 'object' === typeof view_data[ type ] ) ? view_data[ type ] : view_data;
 					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
@@ -724,7 +725,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}
 
 		// Maybe format JSON data.
-		content = VAA_View_Admin_As.json_decode( content );
+		content = VAA_View_Admin_As.maybe_json_decode( content );
 		if ( 'object' === typeof content ) {
 			content = JSON.stringify( content, null, '\t' );
 		}
@@ -754,7 +755,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		$( VAA_View_Admin_As.root + ' [vaa-auto-js]' ).each( function() {
 			var $this = $(this),
-				data = VAA_View_Admin_As.json_decode( $this.attr('vaa-auto-js') );
+				data = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-auto-js') );
 			if ( 'object' !== typeof data ) {
 				return;
 			}
@@ -1361,7 +1362,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$.each( files, function( key, file ) {
 				var reader = new FileReader();
 				reader.onload = function() { //progressEvent
-					var content = VAA_View_Admin_As.json_decode( this.result );
+					var content = VAA_View_Admin_As.maybe_json_decode( this.result );
 					if ( 'object' === typeof content ) {
 						// Remove JSON format.
 						content = JSON.stringify( content );
