@@ -197,20 +197,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	public function admin_bar_menu( $admin_bar, $root = '' ) {
 
 		$icon = 'dashicons-hidden';
+		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
 
 		if ( $this->store->get_view() ) {
 			$icon = 'dashicons-visibility';
+			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		$title = $this->get_admin_bar_menu_title();
 
 		if ( empty( $root ) ) {
 			$root = self::$parent;
-		}
-
-		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
-		if ( $this->store->get_view() ) {
-			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		// Add menu item.
