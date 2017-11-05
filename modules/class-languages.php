@@ -336,14 +336,14 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 
 		$this->languages['en_US'] = 'English';
 
+		// Same order as WordPress.
+		sort( $installed );
+
 		foreach ( $installed as $locale ) {
 			if ( array_key_exists( $locale, $languages ) ) {
 				$this->languages[ $locale ] = $languages[ $locale ];
 			}
 		}
-
-		// Same order as WordPress.
-		ksort( $this->languages );
 
 		if ( $languages !== $existing ) {
 			$this->store->update_optionData( $this->languages, $this->optionKey, true );
