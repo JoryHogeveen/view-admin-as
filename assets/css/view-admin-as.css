@@ -109,7 +109,7 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item .description .ab-icon {line-height: 1 !important; font-size: 1em !important; padding: 1px 0; margin-right: 3px; width: auto; height: 1em;}
 
 /* First level group titles */
-#wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
+#wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title > .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 
 /* Current view items */
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item,
