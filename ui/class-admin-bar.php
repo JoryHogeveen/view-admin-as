@@ -509,6 +509,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			return;
 		}
 
+		/**
+		 * Whether the capability manager should be loaded as a submenu from the title element or as a separate node below the title.
+		 * Default: true.
+		 * Useful if you have a plugin that adds another sub-node below the capability title.
+		 *
+		 * @since  1.7.5
+		 * @return bool
+		 */
+		$title_submenu = (bool) apply_filters( 'vaa_admin_bar_caps_do_title_submenu', true );
+
 		$main_root = self::$root;
 		$root = $main_root . '-caps';
 
@@ -519,13 +529,21 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 				'class' => 'ab-sub-secondary',
 			),
 		) );
+
+		$title_class = '';
+		if ( $title_submenu ) {
+			$title_class .= ( $this->store->get_view( 'caps' ) ) ? ' current' : '';
+		} else {
+			$title_class .= ' ab-vaa-toggle active';
+		}
+
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
 			'title'  => self::do_icon( 'dashicons-forms' ) . __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+				'class'    => 'vaa-has-icon ab-vaa-title' . $title_class,
 				'tabindex' => '0',
 			),
 		) );
@@ -542,16 +560,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 */
 		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, $main_root );
 
-		$admin_bar->add_node( array(
-			'id'     => $root . '-manager',
-			'parent' => $root,
-			'title'  => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
-			'href'   => false,
-			'meta'   => array(
-				'class'    => ( $this->store->get_view( 'caps' ) ) ? 'current' : '',
-				'tabindex' => '0',
-			),
-		) );
+		if ( $title_submenu ) {
+			$admin_bar->add_group( array(
+				'id' => $root . '-manager',
+				'parent' => $root . '-title',
+			) );
+		} else {
+			$admin_bar->add_node( array(
+				'id'     => $root . '-manager',
+				'parent' => $root,
+				'title'  => __( 'Manager', VIEW_ADMIN_AS_DOMAIN ),
+				'href'   => false,
+				'meta'   => array(
+					'class'    => ( $this->store->get_view( 'caps' ) ) ? 'current' : '',
+					'tabindex' => '0',
+				),
+			) );
+		}
 
 		// Capabilities submenu.
 		$admin_bar->add_node( array(
