@@ -672,7 +672,7 @@ final class VAA_API
 		if ( isset( $data[ $key ] ) && isset( $data['_vaa_nonce'] ) && wp_verify_nonce( $data['_vaa_nonce'], $nonce ) ) {
 			$request = self::get_array_data( $data, $key );
 			if ( is_string( $request ) ) {
-				$request = json_decode( stripcslashes( html_entity_decode( $request ) ), true );
+				$request = self::maybe_json_decode( $request, true, true );
 			}
 			return $request;
 		}
@@ -736,6 +736,38 @@ final class VAA_API
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Check if the string is JSON.
+	 *
+	 * @link https://stackoverflow.com/questions/6041741/fastest-way-to-check-if-a-string-is-json-in-php
+	 *
+	 * @since   1.7.5
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $string  The value string.
+	 * @param   bool    $assoc   See json_decode().
+	 * @param   bool    $decode  Decode with html_entity_decode() and stripcslashes()?
+	 * @return  mixed
+	 */
+	public static function maybe_json_decode( $string, $assoc = true, $decode = false ) {
+		if ( ! is_string( $string ) ) {
+			return $string;
+		}
+		if ( 0 !== strpos( $string, '[' ) && 0 !== strpos( $string, '{' ) ) {
+			return $string;
+		}
+		if ( $decode ) {
+			$string = stripcslashes( html_entity_decode( $string ) );
+		}
+		$var = json_decode( $string, $assoc );
+		if ( JSON_ERROR_NONE === json_last_error() ) {
+			return $var;
+		}
+		return $string;
 	}
 
 	/**
