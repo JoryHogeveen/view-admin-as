@@ -347,7 +347,11 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 
 		foreach ( $settings as $setting => $value ) {
 			// Only pass the settings if the key and value matched the data in the allowed settings.
-			if ( ! array_key_exists( $setting, $allowed ) || ! in_array( $value, $allowed[ $setting ], true ) ) {
+			if ( ! array_key_exists( $setting, $allowed ) ) {
+				unset( $settings[ $setting ] );
+			}
+			// If setting key is allowed value is empty we don't need to validate.
+			if ( ! empty( $allowed[ $setting ] ) && ! in_array( $value, $allowed[ $setting ], true ) ) {
 				unset( $settings[ $setting ] );
 			}
 		}
@@ -421,8 +425,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			if ( ! array_key_exists( $setting, $allowed ) ) {
 				// We don't have such a setting.
 				unset( $settings[ $setting ] );
-			} elseif ( ! in_array( $value, $allowed[ $setting ], true ) ) {
-				// Set it to default.
+			} elseif ( ! empty( $allowed[ $setting ] ) && ! in_array( $value, $allowed[ $setting ], true ) ) {
+				// Set it to default if the allowed values are set and the value isn't allowed.
 				$settings[ $setting ] = $defaults[ $setting ];
 			}
 		}
