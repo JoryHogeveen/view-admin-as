@@ -246,7 +246,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-translation' ) . __( 'Languages', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'vaa-has-icon ab-vaa-title',
+				'class'    => 'vaa-has-icon ab-vaa-title' . ( ( $this->store->get_view( $this->viewKey ) ) ? ' current' : '' ),
 				'tabindex' => '0',
 			),
 		) );
