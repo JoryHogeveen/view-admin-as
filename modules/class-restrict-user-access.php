@@ -394,7 +394,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-title',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) . $view_name,
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-network' ) . $view_name,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -420,7 +420,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-rua-levels',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) . $view_name,
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-network' ) . $view_name,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon',

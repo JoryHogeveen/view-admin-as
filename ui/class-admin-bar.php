@@ -17,9 +17,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.5
  * @version 1.7.4
- * @uses    VAA_View_Admin_As_Form Extends class
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
+final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.
@@ -248,7 +248,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			$admin_bar->add_node( array(
 				'id'     => self::$root . '-reset',
 				'parent' => self::$root,
-				'title'  => self::do_button( array(
+				'title'  => VAA_View_Admin_As_Form::do_button( array(
 					'name'  => self::$root . '-' . $name,
 					'label' => __( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary',
@@ -292,7 +292,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root,
 			'parent' => self::$root,
-			'title'  => self::do_icon( 'dashicons-info' ) . __( 'Info', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-info' ) . __( 'Info', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -353,7 +353,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 				$admin_bar->add_node( array(
 					'parent' => $root . '-links',
 					'id'     => $root . '-' . $id,
-					'title'  => self::do_icon( $link['icon'] ) . $link['description'],
+					'title'  => VAA_View_Admin_As_Form::do_icon( $link['icon'] ) . $link['description'],
 					'href'   => esc_url( $link['url'] ),
 					'meta'   => array(
 						'class'  => 'auto-height vaa-has-icon',
@@ -393,7 +393,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root,
 			'parent' => self::$root,
-			'title'  => self::do_icon( 'dashicons-admin-settings' ) . __( 'Settings', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-settings' ) . __( 'Settings', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -459,7 +459,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-admin-plugins' ) . __( 'Modules', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-plugins' ) . __( 'Modules', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title', // ab-vaa-toggle active.
@@ -537,7 +537,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-forms' ) . __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-forms' ) . __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title' . $title_class,
@@ -579,20 +579,20 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root . '-applycaps',
 			'parent' => $root . '-manager',
-			'title'  => self::do_button( array(
+			'title'  => VAA_View_Admin_As_Form::do_button( array(
 				'name'    => 'apply-caps-view',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
 			) )
-			. self::do_button( array(
+			. VAA_View_Admin_As_Form::do_button( array(
 				'name'    => 'close-caps-popup',
-				'label'   => self::do_icon( 'dashicons-editor-contract' ),
+				'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-editor-contract' ),
 				'class'   => 'button-secondary vaa-icon vaa-hide-responsive',
 				'element' => 'a',
 			) )
-			. self::do_button( array(
+			. VAA_View_Admin_As_Form::do_button( array(
 				'name'    => 'open-caps-popup',
-				'label'   => self::do_icon( 'dashicons-editor-expand' ),
+				'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-editor-expand' ),
 				'class'   => 'button-secondary vaa-icon vaa-hide-responsive',
 				'element' => 'a',
 			) ),
@@ -706,7 +706,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-groups' ) . __( 'Roles', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-groups' ) . __( 'Roles', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -774,7 +774,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-admin-users' ) . __( 'Users', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-users' ) . __( 'Users', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -798,8 +798,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			$admin_bar->add_node( array(
 				'id'     => $root . '-searchusers',
 				'parent' => $root,
-				'title'  => self::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) )
-					. self::do_input( array(
+				'title'  => VAA_View_Admin_As_Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) )
+					. VAA_View_Admin_As_Form::do_input( array(
 						'name'        => $root . '-searchusers',
 						'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
 					) ),
@@ -865,8 +865,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $main_root . '-visitor-view',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-universal-access' )
-			            . self::do_view_title( __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ), 'visitor', true ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-universal-access' )
+			            . VAA_View_Admin_As_Form::do_view_title( __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ), 'visitor', true ),
 			'href'   => '#',
 			'meta'   => array(
 				'title' => esc_attr__( 'View as site visitor', VIEW_ADMIN_AS_DOMAIN ),
