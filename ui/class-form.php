@@ -17,19 +17,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7.2
  * @version 1.7.4
- * @uses    VAA_View_Admin_As_Base Extends class
  */
-class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
+class VAA_View_Admin_As_Form
 {
-	/**
-	 * The single instance of the class.
-	 *
-	 * @since  1.7.2
-	 * @static
-	 * @var    VAA_View_Admin_As_Form
-	 */
-	private static $_instance = null;
-
 	/**
 	 * Generate a view type title and it's view related data.
 	 * The data is used in javascript to switch a view.
@@ -695,25 +685,6 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 			$str = implode( ' ', $array );
 		}
 		return $str;
-	}
-
-	/**
-	 * Main Instance.
-	 *
-	 * Ensures only one instance of this class is loaded or can be loaded.
-	 *
-	 * @since   1.7.2
-	 * @access  public
-	 * @static
-	 *
-	 * @param   VAA_View_Admin_As  $caller  The referrer class
-	 * @return  $this  VAA_View_Admin_As_Form
-	 */
-	public static function get_instance( $caller = null ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $caller );
-		}
-		return self::$_instance;
 	}
 
 } // End class VAA_View_Admin_As_Form.
