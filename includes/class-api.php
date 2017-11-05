@@ -570,7 +570,7 @@ final class VAA_API
 				$callable = self::callable_to_string( $callable );
 				$do_notice = sprintf(
 					// Translators: %s stands for the requested class, method or function.
-					__( '%s does not exists or is not callable.', VIEW_ADMIN_AS_DOMAIN ),
+					__( '%s does not exist or is not callable.', VIEW_ADMIN_AS_DOMAIN ),
 					'<code>' . $callable . '</code>'
 				);
 			}
