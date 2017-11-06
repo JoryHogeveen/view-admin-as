@@ -672,9 +672,7 @@ final class VAA_API
 		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
 		if ( isset( $data[ $key ] ) && isset( $data['_vaa_nonce'] ) && wp_verify_nonce( $data['_vaa_nonce'], $nonce ) ) {
 			$request = self::get_array_data( $data, $key );
-			if ( is_string( $request ) ) {
-				$request = self::maybe_json_decode( $request, true, true );
-			}
+			$request = self::maybe_json_decode( $request, true, true );
 			return $request;
 		}
 		return null;
@@ -740,7 +738,8 @@ final class VAA_API
 	}
 
 	/**
-	 * Check if the string is JSON.
+	 * Check if the value contains JSON.
+	 * It the value is an array it will be parsed recursively.
 	 *
 	 * @link https://stackoverflow.com/questions/6041741/fastest-way-to-check-if-a-string-is-json-in-php
 	 *
@@ -749,26 +748,31 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $string  The value string.
-	 * @param   bool    $assoc   See json_decode().
-	 * @param   bool    $decode  Decode with html_entity_decode() and stripcslashes()?
+	 * @param   mixed  $value   The value to be checked for JSON data.
+	 * @param   bool   $assoc   See json_decode().
+	 * @param   bool   $decode  Decode with html_entity_decode() and stripcslashes()?
 	 * @return  mixed
 	 */
-	public static function maybe_json_decode( $string, $assoc = true, $decode = false ) {
-		if ( ! is_string( $string ) ) {
-			return $string;
+	public static function maybe_json_decode( $value, $assoc = true, $decode = false ) {
+		if ( ! is_string( $value ) ) {
+			if ( is_array( $value ) ) {
+				foreach ( $value as $key => $val ) {
+					$value[ $key ] = self::maybe_json_decode( $val, $assoc, $decode );
+				}
+			}
+			return $value;
 		}
-		if ( 0 !== strpos( $string, '[' ) && 0 !== strpos( $string, '{' ) ) {
-			return $string;
+		if ( 0 !== strpos( $value, '[' ) && 0 !== strpos( $value, '{' ) ) {
+			return $value;
 		}
 		if ( $decode ) {
-			$string = stripcslashes( html_entity_decode( $string ) );
+			$value = stripcslashes( html_entity_decode( $value ) );
 		}
-		$var = json_decode( $string, $assoc );
+		$var = json_decode( $value, $assoc );
 		if ( null !== $var ) {
 			return $var;
 		}
-		return $string;
+		return $value;
 	}
 
 	/**
