@@ -116,15 +116,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_module_role_manager();
 		VAA_View_Admin_As.init_auto_js();
 
-		// IE fix: Admin Bar hover on form select elements.
-		/*
-		$( '.menupop select', $vaa ).on( 'mouseenter', function() {
-			$(this).parentsUntil( '#wpadminbar', '.menupop' ).addClass('vaa-hover');
-		} ).on( 'mouseleave', function() {
-			$(this).parentsUntil( '#wpadminbar', '.menupop' ).removeClass('vaa-hover');
-		} );
-		*/
-
 		// Toggle content with title.
 		$( '.ab-vaa-toggle', $vaa ).each( function() {
 			var $this   = $(this),
