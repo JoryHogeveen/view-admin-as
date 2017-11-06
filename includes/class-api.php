@@ -291,21 +291,35 @@ final class VAA_API
 	}
 
 	/**
-	 * Get full array or array key.
+	 * Get full array or array key(s).
 	 *
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.7.5  Option to pass an array of keys. Will always return an array (even if not found).
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   array   $array  The requested array.
-	 * @param   string  $key    (optional) Return only a key of the requested array.
+	 * @param   array         $array  The requested array.
+	 * @param   string|array  $key    (optional) Return only a key of the requested array.
 	 * @return  mixed
 	 */
 	public static function get_array_data( $array, $key = null ) {
 		if ( null !== $key ) {
-			if ( is_array( $array ) && isset( $array[ $key ] ) ) {
+			if ( ! is_array( $array ) ) {
+				return null;
+			}
+			// @since  1.7.5  Search for multiple keys.
+			if ( is_array( $key ) ) {
+				$return = array();
+				foreach ( $key as $k ) {
+					if ( isset( $array[ $k ] ) ) {
+						$return[ $k ] = $array[ $k ];
+					}
+				}
+				return $return;
+			}
+			if ( isset( $array[ $key ] ) ) {
 				return $array[ $key ];
 			}
 			return null; // return null if key is not found
