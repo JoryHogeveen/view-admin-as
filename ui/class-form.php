@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.4
+ * @version 1.7.5
  */
 class VAA_View_Admin_As_Form
 {
@@ -438,13 +438,15 @@ class VAA_View_Admin_As_Form
 	 * @since   1.6.1
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
+	 * @since   1.7.5  Third parameter: element type.
 	 * @static
 	 *
 	 * @param   string|array  $text  The description text. Also accepts an array with a `description` key.
 	 * @param   array         $attr  (optional) Extra attributes.
+	 * @param   string        $elem  (optional) HTML element type. Default: paragraph.
 	 * @return  string
 	 */
-	public static function do_description( $text, $attr = array() ) {
+	public static function do_description( $text, $attr = array(), $elem = 'p' ) {
 		if ( is_array( $text ) ) {
 			if ( empty( $text['description'] ) ) {
 				return '';
@@ -455,7 +457,7 @@ class VAA_View_Admin_As_Form
 		}
 		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
 		$attr = self::parse_to_html_attr( $attr );
-		return '<p ' . $attr . '>' . $text . '</p>';
+		return '<' . $elem . ' ' . $attr . '>' . $text . '</' . $elem . '>';
 	}
 
 	/**
@@ -611,7 +613,7 @@ class VAA_View_Admin_As_Form
 			if ( is_numeric( $args['auto_showhide'] ) ) {
 				$trigger_target = wp_json_encode( array(
 					'target' => $trigger_target,
-					'delay' => $args['auto_showhide'],
+					'delay'  => $args['auto_showhide'],
 				) );
 			}
 			// Full data. Multiple targets allowed,
@@ -621,7 +623,7 @@ class VAA_View_Admin_As_Form
 		}
 
 		$trigger_attr = self::merge_attr( $trigger_attr, array(
-			'class' => 'ab-vaa-showhide',
+			'class'        => 'ab-vaa-showhide',
 			'vaa-showhide' => $trigger_target,
 		) );
 
