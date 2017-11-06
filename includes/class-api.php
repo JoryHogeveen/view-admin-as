@@ -765,7 +765,7 @@ final class VAA_API
 			$string = stripcslashes( html_entity_decode( $string ) );
 		}
 		$var = json_decode( $string, $assoc );
-		if ( JSON_ERROR_NONE === json_last_error() ) {
+		if ( null !== $var ) {
 			return $var;
 		}
 		return $string;
