@@ -110,8 +110,14 @@ class VAA_API_UnitTest extends WP_UnitTestCase {
 		$this->assertNull( VAA_API::get_array_data( $arr, 'should_not_exist' ) );
 		$this->assertNull( VAA_API::get_array_data( $arr, true ) );
 
+		// @since  1.7.5  Multiple keys.
+		$this->assertEquals( array( 'key' => 'test', 'key2' => true ), VAA_API::get_array_data( $arr, array( 'key', 'key2' ) ) );
+		$this->assertEquals( array( 'key2' => true ), VAA_API::get_array_data( $arr, array( 'should_not_exist', 'key2' ) ) );
+		// Empty array if keys not found.
+		$this->assertEquals( array(), VAA_API::get_array_data( $arr, array( 'should_not_exist' ) ) );
+
 		try {
-			$this->assertNull( VAA_API::get_array_data( $arr, array() ) );
+			// $arr contains non-key values so should trigger a PHP error.
 			$this->assertNull( VAA_API::get_array_data( $arr, $arr ) );
 
 			// The above didn't cause an error :(
