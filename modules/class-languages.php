@@ -123,8 +123,10 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
 
 			add_filter( 'locale', array( $this, 'filter_locale' ) );
-			// Run after "Freeze locale" setting.
-			add_action( 'init', array( $this, 'action_switch_to_locale' ), 11 );
+			add_action( 'after_setup_theme', array( $this, 'action_switch_to_locale' ), 0 );
+
+			// Overwrite user setting for freeze locale.
+			add_filter( 'view_admin_as_freeze_locale', '__return_false', 99 );
 		}
 	}
 
