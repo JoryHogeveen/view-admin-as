@@ -149,7 +149,9 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 * @access  public
 	 */
 	public function action_switch_to_locale() {
-		switch_to_locale( $this->selectedLanguage );
+		if ( function_exists( 'switch_to_locale' ) ) {
+			switch_to_locale( $this->selectedLanguage );
+		}
 	}
 
 	/**
