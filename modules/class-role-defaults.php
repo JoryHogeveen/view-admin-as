@@ -615,7 +615,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( $this->store->get_view( 'role' ) && $this->is_enabled() ) {
 			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
 			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
-			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
+			add_filter( 'vaa_admin_bar_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
 		}
 	}
 
@@ -629,6 +629,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	public function vaa_title_recording_role_defaults( $title ) {
 		$role = $this->store->get_view( 'role' );
+		if ( ! $role ) {
+			return $title;
+		}
 		$title .= VAA_View_Admin_As_Form::do_icon( 'dashicons-welcome-view-site', array(
 			'title' => __( 'Recording screen changes for role defaults', VIEW_ADMIN_AS_DOMAIN )
 					   . ': ' . $this->store->get_rolenames( $role ),

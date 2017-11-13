@@ -120,7 +120,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 
 			$this->selectedLanguage = $this->store->get_view( $this->viewKey );
 
-			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
+			add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
 
 			add_filter( 'locale', array( $this, 'filter_locale' ) );
 			add_action( 'after_setup_theme', array( $this, 'action_switch_to_locale' ), 0 );
@@ -209,14 +209,13 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.5
 	 * @access  public
-	 * @param   string  $title  The current title.
-	 * @return  string
+	 * @param   array  $title  The current title(s).
+	 * @return  array
 	 */
-	public function vaa_viewing_as_title( $title ) {
+	public function vaa_admin_bar_view_titles( $title = array() ) {
 		$language = $this->get_languages( $this->selectedLanguage );
 		if ( $language ) {
-			// Translators: %s stands for the language name.
-			$title = sprintf( __( 'Viewing in %s', VIEW_ADMIN_AS_DOMAIN ), $language );
+			$title[] = $language;
 		}
 		return $title;
 	}

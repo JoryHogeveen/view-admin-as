@@ -178,7 +178,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$this->selectedLevel     = $this->store->get_view( $this->viewKey );
 			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
 
-			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
+			add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
 
 			$this->vaa->view()->init_user_modifications();
 			add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
@@ -324,11 +324,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.6.4
+	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
 	 * @access  public
-	 * @param   string  $title  The current title.
-	 * @return  string
+	 * @param   array  $title  The current title(s).
+	 * @return  array
 	 */
-	public function vaa_viewing_as_title( $title ) {
+	public function vaa_admin_bar_view_titles( $title ) {
 
 		if ( $this->get_levels( $this->selectedLevel ) ) {
 
@@ -340,15 +341,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 				$view_label = $this->levelPostType->labels->name;
 			}
 
-			// Translators: %s stands for the view type label.
-			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $view_label ) . ': ';
-			$title .= $this->get_levels( $this->selectedLevel )->post_title;
-			// Is there also a role selected?
-			if ( $this->store->get_view( 'role' ) && $this->store->get_roles( $this->store->get_view( 'role' ) ) ) {
-				$title .= ' <span class="user-role">('
-				          . $this->store->get_rolenames( $this->store->get_view( 'role' ) )
-				          . ')</span>';
-			}
+			$title[ $view_label ] = $this->get_levels( $this->selectedLevel )->post_title;
 		}
 		return $title;
 	}
