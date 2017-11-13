@@ -134,7 +134,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 */
 		$freeze_locale = apply_filters( 'view_admin_as_freeze_locale', $this->store->get_userSettings( 'freeze_locale' ) );
 		if ( $freeze_locale && (int) $this->store->get_curUser()->ID !== (int) $this->store->get_selectedUser()->ID ) {
-			$this->add_action( 'after_setup_theme', array( $this, 'freeze_locale' ), 0 );
+			add_action( 'after_setup_theme', array( $this, 'freeze_locale' ), 0 );
 		}
 	}
 
