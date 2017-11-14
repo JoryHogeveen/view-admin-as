@@ -566,7 +566,7 @@ final class VAA_View_Admin_As
 	 *     @type  string  $id        The module name, choose wisely since this is used for validation.
 	 *     @type  object  $instance  The module class reference/instance.
 	 * }
-	 * @return  bool
+	 * @return  bool  Successfully registered?
 	 */
 	public function register_module( $data ) {
 		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&

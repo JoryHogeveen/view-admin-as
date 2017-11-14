@@ -72,7 +72,7 @@ class VAA_View_Admin_As_Form
 		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
 		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : '';
-		$class = ( ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '' );
+		$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
 
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;

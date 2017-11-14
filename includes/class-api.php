@@ -380,8 +380,8 @@ final class VAA_API
 	 *
 	 * @param   array  $array1     Array one.
 	 * @param   array  $array2     Array two.
-	 * @param   bool   $recursive  Compare recursively.
-	 * @param   bool   $strict     Strict comparison? Only available when comparing recursive.
+	 * @param   bool   $recursive  (optional) Compare recursively.
+	 * @param   bool   $strict     (optional) Strict comparison? Only available when comparing recursive.
 	 * @return  bool
 	 */
 	public static function array_equal( $array1, $array2, $recursive = true, $strict = false ) {
