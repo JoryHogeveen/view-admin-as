@@ -295,16 +295,17 @@ final class VAA_API
 	 *
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.7.5  Option to pass an array of keys. Will always return an array (even if not found).
+	 * @since   1.7.5  Option to pass an array of keys. Will always return an array (even if not found) + third require_all option.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   array         $array  The requested array.
-	 * @param   string|array  $key    (optional) Return only a key of the requested array.
+	 * @param   array         $array        The requested array.
+	 * @param   string|array  $key          (optional) Return only a key of the requested array.
+	 * @param   bool          $require_all  (optional) In case of an array of keys, return `null` if not all keys are present?
 	 * @return  mixed
 	 */
-	public static function get_array_data( $array, $key = null ) {
+	public static function get_array_data( $array, $key = null, $require_all = false ) {
 		if ( null !== $key ) {
 			if ( ! is_array( $array ) ) {
 				return null;
@@ -316,6 +317,9 @@ final class VAA_API
 					if ( isset( $array[ $k ] ) ) {
 						$return[ $k ] = $array[ $k ];
 					}
+				}
+				if ( $require_all && array_diff_key( array_flip( $key ), $return ) ) {
+					return null;
 				}
 				return $return;
 			}
