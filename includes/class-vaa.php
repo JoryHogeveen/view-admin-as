@@ -100,6 +100,25 @@ final class VAA_View_Admin_As
 	private $modules = array();
 
 	/**
+	 * Class registry
+	 *
+	 * @since  1.8
+	 * @var    array
+	 */
+	private $classes = array(
+		'VAA_API'                      => 'includes/class-api.php',
+		'VAA_View_Admin_As_Base'       => 'includes/class-base.php',
+		'VAA_View_Admin_As_Hooks'      => 'includes/class-hooks.php',
+		'VAA_View_Admin_As_Settings'   => 'includes/class-settings.php',
+		'VAA_View_Admin_As_Store'      => 'includes/class-store.php',
+		'VAA_View_Admin_As_Controller' => 'includes/class-controller.php',
+		'VAA_View_Admin_As_View'       => 'includes/class-view.php',
+		'VAA_View_Admin_As_Update'     => 'includes/class-update.php',
+		'VAA_View_Admin_As_Compat'     => 'includes/class-compat.php',
+		'VAA_View_Admin_As_Module'     => 'includes/class-module.php',
+	);
+
+	/**
 	 * Init function to register plugin hook.
 	 * Private to make sure it isn't declared elsewhere.
 	 *
@@ -108,10 +127,13 @@ final class VAA_View_Admin_As
 	 * @since   1.4.1   creates instance.
 	 * @since   1.5     make private.
 	 * @since   1.5.1   added notice on class name conflict + validate versions.
+	 * @since   1.8     spl_autoload_register().
 	 * @access  private
 	 */
 	private function __construct() {
 		self::$_instance = $this;
+
+		spl_autoload_register( array( $this, '_autoload' ) );
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
@@ -126,6 +148,23 @@ final class VAA_View_Admin_As
 
 		// Lets start!
 		add_action( 'plugins_loaded', array( $this, 'init' ), -99999 );
+	}
+
+	/**
+	 * Class autoloader if needed.
+	 *
+	 * @since   1.8
+	 * @access  private
+	 * @internal
+	 * @param   string  $class  The class name.
+	 */
+	public function _autoload( $class ) {
+		if ( 0 !== strpos( $class, 'VAA_' ) ) {
+			return;
+		}
+		if ( isset( $this->classes[ $class ] ) ) {
+			$this->include_file( VIEW_ADMIN_AS_DIR . $this->classes[ $class ], $class );
+		}
 	}
 
 	/**
@@ -163,51 +202,8 @@ final class VAA_View_Admin_As
 	 */
 	private function load() {
 
-		$includes = array(
-			array(
-				'file'  => 'includes/class-api.php',
-				'class' => 'VAA_API',
-			),
-			array(
-				'file'  => 'includes/class-base.php',
-				'class' => 'VAA_View_Admin_As_Base',
-			),
-			array(
-				'file'  => 'includes/class-hooks.php',
-				'class' => 'VAA_View_Admin_As_Hooks',
-			),
-			array(
-				'file'  => 'includes/class-settings.php',
-				'class' => 'VAA_View_Admin_As_Settings',
-			),
-			array(
-				'file'  => 'includes/class-store.php',
-				'class' => 'VAA_View_Admin_As_Store',
-			),
-			array(
-				'file'  => 'includes/class-controller.php',
-				'class' => 'VAA_View_Admin_As_Controller',
-			),
-			array(
-				'file'  => 'includes/class-view.php',
-				'class' => 'VAA_View_Admin_As_View',
-			),
-			array(
-				'file'  => 'includes/class-update.php',
-				'class' => 'VAA_View_Admin_As_Update',
-			),
-			array(
-				'file'  => 'includes/class-compat.php',
-				'class' => 'VAA_View_Admin_As_Compat',
-			),
-			array(
-				'file'  => 'includes/class-module.php',
-				'class' => 'VAA_View_Admin_As_Module',
-			),
-		);
-
-		foreach ( $includes as $inc ) {
-			if ( ! $this->include_file( VIEW_ADMIN_AS_DIR . $inc['file'], $inc['class'] ) ) {
+		foreach ( $this->classes as $class => $file ) {
+			if ( ! $this->include_file( VIEW_ADMIN_AS_DIR . $file, $class ) ) {
 				return false;
 			}
 		}
