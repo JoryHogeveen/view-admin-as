@@ -167,7 +167,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 * @since  1.7.3  Allow multiple targets + add delay option.
          */
 		$( '[vaa-showhide]', $vaa ).each( function() {
-			var $this = $( this ),
+			var $this = $(this),
 				args = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-showhide') ),
 				delay = 200;
 			if ( 'object' !== typeof args ) {
@@ -241,7 +241,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// @since  1.7.4  Auto resizable.
 		$( '.vaa-resizable', $vaa ).each( function() {
-			var $this = $( this ),
+			var $this = $(this),
 				height = $this.css( 'max-height' );
 			$this.css( {
 				'max-height': 'none',
@@ -1122,13 +1122,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// Enlarge caps.
 		$root.on( 'click', '#open-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
-			$( root_prefix + '-manager > .ab-sub-wrapper' ).addClass('fullPopup');
+			$(this).closest('.ab-sub-wrapper').addClass('fullPopup');
 			VAA_View_Admin_As.autoMaxHeight();
 		} );
 		// Undo enlarge caps.
 		$root.on( 'click', '#close-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
-			$( root_prefix + '-manager > .ab-sub-wrapper' ).removeClass('fullPopup');
+			$(this).closest('.ab-sub-wrapper').removeClass('fullPopup');
 			VAA_View_Admin_As.autoMaxHeight();
 		} );
 
