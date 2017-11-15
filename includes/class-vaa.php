@@ -338,7 +338,7 @@ final class VAA_View_Admin_As
 		}
 
 		// Load file.
-		if ( empty( $class ) || ! class_exists( $class ) ) {
+		if ( empty( $class ) || ! class_exists( $class, false ) ) {
 			include_once( $file );
 		} else {
 			$this->add_error_notice( $class . '::' . __METHOD__, array(
