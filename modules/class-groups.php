@@ -120,10 +120,6 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
 
-			if ( ! VAA_API::exists_callable( array( 'Groups_Group' ), 'debug' ) ) {
-				return;
-			}
-
 			$this->selectedGroup = new Groups_Group( $this->store->get_view( $this->viewKey ) );
 
 			$this->reset_groups_user();
