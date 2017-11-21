@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1
- * @version 1.7.3
+ * @version 1.7.5
  * @preserve
  */
 
@@ -13,10 +13,24 @@
  * Overlay
  */
 .vaa-loader-icon {width: 96px; height: 96px; background: transparent url('../img/loader.gif') center center no-repeat; background-size: contain;}
+
 #vaa-overlay {position: fixed; top: 0; left: 0; height: 100%; width: 100%; background: rgba(255,255,255,0.85); display: none; z-index: 999999999;}
 #vaa-overlay .vaa-loader-icon {position: fixed; top: 50%; left: 50%; margin: -48px 0 0 -48px; display: block;}
 
-#vaa-overlay .vaa-overlay-container {max-width: 75%; min-width: 50%; max-height: 50%; min-height: 20px; margin: 0 25%; top: 10%; background: #fff; box-shadow: 0 0 5px #aaa; padding: 10px; border-radius: 3px; position: relative;}
+#vaa-overlay .vaa-overlay-container {
+	max-width: 75%;
+	min-width: 50%;
+	max-height: 50%;
+	min-height: 20px;
+	margin: 0 25%;
+	padding: 10px;
+	top: 10%;
+	background: #fff;
+	box-shadow: 0 0 5px #aaa;
+	border: 2px solid;
+	border-radius: 3px;
+	position: relative;
+}
 #vaa-overlay .vaa-overlay-container > .remove {position: absolute; right: -10px; top: -10px; background: #FFF; width: 20px; height: 20px; cursor: pointer;}
 #vaa-overlay .vaa-overlay-container .vaa-response-data {overflow: hidden; overflow-y: auto;}
 #vaa-overlay .vaa-overlay-container .vaa-response-data ul li {margin-left: 20px; list-style: disc outside;}
@@ -58,27 +72,44 @@
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item * {font-style: italic !important;}
 
+#wpadminbar #wp-admin-bar-vaa .ab-item code {font-family: Consolas, Monaco, monospace; background: rgba(0,0,0,0.1); padding: 1px 5px 2px; line-height: normal;}
+
+/* Semi transparent groups */
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent > * {opacity: 0.5; transition: opacity 0.2s;}
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent:hover > *,
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent .active,
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent .active ~ * {opacity: 1;}
 
+/* Search results */
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results {margin: 6px 0; padding: 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results:empty {display: none;}
 
-/* Auto add spacing to first level sub groups */
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-spacing-top,
-#wpadminbar #wp-admin-bar-vaa > div > ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
-/* Auto remove spacing from second level sub groups */
-#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-sub-wrapper ul.ab-sub-secondary + ul.ab-sub-secondary {padding-top: 0;}
+/* Spacing for first level sub groups */
+#wpadminbar #wp-admin-bar-vaa ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 3px;}
+/* Spacing for second level sub groups and lower */
+#wpadminbar #wp-admin-bar-vaa .menupop ul + ul,
+#wpadminbar #wp-admin-bar-vaa .menupop ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 2px;}
+/* Spacing for third level sub groups and lower */
+#wpadminbar #wp-admin-bar-vaa .menupop .menupop ul + ul,
+#wpadminbar #wp-admin-bar-vaa .menupop .menupop ul.ab-sub-secondary + ul.ab-sub-secondary {margin-top: 1px;}
+/* Remove unneeded spacing */
+#wpadminbar #wp-admin-bar-vaa ul:not(.ab-sub-secondary) + ul.ab-sub-secondary,
+#wpadminbar #wp-admin-bar-vaa ul.ab-sub-secondary + ul:not(.ab-sub-secondary) {margin-top: 0;}
 
+/* Toggle groups */
+#wpadminbar #wp-admin-bar-vaa .menupop .ab-sub-wrapper ul.vaa-toggle-group {padding: 3px 0 4px;}
+#wpadminbar #wp-admin-bar-vaa .menupop .ab-sub-wrapper ul.vaa-toggle-group li.active ~ li:last-child {padding-bottom: 3px;}
+
+/* Auto height */
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
 
+/* Descriptions */
 #wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
-#wpadminbar #wp-admin-bar-vaa .ab-item .description:first-child {margin-bottom: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description:first-child:not(:only-child) {margin-bottom: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description .ab-icon {line-height: 1 !important; font-size: 1em !important; padding: 1px 0; margin-right: 3px; width: auto; height: 1em;}
 
 /* First level group titles */
-#wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
+#wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title > .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 
 /* Current view items */
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item,
@@ -89,14 +120,25 @@
 #wpadminbar #wp-admin-bar-vaa .current-parent > label {font-weight: bold;}
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item::after,
 #wpadminbar #wp-admin-bar-vaa .current > label::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 17px; vertical-align: middle; font-weight: normal;}
+#wpadminbar #wp-admin-bar-vaa .current.ab-vaa-title > .ab-item::after {vertical-align: top;}
 
 /**
  * Icon fixes
  */
-#wpadminbar #wp-admin-bar-vaa > .ab-item > .ab-label {float: left;} /* IE fix */
-#wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {top: 2px;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .ab-icon.alignright {float: right; margin-right: 0; margin-left: 6px;}
-#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon {float: none; font-size: 16px; line-height: 16px; vertical-align: text-bottom; font-weight: normal !important; padding: 0;}
+#wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {top: 2px;}
+#wpadminbar #wp-admin-bar-vaa > .ab-item .ab-label {float: left;} /* IE fix */
+#wpadminbar #wp-admin-bar-vaa > .ab-item .ab-label .ab-icon {margin-right: -3px;}
+
+#wpadminbar > #wp-toolbar > #wp-admin-bar-root-default #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon, /* Fix when located on admin bar default */
+#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item .ab-icon {
+	float: none;
+	font-weight: normal !important;
+	font-size: 16px;
+	line-height: 16px;
+	vertical-align: text-bottom;
+	padding: 0;
+}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before {display: none;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 10px; padding-right: 10px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon {font-size: 18px; line-height: 20px; margin: 0 5px 0 -1px;}
@@ -115,7 +157,17 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item > label + button {margin: 0 0 0 12px; vertical-align: baseline;}
 
 #wpadminbar #wp-admin-bar-vaa .vaa-button-container > .ab-item {overflow: hidden; height: auto;}
-#wpadminbar #wp-admin-bar-vaa button {float: none; text-decoration: none; font-size: 13px; line-height: 20px; height: 20px; margin: 3px 0; padding: 0 10px 1px; vertical-align: middle; cursor: pointer;}
+#wpadminbar #wp-admin-bar-vaa button {
+	float: none;
+	text-decoration: none;
+	font-size: 13px;
+	line-height: 20px;
+	height: 20px;
+	margin: 3px 0;
+	padding: 0 10px 1px;
+	vertical-align: middle;
+	cursor: pointer;
+}
 
 /**
  * Button icon fixes
@@ -146,7 +198,15 @@
 	box-shadow: 0 0 15px rgba(0,0,0,0.2);
 	z-index: 99999;
 }
-#wpadminbar #wp-admin-bar-vaa .vaa-help {float: right; text-align: right; padding: 0; font-size: 16px; line-height: inherit !important; margin: 0 0 0 5px;}
+#wpadminbar > #wp-toolbar > #wp-admin-bar-root-default #wp-admin-bar-vaa .vaa-help, /* Fix when located on admin bar default */
+#wpadminbar #wp-admin-bar-vaa .vaa-help {
+	float: right;
+	text-align: right;
+	padding: 0;
+	font-size: 16px;
+	line-height: inherit !important;
+	margin: 0 0 0 5px
+}
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + select,
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + input,
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ input + label {margin-right: 20px;}
@@ -163,13 +223,13 @@
  * Form elements
  */
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-item,
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-input .ab-item,
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-file .ab-item,
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-input  .ab-item,
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-file   .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item {height: auto; clear: both;}
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-input .ab-item input,
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-file .ab-item input,
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-input  .ab-item input,
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-file   .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {display: inline-block; background: #fff; color: #555; margin: 5px 0; padding: 3px; border: 0; line-height: normal; height: auto; width: 100%; box-sizing: border-box;}
@@ -186,13 +246,13 @@
 #wpadminbar #wp-admin-bar-vaa input.radio {display: inline-block; height: 16px; width: 16px; vertical-align: text-bottom; box-sizing: border-box; cursor: pointer;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio {margin: 0 6px 0 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {border-radius:  100%;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label *,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label,
-#wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label * {line-height: 18px; vertical-align: text-top; display: inline;}
+#wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label * {line-height: 18px; vertical-align: text-top; display: inline-block;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox + label:hover,
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label:hover {cursor: pointer;}
-#wpadminbar #wp-admin-bar-vaa .ab-item input.radio {border-radius:  100%;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label + br {line-height: 0;}
 
 #wpadminbar #wp-admin-bar-vaa input.checkbox.vaa-right,
@@ -256,8 +316,9 @@
 /**
  * Location: My Account;
  */
-#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item > .ab-label {line-height: 26px;}
-#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item > .ab-icon {top: 0;}
+#wpadminbar #wp-admin-bar-my-account-default {z-index: 999999;} /* Box shadow fix */
+#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item .ab-label {line-height: 26px;}
+#wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item .ab-icon {top: 0;}
 
 /**
  * Our custom frontend toolbar
@@ -297,7 +358,7 @@
 	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-hide-responsive {display: none;}
 
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item.description,
-	#wpadminbar #wp-admin-bar-vaa .ab-item p.description {display: block !important; padding-left: 0; padding-right: 0;}
+	#wpadminbar #wp-admin-bar-vaa .ab-item p.description {display: block !important; padding-left: 0; padding-right: 0; margin-bottom: 0;}
 
 	/**
 	 * Help tooltip
@@ -333,6 +394,7 @@
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon .ab-item .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: text-top;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon > .ab-item > .ab-icon {font-size: 30px !important; margin-left: -6px; margin-top: -1px; vertical-align: top;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 12px; padding-right: 12px;}
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon.menupop > .ab-item {padding-left: 16px;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-menupop div li {margin-left: 12px;}
 
 	/**

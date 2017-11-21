@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
@@ -615,7 +615,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( $this->store->get_view( 'role' ) && $this->is_enabled() ) {
 			$this->add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
 			$this->add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
-			$this->add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
+			$this->add_filter( 'vaa_admin_bar_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
 		}
 	}
 
@@ -629,9 +629,13 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	public function vaa_title_recording_role_defaults( $title ) {
 		$role = $this->store->get_view( 'role' );
+		if ( ! $role ) {
+			return $title;
+		}
 		$title .= VAA_View_Admin_As_Form::do_icon( 'dashicons-welcome-view-site', array(
 			'title' => __( 'Recording screen changes for role defaults', VIEW_ADMIN_AS_DOMAIN )
 					   . ': ' . $this->store->get_rolenames( $role ),
+			'class' => 'alignright',
 		) );
 		return $title;
 	}
@@ -1156,7 +1160,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-meta',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1226,7 +1230,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'title'  => $meta_select_content,
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-multipleselect vaa-small',
+				'class' => 'ab-vaa-multipleselect vaa-small vaa-resizable',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1335,7 +1339,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-bulk-users',
 				'parent' => $root,
 				'meta'   => array(
-					'class' => 'ab-sub-secondary',
+					'class' => 'ab-sub-secondary vaa-toggle-group',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1367,7 +1371,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'title'  => implode( '', $users_check_content ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-multipleselect vaa-small',
+					'class' => 'ab-vaa-multipleselect vaa-small vaa-resizable',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1403,7 +1407,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'id'     => $root . '-bulk-roles',
 					'parent' => $root,
 					'meta'   => array(
-						'class' => 'ab-sub-secondary',
+						'class' => 'ab-sub-secondary vaa-toggle-group',
 					),
 				) );
 				$admin_bar->add_node( array(
@@ -1471,7 +1475,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-copy',
 				'parent' => $root,
 				'meta'   => array(
-					'class' => 'ab-sub-secondary',
+					'class' => 'ab-sub-secondary vaa-toggle-group',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1503,7 +1507,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'title'  => implode( '', $role_check_content ),
 				'href'   => false,
 				'meta'   => array(
-					'class' => 'ab-vaa-multipleselect vaa-small',
+					'class' => 'ab-vaa-multipleselect vaa-small vaa-resizable',
 				),
 			) );
 
@@ -1583,7 +1587,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-export',
 				'parent' => $root,
 				'meta'   => array(
-					'class' => 'ab-sub-secondary',
+					'class' => 'ab-sub-secondary vaa-toggle-group',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1648,7 +1652,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'id'     => $root . '-import',
 				'parent' => $root,
 				'meta'   => array(
-					'class' => 'ab-sub-secondary',
+					'class' => 'ab-sub-secondary vaa-toggle-group',
 				),
 			) );
 			$admin_bar->add_node( array(
@@ -1799,7 +1803,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-clear',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary vaa-sub-transparent',
+				'class' => 'ab-sub-secondary vaa-toggle-group vaa-sub-transparent',
 			),
 		) );
 		$admin_bar->add_node( array(

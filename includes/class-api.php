@@ -13,10 +13,16 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * API class that holds general functions.
  *
+ * Disable some PHPMD checks for this class.
+ * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods)
+ * @todo Refactor to enable above checks? Create separate utilities class and extend it.
+ *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.3
+ * @version 1.7.5
  */
 final class VAA_API
 {
@@ -234,7 +240,12 @@ final class VAA_API
 		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
 		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
 		if ( empty( $url ) ) {
-			$url = is_network_admin() ? network_admin_url() : admin_url();
+			if ( is_admin() ) {
+				$url = is_network_admin() ? network_admin_url() : admin_url();
+			} else {
+				// Since  1.7.5  Frontend url.
+				$url = get_site_url();
+			}
 		}
 
 		$url = add_query_arg( $params, ( $url ) ? $url : false );
@@ -280,21 +291,39 @@ final class VAA_API
 	}
 
 	/**
-	 * Get full array or array key.
+	 * Get full array or array key(s).
 	 *
 	 * @since   1.5
 	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.7.5  Option to pass an array of keys. Will always return an array (even if not found) + third require_all option.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   array   $array  The requested array.
-	 * @param   string  $key    (optional) Return only a key of the requested array.
+	 * @param   array         $array        The requested array.
+	 * @param   string|array  $key          (optional) Return only a key of the requested array.
+	 * @param   bool          $require_all  (optional) In case of an array of keys, return `null` if not all keys are present?
 	 * @return  mixed
 	 */
-	public static function get_array_data( $array, $key = null ) {
+	public static function get_array_data( $array, $key = null, $require_all = false ) {
 		if ( null !== $key ) {
-			if ( is_array( $array ) && isset( $array[ $key ] ) ) {
+			if ( ! is_array( $array ) ) {
+				return null;
+			}
+			// @since  1.7.5  Search for multiple keys.
+			if ( is_array( $key ) ) {
+				$return = array();
+				foreach ( $key as $k ) {
+					if ( isset( $array[ $k ] ) ) {
+						$return[ $k ] = $array[ $k ];
+					}
+				}
+				if ( $require_all && array_diff_key( array_flip( $key ), $return ) ) {
+					return null;
+				}
+				return $return;
+			}
+			if ( isset( $array[ $key ] ) ) {
 				return $array[ $key ];
 			}
 			return null; // return null if key is not found
@@ -328,7 +357,11 @@ final class VAA_API
 			}
 
 			// Notify user if in debug mode
-			_doing_it_wrong( __METHOD__, 'View Admin As: Key <code>' . (string) $key . '</code> does not exist', null );
+			_doing_it_wrong(
+				__METHOD__,
+				'View Admin As: Key <code>' . (string) $key . '</code> does not exist',
+				null
+			);
 
 			// return no changes if key is not found or appending is not allowed.
 			return $array;
@@ -347,8 +380,8 @@ final class VAA_API
 	 *
 	 * @param   array  $array1     Array one.
 	 * @param   array  $array2     Array two.
-	 * @param   bool   $recursive  Compare recursively.
-	 * @param   bool   $strict     Strict comparison? Only available when comparing recursive.
+	 * @param   bool   $recursive  (optional) Compare recursively.
+	 * @param   bool   $strict     (optional) Strict comparison? Only available when comparing recursive.
 	 * @return  bool
 	 */
 	public static function array_equal( $array1, $array2, $recursive = true, $strict = false ) {
@@ -472,8 +505,8 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function starts_with( $haystack, $needle ) {
-		// search backwards starting from haystack length characters from the end.
-		return '' === $needle || strrpos( $haystack, $needle, -strlen( $haystack ) ) !== false;
+		// Search backwards starting from haystack length characters from the end.
+		return '' === $needle || 0 === strpos( $haystack, $needle );
 	}
 
 	/**
@@ -490,9 +523,8 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function ends_with( $haystack, $needle ) {
-		// search forward starting from end minus needle length characters.
-		// @codingStandardsIgnoreLine >> yeah yeah, I know...
-		return '' === $needle || ( ( $temp = strlen( $haystack ) - strlen( $needle ) ) >= 0 && strpos( $haystack, $needle, $temp ) !== false);
+		// Search forward starting from end minus needle length characters.
+		return '' === $needle || ( strlen( $haystack ) - strlen( $needle ) === strrpos( $haystack, $needle ) );
 	}
 
 	/**
@@ -525,7 +557,80 @@ final class VAA_API
 	}
 
 	/**
-	 * AJAX Request validator. Verifies caller and nonce.
+	 * Enhancement for is_callable(), also check for class_exists() or method_exists() when an array is passed.
+	 * Prevents incorrect `true` when a class has a __call() method.
+	 * Can also handle error notices.
+	 *
+	 * @since   1.7.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   callable|array  $callable     The callable data.
+	 * @param   bool|string     $do_notice    Add an error notice when it isn't?
+	 *                                        Pass `debug` to only show notice when WP_DEBUG is enabled.
+	 * @param   bool            $syntax_only  See is_callable() docs.
+	 * @return  bool
+	 */
+	public static function exists_callable( $callable, $do_notice = false, $syntax_only = false ) {
+		$pass = is_callable( $callable, $syntax_only );
+		if ( $pass && is_array( $callable ) ) {
+			if ( 1 === count( $callable ) ) {
+				$pass = class_exists( $callable[0] );
+			} else {
+				$pass = method_exists( $callable[0], $callable[1] );
+			}
+		}
+		if ( ! $pass && $do_notice ) {
+			if ( 'debug' === $do_notice ) {
+				$do_notice = ( defined( 'WP_DEBUG' ) && WP_DEBUG );
+			}
+			if ( ! is_string( $do_notice ) ) {
+				$callable = self::callable_to_string( $callable );
+				$do_notice = sprintf(
+					// Translators: %s stands for the requested class, method or function.
+					__( '%s does not exist or is not callable.', VIEW_ADMIN_AS_DOMAIN ),
+					'<code>' . $callable . '</code>'
+				);
+			}
+			view_admin_as()->add_error_notice( $callable, array(
+				'message' => $do_notice,
+			) );
+		}
+		return (boolean) $pass;
+	}
+
+	/**
+	 * Convert callable variable to string for display.
+	 *
+	 * @since   1.7.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   callable|array  $callable
+	 * @return  string
+	 */
+	public static function callable_to_string( $callable ) {
+		if ( is_string( $callable ) ) {
+			return $callable;
+		}
+		if ( is_object( $callable ) ) {
+			$callable = array( $callable, '' );
+		}
+		if ( is_array( $callable ) ) {
+			if ( is_object( $callable[0] ) ) {
+				$callable[0] = get_class( $callable[0] );
+				$callable = implode( '->', $callable );
+			} else {
+				$callable = implode( '::', $callable );
+			}
+		}
+		return (string) $callable;
+	}
+
+	/**
+	 * AJAX request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
 	 * @since   1.7
@@ -546,7 +651,7 @@ final class VAA_API
 	}
 
 	/**
-	 * AJAX Request validator. Verifies caller and nonce.
+	 * Normal request validator. Verifies caller and nonce.
 	 * Returns the requested data.
 	 *
 	 * @since   1.7
@@ -585,16 +690,14 @@ final class VAA_API
 		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
 		if ( isset( $data[ $key ] ) && isset( $data['_vaa_nonce'] ) && wp_verify_nonce( $data['_vaa_nonce'], $nonce ) ) {
 			$request = self::get_array_data( $data, $key );
-			if ( is_string( $request ) ) {
-				$request = json_decode( stripcslashes( html_entity_decode( $request ) ), true );
-			}
+			$request = self::maybe_json_decode( $request, true, true );
 			return $request;
 		}
 		return null;
 	}
 
 	/**
-	 * AJAX Request check.
+	 * AJAX request check.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -613,7 +716,7 @@ final class VAA_API
 	}
 
 	/**
-	 * Normal Request check.
+	 * Normal request check.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -650,6 +753,44 @@ final class VAA_API
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Check if the value contains JSON.
+	 * It the value is an array it will be parsed recursively.
+	 *
+	 * @link https://stackoverflow.com/questions/6041741/fastest-way-to-check-if-a-string-is-json-in-php
+	 *
+	 * @since   1.7.5
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   mixed  $value   The value to be checked for JSON data.
+	 * @param   bool   $assoc   See json_decode().
+	 * @param   bool   $decode  Decode with html_entity_decode() and stripcslashes()?
+	 * @return  mixed
+	 */
+	public static function maybe_json_decode( $value, $assoc = true, $decode = false ) {
+		if ( ! is_string( $value ) ) {
+			if ( is_array( $value ) ) {
+				foreach ( $value as $key => $val ) {
+					$value[ $key ] = self::maybe_json_decode( $val, $assoc, $decode );
+				}
+			}
+			return $value;
+		}
+		if ( 0 !== strpos( $value, '[' ) && 0 !== strpos( $value, '{' ) ) {
+			return $value;
+		}
+		if ( $decode ) {
+			$value = stripcslashes( html_entity_decode( $value ) );
+		}
+		$var = json_decode( $value, $assoc );
+		if ( null !== $var ) {
+			return $var;
+		}
+		return $value;
 	}
 
 	/**

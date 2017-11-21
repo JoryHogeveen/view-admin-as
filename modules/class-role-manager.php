@@ -20,7 +20,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.2
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
@@ -762,7 +762,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-apply-view',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -839,7 +839,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-rename',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -916,7 +916,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-clone',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1000,7 +1000,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-export',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1085,7 +1085,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-import',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary',
+				'class' => 'ab-sub-secondary vaa-toggle-group',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1244,7 +1244,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'id'     => $root . '-delete',
 			'parent' => $root,
 			'meta'   => array(
-				'class' => 'ab-sub-secondary vaa-sub-transparent',
+				'class' => 'ab-sub-secondary vaa-toggle-group vaa-sub-transparent',
 			),
 		) );
 		$admin_bar->add_node( array(
@@ -1318,15 +1318,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_group( array(
 			'id'     => $root . '-role-manager',
 			'parent' => $root,
-			'meta'   => array(
-				'class' => 'ab-vaa-spacing-top',
-			),
 		) );
 
 		$root = $root . '-role-manager';
 
 		$admin_bar->add_node( array(
-			'id'     => $root . '-roles-title',
+			'id'     => $root . '-title',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-id-alt' ) . __( 'Role manager', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,

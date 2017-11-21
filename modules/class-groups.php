@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.3
+ * @version 1.7.4
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
@@ -55,6 +55,12 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	private $viewKey = 'groups';
 
 	/**
+	 * @since  1.7.4
+	 * @var    string
+	 */
+	private $groupsScreen = 'groups-admin';
+
+	/**
 	 * Populate the instance and validate Groups plugin.
 	 *
 	 * @since   1.7.2
@@ -69,11 +75,24 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		if ( is_callable( array( 'Groups_Group', 'get_groups' ) ) &&
-		     defined( 'GROUPS_ADMINISTER_GROUPS' ) &&
-		     current_user_can( GROUPS_ADMINISTER_GROUPS ) &&
-		     ! is_network_admin()
-		) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), 'debug' ) ) {
+			return;
+		}
+
+		$this->init();
+	}
+
+	/**
+	 * Setup module and hooks.
+	 *
+	 * @since   1.7.4
+	 * @access  private
+	 */
+	private function init() {
+
+		$access_cap = ( defined( 'GROUPS_ADMINISTER_GROUPS' ) ) ? GROUPS_ADMINISTER_GROUPS : 'manage_options';
+
+		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
 
 			$this->vaa->register_module( array(
 				'id'       => $this->viewKey,
@@ -105,7 +124,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 
 			$this->reset_groups_user();
 
-			$this->add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
+			$this->add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
 
 			$this->vaa->view()->init_user_modifications();
 			$this->add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
@@ -147,7 +166,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @param   int  $user_id
 	 */
 	public function reset_groups_user( $user_id = null ) {
-		if ( ! is_callable( array( 'Groups_User', 'clear_cache' ) ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_User', 'clear_cache' ), 'debug' ) ) {
 			return;
 		}
 
@@ -328,7 +347,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 		if ( $this->store->get_selectedUser()->ID !== $user_id || ! $this->selectedGroup ) {
 			return $result;
 		}
-		if ( ! is_callable( 'Groups_Post_Access', 'get_read_group_ids' ) ) {
+		if ( ! VAA_API::exists_callable( array( 'Groups_Post_Access', 'get_read_group_ids' ), 'debug' ) ) {
 			return $result;
 		}
 
@@ -413,7 +432,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 					$current_group = Groups_Group::read_by_name( $group );
 				}
 				if ( $current_group && $current_group->group_id === $selected_group->group_id ) {
-					$show_content = ( $reverse ) ? false : true;
+					$show_content = ! $reverse;
 					break;
 				}
 			}
@@ -481,15 +500,14 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.7.2
+	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
 	 * @access  public
-	 * @param   string  $title  The current title.
-	 * @return  string
+	 * @param   array  $title  The current title(s).
+	 * @return  array
 	 */
-	public function vaa_viewing_as_title( $title ) {
+	public function vaa_admin_bar_view_titles( $title ) {
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
-			// Translators: %s stands for "Group" (translated with the Groups domain).
-			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->translate_groups( 'Group' ) ) . ': '
-			         . $this->get_groups( $this->store->get_view( $this->viewKey ) )->name;
+			$title[ $this->translate_remote( 'Group' ) ] = $this->get_groups( $this->store->get_view( $this->viewKey ) )->name;
 		}
 		return $title;
 	}
@@ -522,11 +540,24 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 			'id'     => $root . '-title',
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' )
-			            . $this->translate_groups( 'Groups' ),
+			            . $this->translate_remote( 'Groups' ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				'tabindex' => '0',
+			),
+		) );
+
+		$admin_bar->add_node( array(
+			'id'     => $root . '-admin',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_description(
+				VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
+				. __( 'Plugin' ) . ': ' . $this->translate_remote( 'Groups' )
+			),
+			'href'   => menu_page_url( $this->groupsScreen, false ),
+			'meta'   => array(
+				'class'  => 'auto-height',
 			),
 		) );
 
@@ -628,7 +659,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @param   string  $string  The string.
 	 * @return  string
 	 */
-	public function translate_groups( $string ) {
+	public function translate_remote( $string ) {
 		$domain = ( defined( 'GROUPS_PLUGIN_DOMAIN' ) ) ? GROUPS_PLUGIN_DOMAIN : 'groups';
 		// @codingStandardsIgnoreLine >> Prevent groups translation from getting parsed by translate.wordpress.org
 		return __( $string, $domain );

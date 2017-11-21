@@ -88,11 +88,11 @@ class VAA_UnitTest_Factory {
 		$username = strtolower( preg_replace( "/[^a-zA-Z0-9]+/", "", $name ) );
 
 		$user = get_user_by( 'login', $username );
-		if ( ! $user && empty( VAA_UnitTest_Factory::$vaa_users[ $username ] ) ) {
+		if ( ! $user && empty( self::$vaa_users[ $username ] ) ) {
 			//if ( ! isset( self::$vaa_users[ $username ] ) ) {
-			$current_user = VAA_UnitTest_Factory::add_user( $name, $role, $capabilities, $super_admin );
+			$current_user = self::add_user( $name, $role, $capabilities, $super_admin );
 		} else {
-			$current_user = VAA_UnitTest_Factory::$vaa_users[ $username ];
+			$current_user = self::$vaa_users[ $username ];
 		}
 
 		$current_user = wp_set_current_user( $current_user->ID );
@@ -128,7 +128,7 @@ class VAA_UnitTest_Factory {
 		$user->set_role( $role );
 
 		if ( ! empty( $capabilities ) ) {
-			foreach( $capabilities as $cap => $grant ) {
+			foreach ( $capabilities as $cap => $grant ) {
 				if ( is_string( $grant ) ) {
 					$cap = $grant;
 					$grant = true;
@@ -140,7 +140,7 @@ class VAA_UnitTest_Factory {
 		}
 		$user->display_name = $name;
 
-		if ( $super_admin && $role === 'administrator' && is_multisite() ) {
+		if ( $super_admin && 'administrator' === $role && is_multisite() ) {
 			grant_super_admin( $user->ID );
 			//global $super_admins;
 			//$super_admins = array_merge( get_super_admins(), array( $user->user_login ) );
