@@ -5,7 +5,7 @@ Tags: admin, view, roles, users, switch, user switching, role switching, capabil
 Requires at least: 4.1
 Tested up to: 4.9
 Requires PHP: 5.2.4
-Stable tag: 1.7.4
+Stable tag: 1.7.5
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -28,9 +28,10 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Switch between roles
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
+*	Switch language/locale on backend and frontend
 *	Easily switch back anytime
 *	Completely secure (see *Security* below)
-*	Do this all without logging out and easily go back to your own (default) user view!
+*	Do all the above without logging out!
 
 = Module: Role defaults (screen settings) =
 
@@ -200,6 +201,17 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 11. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.7.5 =
+
+*	**Feature:** Language switcher. [#81](https://github.com/JoryHogeveen/view-admin-as/issues/81)
+*	**Enhancement:** Store options network wide instead of per blog/site if network/multisite is enabled.
+*	**Enhancement:** Action links (no-JS) on frontend.
+*	**Enhancement:** Add filter `view_admin_as_freeze_locale` to overwrite user setting.
+*	**Fix:** JavaScript init on frontend.
+*	**UI:** Various minor enhancements.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/82)
 
 = 1.7.4 =
 

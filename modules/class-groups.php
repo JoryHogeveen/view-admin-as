@@ -120,15 +120,11 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
 
-			if ( ! VAA_API::exists_callable( array( 'Groups_Group' ), 'debug' ) ) {
-				return;
-			}
-
 			$this->selectedGroup = new Groups_Group( $this->store->get_view( $this->viewKey ) );
 
 			$this->reset_groups_user();
 
-			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
+			add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
 
 			$this->vaa->view()->init_user_modifications();
 			add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
@@ -504,15 +500,14 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.7.2
+	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
 	 * @access  public
-	 * @param   string  $title  The current title.
-	 * @return  string
+	 * @param   array  $title  The current title(s).
+	 * @return  array
 	 */
-	public function vaa_viewing_as_title( $title ) {
+	public function vaa_admin_bar_view_titles( $title ) {
 		if ( $this->get_groups( $this->store->get_view( $this->viewKey ) ) ) {
-			// Translators: %s stands for "Group" (translated with the Groups domain).
-			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $this->translate_remote( 'Group' ) ) . ': '
-			         . $this->get_groups( $this->store->get_view( $this->viewKey ) )->name;
+			$title[ $this->translate_remote( 'Group' ) ] = $this->get_groups( $this->store->get_view( $this->viewKey ) )->name;
 		}
 		return $title;
 	}

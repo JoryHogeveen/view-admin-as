@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.4
+ * @version 1.7.5
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -44,7 +44,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	var $document = $( document ),
 		$window = $( window ),
 		$body = $('body'),
-		$vaa = $( VAA_View_Admin_As.prefix );
+		$vaa = $( VAA_View_Admin_As.prefix ); // Validated in load().
 
 	VAA_View_Admin_As.maxHeightListenerElements = null;
 	VAA_View_Admin_As._mobile = false;
@@ -73,10 +73,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Safely try to parse as JSON. If it isn't JSON it will return the original string.
 	 * @since   1.7
+	 * @since   1.7.5  Renamed from VAA_View_Admin_As.json_decode()
 	 * @param   {string}  val  The string to decode.
 	 * @return  {string|object}  Parsed JSON object or original string.
 	 */
-	VAA_View_Admin_As.json_decode = function( val ) {
+	VAA_View_Admin_As.maybe_json_decode = function( val ) {
 		if ( 0 === val.indexOf("{") || 0 === val.indexOf("[") ) {
 			try {
 				val = JSON.parse( val );
@@ -88,169 +89,166 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
-	 * BASE INIT.
+	 * Plugin initializer.
 	 * @since   1.5.1
+	 * @since   1.7.5   Called on window load.
 	 * @return  {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init = function() {
+
+		// Selector sometimes only works after window load (frontend).
+		if ( ! $vaa.length ) {
+			$vaa = $( VAA_View_Admin_As.prefix );
+		}
+
+		// Preload loader icon.
+		if ( VAA_View_Admin_As._loader_icon ) {
+			var loader_icon = new Image();
+			loader_icon.src = VAA_View_Admin_As._loader_icon;
+		}
+
+		// Load autoMaxHeight elements.
+		VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
 
 		VAA_View_Admin_As.init_caps();
 		VAA_View_Admin_As.init_users();
 		VAA_View_Admin_As.init_module_role_defaults();
 		VAA_View_Admin_As.init_module_role_manager();
+		VAA_View_Admin_As.init_auto_js();
 
-		// Functionality that require the document to be fully loaded.
-		$window.on( 'load', function() {
-
-			// Preload loader icon.
-			if ( VAA_View_Admin_As._loader_icon ) {
-				var loader_icon = new Image();
-				loader_icon.src = VAA_View_Admin_As._loader_icon;
+		// Toggle content with title.
+		$( '.ab-vaa-toggle', $vaa ).each( function() {
+			var $this   = $(this),
+				$toggle = $this.parent().children().not('.ab-vaa-toggle');
+			if ( ! $this.hasClass('active') ) {
+				$toggle.hide();
 			}
 
-			VAA_View_Admin_As.init_auto_js();
-
-			// Load autoMaxHeight elements.
-			VAA_View_Admin_As.maxHeightListenerElements = $( VAA_View_Admin_As.prefix + '.vaa-auto-max-height' );
-
-			// Toggle content with title.
-			$( VAA_View_Admin_As.prefix + '.ab-vaa-toggle' ).each( function() {
-				var $this   = $(this),
-					$toggle = $this.parent().children().not('.ab-vaa-toggle');
-				if ( ! $this.hasClass('active') ) {
-					$toggle.hide();
+			$this.on( 'click touchend', function( e ) {
+				e.preventDefault();
+				e.stopPropagation();
+				if ( true === VAA_View_Admin_As._touchmove ) {
+					return;
 				}
-
-				$this.on( 'click touchend', function( e ) {
-					e.preventDefault();
-					e.stopPropagation();
-					if ( true === VAA_View_Admin_As._touchmove ) {
-						return;
-					}
-					if ( $(this).hasClass('active') ) {
-						$toggle.slideUp('fast');
-						$(this).removeClass('active');
-					} else {
-						$toggle.slideDown('fast');
-						$(this).addClass('active');
-					}
-					VAA_View_Admin_As.autoMaxHeight();
-				} );
-
-				// @since  1.6.1  Keyboard a11y.
-				$this.on( 'keyup', function( e ) {
-					e.preventDefault();
-					/**
-					 * @see  https://api.jquery.com/keyup/
-					 * 13 = enter
-					 * 32 = space
-					 * 38 = arrow up
-					 * 40 = arrow down
-					 */
-					var key = parseInt( e.which, 10 );
-					if ( $(this).hasClass('active') && ( 13 === key || 32 === key || 38 === key ) ) {
-						$toggle.slideUp('fast');
-						$(this).removeClass('active');
-					} else if ( 13 === key || 32 === key || 40 === key ) {
-						$toggle.slideDown('fast');
-						$(this).addClass('active');
-					}
-					VAA_View_Admin_As.autoMaxHeight();
-				} );
+				if ( $(this).hasClass('active') ) {
+					$toggle.slideUp('fast');
+					$(this).removeClass('active');
+				} else {
+					$toggle.slideDown('fast');
+					$(this).addClass('active');
+				}
+				VAA_View_Admin_As.autoMaxHeight();
 			} );
 
-			/**
-			 * @since  1.6.3  Toggle items on hover.
-			 * @since  1.7.3  Allow multiple targets + add delay option.
- 			 */
-			$( VAA_View_Admin_As.prefix + '[vaa-showhide]' ).each( function() {
-				var $this = $( this ),
-					args = VAA_View_Admin_As.json_decode( $this.attr('vaa-showhide') ),
-					delay = 200;
-				if ( 'object' !== typeof args ) {
-					args = { 0: { target: args, delay: delay } };
+			// @since  1.6.1  Keyboard a11y.
+			$this.on( 'keyup', function( e ) {
+				e.preventDefault();
+				/**
+				 * @see  https://api.jquery.com/keyup/
+				 * 13 = enter
+				 * 32 = space
+				 * 38 = arrow up
+				 * 40 = arrow down
+				 */
+				var key = parseInt( e.which, 10 );
+				if ( $(this).hasClass('active') && ( 13 === key || 32 === key || 38 === key ) ) {
+					$toggle.slideUp('fast');
+					$(this).removeClass('active');
+				} else if ( 13 === key || 32 === key || 40 === key ) {
+					$toggle.slideDown('fast');
+					$(this).addClass('active');
 				}
-				$.each( args, function( key, data ) {
-					var timeout = null;
-					// Don't validate target property. It's mandatory so let the console notify the developer.
-					if ( ! data.hasOwnProperty( 'delay' ) ) {
-						data.delay = delay;
+				VAA_View_Admin_As.autoMaxHeight();
+			} );
+		} );
+
+		/**
+		 * @since  1.6.3  Toggle items on hover.
+		 * @since  1.7.3  Allow multiple targets + add delay option.
+         */
+		$( '[vaa-showhide]', $vaa ).each( function() {
+			var $this = $(this),
+				args = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-showhide') ),
+				delay = 200;
+			if ( 'object' !== typeof args ) {
+				args = { 0: { target: args, delay: delay } };
+			}
+			$.each( args, function( key, data ) {
+				var timeout = null;
+				// Don't validate target property. It's mandatory so let the console notify the developer.
+				if ( ! data.hasOwnProperty( 'delay' ) ) {
+					data.delay = delay;
+				}
+				var $target = $( data.target );
+				$target.hide();
+				$this.on( 'mouseenter', function() {
+					timeout = setTimeout( function() {
+						$target.slideDown('fast');
+					}, data.delay );
+				}).on( 'mouseleave', function() {
+					if ( timeout ) {
+						clearTimeout( timeout );
 					}
-					var $target = $( data.target );
-					$target.hide();
-					$this.on( 'mouseenter', function() {
-						timeout = setTimeout( function() {
-							$target.slideDown('fast');
-						}, data.delay );
-					}).on( 'mouseleave', function() {
-						if ( timeout ) {
-							clearTimeout( timeout );
-						}
-						$target.slideUp('fast');
-					} );
+					$target.slideUp('fast');
 				} );
 			} );
+		} );
 
-			// @since  1.7  Conditional items.
-			$( VAA_View_Admin_As.prefix + '[vaa-condition-target]' ).each( function() {
-				var $this    = $(this),
-					$target  = $( $this.attr( 'vaa-condition-target' ) ),
-					checkbox = ( 'checkbox' === $target.attr('type') ),
-					compare  = $this.attr( 'vaa-condition' );
-				if ( checkbox ) {
-					if ( 'undefined' !== typeof compare ) {
-						compare = Boolean( compare );
-					} else {
-						compare = true;
-					}
+		// @since  1.7  Conditional items.
+		$( '[vaa-condition-target]', $vaa ).each( function() {
+			var $this    = $(this),
+				$target  = $( $this.attr( 'vaa-condition-target' ) ),
+				checkbox = ( 'checkbox' === $target.attr('type') ),
+				compare  = $this.attr( 'vaa-condition' );
+			if ( checkbox ) {
+				if ( 'undefined' !== typeof compare ) {
+					compare = Boolean( compare );
+				} else {
+					compare = true;
 				}
-				function check_conditional() {
-					if ( checkbox && $target.is(':checked') ) {
-						if ( compare ) {
-							$this.slideDown('fast');
-						} else {
-							$this.slideUp('fast');
-						}
-					} else if ( ! checkbox && compare === $target.val() ) {
+			}
+			$this.hide();
+			$target.on( 'change', function() {
+
+				if ( checkbox && $target.is(':checked') ) {
+					if ( compare ) {
 						$this.slideDown('fast');
 					} else {
 						$this.slideUp('fast');
 					}
+				} else if ( ! checkbox && compare === $target.val() ) {
+					$this.slideDown('fast');
+				} else {
+					$this.slideUp('fast');
 				}
-				$this.hide();
-				check_conditional();
-				$target.on( 'change', function() {
-					check_conditional();
-					VAA_View_Admin_As.autoMaxHeight();
-				} );
+
+				VAA_View_Admin_As.autoMaxHeight();
+
+			} ).trigger('change'); // Trigger on load.
+		} );
+
+		// @since  1.7  Init mobile fixes.
+		if ( $body.hasClass('mobile') || 783 > $body.innerWidth() ) {
+			$body.addClass('vaa-mobile');
+			VAA_View_Admin_As._mobile = true;
+			VAA_View_Admin_As.init_touch();
+		}
+
+		// @since  1.7.1  Auto max height trigger.
+		VAA_View_Admin_As.maxHeightListenerElements.each( function() {
+			$(this).parents('.menupop').on( 'mouseenter', VAA_View_Admin_As.autoMaxHeight );
+		} );
+
+		// @since  1.7.4  Auto resizable.
+		$( '.vaa-resizable', $vaa ).each( function() {
+			var $this = $(this),
+				height = $this.css( 'max-height' );
+			$this.css( {
+				'max-height': 'none',
+				'height': height,
+				'resize': 'vertical'
 			} );
-
-			// @since  1.7  Init mobile fixes.
-			if ( $body.hasClass('mobile') || 783 > $body.innerWidth() ) {
-				$body.addClass('vaa-mobile');
-				VAA_View_Admin_As._mobile = true;
-				VAA_View_Admin_As.mobile();
-			}
-
-			// @since  1.7.1  Auto max height trigger.
-			VAA_View_Admin_As.maxHeightListenerElements.each( function() {
-				$(this).parents('.menupop').on( 'mouseenter', function() {
-					VAA_View_Admin_As.autoMaxHeight();
-				} );
-			} );
-
-			// @since  1.7.4  Auto resizable.
-			$( VAA_View_Admin_As.prefix + '.vaa-resizable' ).each( function() {
-				var $this = $( this ),
-					height = $this.css( 'max-height' );
-				$this.css( {
-					'max-height': 'none',
-					'height': height,
-					'resize': 'vertical'
-				} );
-			} );
-
-		} ); // End window.load.
+		} );
 
 		// Process reset.
 		$vaa.on( 'click touchend', '.vaa-reset-item > .ab-item', function( e ) {
@@ -285,7 +283,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( ! val ) {
 						val = $this.find('.vaa-view-data').attr('vaa-view-value');
 					}
-					view_data[ type ] = VAA_View_Admin_As.json_decode( val );
+					view_data[ type ] = VAA_View_Admin_As.maybe_json_decode( val );
 					view_data = ( 'object' === typeof view_data[ type ] ) ? view_data[ type ] : view_data;
 					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
@@ -304,11 +302,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
-	 * MOBILE INIT.
+	 * Initialize for touch devices.
 	 * @since   1.7
+	 * @since   1.7.5   Renamed from VAA_View_Admin_As.mobile()
 	 * @return  {void}  Nothing.
 	 */
-	VAA_View_Admin_As.mobile = function() {
+	VAA_View_Admin_As.init_touch = function() {
 		var $root = $( '.vaa-mobile ' + VAA_View_Admin_As.prefix );
 
 		// @since  1.7  Fix for clicking within sub secondary elements. Overwrites WP core 'hover' functionality.
@@ -716,7 +715,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}
 
 		// Maybe format JSON data.
-		content = VAA_View_Admin_As.json_decode( content );
+		content = VAA_View_Admin_As.maybe_json_decode( content );
 		if ( 'object' === typeof content ) {
 			content = JSON.stringify( content, null, '\t' );
 		}
@@ -746,7 +745,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		$( VAA_View_Admin_As.root + ' [vaa-auto-js]' ).each( function() {
 			var $this = $(this),
-				data = VAA_View_Admin_As.json_decode( $this.attr('vaa-auto-js') );
+				data = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-auto-js') );
 			if ( 'object' !== typeof data ) {
 				return;
 			}
@@ -998,7 +997,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 
 			return val;
-		}
+		};
 	};
 
 	/**
@@ -1029,18 +1028,18 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						} );
 						var role = $(this).parents('.vaa-role-item').children('.ab-item').attr('rel');
 						if ( false !== exists && exists.length ) {
-							exists.find('.user-role').text( exists.find('.user-role').text().replace(')', ', ' + role + ')') );
+							exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
 						} else {
 							$(this).clone()
 							       .appendTo( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
 							       .children('.ab-item')
-							       .append(' &nbsp; <span class="user-role">(' + role + ')</span>');
+							       .append( ' &nbsp; <span class="user-role">(' + role + ')</span>' );
 						}
 					}
 				} );
 				if ( '' === $.trim( $( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' ).html() ) ) {
 					$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
-						.append('<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>');
+						.append( '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>' );
 				}
 			}
 		} );
@@ -1123,13 +1122,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// Enlarge caps.
 		$root.on( 'click', '#open-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).addClass('fullPopupActive');
-			$( root_prefix + '-manager > .ab-sub-wrapper' ).addClass('fullPopup');
+			$(this).closest('.ab-sub-wrapper').addClass('fullPopup');
 			VAA_View_Admin_As.autoMaxHeight();
 		} );
 		// Undo enlarge caps.
 		$root.on( 'click', '#close-caps-popup', function() {
 			$( VAA_View_Admin_As.prefix ).removeClass('fullPopupActive');
-			$( root_prefix + '-manager > .ab-sub-wrapper' ).removeClass('fullPopup');
+			$(this).closest('.ab-sub-wrapper').removeClass('fullPopup');
 			VAA_View_Admin_As.autoMaxHeight();
 		} );
 
@@ -1353,7 +1352,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$.each( files, function( key, file ) {
 				var reader = new FileReader();
 				reader.onload = function() { //progressEvent
-					var content = VAA_View_Admin_As.json_decode( this.result );
+					var content = VAA_View_Admin_As.maybe_json_decode( this.result );
 					if ( 'object' === typeof content ) {
 						// Remove JSON format.
 						content = JSON.stringify( content );
@@ -1426,7 +1425,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 	// We require a nonce to use this plugin.
 	if ( VAA_View_Admin_As.hasOwnProperty( '_vaa_nonce' ) ) {
-		VAA_View_Admin_As.init();
+		$window.on( 'load', VAA_View_Admin_As.init );
 	}
 
 } ( jQuery ) );

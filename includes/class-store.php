@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.4
+ * @version 1.7.5
  * @uses    VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
@@ -167,9 +167,9 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		$this->curUserData = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
-		$this->set_optionData( get_option( $this->get_optionKey() ) );
+		$this->store_optionData( VAA_View_Admin_As::is_network_active() );
 		// Get database settings of the current user.
-		$this->set_userMeta( get_user_meta( $this->get_curUser()->ID, $this->get_userMetaKey(), true ) );
+		$this->store_userMeta( get_current_user_id() );
 
 		$done = true;
 	}
@@ -393,9 +393,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			 *
 			 * @since  1.6.3
 			 */
-			if ( is_multisite() && ! $is_superior_admin &&
-			     is_array( $super_admins ) && ! empty( $super_admins[0] )
-			) {
+			if ( is_multisite() && ! $is_superior_admin && ! empty( $super_admins[0] ) ) {
 				// Escape usernames just to be sure.
 				$super_admins = array_filter( $super_admins, 'validate_username' );
 				// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4.
@@ -448,7 +446,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			$users = $this->filter_sort_users_by_role( $users );
 		} // End if().
 
-		// @todo Maybe $userids isn't needed anymore
+		// @todo Remove $userids in 1.8
 		$userids = array();
 
 		foreach ( $users as $user_key => $user ) {
@@ -559,9 +557,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * Will validate the original user if it is the current user or no user ID is passed.
 	 * This can prevent invalid checks after a view is applied.
 	 *
+	 * @see     VAA_API::is_super_admin()
+	 * @internal
+	 *
 	 * @since   1.6.3
 	 * @since   1.7.3  Not static anymore.
-	 * @see     VAA_API::is_super_admin()
 	 * @access  public
 	 * @param   int  $user_id  (optional).
 	 * @return  bool
@@ -616,7 +616,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get view data (meta).
-	 * @todo    Remove in future.
+	 * @todo    Remove in 1.8.
 	 * @deprecated
 	 * @param   string  $key  Key for array.
 	 * @return  mixed
@@ -692,7 +692,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get available users.
-	 * @todo    Remove in future.
+	 * @todo    Remove in 1.8.
 	 * @deprecated
 	 * @param   string  $key  User key.
 	 * @return  string[]|string  Array of user display names or a single user display name.
@@ -729,6 +729,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get plugin version.
+	 * @todo    Move to API.
 	 * @return  string
 	 */
 	public function get_version() {
@@ -737,6 +738,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get plugin database version.
+	 * @todo    Move to API.
 	 * @return  string
 	 */
 	public function get_dbVersion() {
@@ -756,7 +758,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the view data.
-	 * @todo    Remove in future.
+	 * @todo    Remove in 1.8.
 	 * @deprecated
 	 * @param   mixed   $val     Value.
 	 * @param   string  $key     (optional) View key.
@@ -769,7 +771,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
-	 * Set view type data
+	 * Set view type data.
 	 *
 	 * @since   1.7
 	 * @param   string  $type
@@ -835,7 +837,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the available user display names.
-	 * @todo    Remove in future.
+	 * @todo    Remove in 1.8.
 	 * @deprecated
 	 * @param   array  $val  Array of available user ID's (key) and display names (value).
 	 * @return  void
@@ -882,7 +884,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the nonce.
-	 * Also sets a parsed version of the nonce with wp_create_nonce()
+	 * Also sets a parsed version of the nonce with wp_create_nonce().
 	 * @param   string  $val  Nonce.
 	 * @return  void
 	 */

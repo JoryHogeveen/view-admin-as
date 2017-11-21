@@ -16,10 +16,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5
- * @version 1.7.4
- * @uses    VAA_View_Admin_As_Form Extends class
+ * @version 1.7.5
+ * @uses    VAA_View_Admin_As_Base Extends class
  */
-final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
+final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 {
 	/**
 	 * The single instance of the class.
@@ -142,43 +142,94 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	/**
 	 * Get the toolbar title for the main VAA node.
 	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks (separate view classes).
+	 *
 	 * @since   1.7.2
 	 * @access  private
 	 * @see     VAA_View_Admin_As_Admin_Bar::admin_bar_menu()
 	 * @return  string
 	 */
 	private function get_admin_bar_menu_title() {
-		$title = __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
+		if ( ! $this->store->get_view() ) {
+			return __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
+		}
+
+		$title = array();
 
 		if ( $this->store->get_view( 'caps' ) ) {
-			$title = __( 'Modified view', VIEW_ADMIN_AS_DOMAIN );
+			$title[] = __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN );
 		}
+
 		if ( $this->store->get_view( 'role' ) ) {
-			$title = __( 'Viewing as role', VIEW_ADMIN_AS_DOMAIN ) . ': '
-			         . $this->store->get_rolenames( $this->store->get_view( 'role' ) );
+			$title[ __( 'Role', VIEW_ADMIN_AS_DOMAIN ) ] = $this->store->get_rolenames( $this->store->get_view( 'role' ) );
 		}
+
 		if ( $this->store->get_view( 'user' ) ) {
-			$selected_user_roles = array();
-			foreach ( $this->store->get_selectedUser()->roles as $role ) {
-				$selected_user_roles[] = $this->store->get_rolenames( $role );
+
+			$type = __( 'User', VIEW_ADMIN_AS_DOMAIN );
+			$title[ $type ] = $this->store->get_selectedUser()->data->display_name;
+
+			if ( ! $this->store->get_view( 'role' ) ) {
+				$selected_user_roles = array();
+				foreach ( $this->store->get_selectedUser()->roles as $role ) {
+					$selected_user_roles[] = $this->store->get_rolenames( $role );
+				}
+				$title[ $type ] .= ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 			}
-			$title = __( 'Viewing as user', VIEW_ADMIN_AS_DOMAIN ) . ': '
-			         . $this->store->get_selectedUser()->data->display_name
-			         . ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
 		}
+
 		if ( $this->store->get_view( 'visitor' ) ) {
-			$title = __( 'Viewing as site visitor', VIEW_ADMIN_AS_DOMAIN );
+			$title[] = __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		/**
-		 * Filter the text to show when a view is applied.
+		 * Filter what to show when a view is applied.
+		 *
+		 * @hooked  Core module priorities:
+		 * - group (Groups): 10
+		 * - rua_level (Restrict User Access): 10
+		 * - role defaults (appends an icon): 999
+		 *
+		 * @since  1.7.5  Renamed from `vaa_admin_bar_viewing_as_title`.
+		 * @param  array  $title   The current title.
+		 * @param  array  $view    The view data.
+		 * @return array|string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_titles', $title, (array) $this->store->get_view() );
+
+		if ( is_array( $title ) ) {
+			if ( 1 < count( $title ) ) {
+				// @todo Help icon for view info?
+				// Translators: Context is a list of view types. Not the verb.
+				$title = __( 'View', VIEW_ADMIN_AS_DOMAIN ) . ': ' . implode( ', ', $title );
+			} else {
+				$type = key( $title );
+				$name = reset( $title );
+				$title = __( 'Viewing as', VIEW_ADMIN_AS_DOMAIN );
+				if ( $type ) {
+					$title .= ' ' . $type;
+				}
+				$title .= ': ';
+				if ( $name ) {
+					$title .= $name;
+				}
+			}
+		}
+
+		/**
+		 * Filter what to show when a view is applied.
+		 * This filter is hooked after the initial parsing of view titles.
 		 *
 		 * @since  1.6
-		 * @param  string      $title   The current title.
-		 * @param  bool|array  $viewAs  The view data.
+		 * @since  1.7.5  Renamed from `vaa_admin_bar_viewing_as_title`.
+		 * @param  string  $title   The current title.
+		 * @param  string  $view    The view data.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_viewing_as_title', $title, $this->store->get_view() );
+		$title = apply_filters( 'vaa_admin_bar_title', $title, (array) $this->store->get_view() );
 
 		return $title;
 	}
@@ -197,20 +248,17 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 	public function admin_bar_menu( $admin_bar, $root = '' ) {
 
 		$icon = 'dashicons-hidden';
+		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
 
 		if ( $this->store->get_view() ) {
 			$icon = 'dashicons-visibility';
+			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		$title = $this->get_admin_bar_menu_title();
 
 		if ( empty( $root ) ) {
 			$root = self::$parent;
-		}
-
-		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
-		if ( $this->store->get_view() ) {
-			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		// Add menu item.
@@ -251,7 +299,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			$admin_bar->add_node( array(
 				'id'     => self::$root . '-reset',
 				'parent' => self::$root,
-				'title'  => self::do_button( array(
+				'title'  => VAA_View_Admin_As_Form::do_button( array(
 					'name'  => self::$root . '-' . $name,
 					'label' => __( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary',
@@ -295,7 +343,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root,
 			'parent' => self::$root,
-			'title'  => self::do_icon( 'dashicons-info' ) . __( 'Info', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-info' ) . __( 'Info', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -356,7 +404,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 				$admin_bar->add_node( array(
 					'parent' => $root . '-links',
 					'id'     => $root . '-' . $id,
-					'title'  => self::do_icon( $link['icon'] ) . $link['description'],
+					'title'  => VAA_View_Admin_As_Form::do_icon( $link['icon'] ) . $link['description'],
 					'href'   => esc_url( $link['url'] ),
 					'meta'   => array(
 						'class'  => 'auto-height vaa-has-icon',
@@ -396,7 +444,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root,
 			'parent' => self::$root,
-			'title'  => self::do_icon( 'dashicons-admin-settings' ) . __( 'Settings', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-settings' ) . __( 'Settings', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -462,7 +510,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-admin-plugins' ) . __( 'Modules', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-plugins' ) . __( 'Modules', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title', // ab-vaa-toggle active.
@@ -509,6 +557,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			return;
 		}
 
+		/**
+		 * Whether the capability manager should be loaded as a submenu from the title element or as a separate node below the title.
+		 * Default: true.
+		 * Useful if you have a plugin that adds another sub-node below the capability title.
+		 *
+		 * @since  1.7.5
+		 * @return bool
+		 */
+		$title_submenu = (bool) apply_filters( 'vaa_admin_bar_caps_do_title_submenu', true );
+
 		$main_root = self::$root;
 		$root = $main_root . '-caps';
 
@@ -519,13 +577,21 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 				'class' => 'ab-sub-secondary',
 			),
 		) );
+
+		$title_class = '';
+		if ( $title_submenu ) {
+			$title_class .= ( $this->store->get_view( 'caps' ) ) ? ' current' : '';
+		} else {
+			$title_class .= ' ab-vaa-toggle active';
+		}
+
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-forms' ) . __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-forms' ) . __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+				'class'    => 'vaa-has-icon ab-vaa-title' . $title_class,
 				'tabindex' => '0',
 			),
 		) );
@@ -542,35 +608,42 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		 */
 		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, $main_root );
 
-		$admin_bar->add_node( array(
-			'id'     => $root . '-manager',
-			'parent' => $root,
-			'title'  => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
-			'href'   => false,
-			'meta'   => array(
-				'class'    => ( $this->store->get_view( 'caps' ) ) ? 'current' : '',
-				'tabindex' => '0',
-			),
-		) );
+		if ( $title_submenu ) {
+			$admin_bar->add_group( array(
+				'id' => $root . '-manager',
+				'parent' => $root . '-title',
+			) );
+		} else {
+			$admin_bar->add_node( array(
+				'id'     => $root . '-manager',
+				'parent' => $root,
+				'title'  => __( 'Manager', VIEW_ADMIN_AS_DOMAIN ),
+				'href'   => false,
+				'meta'   => array(
+					'class'    => ( $this->store->get_view( 'caps' ) ) ? 'current' : '',
+					'tabindex' => '0',
+				),
+			) );
+		}
 
 		// Capabilities submenu.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-applycaps',
 			'parent' => $root . '-manager',
-			'title'  => self::do_button( array(
+			'title'  => VAA_View_Admin_As_Form::do_button( array(
 				'name'    => 'apply-caps-view',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
 			) )
-			. self::do_button( array(
+			. VAA_View_Admin_As_Form::do_button( array(
 				'name'    => 'close-caps-popup',
-				'label'   => self::do_icon( 'dashicons-editor-contract' ),
+				'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-editor-contract' ),
 				'class'   => 'button-secondary vaa-icon vaa-hide-responsive',
 				'element' => 'a',
 			) )
-			. self::do_button( array(
+			. VAA_View_Admin_As_Form::do_button( array(
 				'name'    => 'open-caps-popup',
-				'label'   => self::do_icon( 'dashicons-editor-expand' ),
+				'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-editor-expand' ),
 				'class'   => 'button-secondary vaa-icon vaa-hide-responsive',
 				'element' => 'a',
 			) ),
@@ -684,7 +757,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-groups' ) . __( 'Roles', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-groups' ) . __( 'Roles', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -752,7 +825,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-admin-users' ) . __( 'Users', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-users' ) . __( 'Users', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -776,8 +849,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 			$admin_bar->add_node( array(
 				'id'     => $root . '-searchusers',
 				'parent' => $root,
-				'title'  => self::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) )
-					. self::do_input( array(
+				'title'  => VAA_View_Admin_As_Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) )
+					. VAA_View_Admin_As_Form::do_input( array(
 						'name'        => $root . '-searchusers',
 						'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
 					) ),
@@ -843,8 +916,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Form
 		$admin_bar->add_node( array(
 			'id'     => $main_root . '-visitor-view',
 			'parent' => $root,
-			'title'  => self::do_icon( 'dashicons-universal-access' )
-			            . self::do_view_title( __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ), 'visitor', true ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-universal-access' )
+			            . VAA_View_Admin_As_Form::do_view_title( __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ), 'visitor', true ),
 			'href'   => '#',
 			'meta'   => array(
 				'title' => esc_attr__( 'View as site visitor', VIEW_ADMIN_AS_DOMAIN ),

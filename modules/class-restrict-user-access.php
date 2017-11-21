@@ -178,7 +178,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$this->selectedLevel     = $this->store->get_view( $this->viewKey );
 			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
 
-			add_filter( 'vaa_admin_bar_viewing_as_title', array( $this, 'vaa_viewing_as_title' ) );
+			add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
 
 			$this->vaa->view()->init_user_modifications();
 			add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
@@ -324,11 +324,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.6.4
+	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
 	 * @access  public
-	 * @param   string  $title  The current title.
-	 * @return  string
+	 * @param   array  $title  The current title(s).
+	 * @return  array
 	 */
-	public function vaa_viewing_as_title( $title ) {
+	public function vaa_admin_bar_view_titles( $title ) {
 
 		if ( $this->get_levels( $this->selectedLevel ) ) {
 
@@ -340,15 +341,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 				$view_label = $this->levelPostType->labels->name;
 			}
 
-			// Translators: %s stands for the view type label.
-			$title = sprintf( __( 'Viewing as %s', VIEW_ADMIN_AS_DOMAIN ), $view_label ) . ': ';
-			$title .= $this->get_levels( $this->selectedLevel )->post_title;
-			// Is there also a role selected?
-			if ( $this->store->get_view( 'role' ) && $this->store->get_roles( $this->store->get_view( 'role' ) ) ) {
-				$title .= ' <span class="user-role">('
-				          . $this->store->get_rolenames( $this->store->get_view( 'role' ) )
-				          . ')</span>';
-			}
+			$title[ $view_label ] = $this->get_levels( $this->selectedLevel )->post_title;
 		}
 		return $title;
 	}
@@ -394,7 +387,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-title',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) . $view_name,
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-network' ) . $view_name,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -420,7 +413,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-rua-levels',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Admin_Bar::do_icon( 'dashicons-admin-network' ) . $view_name,
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-network' ) . $view_name,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon',
@@ -455,12 +448,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->viewKey ) ) {
 				if ( VAA_API::is_current_view( $view_value, $this->viewKey ) ) {
-					// @todo Use is_current_view() from vaa controller?
+					$class .= ' current';
 					if ( 1 === count( $this->store->get_view() ) && empty( $role ) ) {
-						$class .= ' current';
+						// The node item is the only view and is not related to a role.
 						$href = false;
 					} elseif ( ! empty( $role ) && $role === $this->store->get_view( 'role' ) ) {
-						$class .= ' current';
+						// The node item is related to a role and that role is the current view.
 						$href = false;
 					}
 				} else {

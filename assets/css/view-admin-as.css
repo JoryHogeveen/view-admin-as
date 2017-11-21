@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1
- * @version 1.7.4
+ * @version 1.7.5
  * @preserve
  */
 
@@ -72,6 +72,8 @@
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item * {font-style: italic !important;}
 
+#wpadminbar #wp-admin-bar-vaa .ab-item code {font-family: Consolas, Monaco, monospace; background: rgba(0,0,0,0.1); padding: 1px 5px 2px; line-height: normal;}
+
 /* Semi transparent groups */
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent > * {opacity: 0.5; transition: opacity 0.2s;}
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent:hover > *,
@@ -104,10 +106,10 @@
 /* Descriptions */
 #wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .description:first-child:not(:only-child) {margin-bottom: 0;}
-#wpadminbar #wp-admin-bar-vaa .ab-item .description .ab-icon {line-height: 1; font-size: 1em; padding: 1px 0; margin-right: 3px;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description .ab-icon {line-height: 1 !important; font-size: 1em !important; padding: 1px 0; margin-right: 3px; width: auto; height: 1em;}
 
 /* First level group titles */
-#wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
+#wpadminbar #wp-admin-bar-vaa.menupop .ab-vaa-title > .ab-item {font-weight: bold; line-height: 26px; font-size: 1.1em; text-transform: uppercase;}
 
 /* Current view items */
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item,
@@ -118,6 +120,7 @@
 #wpadminbar #wp-admin-bar-vaa .current-parent > label {font-weight: bold;}
 #wpadminbar #wp-admin-bar-vaa .current > .ab-item::after,
 #wpadminbar #wp-admin-bar-vaa .current > label::after {content: '\f177'; font-family: 'dashicons'; margin: 0 5px; font-size: 17px; vertical-align: middle; font-weight: normal;}
+#wpadminbar #wp-admin-bar-vaa .current.ab-vaa-title > .ab-item::after {vertical-align: top;}
 
 /**
  * Icon fixes
@@ -355,7 +358,7 @@
 	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-hide-responsive {display: none;}
 
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper .ab-item.description,
-	#wpadminbar #wp-admin-bar-vaa .ab-item p.description {display: block !important; padding-left: 0; padding-right: 0;}
+	#wpadminbar #wp-admin-bar-vaa .ab-item p.description {display: block !important; padding-left: 0; padding-right: 0; margin-bottom: 0;}
 
 	/**
 	 * Help tooltip
@@ -391,6 +394,7 @@
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon .ab-item .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: text-top;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon > .ab-item > .ab-icon {font-size: 30px !important; margin-left: -6px; margin-top: -1px; vertical-align: top;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 12px; padding-right: 12px;}
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon.menupop > .ab-item {padding-left: 16px;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-menupop div li {margin-left: 12px;}
 
 	/**

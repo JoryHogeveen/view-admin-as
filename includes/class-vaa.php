@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.4
+ * @version 1.7.5
  */
 final class VAA_View_Admin_As
 {
@@ -437,6 +437,10 @@ final class VAA_View_Admin_As
 				'file'  => 'modules/class-role-manager.php',
 				'class' => 'VAA_View_Admin_As_Role_Manager',
 			),
+			'language_switcher' => array(
+				'file'  => 'modules/class-languages.php',
+				'class' => 'VAA_View_Admin_As_Languages',
+			),
 		);
 
 		if ( VAA_API::exists_callable( array( 'RUA_App', 'instance' ) ) ) {
@@ -562,7 +566,7 @@ final class VAA_View_Admin_As
 	 *     @type  string  $id        The module name, choose wisely since this is used for validation.
 	 *     @type  object  $instance  The module class reference/instance.
 	 * }
-	 * @return  bool
+	 * @return  bool  Successfully registered?
 	 */
 	public function register_module( $data ) {
 		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
@@ -718,6 +722,22 @@ final class VAA_View_Admin_As
 		}
 
 		return $valid;
+	}
+
+	/**
+	 * Is this plugin network enabled.
+	 *
+	 * @since   1.7.5
+	 * @return  bool
+	 */
+	public static function is_network_active() {
+		static $check;
+		if ( is_bool( $check ) ) {
+			return $check;
+		}
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		$check = (bool) is_plugin_active_for_network( VIEW_ADMIN_AS_BASENAME );
+		return $check;
 	}
 
 	/**

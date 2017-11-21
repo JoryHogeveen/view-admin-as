@@ -16,20 +16,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.4
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.7.5
  */
-class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
+class VAA_View_Admin_As_Form
 {
-	/**
-	 * The single instance of the class.
-	 *
-	 * @since  1.7.2
-	 * @static
-	 * @var    VAA_View_Admin_As_Form
-	 */
-	private static $_instance = null;
-
 	/**
 	 * Generate a view type title and it's view related data.
 	 * The data is used in javascript to switch a view.
@@ -82,7 +72,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
 		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : '';
-		$class = ( ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '' );
+		$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
 
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;
@@ -448,13 +438,15 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 	 * @since   1.6.1
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
+	 * @since   1.7.5  Third parameter: element type.
 	 * @static
 	 *
 	 * @param   string|array  $text  The description text. Also accepts an array with a `description` key.
 	 * @param   array         $attr  (optional) Extra attributes.
+	 * @param   string        $elem  (optional) HTML element type. Default: paragraph.
 	 * @return  string
 	 */
-	public static function do_description( $text, $attr = array() ) {
+	public static function do_description( $text, $attr = array(), $elem = 'p' ) {
 		if ( is_array( $text ) ) {
 			if ( empty( $text['description'] ) ) {
 				return '';
@@ -465,7 +457,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		}
 		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
 		$attr = self::parse_to_html_attr( $attr );
-		return '<p ' . $attr . '>' . $text . '</p>';
+		return '<' . $elem . ' ' . $attr . '>' . $text . '</' . $elem . '>';
 	}
 
 	/**
@@ -621,7 +613,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 			if ( is_numeric( $args['auto_showhide'] ) ) {
 				$trigger_target = wp_json_encode( array(
 					'target' => $trigger_target,
-					'delay' => $args['auto_showhide'],
+					'delay'  => $args['auto_showhide'],
 				) );
 			}
 			// Full data. Multiple targets allowed,
@@ -631,7 +623,7 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 		}
 
 		$trigger_attr = self::merge_attr( $trigger_attr, array(
-			'class' => 'ab-vaa-showhide',
+			'class'        => 'ab-vaa-showhide',
 			'vaa-showhide' => $trigger_target,
 		) );
 
@@ -695,25 +687,6 @@ class VAA_View_Admin_As_Form extends VAA_View_Admin_As_Base
 			$str = implode( ' ', $array );
 		}
 		return $str;
-	}
-
-	/**
-	 * Main Instance.
-	 *
-	 * Ensures only one instance of this class is loaded or can be loaded.
-	 *
-	 * @since   1.7.2
-	 * @access  public
-	 * @static
-	 *
-	 * @param   VAA_View_Admin_As  $caller  The referrer class
-	 * @return  $this  VAA_View_Admin_As_Form
-	 */
-	public static function get_instance( $caller = null ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $caller );
-		}
-		return self::$_instance;
 	}
 
 } // End class VAA_View_Admin_As_Form.
