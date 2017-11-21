@@ -205,9 +205,9 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 = 1.7.5 =
 
 *	**Feature:** Language switcher. [#81](https://github.com/JoryHogeveen/view-admin-as/issues/81)
-*	**Enhancement:** Store options in network site table instead of blog/site if it is network enabled.
+*	**Enhancement:** Store options network wide instead of per blog/site if network/multisite is enabled.
 *	**Enhancement:** Action links (no-JS) on frontend.
-*	**Enhancement:** Add filer `view_admin_as_freeze_locale` to overwrite user setting.
+*	**Enhancement:** Add filter `view_admin_as_freeze_locale` to overwrite user setting.
 *	**Fix:** JavaScript init on frontend.
 *	**UI:** Various minor enhancements.
 
