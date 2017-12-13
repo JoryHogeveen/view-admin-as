@@ -478,6 +478,12 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 				}
 			}
 
+			// @since  1.7.6  Remove users who are not allowed to be edited by this user.
+			if ( ! current_user_can( 'edit_user', $user->ID ) ) {
+				unset( $users[ $user_key ] );
+				continue;
+			}
+
 			// Add users who can't access this plugin to the users list.
 			$userids[ $user->ID ] = $user->display_name;
 		}
