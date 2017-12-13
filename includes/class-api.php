@@ -224,6 +224,24 @@ final class VAA_API
 	}
 
 	/**
+	 * Is the customizer admin container currently rendering?
+	 *
+	 * @since   1.7.6
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_customizer_admin() {
+
+		if ( is_customize_preview() && is_admin() ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Generate a VAA action link.
 	 *
 	 * @since   1.7

@@ -3,7 +3,7 @@
  * Add user setting items.
  *
  * @since    1.7.2
- * @version  1.7.4
+ * @version  1.7.6
  *
  * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string         $root       The current root item.
@@ -197,7 +197,7 @@ if ( isset( $this ) &&
 					'auto_js' => array(
 						'setting' => 'user_setting',
 						'key'     => 'hide_customizer',
-						'refresh' => false,
+						'refresh' => VAA_API::is_customizer_admin(),
 					),
 					'auto_showhide' => true,
 				)
