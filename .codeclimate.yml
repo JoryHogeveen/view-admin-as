@@ -2,43 +2,43 @@ version: "2"
 checks:
   argument-count:
     enabled: true
-     config:
+      config:
         threshold: 5
   complex-logic:
     enabled: true
-     config:
+      config:
         threshold: 4
   file-lines:
     enabled: true
-     config:
+      config:
         threshold: 1000
   method-complexity:
     enabled: true
-     config:
+      config:
         threshold: 50 # Only check extreme cases
   method-count: # Done in PHPMD
     enabled: false
-     config:
+      config:
         threshold: 20
   method-lines: # Done in PHPMD
     enabled: false
-     config:
+      config:
         threshold: 100
   nested-control-flow:
     enabled: true
-     config:
+      config:
         threshold: 4
   return-statements:
     enabled: true
-     config:
+      config:
         threshold: 4
   similar-code:
     enabled: false
-     config:
+      config:
         threshold: #language-specific defaults. overrides affect all languages.
   identical-code:
     enabled: true
-     config:
+      config:
         threshold: #language-specific defaults. overrides affect all languages.
 plugins:
   fixme:
