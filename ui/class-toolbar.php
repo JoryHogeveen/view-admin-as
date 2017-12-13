@@ -81,7 +81,8 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @return  void
 	 */
 	public function vaa_init() {
-		add_action( 'init', array( $this, 'vaa_toolbar_init' ) );
+		// @since  1.7.6  Changed hook from `init` to `wp_loaded` (later).
+		add_action( 'wp_loaded', array( $this, 'vaa_toolbar_init' ) );
 	}
 
 	/**
