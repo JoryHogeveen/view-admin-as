@@ -328,14 +328,14 @@
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps-popup:hover {cursor: pointer;}
 
 /**
- * Location: My Account;
+ * Location: My Account
  */
 #wpadminbar #wp-admin-bar-my-account-default {z-index: 999999;} /* Box shadow fix */
 #wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item .ab-label {line-height: 26px;}
 #wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item .ab-icon {top: 0;}
 
 /**
- * Our custom frontend toolbar
+ * Custom VAA toolbar
  */
 #vaa_toolbar #wpadminbar {position: fixed !important; width: auto; min-width: 0; right: 0; left: auto; border-radius: 0 0 0 5px;}
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {margin-left: 0;}
@@ -443,4 +443,9 @@
 	#wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {top: 9px; right: 11px;}
 
 	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper {margin: 6px 0;}
+
+	/**
+	 * Custom VAA toolbar
+	 */
+	#vaa_toolbar {display: none !important;}
 }
