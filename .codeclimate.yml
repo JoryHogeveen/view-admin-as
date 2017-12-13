@@ -1,15 +1,46 @@
----
-engines:
-  duplication:
+version: "2"
+checks:
+  argument-count:
     enabled: true
     config:
-      languages:
-        - javascript
-        - php
-    checks:
-      # Disable for now due to jQuery calls
-      Similar code:
-        enabled: false
+      threshold: 5
+  complex-logic:
+    enabled: true
+    config:
+      threshold: 4
+  file-lines:
+    enabled: true
+    config:
+      threshold: 1000
+  method-complexity:
+    enabled: true
+    config:
+      threshold: 50 # Only check extreme cases
+  method-count: # Done in PHPMD
+    enabled: false
+    config:
+      threshold: 20
+  method-lines: # Done in PHPMD
+    enabled: false
+    config:
+      threshold: 100
+  nested-control-flow:
+    enabled: true
+    config:
+      threshold: 4
+  return-statements:
+    enabled: true
+    config:
+      threshold: 4
+  similar-code:
+    enabled: false
+    config:
+      threshold: #language-specific defaults. overrides affect all languages.
+  identical-code:
+    enabled: true
+    config:
+      threshold: #language-specific defaults. overrides affect all languages.
+plugins:
   fixme:
     enabled: true
   csslint:
@@ -117,13 +148,8 @@ engines:
         enabled: false
       Generic WhiteSpace ScopeIndent IncorrectExact:
         enabled: false
-ratings:
-  paths:
-  - "**.css"
-  - "**.js"
-  - "**.php"
-exclude_paths:
-- tests/*
-- bin/*
+exclude_patterns:
+- "tests/*"
+- "bin/*"
 # Local
-- vendor/*
+- "vendor/*"
