@@ -99,13 +99,14 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	private $curUserData = array();
 
 	/**
-	 * Is the original current user a super admin?
+	 * Does the current user has full access to all features of this plugin?
 	 *
 	 * @since  1.6.3
 	 * @since  1.7.3  Not static anymore.
+	 * @since  1.7.6  Renamed from $isCurUserSuperAdmin
 	 * @var    bool
 	 */
-	private $isCurUserSuperAdmin = false;
+	private $curUserHasFullAccess = false;
 
 	/**
 	 * Selected view data as stored in the user meta.
@@ -163,7 +164,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Get the current user session (WP 4.0+).
 		$this->set_curUserSession( (string) wp_get_session_token() );
 
-		$this->isCurUserSuperAdmin = is_super_admin( $this->get_curUser()->ID );
+		$this->curUserHasFullAccess = (
+			is_super_admin( $this->get_curUser()->ID ) &&
+			user_can( $this->get_curUser(), 'edit_users' ) &&
+			user_can( $this->get_curUser(), 'edit_plugins' )
+		);
 		$this->curUserData = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
@@ -574,7 +579,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 */
 	public function is_super_admin( $user_id = null ) {
 		if ( null === $user_id || (int) get_current_user_id() === (int) $user_id ) {
-			return $this->isCurUserSuperAdmin;
+			return $this->curUserHasFullAccess;
 		}
 		return is_super_admin( $user_id );
 	}
