@@ -37,10 +37,14 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   int  $user_id  (optional) Default: current user.
+	 * @param   int|\WP_User  $user_id  (optional) Default: current user.
 	 * @return  bool
 	 */
 	public static function is_super_admin( $user_id = null ) {
+		if ( $user_id instanceof WP_User ) {
+			$user_id = $user_id->ID;
+		}
+
 		$store = view_admin_as()->store();
 		if ( $store ) {
 			return $store->is_super_admin( $user_id );
@@ -59,10 +63,13 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   int  $user_id  (optional) Default: current user.
+	 * @param   int|\WP_User  $user_id  (optional) Default: current user.
 	 * @return  bool
 	 */
 	public static function is_superior_admin( $user_id = null ) {
+		if ( $user_id instanceof WP_User ) {
+			$user_id = $user_id->ID;
+		}
 
 		// If it's the current user or null, don't pass the user ID to make sure we check the original user status.
 		$is_super_admin = self::is_super_admin(
