@@ -67,9 +67,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		self::$_instance = $this;
 		$this->vaa_store = view_admin_as()->store();
 
-		if ( ! is_admin() ) {
-			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-		}
+		add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 	}
 
 	/**
@@ -89,14 +87,20 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * Init function for the toolbar.
 	 *
 	 * @since   1.6
+	 * @since   1.6.2  Check for customizer preview.
+	 * @since   1.7.6  Add customizer support by only enabling it in the container, not the preview window.
 	 * @access  public
 	 * @return  void
 	 */
 	public function vaa_toolbar_init() {
+		// Stop if the admin bar is already showing or we're in the customizer preview window.
+		if ( is_admin_bar_showing() || ( ! is_admin() && is_customize_preview() ) ) {
+			return;
+		}
 
-		// @since  1.6.2  Check for customizer preview.
-		if ( ! is_admin_bar_showing() && ! is_customize_preview()
-		     && ( ! $this->vaa_store->get_userSettings( 'hide_front' ) || $this->vaa_store->get_view() )
+		if ( ( is_customize_preview() && ! $this->vaa_store->get_userSettings( 'hide_customizer' ) ) ||
+		     ( ! is_admin() && ! $this->vaa_store->get_userSettings( 'hide_front' ) ) ||
+		     $this->vaa_store->get_view()
 		) {
 
 			self::$showing = true;
@@ -105,6 +109,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 			wp_enqueue_style( 'admin-bar' );
 
 			add_action( 'wp_footer', array( $this, 'vaa_toolbar_render' ), 100 );
+			add_action( 'customize_controls_print_footer_scripts', array( $this, 'vaa_toolbar_render' ), 100 );
 		}
 	}
 
