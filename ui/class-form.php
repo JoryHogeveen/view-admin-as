@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.5
+ * @version 1.7.6
  */
 class VAA_View_Admin_As_Form
 {
@@ -390,7 +390,7 @@ class VAA_View_Admin_As_Form
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @since   1.7.3  Added third $content parameter.
-	 * @since   1.7.x  Support SVG and file icons + Base64 encoded strings (just like WP admin menu's).
+	 * @since   1.7.6  Support SVG and file icons + Base64 encoded strings (just like WP admin menu's).
 	 * @static
 	 *
 	 * @param   string  $icon     The icon class, file or base64 encoded string.
