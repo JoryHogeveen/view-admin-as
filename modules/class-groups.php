@@ -61,6 +61,16 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	private $groupsScreen = 'groups-admin';
 
 	/**
+	 * The view icon.
+	 *
+	 * @todo Check for `dashicons-itthinx-groups`: https://github.com/itthinx/groups/pull/61
+	 *
+	 * @since  1.7.6
+	 * @var    string
+	 */
+	private $icon = 'dashicons-image-filter';
+
+	/**
 	 * Populate the instance and validate Groups plugin.
 	 *
 	 * @since   1.7.2
@@ -93,6 +103,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 		$access_cap = ( defined( 'GROUPS_ADMINISTER_GROUPS' ) ) ? GROUPS_ADMINISTER_GROUPS : 'manage_options';
 
 		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
+
+			if ( defined( 'GROUPS_PLUGIN_URL' ) ) {
+				$this->icon = GROUPS_PLUGIN_URL . '/images/groups.png';
+			}
 
 			$this->vaa->register_module( array(
 				'id'       => $this->viewKey,
@@ -539,7 +553,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-image-filter dashicons-itthinx-groups' )
+			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon )
 			            . $this->translate_remote( 'Groups' ),
 			'href'   => false,
 			'meta'   => array(
