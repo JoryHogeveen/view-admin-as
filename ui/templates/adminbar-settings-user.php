@@ -178,6 +178,38 @@ if ( isset( $this ) &&
 	);
 
 	/**
+	 * hide_customizer setting.
+	 *
+	 * @since   1.7.6
+	 */
+	$admin_bar->add_node(
+		array(
+			'id'     => $root . '-hide-customizer',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_checkbox(
+				array(
+					'name'        => $root . '-hide-customizer',
+					'value'       => $this->store->get_userSettings( 'hide_customizer' ),
+					'compare'     => true,
+					'label'       => __( 'Hide on customizer', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Hide on customizer when no view is selected', VIEW_ADMIN_AS_DOMAIN ),
+					'help'        => true,
+					'auto_js' => array(
+						'setting' => 'user_setting',
+						'key'     => 'hide_customizer',
+						'refresh' => false,
+					),
+					'auto_showhide' => true,
+				)
+			),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
+			),
+		)
+	);
+
+	/**
 	 * freeze_locale setting.
 	 * Force own locale on view, WP 4.7+ only.
 	 *

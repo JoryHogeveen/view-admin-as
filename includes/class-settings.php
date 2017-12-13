@@ -184,6 +184,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 				'disable_super_admin' => true,
 				'force_group_users'   => false,
 				'freeze_locale'       => false,
+				'hide_customizer'     => false,
 				'hide_front'          => false,
 				'view_mode'           => 'browse',
 			);
@@ -192,6 +193,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 				'disable_super_admin' => array( true, false ),
 				'force_group_users'   => array( true, false ),
 				'freeze_locale'       => array( true, false ),
+				'hide_customizer'     => array( true, false ),
 				'hide_front'          => array( true, false ),
 				'view_mode'           => array( 'browse', 'single' ),
 			);
