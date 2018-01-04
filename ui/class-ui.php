@@ -249,8 +249,14 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 			return;
 		}
 
+		$request_uri = $_SERVER['REQUEST_URI'];
+		// Some plugins overwrite `REQUEST_URI` and set it to `ORIG_REQUEST_URI`.
+		if ( ! empty( $_SERVER['ORIG_REQUEST_URI'] ) ) {
+			$request_uri = $_SERVER['ORIG_REQUEST_URI'];
+		}
+
 		// Ensure we're using an absolute URL.
-		$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+		$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $request_uri );
 		$filtered_url = remove_query_arg( $removable_query_args, $current_url );
 		?>
 		<link id="wp-admin-canonical" rel="canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
