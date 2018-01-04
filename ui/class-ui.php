@@ -259,10 +259,10 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $request_uri );
 		$filtered_url = remove_query_arg( $removable_query_args, $current_url );
 		?>
-		<link id="wp-admin-canonical" rel="canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
+		<link id="wp-vaa-canonical" rel="canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
 		<script>
 			if ( window.history.replaceState ) {
-				window.history.replaceState( null, null, document.getElementById( 'wp-admin-canonical' ).href + window.location.hash );
+				window.history.replaceState( null, null, document.getElementById( 'wp-vaa-canonical' ).href + window.location.hash );
 			}
 		</script>
 		<?php
