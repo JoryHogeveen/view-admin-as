@@ -250,7 +250,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		}
 
 		$request_uri = $_SERVER['REQUEST_URI'];
-		// Some plugins overwrite `REQUEST_URI` and set it to `ORIG_REQUEST_URI`.
+		// @since  1.7.6  Some plugins overwrite `REQUEST_URI` and set it to `ORIG_REQUEST_URI`.
 		if ( ! empty( $_SERVER['ORIG_REQUEST_URI'] ) ) {
 			$request_uri = $_SERVER['ORIG_REQUEST_URI'];
 		}
