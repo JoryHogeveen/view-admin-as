@@ -512,18 +512,26 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   string  $role  The role name.
+	 * @param   string  $role             The role name.
+	 * @param   string  $migrate_to_role  Migrate users to a other role?
 	 * @return  bool|string
 	 */
-	public function delete_role( $role ) {
-		if ( $this->store->get_roles( $role ) ) {
-			if ( ! in_array( $role, $this->protected_roles, true ) ) {
-				remove_role( $role );
-				return true;
-			}
+	public function delete_role( $role, $migrate_to_role = '' ) {
+		if ( ! $this->store->get_roles( $role ) ) {
+			return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+		}
+		if ( in_array( $role, $this->protected_roles, true ) ) {
 			return __( 'This role cannot be removed', VIEW_ADMIN_AS_DOMAIN );
 		}
-		return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+		if ( $migrate_to_role ) {
+			$success = $this->migrate_users( $role, $migrate_to_role );
+			if ( true !== $success ) {
+				return $success;
+			}
+		}
+
+		remove_role( $role );
+		return true;
 	}
 
 	/**
