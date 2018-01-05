@@ -418,6 +418,45 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	}
 
 	/**
+	 * Migrate users from one role to another.
+	 *
+	 * @since   1.7.6
+	 * @access  public
+	 * @param   string  $role      The role name.
+	 * @param   string  $new_role  The new role name.
+	 * @return  bool
+	 */
+	public function migrate_users( $role, $new_role ) {
+
+		if ( $role === $new_role ) {
+			return __( 'Cannot migrate to the same role', VIEW_ADMIN_AS_DOMAIN );
+		}
+		if ( ! $this->store->get_roles( $role ) ) {
+			if ( get_role( $role ) ) {
+				return __( 'Migrate users to this role not allowed', VIEW_ADMIN_AS_DOMAIN );
+			}
+			return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+		}
+
+		/** @var \WP_User[] $users */
+		$users = get_users( array(
+			'role' => $role,
+		) );
+
+		if ( ! $users ) {
+			// No users found, no migration needed.
+			return true;
+		}
+
+		foreach ( $users as $user ) {
+			// See also: WP_User::set_role().
+			$user->add_role( $new_role );
+			$user->remove_role( $role );
+		}
+		return true;
+	}
+
+	/**
 	 * Clone a role.
 	 *
 	 * @since   1.7
