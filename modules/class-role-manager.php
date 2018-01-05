@@ -462,15 +462,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'role' => $role,
 		) );
 
-		if ( ! $users ) {
-			// No users found, no migration needed.
-			return true;
-		}
-
-		foreach ( $users as $user ) {
-			// See also: WP_User::set_role().
-			$user->add_role( $new_role );
-			$user->remove_role( $role );
+		if ( $users ) {
+			foreach ( $users as $user ) {
+				// See also: WP_User::set_role().
+				$user->add_role( $new_role );
+				$user->remove_role( $role );
+			}
 		}
 		return true;
 	}
