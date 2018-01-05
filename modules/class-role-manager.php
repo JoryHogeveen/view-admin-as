@@ -295,6 +295,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 						unset( $args[ $skip ] );
 					}
 					$success = call_user_func_array( array( $this, $val['callback'] ), $args );
+					if ( is_string( $success ) ) {
+						$success = array(
+							'success' => false,
+							'data' => $success,
+						);
+					}
 				}
 				// @todo Maybe allow more settings to be applied at the same time?
 				break;
