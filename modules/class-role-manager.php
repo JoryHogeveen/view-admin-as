@@ -250,37 +250,40 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'capabilities' => '' ),
 				'callback'   => 'save_role',
-				'skip_value' => '',
 			),
 			'save_role' => array(
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'capabilities' => '' ),
 				'callback'   => 'save_role',
-				'skip_value' => '',
 			),
 			'rename_role' => array(
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'new_name' => '' ),
 				'callback'   => 'rename_role',
-				'skip_value' => '',
 			),
 			'clone_role' => array(
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'new_role' => '' ),
 				'callback'   => 'clone_role',
-				'skip_value' => '',
 			),
 			'delete_role'    => array(
 				'validation' => 'is_array',
-				'values'     => array( 'role' => '', 'migrate' => false,'new_role' => '' ),
+				'values'     => array( 'role' => '', 'migrate' => false, 'new_role' => '' ),
+				'required'   => array( 'role' => '' ),
 				'callback'   => 'delete_role',
-				'skip_value' => 'migrate',
+				'combine_from' => 1,
 			),
 		);
 
 		foreach ( $options as $key => $val ) {
 			if ( VAA_API::array_has( $data, $key, array( 'validation' => $val['validation'] ) ) ) {
-				if ( 'is_array' === $val['validation'] && array_diff_key( $val['values'], $data[ $key ] ) ) {
+				$val = wp_parse_args( $val, array(
+					'combine_from' => null,
+				) );
+				if ( ! isset( $val['required'] ) ) {
+					$val['required'] = $val['values'];
+				}
+				if ( 'is_array' === $val['validation'] && array_diff_key( $val['required'], $data[ $key ] ) ) {
 					$success = array(
 						'success' => false,
 						'data' => __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ),
@@ -291,8 +294,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 						// Make sure the arguments are in the right order.
 						$args = array_merge( $val['values'], $args );
 					}
-					foreach ( (array) $val['skip_value'] as $skip ) {
-						unset( $args[ $skip ] );
+					if ( is_numeric( $val['combine_from'] ) ) {
+						$combine = array_splice( $args, $val['combine_from'] );
+						$args[ $val['combine_from'] ] = $combine;
 					}
 					$success = call_user_func_array( array( $this, $val['callback'] ), $args );
 					if ( is_string( $success ) ) {
@@ -538,6 +542,17 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		}
 		if ( in_array( $role, $this->protected_roles, true ) ) {
 			return __( 'This role cannot be removed', VIEW_ADMIN_AS_DOMAIN );
+		}
+		if ( is_array( $migrate_to_role ) ) {
+			$migrate_to_role = wp_parse_args( $migrate_to_role, array(
+				'migrate' => false,
+				'new_role' => '',
+			) );
+			if ( $migrate_to_role['migrate'] ) {
+				$migrate_to_role = $migrate_to_role['new_role'];
+			} else {
+				$migrate_to_role = false;
+			}
 		}
 		if ( $migrate_to_role ) {
 			$success = $this->migrate_users( $role, $migrate_to_role );
