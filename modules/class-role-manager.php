@@ -1286,7 +1286,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		/**
 		 * @since  1.7  Delete role.
 		 */
-		$role_select_options = array_diff_key( $role_select_options, $this->protected_roles );
+		$role_delete_options = array_diff_key( $role_select_options, $this->protected_roles );
 		$admin_bar->add_group( array(
 			'id'     => $root . '-delete',
 			'parent' => $root,
@@ -1310,9 +1310,37 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'title'  => VAA_View_Admin_As_Form::do_select(
 				array(
 					'name'   => $root . '-delete-select',
-					'values' => $role_select_options,
+					'values' => $role_delete_options,
 				)
 			),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-select select-role',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-delete-migrate',
+			'parent' => $root . '-delete',
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+				'name'        => $root . '-delete-migrate',
+				'label'       => __( 'Migrate users to role', VIEW_ADMIN_AS_DOMAIN ),
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-delete-migrate-select',
+			'parent' => $root . '-delete',
+			'title'  => VAA_View_Admin_As_Form::do_select( array(
+				'name'   => $root . '-delete-migrate-select',
+				'values' => $role_select_options,
+				'attr'   => array(
+					'vaa-condition'        => true,
+					'vaa-condition-target' => '#' . $root . '-delete-migrate',
+				),
+			) ),
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'ab-vaa-select select-role',
