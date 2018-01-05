@@ -250,25 +250,31 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'capabilities' => '' ),
 				'callback'   => 'save_role',
+				'skip_value' => '',
 			),
 			'save_role' => array(
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'capabilities' => '' ),
 				'callback'   => 'save_role',
+				'skip_value' => '',
 			),
 			'rename_role' => array(
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'new_name' => '' ),
 				'callback'   => 'rename_role',
+				'skip_value' => '',
 			),
 			'clone_role' => array(
 				'validation' => 'is_array',
 				'values'     => array( 'role' => '', 'new_role' => '' ),
 				'callback'   => 'clone_role',
+				'skip_value' => '',
 			),
 			'delete_role'    => array(
-				'validation' => 'is_string',
+				'validation' => 'is_array',
+				'values'     => array( 'role' => '', 'migrate' => false,'new_role' => '' ),
 				'callback'   => 'delete_role',
+				'skip_value' => 'migrate',
 			),
 		);
 
@@ -284,6 +290,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					if ( VAA_API::array_has( $val, 'values', array( 'validation' => 'is_array' ) ) ) {
 						// Make sure the arguments are in the right order.
 						$args = array_merge( $val['values'], $args );
+					}
+					foreach ( (array) $val['skip_value'] as $skip ) {
+						unset( $args[ $skip ] );
 					}
 					$success = call_user_func_array( array( $this, $val['callback'] ), $args );
 				}
