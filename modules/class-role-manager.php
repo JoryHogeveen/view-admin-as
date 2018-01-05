@@ -478,6 +478,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Rename a role.
 	 *
+	 * @todo Check https://core.trac.wordpress.org/ticket/40320.
+	 *
 	 * @since   1.7
 	 * @access  public
 	 * @param   string  $role      The source role slug/ID.
@@ -489,7 +491,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		// Do not use WP's get_role() because one can only clone a role it's allowed to see.
 		$role = $this->store->get_roles( $role );
 		if ( $role ) {
-			// @todo Check https://core.trac.wordpress.org/ticket/40320.
 			$new_name = self::sanitize_role_name( $new_name );
 
 			if ( empty( $new_name ) ) {
