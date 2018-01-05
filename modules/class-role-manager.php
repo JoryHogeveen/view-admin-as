@@ -451,11 +451,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			return __( 'Cannot migrate to the same role', VIEW_ADMIN_AS_DOMAIN );
 		}
 		if ( ! $this->store->get_roles( $role ) || ! $this->store->get_roles( $new_role ) ) {
-			if ( get_role( $role ) ) {
-				return __( 'Migrate users from this role not allowed', VIEW_ADMIN_AS_DOMAIN );
-			}
-			if ( get_role( $new_role ) ) {
-				return __( 'Migrate users to this role not allowed', VIEW_ADMIN_AS_DOMAIN );
+			if ( get_role( $role ) || get_role( $new_role ) ) {
+				return __( 'Migrate users not allowed', VIEW_ADMIN_AS_DOMAIN );
 			}
 			return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
 		}
