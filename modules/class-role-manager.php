@@ -15,6 +15,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * Disable some PHPMD checks for this class.
  * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @todo Refactor to enable above checks?
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
