@@ -183,13 +183,13 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 		$this->assertEquals( true, $result );
 
 		$editor = get_role( 'editor' );
-		// The editor should not exist anymore.
+		// The editor name should be the new name.
 		$this->assertEquals( $editor->name, $rename );
 
 		// Revert change.
 		$class->rename_role( 'editor', 'Editor' );
 		$editor = get_role( 'editor' );
-		// The editor should not exist anymore.
+		// Verify that the role is renamed.
 		$this->assertEquals( $editor->name, 'Editor' );
 
 	}
@@ -228,6 +228,62 @@ class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
 		$this->assertEquals( true, $result );
 
 		$result = $class->delete_role( 'test_clone' );
+		$this->assertEquals( true, $result );
+
+		// Load all roles again after removal.
+		VAA_UnitTest_Factory::vaa_reinit();
+	}
+
+	/**
+	 * Test migrate users
+	 * @see VAA_View_Admin_As_Role_Manager::save_role()
+	 * @see VAA_View_Admin_As_Role_Manager::migrate_users()
+	 * @todo Test the actual user roles.
+	 */
+	function test_migrate_users() {
+		$class = self::get_instance();
+
+		$dummy_role = 'Test Migrate';
+		$class->save_role( $dummy_role, array( 'read' ) );
+
+		// Load all roles again after removal.
+		VAA_UnitTest_Factory::vaa_reinit();
+
+		$dummy_role = get_role( 'test_migrate' );
+		// Check if the role exists.
+		$this->assertNotEquals( null, $dummy_role );
+
+		/**
+		 * Incorrect.
+		 */
+		$result = $class->delete_role( 'editor', 'non_existing_role' );
+		// We expect an error string.
+		$this->assertNotEquals( true, $result );
+
+		$result = $class->delete_role( 'editor', 'editor' );
+		// We expect an error string.
+		$this->assertNotEquals( true, $result );
+
+		/**
+		 * Correct.
+		 */
+		$editor = get_role( 'editor' );
+
+		$result = $class->delete_role( 'editor', 'test_migrate' );
+		// Should be ok!
+		$this->assertEquals( true, $result );
+
+		/**
+		 * Revert
+		 */
+		$class->save_role( $editor->name, $editor->capabilities );
+
+
+		$result = $class->delete_role( 'test_migrate', array(
+			'migrate' => true,
+			'new_role' => 'editor',
+		) );
+		// Should be ok!
 		$this->assertEquals( true, $result );
 
 		// Load all roles again after removal.
