@@ -1358,9 +1358,21 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'key'     => 'delete_role',
 					'confirm' => true,
 					'refresh' => true,
-					'value'   => array(
-						'element' => '#wp-admin-bar-' . $root . '-delete-select select#' . $root . '-delete-select',
-						'parser'  => '', // Default.
+					'values'  => array(
+						'role' => array(
+							'element' => '#wp-admin-bar-' . $root . '-delete-select select#' . $root . '-delete-select',
+							'parser'  => '', // Default.
+						),
+						'migrate' => array(
+							'element'  => '#wp-admin-bar-' . $root . '-delete-migrate input#' . $root . '-delete-migrate',
+							'parser'   => '', // Default.
+							'required' => false,
+						),
+						'new_role' => array(
+							'element'  => '#wp-admin-bar-' . $root . '-delete-migrate-select select#' . $root . '-delete-migrate-select',
+							'parser'   => '', // Default.
+							'required' => false,
+						),
 					),
 				),
 			) ),
