@@ -469,16 +469,13 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 				 * @see    is_super_admin() >> wp-includes/capabilities.php
 				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
 				 */
-				if ( is_multisite() && in_array( $user->user_login, (array) $super_admins, true ) ) {
-					// Remove super admins for multisites.
-					unset( $users[ $user_key ] );
-					continue;
-				} elseif ( ! is_multisite() && $user->has_cap( 'administrator' ) ) {
-					// Remove regular admins for normal installs.
-					unset( $users[ $user_key ] );
-					continue;
-				} elseif ( ! $is_super_admin && $user->has_cap( 'view_admin_as' ) ) {
-					// Remove users who can access this plugin for non-admin users with the view_admin_as capability.
+				if ( // Remove super admins for multisites.
+				     ( is_multisite() && in_array( $user->user_login, (array) $super_admins, true ) ) ||
+				     // Remove regular admins for normal installs.
+				     ( ! is_multisite() && $user->has_cap( 'administrator' ) ) ||
+				     // Remove users who can access this plugin for non-admin users with the view_admin_as capability.
+				     ( ! $is_super_admin && $user->has_cap( 'view_admin_as' ) )
+				) {
 					unset( $users[ $user_key ] );
 					continue;
 				}
