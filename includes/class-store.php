@@ -168,7 +168,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			is_super_admin( $this->get_curUser()->ID ) &&
 			// @since  1.7.6  For single installations is_super_admin() isn't enough since it only checks for `delete_users`.
 			user_can( $this->get_curUser(), 'edit_users' ) &&
-			user_can( $this->get_curUser(), 'edit_plugins' )
+			user_can( $this->get_curUser(), 'delete_plugins' )
 		);
 		$this->curUserData = get_object_vars( $this->get_curUser() );
 
