@@ -15,12 +15,13 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * Disable some PHPMD checks for this class.
  * @SuppressWarnings(PHPMD.ExcessiveClassLength)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @todo Refactor to enable above checks?
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.4
+ * @version 1.7.6
  * @uses    VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
@@ -267,14 +268,23 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'callback'   => 'clone_role',
 			),
 			'delete_role'    => array(
-				'validation' => 'is_string',
+				'validation' => 'is_array',
+				'values'     => array( 'role' => '', 'migrate' => false, 'new_role' => '' ),
+				'required'   => array( 'role' => '' ),
 				'callback'   => 'delete_role',
+				'combine_from' => 1,
 			),
 		);
 
 		foreach ( $options as $key => $val ) {
 			if ( VAA_API::array_has( $data, $key, array( 'validation' => $val['validation'] ) ) ) {
-				if ( 'is_array' === $val['validation'] && array_diff_key( $val['values'], $data[ $key ] ) ) {
+				$val = wp_parse_args( $val, array(
+					'combine_from' => null,
+				) );
+				if ( ! isset( $val['required'] ) ) {
+					$val['required'] = $val['values'];
+				}
+				if ( 'is_array' === $val['validation'] && array_diff_key( $val['required'], $data[ $key ] ) ) {
 					$success = array(
 						'success' => false,
 						'data' => __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ),
@@ -285,7 +295,17 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 						// Make sure the arguments are in the right order.
 						$args = array_merge( $val['values'], $args );
 					}
+					if ( is_numeric( $val['combine_from'] ) ) {
+						$combine = array_splice( $args, $val['combine_from'] );
+						$args[ $val['combine_from'] ] = $combine;
+					}
 					$success = call_user_func_array( array( $this, $val['callback'] ), $args );
+					if ( is_string( $success ) ) {
+						$success = array(
+							'success' => false,
+							'data' => $success,
+						);
+					}
 				}
 				// @todo Maybe allow more settings to be applied at the same time?
 				break;
@@ -418,6 +438,42 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	}
 
 	/**
+	 * Migrate users from one role to another.
+	 *
+	 * @since   1.7.6
+	 * @access  public
+	 * @param   string  $role      The role name.
+	 * @param   string  $new_role  The new role name.
+	 * @return  bool
+	 */
+	public function migrate_users( $role, $new_role ) {
+
+		if ( $role === $new_role ) {
+			return __( 'Cannot migrate to the same role', VIEW_ADMIN_AS_DOMAIN );
+		}
+		if ( ! $this->store->get_roles( $role ) || ! $this->store->get_roles( $new_role ) ) {
+			if ( get_role( $role ) || get_role( $new_role ) ) {
+				return __( 'Migrate users not allowed', VIEW_ADMIN_AS_DOMAIN );
+			}
+			return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+		}
+
+		/** @var \WP_User[] $users */
+		$users = get_users( array(
+			'role' => $role,
+		) );
+
+		if ( $users ) {
+			foreach ( $users as $user ) {
+				// See also: WP_User::set_role().
+				$user->add_role( $new_role );
+				$user->remove_role( $role );
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * Clone a role.
 	 *
 	 * @since   1.7
@@ -439,6 +495,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	/**
 	 * Rename a role.
 	 *
+	 * @todo Check https://core.trac.wordpress.org/ticket/40320.
+	 *
 	 * @since   1.7
 	 * @access  public
 	 * @param   string  $role      The source role slug/ID.
@@ -450,7 +508,6 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		// Do not use WP's get_role() because one can only clone a role it's allowed to see.
 		$role = $this->store->get_roles( $role );
 		if ( $role ) {
-			// @todo Check https://core.trac.wordpress.org/ticket/40320.
 			$new_name = self::sanitize_role_name( $new_name );
 
 			if ( empty( $new_name ) ) {
@@ -473,18 +530,37 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   string  $role  The role name.
+	 * @param   string  $role             The role name.
+	 * @param   string  $migrate_to_role  Migrate users to a other role?
 	 * @return  bool|string
 	 */
-	public function delete_role( $role ) {
-		if ( $this->store->get_roles( $role ) ) {
-			if ( ! in_array( $role, $this->protected_roles, true ) ) {
-				remove_role( $role );
-				return true;
-			}
+	public function delete_role( $role, $migrate_to_role = '' ) {
+		if ( ! $this->store->get_roles( $role ) ) {
+			return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+		}
+		if ( in_array( $role, $this->protected_roles, true ) ) {
 			return __( 'This role cannot be removed', VIEW_ADMIN_AS_DOMAIN );
 		}
-		return __( 'Role not found', VIEW_ADMIN_AS_DOMAIN );
+		if ( is_array( $migrate_to_role ) ) {
+			$migrate_to_role = wp_parse_args( $migrate_to_role, array(
+				'migrate' => false,
+				'new_role' => '',
+			) );
+			if ( $migrate_to_role['migrate'] ) {
+				$migrate_to_role = $migrate_to_role['new_role'];
+			} else {
+				$migrate_to_role = false;
+			}
+		}
+		if ( $migrate_to_role ) {
+			$success = $this->migrate_users( $role, $migrate_to_role );
+			if ( true !== $success ) {
+				return $success;
+			}
+		}
+
+		remove_role( $role );
+		return true;
 	}
 
 	/**
@@ -1239,7 +1315,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		/**
 		 * @since  1.7  Delete role.
 		 */
-		$role_select_options = array_diff_key( $role_select_options, $this->protected_roles );
+		$role_delete_options = array_diff_key( $role_select_options, $this->protected_roles );
 		$admin_bar->add_group( array(
 			'id'     => $root . '-delete',
 			'parent' => $root,
@@ -1263,9 +1339,37 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'title'  => VAA_View_Admin_As_Form::do_select(
 				array(
 					'name'   => $root . '-delete-select',
-					'values' => $role_select_options,
+					'values' => $role_delete_options,
 				)
 			),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'ab-vaa-select select-role',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-delete-migrate',
+			'parent' => $root . '-delete',
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+				'name'        => $root . '-delete-migrate',
+				'label'       => __( 'Migrate users to role', VIEW_ADMIN_AS_DOMAIN ),
+			) ),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
+			),
+		) );
+		$admin_bar->add_node( array(
+			'id'     => $root . '-delete-migrate-select',
+			'parent' => $root . '-delete',
+			'title'  => VAA_View_Admin_As_Form::do_select( array(
+				'name'   => $root . '-delete-migrate-select',
+				'values' => $role_select_options,
+				'attr'   => array(
+					'vaa-condition'        => true,
+					'vaa-condition-target' => '#' . $root . '-delete-migrate',
+				),
+			) ),
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'ab-vaa-select select-role',
@@ -1283,9 +1387,21 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'key'     => 'delete_role',
 					'confirm' => true,
 					'refresh' => true,
-					'value'   => array(
-						'element' => '#wp-admin-bar-' . $root . '-delete-select select#' . $root . '-delete-select',
-						'parser'  => '', // Default.
+					'values'  => array(
+						'role' => array(
+							'element' => '#wp-admin-bar-' . $root . '-delete-select select#' . $root . '-delete-select',
+							'parser'  => '', // Default.
+						),
+						'migrate' => array(
+							'element'  => '#wp-admin-bar-' . $root . '-delete-migrate input#' . $root . '-delete-migrate',
+							'parser'   => '', // Default.
+							'required' => false,
+						),
+						'new_role' => array(
+							'element'  => '#wp-admin-bar-' . $root . '-delete-migrate-select select#' . $root . '-delete-migrate-select',
+							'parser'   => '', // Default.
+							'required' => false,
+						),
 					),
 				),
 			) ),

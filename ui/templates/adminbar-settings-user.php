@@ -3,7 +3,7 @@
  * Add user setting items.
  *
  * @since    1.7.2
- * @version  1.7.4
+ * @version  1.7.6
  *
  * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string         $root       The current root item.
@@ -166,6 +166,38 @@ if ( isset( $this ) &&
 						'setting' => 'user_setting',
 						'key'     => 'hide_front',
 						'refresh' => false,
+					),
+					'auto_showhide' => true,
+				)
+			),
+			'href'   => false,
+			'meta'   => array(
+				'class' => 'auto-height',
+			),
+		)
+	);
+
+	/**
+	 * hide_customizer setting.
+	 *
+	 * @since   1.7.6
+	 */
+	$admin_bar->add_node(
+		array(
+			'id'     => $root . '-hide-customizer',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_checkbox(
+				array(
+					'name'        => $root . '-hide-customizer',
+					'value'       => $this->store->get_userSettings( 'hide_customizer' ),
+					'compare'     => true,
+					'label'       => __( 'Hide on customizer', VIEW_ADMIN_AS_DOMAIN ),
+					'description' => __( 'Hide on customizer when no view is selected', VIEW_ADMIN_AS_DOMAIN ),
+					'help'        => true,
+					'auto_js' => array(
+						'setting' => 'user_setting',
+						'key'     => 'hide_customizer',
+						'refresh' => VAA_API::is_customizer_admin(),
 					),
 					'auto_showhide' => true,
 				)

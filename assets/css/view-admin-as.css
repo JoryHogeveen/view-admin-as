@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1
- * @version 1.7.5
+ * @version 1.7.6
  * @preserve
  */
 
@@ -67,12 +67,20 @@
 #wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-item > span {line-height: 26px;}
 #wpadminbar #wp-admin-bar-vaa .ab-item > span.remove {font-size: 16px; line-height: 16px; top: 1px;}
 
+#wpadminbar #wp-admin-bar-vaa b,
+#wpadminbar #wp-admin-bar-vaa strong,
+#wpadminbar #wp-admin-bar-vaa .ab-item.ab-bold,
+#wpadminbar #wp-admin-bar-vaa .ab-item .ab-bold,
 #wpadminbar #wp-admin-bar-vaa .ab-bold > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-bold > .ab-item * {font-weight: bold !important;}
+#wpadminbar #wp-admin-bar-vaa i,
+#wpadminbar #wp-admin-bar-vaa em,
+#wpadminbar #wp-admin-bar-vaa .ab-item.ab-italic,
+#wpadminbar #wp-admin-bar-vaa .ab-item .ab-italic,
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item * {font-style: italic !important;}
 
-#wpadminbar #wp-admin-bar-vaa .ab-item code {font-family: Consolas, Monaco, monospace; background: rgba(0,0,0,0.1); padding: 1px 5px 2px; line-height: normal;}
+#wpadminbar #wp-admin-bar-vaa code {font-family: Consolas, Monaco, monospace; background: rgba(0,0,0,0.1); padding: 1px 5px 2px; line-height: normal;}
 
 /* Semi transparent groups */
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent > * {opacity: 0.5; transition: opacity 0.2s;}
@@ -129,6 +137,13 @@
 #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {top: 2px;}
 #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-label {float: left;} /* IE fix */
 #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-label .ab-icon {margin-right: -3px;}
+#wpadminbar #wp-admin-bar-vaa .ab-icon.vaa-icon-image {
+	width: 16px;
+	height: 16px;
+	background-size: 100% auto !important;
+	background: center left no-repeat;
+	display: inline-block;
+}
 
 #wpadminbar > #wp-toolbar > #wp-admin-bar-root-default #wp-admin-bar-vaa .vaa-has-icon > .ab-item > .ab-icon, /* Fix when located on admin bar default */
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item .ab-icon {
@@ -142,6 +157,7 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before {display: none;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 10px; padding-right: 10px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon {font-size: 18px; line-height: 20px; margin: 0 5px 0 -1px;}
+#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon.vaa-icon-image {width: 18px; height: 18px;}
 
 /* Subgroups with icons */
 #wpadminbar .ab-top-secondary .menupop .vaa-menupop > .ab-item {padding-left: 2em; padding-right: 1em;}
@@ -298,9 +314,7 @@
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup .ab-item {display: block;}
 #wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul::after {display: table; clear: both; content: ' ';}
 
-/**
- * Capability nodes
- */
+/* Capability nodes */
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #apply-caps-view {float: left; margin-right: 5px;}
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #reset-caps-view,
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps #open-caps-popup,
@@ -314,14 +328,14 @@
 #wpadminbar #wp-admin-bar-vaa #wp-admin-bar-vaa-caps-popup:hover {cursor: pointer;}
 
 /**
- * Location: My Account;
+ * Location: My Account
  */
 #wpadminbar #wp-admin-bar-my-account-default {z-index: 999999;} /* Box shadow fix */
 #wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item .ab-label {line-height: 26px;}
 #wpadminbar #wp-admin-bar-my-account #wp-admin-bar-vaa > .ab-item .ab-icon {top: 0;}
 
 /**
- * Our custom frontend toolbar
+ * Custom VAA toolbar
  */
 #vaa_toolbar #wpadminbar {position: fixed !important; width: auto; min-width: 0; right: 0; left: auto; border-radius: 0 0 0 5px;}
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa > .ab-item .ab-icon {margin-left: 0;}
@@ -392,7 +406,9 @@
 	#wpadminbar #wp-admin-bar-vaa .menupop > .ab-sub-wrapper:last-child .ab-item.description {margin-bottom: 0;}
 	#wpadminbar #wp-admin-bar-vaa .ab-item > span.remove,
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon .ab-item .ab-icon {width: auto; height: auto; font-size: 22px !important; margin-right: 10px; vertical-align: text-top;}
+	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon .ab-item .ab-icon.vaa-icon-image {width: 22px; height: 22px;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon > .ab-item > .ab-icon {font-size: 30px !important; margin-left: -6px; margin-top: -1px; vertical-align: top;}
+	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon > .ab-item > .ab-icon.vaa-icon-image {width: 30px; height: 30px;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 12px; padding-right: 12px;}
 	#wpadminbar #wp-admin-bar-vaa .ab-vaa-title.vaa-has-icon.menupop > .ab-item {padding-left: 16px;}
 	#wpadminbar #wp-admin-bar-vaa .vaa-menupop div li {margin-left: 12px;}
@@ -427,4 +443,9 @@
 	#wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {top: 9px; right: 11px;}
 
 	#wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper {margin: 6px 0;}
+
+	/**
+	 * Custom VAA toolbar
+	 */
+	#vaa_toolbar {display: none !important;}
 }
