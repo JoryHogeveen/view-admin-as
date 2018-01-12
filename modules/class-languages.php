@@ -98,14 +98,14 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
+		$this->add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
 
-		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 3, 2 );
+		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 3, 2 );
 
-		add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
-		add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
+		$this->add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
+		$this->add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
 
-		add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
+		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 	}
 
 	/**
@@ -120,13 +120,13 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 
 			$this->selectedLanguage = $this->store->get_view( $this->viewKey );
 
-			add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
+			$this->add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
 
-			add_filter( 'locale', array( $this, 'filter_locale' ) );
-			add_action( 'after_setup_theme', array( $this, 'action_switch_to_locale' ), 0 );
+			$this->add_filter( 'locale', array( $this, 'filter_locale' ) );
+			$this->add_action( 'after_setup_theme', array( $this, 'action_switch_to_locale' ), 0 );
 
 			// Overwrite user setting for freeze locale.
-			add_filter( 'view_admin_as_freeze_locale', '__return_false', 99 );
+			$this->add_filter( 'view_admin_as_freeze_locale', '__return_false', 99 );
 		}
 	}
 

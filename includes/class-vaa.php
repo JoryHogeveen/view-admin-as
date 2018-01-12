@@ -123,10 +123,10 @@ final class VAA_View_Admin_As
 	 * Private to make sure it isn't declared elsewhere.
 	 *
 	 * @since   0.1
-	 * @since   1.3.3   changes init hook to plugins_loaded for theme compatibility.
-	 * @since   1.4.1   creates instance.
-	 * @since   1.5     make private.
-	 * @since   1.5.1   added notice on class name conflict + validate versions.
+	 * @since   1.3.3   Changes init hook to plugins_loaded for theme compatibility.
+	 * @since   1.4.1   Creates instance.
+	 * @since   1.5     Make private.
+	 * @since   1.5.1   Added notice on class name conflict + validate versions.
 	 * @since   1.8     spl_autoload_register().
 	 * @access  private
 	 */

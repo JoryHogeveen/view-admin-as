@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.4
+ * @version 1.8
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
@@ -87,11 +87,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		 * @since  1.7.4
 		 */
 		// wauc_admin_bar_default_load
-		add_filter( 'wauc_admin_bar_menu_add_nodes', array( $this, 'filter_wauc_admin_bar_menu_add_nodes' ), 10, 2 );
-		add_filter( 'wauc_admin_bar_filter_load', array( $this, 'filter_wauc_admin_bar_filter_load' ) );
-		add_filter( 'wauc_admin_bar_menu_widget_no_submenu', array( $this, 'filter_wauc_admin_bar_menu_widget_no_submenu' ) );
-		add_filter( 'wauc_admin_bar_menu_widget_title_readonly_vaa', '__return_true' );
-		add_filter( 'wauc_admin_bar_menu_widget_disable_target_vaa', '__return_true' );
+		$this->add_filter( 'wauc_admin_bar_menu_add_nodes', array( $this, 'filter_wauc_admin_bar_menu_add_nodes' ), 10, 2 );
+		$this->add_filter( 'wauc_admin_bar_filter_load', array( $this, 'filter_wauc_admin_bar_filter_load' ) );
+		$this->add_filter( 'wauc_admin_bar_menu_widget_no_submenu', array( $this, 'filter_wauc_admin_bar_menu_widget_no_submenu' ) );
+		$this->add_filter( 'wauc_admin_bar_menu_widget_title_readonly_vaa', '__return_true' );
+		$this->add_filter( 'wauc_admin_bar_menu_widget_disable_target_vaa', '__return_true' );
 
 	}
 
