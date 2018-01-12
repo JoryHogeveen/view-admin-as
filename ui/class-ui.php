@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Renamed from VAA_View_Admin_As_Admin
- * @version 1.7.4
+ * @version 1.7.6
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
@@ -249,14 +249,20 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 			return;
 		}
 
+		$request_uri = $_SERVER['REQUEST_URI'];
+		// @since  1.7.6  Some plugins overwrite `REQUEST_URI` and set it to `ORIG_REQUEST_URI`.
+		if ( ! empty( $_SERVER['ORIG_REQUEST_URI'] ) ) {
+			$request_uri = $_SERVER['ORIG_REQUEST_URI'];
+		}
+
 		// Ensure we're using an absolute URL.
-		$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+		$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $request_uri );
 		$filtered_url = remove_query_arg( $removable_query_args, $current_url );
 		?>
-		<link id="wp-admin-canonical" rel="canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
+		<link id="wp-vaa-canonical" rel="canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
 		<script>
 			if ( window.history.replaceState ) {
-				window.history.replaceState( null, null, document.getElementById( 'wp-admin-canonical' ).href + window.location.hash );
+				window.history.replaceState( null, null, document.getElementById( 'wp-vaa-canonical' ).href + window.location.hash );
 			}
 		</script>
 		<?php

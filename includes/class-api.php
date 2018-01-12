@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.5
+ * @version 1.7.6
  */
 final class VAA_API
 {
@@ -37,10 +37,14 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   int  $user_id  (optional) Default: current user.
+	 * @param   int|\WP_User  $user_id  (optional) Default: current user.
 	 * @return  bool
 	 */
 	public static function is_super_admin( $user_id = null ) {
+		if ( $user_id instanceof WP_User ) {
+			$user_id = $user_id->ID;
+		}
+
 		$store = view_admin_as()->store();
 		if ( $store ) {
 			return $store->is_super_admin( $user_id );
@@ -59,10 +63,13 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   int  $user_id  (optional) Default: current user.
+	 * @param   int|\WP_User  $user_id  (optional) Default: current user.
 	 * @return  bool
 	 */
 	public static function is_superior_admin( $user_id = null ) {
+		if ( $user_id instanceof WP_User ) {
+			$user_id = $user_id->ID;
+		}
 
 		// If it's the current user or null, don't pass the user ID to make sure we check the original user status.
 		$is_super_admin = self::is_super_admin(
@@ -211,6 +218,24 @@ final class VAA_API
 	public static function is_vaa_toolbar_showing() {
 
 		if ( class_exists( 'VAA_View_Admin_As_Toolbar' ) && VAA_View_Admin_As_Toolbar::$showing ) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Is the customizer admin container currently rendering?
+	 *
+	 * @since   1.7.6
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_customizer_admin() {
+
+		if ( is_customize_preview() && is_admin() ) {
 			return true;
 		}
 		return false;

@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.7.4
+ * @version 1.7.6
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
@@ -97,6 +97,14 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * @var    string
 	 */
 	private $ruaScreen;
+
+	/**
+	 * The view icon.
+	 *
+	 * @since  1.7.6
+	 * @var    string
+	 */
+	private $icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj48ZyBmaWxsPSIjYTBhNWFhIj48cGF0aCBkPSJNMTAuMDEyIDE0LjYyNUw1Ljc4IDEyLjI3Yy0xLjkwNi42NjQtMy42MDUgMS43Ni00Ljk4IDMuMTc4IDIuMTA1IDIuNzcgNS40MzYgNC41NiA5LjE4NSA0LjU2IDMuNzY2IDAgNy4xMTItMS44MDIgOS4yMTUtNC41OTMtMS4zOC0xLjQwNC0zLjA3LTIuNDk2LTQuOTctMy4xNTRsLTQuMjE4IDIuMzY3em0tLjAwNS0xNC42M0M3LjQxMi0uMDA1IDUuMzEgMS45MSA1LjMxIDQuMjhoOS4zOTNjMC0yLjM3LTIuMS00LjI4Ni00LjY5Ni00LjI4NnptNi4xMjYgMTAuNzFjLjE1OC0uMDMyLjY0LS4yMzIuNjMtLjMzMy0uMDI1LS4yNC0uNjg2LTUuNTg0LS42ODYtNS41ODRzLS40MjItLjI3LS42ODYtLjI5M2MuMDI0LjIxLjY5IDUuNzYuNzQ1IDYuMjF6bS0xMi4yNTMgMGMtLjE1OC0uMDMyLS42NC0uMjMyLS42My0uMzMzLjAyNS0uMjQuNjg2LTUuNTg0LjY4Ni01LjU4NHMuNDItLjI3LjY4Ni0uMjkzYy0uMDIuMjEtLjY5IDUuNzYtLjc0MiA2LjIxeiIvPjxwYXRoIGQ9Ik0xMCAxMy45NjdoLjAyM2wuOTc1LS41NXYtNC4yMWMuNzgtLjM3NyAxLjMxNC0xLjE3MyAxLjMxNC0yLjA5NyAwLTEuMjg1LTEuMDM1LTIuMzIzLTIuMzItMi4zMjNTNy42NyA1LjgyNSA3LjY3IDcuMTFjMCAuOTIzLjUzNSAxLjcyIDEuMzE1IDIuMDkzVjEzLjRsMS4wMTYuNTY3em0tMS43NjQtLjk4NXYtLjAzNWMwLTMuNjEtMS4zNS02LjU4My0zLjA4My02Ljk2bC0uMDMuMy0uNTIgNC42NyAzLjYzMyAyLjAyNXptMy41Ni0uMDM1YzAgLjAxNCAwIC4wMTguMDAzLjAyM2wzLjYxLTIuMDI1LS41My00LjY4LS4wMjgtLjI3M2MtMS43MjMuNC0zLjA1NyAzLjM2Mi0zLjA1NyA2Ljk1NXoiLz48L2c+PC9zdmc+';
 
 	/**
 	 * Populate the instance and validate RUA plugin is active.
@@ -387,7 +395,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-title',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-network' ) . $view_name,
+				'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $view_name,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -413,7 +421,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			$admin_bar->add_node( array(
 				'id'     => $root . '-rua-levels',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-network' ) . $view_name,
+				'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $view_name,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon',

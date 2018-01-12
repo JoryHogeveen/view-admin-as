@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.5
+ * @version 1.7.6
  */
 class VAA_View_Admin_As_Form
 {
@@ -390,18 +390,35 @@ class VAA_View_Admin_As_Form
 	 * @since   1.6.3  Added second $attr parameter.
 	 * @since   1.7.2  Moved to this class from admin bar class.
 	 * @since   1.7.3  Added third $content parameter.
+	 * @since   1.7.6  Support SVG and file icons + Base64 encoded strings (just like WP admin menu's).
 	 * @static
 	 *
-	 * @param   string  $icon     The icon class.
+	 * @param   string  $icon     The icon class, file or base64 encoded string.
 	 * @param   array   $attr     (optional) Extra attributes.
 	 * @param   string  $content  (optional) Icon content.
 	 * @return  string
 	 */
 	public static function do_icon( $icon, $attr = array(), $content = '' ) {
-		if ( ! empty( $attr['class'] ) ) {
-			$icon .= ' ' . (string) $attr['class'];
+		$class = 'ab-icon';
+
+		if ( false === strpos( $icon, '/' ) &&
+			 0 !== strpos( $icon, 'data:' ) &&
+			 0 !== strpos( $icon, 'http' )
+		) {
+			// It's an icon class.
+			$class .= ' dashicons ' . $icon;
+		} else {
+			// It's a Base64 encoded string or file URL.
+			$class .= ' vaa-icon-image';
+			$attr = self::merge_attr( $attr, array(
+				'style' => array( 'background-image: url("' . $icon . '") !important' ),
+			) );
 		}
-		$attr['class'] = 'ab-icon dashicons ' . $icon;
+
+		if ( ! empty( $attr['class'] ) ) {
+			$class .= ' ' . (string) $attr['class'];
+		}
+		$attr['class'] = $class;
 		$attr['aria-hidden'] = 'true';
 		$attr = self::parse_to_html_attr( $attr );
 		return '<span ' . $attr . '>' . $content . '</span>';

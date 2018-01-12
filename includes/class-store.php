@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.5
+ * @version 1.7.6
  * @uses    VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
@@ -99,13 +99,14 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	private $curUserData = array();
 
 	/**
-	 * Is the original current user a super admin?
+	 * Does the current user has full access to all features of this plugin?
 	 *
 	 * @since  1.6.3
 	 * @since  1.7.3  Not static anymore.
+	 * @since  1.7.6  Renamed from $isCurUserSuperAdmin
 	 * @var    bool
 	 */
-	private $isCurUserSuperAdmin = false;
+	private $curUserHasFullAccess = false;
 
 	/**
 	 * Selected view data as stored in the user meta.
@@ -163,7 +164,12 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Get the current user session (WP 4.0+).
 		$this->set_curUserSession( (string) wp_get_session_token() );
 
-		$this->isCurUserSuperAdmin = is_super_admin( $this->get_curUser()->ID );
+		$this->curUserHasFullAccess = (
+			is_super_admin( $this->get_curUser()->ID ) &&
+			// @since  1.7.6  For single installations is_super_admin() isn't enough since it only checks for `delete_users`.
+			user_can( $this->get_curUser(), 'edit_users' ) &&
+			user_can( $this->get_curUser(), 'edit_plugins' )
+		);
 		$this->curUserData = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
@@ -478,6 +484,12 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 				}
 			}
 
+			// @since  1.7.6  Remove users who are not allowed to be edited by this user.
+			if ( ! current_user_can( 'edit_user', $user->ID ) ) {
+				unset( $users[ $user_key ] );
+				continue;
+			}
+
 			// Add users who can't access this plugin to the users list.
 			$userids[ $user->ID ] = $user->display_name;
 		}
@@ -568,7 +580,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 */
 	public function is_super_admin( $user_id = null ) {
 		if ( null === $user_id || (int) get_current_user_id() === (int) $user_id ) {
-			return $this->isCurUserSuperAdmin;
+			return $this->curUserHasFullAccess;
 		}
 		return is_super_admin( $user_id );
 	}

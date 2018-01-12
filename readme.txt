@@ -5,7 +5,7 @@ Tags: admin, view, roles, users, switch, user switching, role switching, capabil
 Requires at least: 4.1
 Tested up to: 4.9
 Requires PHP: 5.2.4
-Stable tag: 1.7.5
+Stable tag: 1.7.6
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -53,6 +53,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Clone roles
 *	Import/Export roles, can also download (and upload) setting files
 *	Update role capabilities from current view
+*	Automatically migrate users to another role after deleting a role
 
 = Compatibility & Integrations =
 
@@ -201,6 +202,16 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 11. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.7.6 =
+
+*	**Feature:** Role manager: Option to migrate users to another role after deleting a role. [#86](https://github.com/JoryHogeveen/view-admin-as/issues/86)
+*	**Enhancement:** Enhance user full access validation for single installations. Not only check for super admin but also the capabilities `edit_users` and `edit_plugins`.
+*	**Enhancement:** Add customizer support and a new setting to disable this. [#26](https://github.com/JoryHogeveen/view-admin-as/issues/26)
+*	**Enhancement:** Compatibility with `$_SERVER['ORIG_REQUEST_URI']` for removable query args on front end. [#87](https://github.com/JoryHogeveen/view-admin-as/issues/87)
+*	**UI:** Support SVG and file icons + Base64 encoded strings.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/85)
 
 = 1.7.5 =
 
