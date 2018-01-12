@@ -171,7 +171,7 @@ class VAA_View_Admin_As_Hooks
 	 *
 	 * @since   1.8
 	 * @param   string    $hook      The name of the WordPress action.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
 	 */
 	public function remove_all_hooks( $hook, $priority = false ) {
 		$this->remove_all_actions( $hook, $priority );
@@ -184,7 +184,7 @@ class VAA_View_Admin_As_Hooks
 	 * @since   1.8
 	 * @see     remove_all_actions()
 	 * @param   string    $hook      The name of the WordPress action.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
 	 */
 	public function remove_all_actions( $hook, $priority = false ) {
 		remove_all_actions( $hook, $priority );
@@ -197,7 +197,7 @@ class VAA_View_Admin_As_Hooks
 	 * @since   1.8
 	 * @see     remove_all_filters()
 	 * @param   string    $hook      The name of the WordPress filter.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
 	 */
 	public function remove_all_filters( $hook, $priority = false ) {
 		remove_all_filters( $hook, $priority );
@@ -228,11 +228,12 @@ class VAA_View_Admin_As_Hooks
 	 *
 	 * @since   1.8
 	 * @param   string    $hook      (optional) The name of the WordPress action.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
+	 * @param   string    $class     (optional) Only remove filters from a specific class.
 	 */
-	public function remove_own_hooks( $hook = null, $priority = false ) {
-		$this->remove_own_actions( $hook, $priority );
-		$this->remove_own_filters( $hook, $priority );
+	public function remove_own_hooks( $hook = null, $priority = false, $class = '' ) {
+		$this->remove_own_actions( $hook, $priority, $class );
+		$this->remove_own_filters( $hook, $priority, $class );
 	}
 
 	/**
@@ -240,10 +241,11 @@ class VAA_View_Admin_As_Hooks
 	 *
 	 * @since   1.8
 	 * @param   string    $hook      (optional) The name of the WordPress action.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
+	 * @param   string    $class     (optional) Only remove filters from a specific class.
 	 */
-	public function remove_own_actions( $hook = null, $priority = false ) {
-		$this->_actions = $this->_remove_own( $this->_actions, $hook, $priority, 'remove_action' );
+	public function remove_own_actions( $hook = null, $priority = false, $class = '' ) {
+		$this->_actions = $this->_remove_own( $this->_actions, $hook, $priority, 'remove_action', $class );
 	}
 
 	/**
@@ -251,14 +253,20 @@ class VAA_View_Admin_As_Hooks
 	 *
 	 * @since   1.8
 	 * @param   string    $hook      (optional) The name of the WordPress filter.
-	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: 10.
+	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
+	 * @param   string    $class     (optional) Only remove filters from a specific class.
 	 */
-	public function remove_own_filters( $hook = null, $priority = false ) {
-		$this->_filters = $this->_remove_own( $this->_filters, $hook, $priority, 'remove_filter' );
+	public function remove_own_filters( $hook = null, $priority = false, $class = '' ) {
+		$this->_filters = $this->_remove_own( $this->_filters, $hook, $priority, 'remove_filter', $class );
 	}
 
 	/**
 	 * A utility function that is used to remove all registered plugin hooks from a single collection.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
 	 *
 	 * @since   1.8
 	 * @access  protected
@@ -266,35 +274,54 @@ class VAA_View_Admin_As_Hooks
 	 * @param   string    $hook      The name of the WordPress filter.
 	 * @param   int|bool  $priority  The priority at which the function should be fired.
 	 * @param   callable  $function  The function to use for removal.
+	 * @param   string    $class     Only remove filters from a specific class.
 	 * @return  array  The collection of actions and filters registered with WordPress.
 	 */
-	protected function _remove_own( $hooks, $hook, $priority, $function ) {
+	protected function _remove_own( $hooks, $hook, $priority, $function, $class ) {
+
 		// Remove specific priority from hook.
 		if ( false !== $priority ) {
 			if ( isset( $hooks[ $hook ][ $priority ] ) ) {
-				foreach ( (array) $hooks[ $hook ][ $priority ] as $args ) {
+				foreach ( (array) $hooks[ $hook ][ $priority ] as $id => $args ) {
+					if ( $class ) {
+						$class_compare = ( isset( $args['callback'][0] ) ) ? $args['callback'][0] : '';
+						if ( is_object( $class_compare ) ) {
+							$class_compare = get_class( $class_compare );
+						}
+						if ( $class !== $class_compare ) {
+							continue;
+						}
+					}
 					// Remove it from WordPress.
 					$this->$function( $hook, $args['callback'], $priority );
+					unset( $hooks[ $hook ][ $priority ][ $id ] );
 				}
-				unset( $hooks[ $hook ][ $priority ] );
+				if ( empty( $hooks[ $hook ][ $priority ] ) ) {
+					unset( $hooks[ $hook ][ $priority ] );
+				}
 			}
 			return $hooks;
 		}
+
 		// Remove specific hook.
 		if ( null !== $hook ) {
 			if ( isset( $hooks[ $hook ] ) ) {
 				foreach ( (array) $hooks[ $hook ] as $priority => $foo ) {
-					$hooks = $this->_remove_own( $hooks, $hook, $priority, $function );
+					$hooks = $this->_remove_own( $hooks, $hook, $priority, $function, $class );
 				}
-				unset( $hooks[ $hook ] );
+				if ( empty( $hooks[ $hook ] ) ) {
+					unset( $hooks[ $hook ] );
+				}
 			}
 			return $hooks;
 		}
+
 		// Remove everything.
 		foreach ( (array) $hooks as $hook => $foo ) {
-			$hooks = $this->_remove_own( $hooks, $hook, false, $function );
+			$hooks = $this->_remove_own( $hooks, $hook, false, $function, $class );
 		}
-		return array(); // Should be empty by now.
+
+		return $hooks;
 	}
 
 	/**
