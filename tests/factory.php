@@ -225,7 +225,7 @@ class VAA_UnitTest_Factory {
 			'_vaa_view_admin_as',
 		);
 		foreach ( $wp_actions as $key => $counter ) {
-			foreach( $find as $compare ) {
+			foreach ( $find as $compare ) {
 				if ( 0 === strpos( $key, $compare ) ) {
 					unset( $wp_actions[ $key ] );
 				}
