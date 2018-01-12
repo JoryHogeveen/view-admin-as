@@ -206,7 +206,7 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 = 1.7.6 =
 
 *	**Feature:** Role manager: Option to migrate users to another role after deleting a role. [#86](https://github.com/JoryHogeveen/view-admin-as/issues/86)
-*	**Enhancement:** Enhance user full access validation for single installations. Not only check for super admin but also the capabilities `edit_users` and `edit_plugins`.
+*	**Enhancement:** Enhance user full access validation for single installations. Not only check for super admin but also the capabilities `edit_users` and `delete_plugins`.
 *	**Enhancement:** Add customizer support and a new setting to disable this. [#26](https://github.com/JoryHogeveen/view-admin-as/issues/26)
 *	**Enhancement:** Compatibility with `$_SERVER['ORIG_REQUEST_URI']` for removable query args on front end. [#87](https://github.com/JoryHogeveen/view-admin-as/issues/87)
 *	**UI:** Support SVG and file icons + Base64 encoded strings.
