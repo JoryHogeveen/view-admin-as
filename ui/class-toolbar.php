@@ -105,9 +105,6 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 
 			self::$showing = true;
 
-			wp_enqueue_script( 'admin-bar' );
-			wp_enqueue_style( 'admin-bar' );
-
 			view_admin_as()->hooks()->add_action( 'wp_footer', array( $this, 'vaa_toolbar_render' ), 100 );
 			view_admin_as()->hooks()->add_action( 'customize_controls_print_footer_scripts', array( $this, 'vaa_toolbar_render' ), 100 );
 		}

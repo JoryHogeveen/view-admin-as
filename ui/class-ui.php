@@ -290,13 +290,13 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		wp_enqueue_style(
 			'vaa_view_admin_as_style',
 			VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css',
-			array(),
+			array( 'admin-bar' ),
 			$version
 		);
 		wp_enqueue_script(
 			'vaa_view_admin_as_script',
 			VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js',
-			array( 'jquery' ),
+			array( 'jquery', 'admin-bar' ),
 			$version,
 			true // load in footer.
 		);
