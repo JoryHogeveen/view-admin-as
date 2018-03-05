@@ -339,7 +339,7 @@ final class VAA_View_Admin_As
 
 		// Load file.
 		if ( empty( $class ) || ! class_exists( $class, false ) ) {
-			include_once( $file );
+			include_once $file;
 		} else {
 			$this->add_error_notice( $class . '::' . __METHOD__, array(
 				'type' => 'notice-error',
@@ -360,7 +360,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   array  $includes {
+	 * @param   array[]|string[]  $includes {
 	 *     An array of files to include.
 	 *     @type  string  $file   The file to include. Directory starts from the plugin folder.
 	 *     @type  string  $class  The class name.
@@ -373,6 +373,15 @@ final class VAA_View_Admin_As
 		$group = (array) $group;
 
 		foreach ( $includes as $key => $inc ) {
+
+			if ( is_string( $inc ) ) {
+				$inc = array(
+					'file' => $inc,
+				);
+				if ( is_string( $key ) ) {
+					$inc['class'] = $key;
+				}
+			}
 
 			if ( empty( $inc['file'] ) ) {
 				continue;
