@@ -36,6 +36,25 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		 */
 		$title = apply_filters( 'vaa_admin_bar_view_title_user', $title, $user );
 
+		/**
+		 * Add the user roles to the user title?
+		 * Only available if users are not grouped under their roles.
+		 *
+		 * @since  1.8
+		 * @param  bool      $true  True by default.
+		 * @param  \WP_User  $user  The user object.
+		 * @return bool
+		 */
+		if ( true !== $this->groupUserRoles && apply_filters( 'vaa_admin_bar_view_title_user_show_roles', true, $user ) ) {
+			// Users displayed as normal.
+			$user_roles = array();
+			// Add the roles of this user in the name.
+			foreach ( $user->roles as $role ) {
+				$user_roles[] = $this->store->get_rolenames( $role );
+			}
+			$title .= ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
+		}
+
 		$title = VAA_View_Admin_As_Form::do_view_title( $title, 'user', $user->ID );
 
 		// Check if this user is the current view.
@@ -79,13 +98,6 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 				$admin_bar->add_node( $user_role_node );
 			}
 		} else {
-			// Users displayed as normal.
-			$user_roles = array();
-			// Add the roles of this user in the name.
-			foreach ( $user->roles as $role ) {
-				$user_roles[] = $this->store->get_rolenames( $role );
-			}
-			$user_node['title'] = $title . ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
 			$admin_bar->add_node( $user_node );
 		}
 
