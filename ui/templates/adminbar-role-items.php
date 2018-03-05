@@ -77,7 +77,6 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 					// Translators: %s stands for the translated role name.
 					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $this->store->get_rolenames( $role_key ) ),
 					'class' => $class,
-					'rel'   => $role_key,
 				),
 			)
 		);

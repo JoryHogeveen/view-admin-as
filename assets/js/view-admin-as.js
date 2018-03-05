@@ -279,10 +279,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 				if ( ! $this.parent().hasClass('not-a-view') ) {
 					var view_data = {},
-						val = $this.attr('rel');
-					if ( ! val ) {
 						val = $this.find('.vaa-view-data').attr('vaa-view-value');
-					}
 					view_data[ type ] = VAA_View_Admin_As.maybe_json_decode( val );
 					view_data = ( 'object' === typeof view_data[ type ] ) ? view_data[ type ] : view_data;
 					VAA_View_Admin_As.ajax( view_data, true );
@@ -1026,7 +1023,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 								exists = $(this);
 							}
 						} );
-						var role = $(this).parents('.vaa-role-item').children('.ab-item').attr('rel');
+						var role = $(this).parents('.vaa-role-item').find('> .ab-item > .vaa-view-data').text();
 						if ( false !== exists && exists.length ) {
 							exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
 						} else {

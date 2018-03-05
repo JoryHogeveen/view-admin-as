@@ -485,7 +485,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 					'title'     => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
 					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
 					'class'     => $class,
-					'rel'       => ( $role ) ? wp_json_encode( $view_data ) : $view_value,
 				),
 			) );
 		} // End foreach().

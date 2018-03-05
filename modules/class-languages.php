@@ -299,7 +299,6 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 					// Translators: %s stands for the language name.
 					'title'     => sprintf( __( 'View in %s', VIEW_ADMIN_AS_DOMAIN ), $language ),
 					'class'     => $class,
-					'rel'       => $view_value,
 				),
 			) );
 		} // End foreach().

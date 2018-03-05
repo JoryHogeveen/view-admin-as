@@ -616,7 +616,6 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 					// Translators: %s stands for the view type name.
 					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $view_value ),
 					'class' => $class,
-					'rel'   => $group->group_id,
 				),
 			) );
 		}
