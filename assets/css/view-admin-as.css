@@ -25,10 +25,9 @@
 	margin: 0 25%;
 	padding: 10px;
 	top: 10%;
-	background: #fff;
-	box-shadow: 0 0 5px #aaa;
-	border: 2px solid;
-	border-radius: 3px;
+	background: #fcfcfc;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.15), 0 0 1px 3px #fff;
+	border: 2px solid #666;
 	position: relative;
 }
 #vaa-overlay .vaa-overlay-container > .remove {position: absolute; right: -10px; top: -10px; background: #FFF; width: 20px; height: 20px; cursor: pointer;}
