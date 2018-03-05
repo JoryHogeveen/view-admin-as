@@ -280,8 +280,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				if ( ! $this.parent().hasClass('not-a-view') ) {
 					var view_data = {},
 						val = $this.find('.vaa-view-data').attr('vaa-view-value');
+					// If the value is an object (JSON) we assume it contains the view type key.
 					view_data[ type ] = VAA_View_Admin_As.maybe_json_decode( val );
-					view_data = ( 'object' === typeof view_data[ type ] ) ? view_data[ type ] : view_data;
+					if ( 'object' === typeof view_data[ type ] ) {
+						view_data = view_data[ type ];
+					}
 					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
 				}
