@@ -1109,12 +1109,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				var $this = $(this);
 				if ( capabilities.hasOwnProperty( $this.attr('value') ) ) {
 					if ( capabilities[ $this.attr('value') ] ) {
-						$this.attr( 'checked', 'checked' );
+						$this.prop( 'checked', true );
 					} else {
-						$this.attr( 'checked', false );
+						$this.prop( 'checked', false );
 					}
 				} else {
-					$this.attr( 'checked', false );
+					$this.prop( 'checked', false );
 				}
 			} );
 		};
