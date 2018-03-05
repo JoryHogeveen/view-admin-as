@@ -3,7 +3,7 @@
  * Add role items.
  *
  * @since    1.7
- * @version  1.7.4
+ * @version  1.8
  *
  * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string         $root       The current root item.
@@ -24,7 +24,19 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$parent = $root;
 		$href   = VAA_API::get_vaa_action_link( array( 'role' => $role_key ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-role-item';
-		$title  = VAA_View_Admin_As_Form::do_view_title( $this->store->get_rolenames( $role_key ), 'role', $role_key );
+		$title  = $this->store->get_rolenames( $role_key );
+
+		/**
+		 * Change the display title for role nodes.
+		 *
+		 * @since  1.8
+		 * @param  string    $title  Role name (translated).
+		 * @param  \WP_Role  $role   The role object.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_role', $title, $role );
+		$title = VAA_View_Admin_As_Form::do_view_title( $title, 'role', $role_key );
+
 		// Check if the users need to be grouped under their roles.
 		if ( true === $this->groupUserRoles ) {
 			// make sure items are aligned properly when some roles don't have users.
@@ -46,6 +58,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 				$title = $title . ' <span class="user-count ab-italic">(' . $user_count . ')</span>';
 			}
 		}
+
 		// Check if this role is the current view.
 		if ( VAA_API::is_current_view( $role_key, 'role' ) ) {
 			$class .= ' current';
@@ -53,6 +66,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 				$href = false;
 			}
 		}
+
 		$admin_bar->add_node(
 			array(
 				'id' => $root . '-role-' . $role_key,
@@ -67,6 +81,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 				),
 			)
 		);
+
 	} // End foreach().
 
 } else {
