@@ -217,8 +217,8 @@ final class VAA_API
 	 */
 	public static function is_vaa_toolbar_showing() {
 
-		if ( class_exists( 'VAA_View_Admin_As_Toolbar' ) && VAA_View_Admin_As_Toolbar::$showing ) {
-			return true;
+		if ( class_exists( 'VAA_View_Admin_As_Toolbar' ) ) {
+			return (bool) VAA_View_Admin_As_Toolbar::$showing;
 		}
 		return false;
 	}
