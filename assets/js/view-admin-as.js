@@ -267,10 +267,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// @since  1.6.2  Process basic views.
 		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
 			$vaa.on( 'click touchend', '.vaa-' + type + '-item > a.ab-item', function( e ) {
+				e.preventDefault();
 				if ( true === VAA_View_Admin_As._touchmove ) {
 					return;
 				}
-				e.preventDefault();
 				var $this = $(this);
 				// Fix for responsive views (first click triggers show child items).
 				if ( VAA_View_Admin_As._mobile && $this.parent().hasClass('menupop') && ! $this.next().is(':visible') ) {
