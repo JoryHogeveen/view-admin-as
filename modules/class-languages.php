@@ -325,7 +325,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 
 		$installed = get_available_languages();
 
-		if ( 1 === count( $installed ) ) {
+		if ( ! $installed || ( 1 === count( $installed ) && 'en_US' === reset( $installed ) ) ) {
 			return;
 		}
 
