@@ -400,7 +400,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Remove overlay on click outside of container.
 		$document.on( 'mouseup.vaa_overlay', function( e ) {
-			$( '.vaa-overlay-container', $overlay ).each( function() {
+			$( '.vaa-popup', $overlay ).each( function() {
 				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
 					VAA_View_Admin_As.overlay( false );
 					return false;
@@ -629,9 +629,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		var html = '';
 
-		html += '<div class="vaa-overlay-container vaa-' + type + '">';
+		html += '<div class="vaa-popup vaa-' + type + '">';
 		html += '<span class="remove dashicons dashicons-dismiss"></span>';
-		html += '<div class="vaa-response-data">';
+		html += '<div class="vaa-popup-content">';
 
 		// If it's not an object assume it's a string and convert it to the proper object form.
 		if ( 'object' !== typeof data ) {
@@ -655,7 +655,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			html += '<textarea style="width: 100%;" readonly>' + String( data.textarea ) + '</textarea>';
 		}
 
-		// End: .vaa-response-data & .vaa-overlay-container
+		// End: .vaa-popup-content & .vaa-popup
 		html += '</div></div>';
 
 		// Trigger the overlay.
@@ -666,10 +666,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		var root = '#vaa-overlay',
 			$overlay = $( root ),
-			$overlay_container = $( root + ' .vaa-overlay-container' ),
-			$popup_response = $( root + ' .vaa-response-data' );
+			$popup = $( root + ' .vaa-popup' ),
+			$popup_content = $( root + ' .vaa-popup-content' );
 
-		var textarea = $( 'textarea', $popup_response );
+		var textarea = $( 'textarea', $popup_content );
 		if ( textarea.length ) {
 			// Select full text on click.
 			textarea.on( 'click', function() { $(this).select(); } );
@@ -683,8 +683,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			// 80% of screen height - padding + border;
 			var max_height = ( $overlay.height() * .8 ) - 24;
-			$overlay_container.css( 'max-height', max_height );
-			$popup_response.css( 'max-height', max_height );
+			$popup.css( 'max-height', max_height );
+			$popup_content.css( 'max-height', max_height );
 		};
 		popupMaxHeight();
 		$window.on( 'resize', function() {
