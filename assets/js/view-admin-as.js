@@ -1026,14 +1026,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 								exists = $(this);
 							}
 						} );
-						var role = $(this).parents('.vaa-role-item').find('> .ab-item > .vaa-view-data').text();
-						if ( false !== exists && exists.length ) {
+						var role = $(this).parents('.vaa-role-item').find('> .ab-item > .vaa-view-data');
+						role = ( role ) ? role.text() : '';
+						if ( role && false !== exists && exists.length ) {
 							exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
 						} else {
+							role = ( role ) ? ' &nbsp; <span class="user-role">(' + role + ')</span>' : '';
 							$(this).clone()
 							       .appendTo( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
 							       .children('.ab-item')
-							       .append( ' &nbsp; <span class="user-role">(' + role + ')</span>' );
+							       .append( role );
 						}
 					}
 				} );
