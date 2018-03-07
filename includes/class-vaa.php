@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.5
+ * @version 1.8
  */
 final class VAA_View_Admin_As
 {
@@ -593,7 +593,7 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 * @see     VAA_View_Admin_As::load_ui()
 	 * @param   string  $key  (optional) UI class name.
-	 * @return  object|object[]
+	 * @return  VAA_View_Admin_As_Module|VAA_View_Admin_As_Module[]
 	 */
 	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
