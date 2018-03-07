@@ -624,18 +624,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
-	 * Get view data (meta).
-	 * @todo    Remove in 1.8.
-	 * @deprecated
-	 * @param   string  $key  Key for array.
-	 * @return  mixed
-	 */
-	public function get_viewAs( $key = null ) {
-		_deprecated_function( __METHOD__, '1.7', 'VAA_View_Admin_As_Store::get_view()' );
-		return $this->get_view( $key );
-	}
-
-	/**
 	 * Get view type data
 	 *
 	 * @since   1.7
@@ -761,20 +749,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 */
 	public function set_view( $val, $key = null, $append = false ) {
 		$this->view = (array) VAA_API::set_array_data( $this->view, $val, $key, $append );
-	}
-
-	/**
-	 * Set the view data.
-	 * @todo    Remove in 1.8.
-	 * @deprecated
-	 * @param   mixed   $val     Value.
-	 * @param   string  $key     (optional) View key.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
-	 */
-	public function set_viewAs( $val, $key = null, $append = false ) {
-		_deprecated_function( __METHOD__, '1.7', 'VAA_View_Admin_As_Store::set_view()' );
-		$this->set_view( $val, $key, $append );
 	}
 
 	/**
