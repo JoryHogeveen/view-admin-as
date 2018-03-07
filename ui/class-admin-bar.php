@@ -49,14 +49,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	public static $parent = 'top-secondary';
 
 	/**
-	 * Group the users under their roles?
-	 *
-	 * @since  1.5
-	 * @var    bool
-	 */
-	private $groupUserRoles = false;
-
-	/**
 	 * Construct function.
 	 * Protected to make sure it isn't declared elsewhere.
 	 *
@@ -83,15 +75,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	public function vaa_init() {
-
-		// If the amount of items (roles and users combined) is more than 15 users, group them under their roles.
-		// There are no roles to group users on network pages.
-		if ( ! is_network_admin() && (
-			$this->store->get_userSettings( 'force_group_users' ) ||
-			15 < ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) )
-		) ) {
-			$this->groupUserRoles = true;
-		}
 
 		$priority = 10;
 		$location = $this->store->get_userSettings( 'admin_menu_location' );
