@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7.5
  * @version 1.7.5
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 {
