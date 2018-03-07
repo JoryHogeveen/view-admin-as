@@ -158,6 +158,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			return;
 		}
 
+		$title_submenu = ( ! $this->group_user_roles() && 15 < count( $this->get_data() ) );
+
 		$main_root = $root;
 		$root = $main_root . '-users';
 
@@ -174,7 +176,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . __( 'Users', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+				'class'    => 'vaa-has-icon ab-vaa-title' . ( ( ! $title_submenu ) ? ' ab-vaa-toggle active' : '' ),
 				'tabindex' => '0',
 			),
 		) );
@@ -191,21 +193,36 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 */
 		do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
 
-		if ( $this->group_user_roles() ) {
+		if ( $this->group_user_roles() || $title_submenu ) {
+			$title = '';
+			if ( $this->group_user_roles() ) {
+				$title = VAA_View_Admin_As_Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) );
+			}
 			$admin_bar->add_node( array(
 				'id'     => $root . '-searchusers',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) )
-					. VAA_View_Admin_As_Form::do_input( array(
-						'name'        => $root . '-searchusers',
-						'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
-					) ),
+				'title'  => $title . VAA_View_Admin_As_Form::do_input( array(
+					'name'        => $root . '-searchusers',
+					'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
+				) ),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'ab-vaa-search search-users',
 					'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu ab-vaa-results"></ul>',
 				),
 			) );
+		}
+
+		if ( $title_submenu ) {
+			$admin_bar->add_group( array(
+				'id' => $root . '-all',
+				'parent' => $root . '-title',
+				'meta'   => array(
+					'class' => 'vaa-auto-max-height',
+				),
+			) );
+
+			$root = $root . '-all';
 		}
 
 		// Add the users.
