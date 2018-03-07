@@ -100,6 +100,16 @@ final class VAA_View_Admin_As
 	private $modules = array();
 
 	/**
+	 * View types.
+	 *
+	 * @since  1.8
+	 * @see    VAA_View_Admin_As::load_modules()
+	 * @see    VAA_View_Admin_As::register_view_type()
+	 * @var    object[]
+	 */
+	private $view_types = array();
+
+	/**
 	 * Class registry
 	 *
 	 * @since  1.8
@@ -587,6 +597,40 @@ final class VAA_View_Admin_As
 	 */
 	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
+	}
+
+	/**
+	 * Get view types.
+	 * If a key is provided it will only return that view type.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @param   string  $key  (optional) The type key.
+	 * @return  VAA_View_Admin_As_Type|VAA_View_Admin_As_Type[]
+	 */
+	public function get_view_types( $key = null ) {
+		return VAA_API::get_array_data( $this->view_types, $key );
+	}
+
+	/**
+	 * Register view types
+	 *
+	 * @since   1.8
+	 * @param   array  $data {
+	 *     Required. An array of module info.
+	 *     @type  string  $id        The view type name, choose wisely since this is used for validation.
+	 *     @type  object  $instance  The view type class reference/instance.
+	 * }
+	 * @return  bool  Successfully registered?
+	 */
+	public function register_view_type( $data ) {
+		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
+		     ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		) {
+			$this->view_types[ $data['id'] ] = $data['instance'];
+			return true;
+		}
+		return false;
 	}
 
 	/**
