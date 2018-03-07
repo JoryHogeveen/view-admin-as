@@ -519,6 +519,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 	/**
 	 * Sort users by role.
+	 * Only done if roles are stored (role type enabled and initialized before the user type).
 	 *
 	 * @since   1.1
 	 * @since   1.6    Moved to this class from main class.
@@ -531,11 +532,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @return  \WP_User[]  $users
 	 */
 	public function filter_sort_users_by_role( $users ) {
-		if ( ! $this->store->get_roles() ) {
+		$roles = $this->store->get_roles();
+		if ( ! $roles ) {
 			return $users;
 		}
 		$tmp_users = array();
-		foreach ( $this->store->get_roles() as $role => $role_data ) {
+		foreach ( $roles as $role => $role_data ) {
 			foreach ( $users as $user ) {
 				// Reset the array to make sure we find a key.
 				// Only one key is needed to add the user to the list of available users.
