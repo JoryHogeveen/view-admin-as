@@ -32,13 +32,13 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		 * Change the display title for user nodes.
 		 *
 		 * @since  1.8
-		 * @param  string    $title  User display name and (when not grouped) the user roles.
+		 * @param  string    $title  User display name.
 		 * @param  \WP_User  $user   The user object.
 		 * @return string
 		 */
 		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
 
-		$view_title = $title;
+		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this->type, $user->ID );
 
 		/**
 		 * Add the user roles to the user title?
@@ -58,8 +58,6 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			}
 			$view_title = $view_title . ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
 		}
-
-		$view_title = VAA_View_Admin_As_Form::do_view_title( $view_title, $this->type, $user->ID );
 
 		// Check if this user is the current view.
 		if ( VAA_API::is_current_view( $user->ID, $this->type ) ) {

@@ -38,7 +38,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		 */
 		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
 
-		$view_title = $title;
+		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this->type, $role_key );
 
 		/** Check if the users need to be grouped under their roles.
 		 * @var  \VAA_View_Admin_As_Users  $user_view_type
@@ -64,8 +64,6 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 				$view_title = $view_title . ' <span class="user-count ab-italic">(' . $user_count . ')</span>';
 			}
 		}
-
-		$view_title = VAA_View_Admin_As_Form::do_view_title( $view_title, $this->type, $role_key );
 
 		// Check if this role is the current view.
 		if ( VAA_API::is_current_view( $role_key, $this->type ) ) {
