@@ -5,9 +5,10 @@
  * @since    1.7
  * @version  1.8
  *
- * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
- * @var  string         $root       The current root item.
- * @var  string         $main_root  The main VAA root item.
+ * @var  \VAA_View_Admin_As_Users  $this
+ * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.
+ * @var  string                    $root       The current root item.
+ * @var  string                    $main_root  The main VAA root item.
  */
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
@@ -21,9 +22,10 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	}
 
 	foreach ( $this->store->get_users() as $user ) {
+		// Reset parent for each loop due to groupUserRoles.
 		$parent = $root;
-		$href   = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ) );
-		$class  = 'vaa-user-item';
+		$href   = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ) );
+		$class  = 'vaa-' . $this->type . '-item';
 		$title  = $user->display_name;
 
 		/**
@@ -34,7 +36,9 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		 * @param  \WP_User  $user   The user object.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_user', $title, $user );
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
+
+		$view_title = $title;
 
 		/**
 		 * Add the user roles to the user title?
@@ -45,20 +49,20 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		 * @param  \WP_User  $user  The user object.
 		 * @return bool
 		 */
-		if ( true !== $this->groupUserRoles && apply_filters( 'vaa_admin_bar_view_title_user_show_roles', true, $user ) ) {
+		if ( ! $this->group_user_roles() && apply_filters( 'vaa_admin_bar_view_title_' . $this->type . '_show_roles', true, $user ) ) {
 			// Users displayed as normal.
 			$user_roles = array();
 			// Add the roles of this user in the name.
 			foreach ( $user->roles as $role ) {
 				$user_roles[] = $this->store->get_rolenames( $role );
 			}
-			$title .= ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
+			$view_title = $view_title . ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
 		}
 
-		$title = VAA_View_Admin_As_Form::do_view_title( $title, 'user', $user->ID );
+		$view_title = VAA_View_Admin_As_Form::do_view_title( $view_title, $this->type, $user->ID );
 
 		// Check if this user is the current view.
-		if ( VAA_API::is_current_view( $user->ID, 'user' ) ) {
+		if ( VAA_API::is_current_view( $user->ID, $this->type ) ) {
 			$class .= ' current';
 			if ( 1 === count( $this->store->get_view() ) ) {
 				$href = false;
@@ -66,18 +70,18 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		}
 
 		$user_node = array(
-			'id'     => $root . '-user-' . $user->ID,
+			'id'     => $root . '-' . $this->type . '-' . $user->ID,
 			'parent' => $parent,
-			'title'  => $title,
+			'title'  => $view_title,
 			'href'   => $href,
 			'meta'   => array(
 				// Translators: %s stands for the user display name.
-				'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $user->display_name ),
+				'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
 				'class' => $class,
 			),
 		);
 
-		if ( true === $this->groupUserRoles ) {
+		if ( $this->group_user_roles() ) {
 			// Users grouped under roles.
 			foreach ( $user->roles as $role ) {
 				$user_role_node = $user_node;
