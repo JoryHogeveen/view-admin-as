@@ -530,7 +530,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 		// Add the groups.
 		foreach ( $this->get_groups() as $group_key => $group ) {
-			$view_value = $group->name;
+			$view_value = $group->group_id;
 			$view_data  = array( $this->type => $view_value );
 			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->type . '-item';
@@ -558,7 +558,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 				'href'   => $href,
 				'meta'   => array(
 					// Translators: %s stands for the view type name.
-					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $view_value ),
+					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $group->name ),
 					'class' => $class,
 				),
 			) );
