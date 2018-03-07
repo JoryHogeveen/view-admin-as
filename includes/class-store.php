@@ -59,7 +59,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *     @type  \WP_Role[]  $roles      Since 0.1    Array of available roles (WP_Role objects).
 	 *     @type  string[]    $rolenames  Since 1.6.4  Array of role names (used for role translations).
 	 *     @type  \WP_User[]  $users      Since 0.1    Array of available users (WP_User objects).
-	 *     @type  string[]    $userids    Since 0.1    Array of available user ID's (key) and display names (value).
+	 *     @type  string[]    $languages  Since 1.8    Array of available locale/languages.
 	 * }
 	 */
 	private $data = array(
@@ -67,7 +67,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		'roles'     => array(),
 		'rolenames' => array(),
 		'users'     => array(),
-		'userids'   => array(),
+		'languages' => array(),
 	);
 
 	/**
@@ -700,14 +700,12 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
-	 * Get available users.
-	 * @todo    Remove in 1.8.
-	 * @deprecated
-	 * @param   string  $key  User key.
-	 * @return  string[]|string  Array of user display names or a single user display name.
+	 * Get available languages.
+	 * @param   string  $key  Locale key.
+	 * @return  \string[]|\string  Array of language names or a single language name.
 	 */
-	public function get_userids( $key = null ) {
-		return $this->get_data( 'userids', $key );
+	public function get_languages( $key = null ) {
+		return $this->get_data( 'languages', $key );
 	}
 
 	/**
@@ -834,6 +832,18 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
+	 * Set the languages.
+	 * @since   1.8
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) Role name.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	public function set_languages( $val, $key = null, $append = false ) {
+		$this->data['languages'] = (array) VAA_API::set_array_data( $this->data['languages'], $val, $key, $append );
+	}
+
+	/**
 	 * Set the available users.
 	 * @param   mixed   $val     Value.
 	 * @param   string  $key     (optional) User key.
@@ -842,17 +852,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 */
 	public function set_users( $val, $key = null, $append = false ) {
 		$this->data['users'] = (array) VAA_API::set_array_data( $this->data['users'], $val, $key, $append );
-	}
-
-	/**
-	 * Set the available user display names.
-	 * @todo    Remove in 1.8.
-	 * @deprecated
-	 * @param   array  $val  Array of available user ID's (key) and display names (value).
-	 * @return  void
-	 */
-	public function set_userids( $val ) {
-		$this->data['userids'] = array_map( 'strval', (array) $val );
 	}
 
 	/**
