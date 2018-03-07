@@ -250,7 +250,8 @@ if ( isset( $this ) &&
 	 *
 	 * @since   1.5.2
 	 */
-	if ( empty( $this->groupUserRoles ) ||
+	$user_view_type = view_admin_as()->get_view_types( 'user' );
+	if ( ! $user_view_type instanceof VAA_View_Admin_As_Users || ! $user_view_type->group_user_roles() ||
 	     15 >= ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) )
 	) {
 		$admin_bar->add_node(
