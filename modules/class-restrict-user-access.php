@@ -51,15 +51,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	protected $icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj48ZyBmaWxsPSIjYTBhNWFhIj48cGF0aCBkPSJNMTAuMDEyIDE0LjYyNUw1Ljc4IDEyLjI3Yy0xLjkwNi42NjQtMy42MDUgMS43Ni00Ljk4IDMuMTc4IDIuMTA1IDIuNzcgNS40MzYgNC41NiA5LjE4NSA0LjU2IDMuNzY2IDAgNy4xMTItMS44MDIgOS4yMTUtNC41OTMtMS4zOC0xLjQwNC0zLjA3LTIuNDk2LTQuOTctMy4xNTRsLTQuMjE4IDIuMzY3em0tLjAwNS0xNC42M0M3LjQxMi0uMDA1IDUuMzEgMS45MSA1LjMxIDQuMjhoOS4zOTNjMC0yLjM3LTIuMS00LjI4Ni00LjY5Ni00LjI4NnptNi4xMjYgMTAuNzFjLjE1OC0uMDMyLjY0LS4yMzIuNjMtLjMzMy0uMDI1LS4yNC0uNjg2LTUuNTg0LS42ODYtNS41ODRzLS40MjItLjI3LS42ODYtLjI5M2MuMDI0LjIxLjY5IDUuNzYuNzQ1IDYuMjF6bS0xMi4yNTMgMGMtLjE1OC0uMDMyLS42NC0uMjMyLS42My0uMzMzLjAyNS0uMjQuNjg2LTUuNTg0LjY4Ni01LjU4NHMuNDItLjI3LjY4Ni0uMjkzYy0uMDIuMjEtLjY5IDUuNzYtLjc0MiA2LjIxeiIvPjxwYXRoIGQ9Ik0xMCAxMy45NjdoLjAyM2wuOTc1LS41NXYtNC4yMWMuNzgtLjM3NyAxLjMxNC0xLjE3MyAxLjMxNC0yLjA5NyAwLTEuMjg1LTEuMDM1LTIuMzIzLTIuMzItMi4zMjNTNy42NyA1LjgyNSA3LjY3IDcuMTFjMCAuOTIzLjUzNSAxLjcyIDEuMzE1IDIuMDkzVjEzLjRsMS4wMTYuNTY3em0tMS43NjQtLjk4NXYtLjAzNWMwLTMuNjEtMS4zNS02LjU4My0zLjA4My02Ljk2bC0uMDMuMy0uNTIgNC42NyAzLjYzMyAyLjAyNXptMy41Ni0uMDM1YzAgLjAxNCAwIC4wMTguMDAzLjAyM2wzLjYxLTIuMDI1LS41My00LjY4LS4wMjgtLjI3M2MtMS43MjMuNC0zLjA1NyAzLjM2Mi0zLjA1NyA2Ljk1NXoiLz48L2c+PC9zdmc+';
 
 	/**
-	 * The existing access levels.
-	 *
-	 * @since  1.6.4
-	 * @see    restrict-user-access/app.php -> get_levels()
-	 * @var    \WP_Post[]  Array of WP_Post objects (RUA access level post type)
-	 */
-	protected $levels;
-
-	/**
 	 * @since  1.6.4
 	 * @since  1.8    Renamed from $selectedLevel.
 	 * @var    int  WP_Post ID (RUA access level post type).
@@ -495,21 +486,23 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			) );
 		}
 
+		$data = array();
 		if ( ! empty( $levels ) ) {
 			foreach ( $levels as $level ) {
-				$this->levels[ $level->ID ] = $level;
+				$data[ $level->ID ] = $level;
 			}
 		}
-		$this->set_data( $this->levels );
+		$this->set_data( $data );
 	}
 
 	/**
 	 * Get an access level by ID.
 	 *
 	 * @since   1.6.4
+	 * @see     restrict-user-access/app.php -> get_levels()
 	 * @access  public
 	 * @param   string  $key  (optional) The level key.
-	 * @return  mixed
+	 * @return  \WP_Post[]|\WP_Post|bool  Array of WP_Post objects (RUA access level post type)
 	 */
 	public function get_levels( $key = '-1' ) {
 		if ( ! is_numeric( $key ) ) {
