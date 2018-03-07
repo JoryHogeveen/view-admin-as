@@ -212,10 +212,10 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.8
 	 * @access  public
-	 * @param   string  $titles  The current title(s).
-	 * @return  string
+	 * @param   array  $titles  The current title(s).
+	 * @return  array
 	 */
-	abstract public function view_title( $titles );
+	abstract public function view_title( $titles = array() );
 
 	/**
 	 * Add the admin bar items.

@@ -271,10 +271,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
 	 * @since   1.8    Renamed from vaa_admin_bar_view_titles().
 	 * @access  public
-	 * @param   array  $title  The current title(s).
+	 * @param   array  $titles  The current title(s).
 	 * @return  array
 	 */
-	public function view_title( $title ) {
+	public function view_title( $titles = array() ) {
 
 		$current = $this->get_levels( $this->selected );
 		if ( $current ) {
@@ -287,9 +287,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 				$view_label = $this->levelPostType->labels->name;
 			}
 
-			$title[ $view_label ] = $current->post_title;
+			$titles[ $view_label ] = $current->post_title;
 		}
-		return $title;
+		return $titles;
 	}
 
 	/**

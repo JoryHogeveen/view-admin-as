@@ -460,14 +460,14 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * @since   1.7.2
 	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
 	 * @access  public
-	 * @param   array  $title  The current title(s).
+	 * @param   array  $titles  The current title(s).
 	 * @return  array
 	 */
-	public function view_title( $title ) {
+	public function view_title( $titles = array() ) {
 		if ( $this->selected ) {
-			$title[ $this->translate_remote( 'Group' ) ] = $this->selected->name;
+			$titles[ $this->translate_remote( 'Group' ) ] = $this->selected->name;
 		}
-		return $title;
+		return $titles;
 	}
 
 	/**
