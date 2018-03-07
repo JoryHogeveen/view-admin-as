@@ -194,8 +194,6 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 			),
 		) );
 
-		$parent = $root . '-languages';
-
 		/**
 		 * Add items at the beginning of the rua group.
 		 *
@@ -207,33 +205,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		do_action( 'vaa_admin_bar_languages_before', $admin_bar, $root );
 
 		// Add the levels.
-		foreach ( $this->get_languages() as $locale => $language ) {
-			$view_value = $locale;
-			$view_data  = array( $this->viewKey => $view_value );
-			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
-			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = ( $locale !== $language ) ? '<code>' . $locale . '</code> | ' . $language : $locale;
-			$title = VAA_View_Admin_As_Form::do_view_title( $title, $this->viewKey, $view_value );
-			// Check if this level is the current view.
-			if ( $this->store->get_view( $this->viewKey ) ) {
-				if ( VAA_API::is_current_view( $view_value, $this->viewKey ) ) {
-					$class .= ' current';
-					$href = false;
-				}
-			}
-			//$parent = $root;
-			$admin_bar->add_node( array(
-				'id'        => $root . '-' . $this->viewKey . '-' . $view_value,
-				'parent'    => $parent,
-				'title'     => $title,
-				'href'      => $href,
-				'meta'      => array(
-					// Translators: %s stands for the language name.
-					'title'     => sprintf( __( 'View in %s', VIEW_ADMIN_AS_DOMAIN ), $language ),
-					'class'     => $class,
-				),
-			) );
-		} // End foreach().
+		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-language-items.php' );
 
 		/**
 		 * Add items at the end of the rua group.
