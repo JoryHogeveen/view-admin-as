@@ -76,6 +76,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 
 		// @since  1.6.4  Set the current user as the selected user by default.
 		$this->store->set_selectedUser( $this->store->get_curUser() );
+		$this->store->set_selectedCaps( $this->store->get_curUser()->allcaps );
 
 		/**
 		 * VISITOR.
