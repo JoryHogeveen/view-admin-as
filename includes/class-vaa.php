@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.5
+ * @version 1.8
  */
 final class VAA_View_Admin_As
 {
@@ -100,6 +100,16 @@ final class VAA_View_Admin_As
 	private $modules = array();
 
 	/**
+	 * View types.
+	 *
+	 * @since  1.8
+	 * @see    VAA_View_Admin_As::load_modules()
+	 * @see    VAA_View_Admin_As::register_view_type()
+	 * @var    object[]
+	 */
+	private $view_types = array();
+
+	/**
 	 * Class registry
 	 *
 	 * @since  1.8
@@ -115,6 +125,7 @@ final class VAA_View_Admin_As
 		'VAA_View_Admin_As_View'       => 'includes/class-view.php',
 		'VAA_View_Admin_As_Update'     => 'includes/class-update.php',
 		'VAA_View_Admin_As_Compat'     => 'includes/class-compat.php',
+		'VAA_View_Admin_As_Type'       => 'includes/class-type.php',
 		'VAA_View_Admin_As_Module'     => 'includes/class-module.php',
 	);
 
@@ -244,9 +255,13 @@ final class VAA_View_Admin_As
 			// Fix some compatibility issues, more to come!
 			VAA_View_Admin_As_Compat::get_instance( $this )->init();
 
-			$this->store->store_caps();
-			$this->store->store_roles();
-			$this->store->store_users();
+			/**
+			 * Plugin enabled + update and compat scripts done.
+			 *
+			 * @since  1.8
+			 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
+			 */
+			do_action( 'vaa_view_admin_as_pre_init', $this );
 
 			$this->controller->init();
 			$this->view->init();
@@ -447,6 +462,22 @@ final class VAA_View_Admin_As
 	private function load_modules() {
 
 		$includes = array(
+			'user_switcher' => array(
+				'file'  => 'modules/class-users.php',
+				'class' => 'VAA_View_Admin_As_Users',
+			),
+			'role_switcher' => array(
+				'file'  => 'modules/class-roles.php',
+				'class' => 'VAA_View_Admin_As_Roles',
+			),
+			'capability_switcher' => array(
+				'file'  => 'modules/class-caps.php',
+				'class' => 'VAA_View_Admin_As_Caps',
+			),
+			'language_switcher' => array(
+				'file'  => 'modules/class-languages.php',
+				'class' => 'VAA_View_Admin_As_Languages',
+			),
 			'role_defaults' => array(
 				'file'  => 'modules/class-role-defaults.php',
 				'class' => 'VAA_View_Admin_As_Role_Defaults',
@@ -454,10 +485,6 @@ final class VAA_View_Admin_As
 			'role_manager' => array(
 				'file'  => 'modules/class-role-manager.php',
 				'class' => 'VAA_View_Admin_As_Role_Manager',
-			),
-			'language_switcher' => array(
-				'file'  => 'modules/class-languages.php',
-				'class' => 'VAA_View_Admin_As_Languages',
 			),
 		);
 
@@ -566,10 +593,44 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 * @see     VAA_View_Admin_As::load_ui()
 	 * @param   string  $key  (optional) UI class name.
-	 * @return  object|object[]
+	 * @return  VAA_View_Admin_As_Module|VAA_View_Admin_As_Module[]
 	 */
 	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
+	}
+
+	/**
+	 * Get view types.
+	 * If a key is provided it will only return that view type.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @param   string  $key  (optional) The type key.
+	 * @return  VAA_View_Admin_As_Type|VAA_View_Admin_As_Type[]
+	 */
+	public function get_view_types( $key = null ) {
+		return VAA_API::get_array_data( $this->view_types, $key );
+	}
+
+	/**
+	 * Register view types
+	 *
+	 * @since   1.8
+	 * @param   array  $data {
+	 *     Required. An array of module info.
+	 *     @type  string  $id        The view type name, choose wisely since this is used for validation.
+	 *     @type  object  $instance  The view type class reference/instance.
+	 * }
+	 * @return  bool  Successfully registered?
+	 */
+	public function register_view_type( $data ) {
+		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
+		     ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		) {
+			$this->view_types[ $data['id'] ] = $data['instance'];
+			return true;
+		}
+		return false;
 	}
 
 	/**

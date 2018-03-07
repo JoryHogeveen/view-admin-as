@@ -76,15 +76,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 
 		// @since  1.6.4  Set the current user as the selected user by default.
 		$this->store->set_selectedUser( $this->store->get_curUser() );
+		$this->store->set_selectedCaps( $this->store->get_curUser()->allcaps );
 
 		/**
-		 * USER & VISITOR.
+		 * VISITOR.
 		 * Current user object views (switches current user).
 		 *
-		 * @since  0.1    User view.
 		 * @since  1.6.2  Visitor view.
 		 */
-		if ( $this->store->get_view( 'user' ) || $this->store->get_view( 'visitor' ) ) {
+		if ( $this->store->get_view( 'visitor' ) ) {
 
 			/**
 			 * Change current user object so changes can be made on various screen settings.
@@ -92,23 +92,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 			 *
 			 * If it is a visitor view it will convert the false return from 'user' to 0.
 			 */
-			$this->store->set_selectedUser( wp_set_current_user( (int) $this->store->get_view( 'user' ) ) );
+			$this->store->set_selectedUser( wp_set_current_user( 0 ) );
 
 			// @since  1.6.2  Set the caps for this view (user view).
 			if ( isset( $this->store->get_selectedUser()->allcaps ) ) {
 				$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
 			}
-		}
-
-		/**
-		 * ROLES & CAPS.
-		 * Capability based views (modifies current user).
-		 *
-		 * @since  0.1  Role view
-		 * @since  1.3  Caps view
-		 */
-		if ( $this->store->get_view( 'role' ) || $this->store->get_view( 'caps' ) ) {
-			$this->init_user_modifications();
 		}
 
 		/**
@@ -234,69 +223,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		$user = $this->store->get_selectedUser();
 
 		/**
-		 * Validate if the WP_User properties are still accessible.
-		 * Currently everything is public but this could possibly change.
-		 *
-		 * @since  1.6.3
-		 */
-		$accessible = false;
-		$public_props = get_object_vars( $user );
-		if ( array_key_exists( 'caps', $public_props ) &&
-		     array_key_exists( 'allcaps', $public_props ) &&
-			 is_callable( array( $user, 'get_role_caps' ) )
-		) {
-			$accessible = true;
-		}
-
-		/**
-		 * Role view.
-		 *
-		 * @since  0.1
-		 */
-		if ( $this->store->get_roles( $this->store->get_view( 'role' ) ) instanceof WP_Role ) {
-			if ( ! $accessible ) {
-				// @since  1.6.2  Set the caps for this view here instead of in the mapper function.
-				$this->store->set_selectedCaps(
-					$this->store->get_roles( $this->store->get_view( 'role' ) )->capabilities
-				);
-			} else {
-				// @since  1.6.3  Set the current user's role to the current view.
-				$user->caps = array( $this->store->get_view( 'role' ) => 1 );
-				// Sets the `allcaps` and `roles` properties correct.
-				$user->get_role_caps();
-			}
-		}
-
-		/**
-		 * Caps view.
-		 *
-		 * @since  1.3
-		 */
-		if ( is_array( $this->store->get_view( 'caps' ) ) ) {
-			if ( ! $accessible ) {
-				$this->store->set_selectedCaps( $this->store->get_view( 'caps' ) );
-			} else {
-				// @since  1.6.3  Set the current user's caps (roles) to the current view.
-				$user->allcaps = array_merge(
-					(array) array_filter( $this->store->get_view( 'caps' ) ),
-					(array) $user->caps // Contains the current user roles.
-				);
-			}
-		}
-
-		if ( $accessible ) {
-			$this->store->set_selectedCaps( $user->allcaps );
-		}
-
-		/**
 		 * Allow other modules to hook after the initial changes to the current user.
 		 *
 		 * @since  1.6.3
 		 * @since  1.6.4     Changed name (was: `vaa_view_admin_as_modify_current_user`).
 		 * @param  \WP_User  $user        The modified user object.
-		 * @param  bool      $accessible  Are the needed WP_User properties and methods accessible?
 		 */
-		do_action( 'vaa_view_admin_as_modify_user', $user, $accessible );
+		do_action( 'vaa_view_admin_as_modify_user', $user );
 	}
 
 	/**
