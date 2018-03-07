@@ -135,45 +135,29 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 			return __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
 		}
 
-		$title = array();
-
-		if ( $this->store->get_view( 'caps' ) ) {
-			$title[] = __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN );
-		}
-
-		if ( $this->store->get_view( 'role' ) ) {
-			$title[ __( 'Role', VIEW_ADMIN_AS_DOMAIN ) ] = $this->store->get_rolenames( $this->store->get_view( 'role' ) );
-		}
-
-		if ( $this->store->get_view( 'user' ) ) {
-
-			$type = __( 'User', VIEW_ADMIN_AS_DOMAIN );
-			$title[ $type ] = $this->store->get_selectedUser()->data->display_name;
-
-			if ( ! $this->store->get_view( 'role' ) ) {
-				$selected_user_roles = array();
-				foreach ( $this->store->get_selectedUser()->roles as $role ) {
-					$selected_user_roles[] = $this->store->get_rolenames( $role );
-				}
-				$title[ $type ] .= ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
-			}
-		}
+		$titles = array();
 
 		if ( $this->store->get_view( 'visitor' ) ) {
-			$title[] = __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN );
+			$titles[] = __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		/**
 		 * Filter what to show when a view is applied.
 		 *
-		 * @hooked  Core module priorities:
-		 * - group (Groups): 10
-		 * - rua_level (Restrict User Access): 10
-		 * - role defaults (appends an icon): 999
+		 * @hooked
+		 * 5:   user
+		 * 8:   role
+		 * 10:  group (Groups)
+		 * 10:  rua_level (Restrict User Access)
+		 * 80:  caps
+		 * 90:  locale
+		 * 999: role defaults (appends an icon)
 		 *
-		 * @since  1.7.5  Renamed from `vaa_admin_bar_viewing_as_title`.
-		 * @param  array  $title   The current title.
-		 * @param  array  $view    The view data.
+		 * @since  1.7.5
+		 *
+		 * @param  array  $titles   The current title(s).
+		 * @param  array  $view     The view data.
+		 *
 		 * @return array|string
 		 */
 		$title = apply_filters( 'vaa_admin_bar_view_titles', $title, (array) $this->store->get_view() );
