@@ -21,10 +21,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.7.6
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.8
+ * @uses    VAA_View_Admin_As_Type Extends class
  */
-final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
+final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 {
 	/**
 	 * The single instance of the class.
@@ -34,6 +34,21 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * @var    VAA_View_Admin_As_RUA
 	 */
 	private static $_instance = null;
+
+	/**
+	 * @since  1.6.4
+	 * @since  1.8    Renamed from $viewKey.
+	 * @var    string
+	 */
+	protected $type = 'rua_level';
+
+	/**
+	 * The view icon.
+	 *
+	 * @since  1.7.6
+	 * @var    string
+	 */
+	protected $icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj48ZyBmaWxsPSIjYTBhNWFhIj48cGF0aCBkPSJNMTAuMDEyIDE0LjYyNUw1Ljc4IDEyLjI3Yy0xLjkwNi42NjQtMy42MDUgMS43Ni00Ljk4IDMuMTc4IDIuMTA1IDIuNzcgNS40MzYgNC41NiA5LjE4NSA0LjU2IDMuNzY2IDAgNy4xMTItMS44MDIgOS4yMTUtNC41OTMtMS4zOC0xLjQwNC0zLjA3LTIuNDk2LTQuOTctMy4xNTRsLTQuMjE4IDIuMzY3em0tLjAwNS0xNC42M0M3LjQxMi0uMDA1IDUuMzEgMS45MSA1LjMxIDQuMjhoOS4zOTNjMC0yLjM3LTIuMS00LjI4Ni00LjY5Ni00LjI4NnptNi4xMjYgMTAuNzFjLjE1OC0uMDMyLjY0LS4yMzIuNjMtLjMzMy0uMDI1LS4yNC0uNjg2LTUuNTg0LS42ODYtNS41ODRzLS40MjItLjI3LS42ODYtLjI5M2MuMDI0LjIxLjY5IDUuNzYuNzQ1IDYuMjF6bS0xMi4yNTMgMGMtLjE1OC0uMDMyLS42NC0uMjMyLS42My0uMzMzLjAyNS0uMjQuNjg2LTUuNTg0LjY4Ni01LjU4NHMuNDItLjI3LjY4Ni0uMjkzYy0uMDIuMjEtLjY5IDUuNzYtLjc0MiA2LjIxeiIvPjxwYXRoIGQ9Ik0xMCAxMy45NjdoLjAyM2wuOTc1LS41NXYtNC4yMWMuNzgtLjM3NyAxLjMxNC0xLjE3MyAxLjMxNC0yLjA5NyAwLTEuMjg1LTEuMDM1LTIuMzIzLTIuMzItMi4zMjNTNy42NyA1LjgyNSA3LjY3IDcuMTFjMCAuOTIzLjUzNSAxLjcyIDEuMzE1IDIuMDkzVjEzLjRsMS4wMTYuNTY3em0tMS43NjQtLjk4NXYtLjAzNWMwLTMuNjEtMS4zNS02LjU4My0zLjA4My02Ljk2bC0uMDMuMy0uNTIgNC42NyAzLjYzMyAyLjAyNXptMy41Ni0uMDM1YzAgLjAxNCAwIC4wMTguMDAzLjAyM2wzLjYxLTIuMDI1LS41My00LjY4LS4wMjgtLjI3M2MtMS43MjMuNC0zLjA1NyAzLjM2Mi0zLjA1NyA2Ljk1NXoiLz48L2c+PC9zdmc+';
 
 	/**
 	 * The existing access levels.
@@ -61,12 +76,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * @var    \WP_Post_Type  The post type object of the level types.
 	 */
 	private $levelPostType;
-
-	/**
-	 * @since  1.6.4
-	 * @var    string
-	 */
-	private $viewKey = 'rua_level';
 
 	/**
 	 * @since  1.6.4
@@ -99,14 +108,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	private $ruaScreen;
 
 	/**
-	 * The view icon.
-	 *
-	 * @since  1.7.6
-	 * @var    string
-	 */
-	private $icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDIwIDIwIj48ZyBmaWxsPSIjYTBhNWFhIj48cGF0aCBkPSJNMTAuMDEyIDE0LjYyNUw1Ljc4IDEyLjI3Yy0xLjkwNi42NjQtMy42MDUgMS43Ni00Ljk4IDMuMTc4IDIuMTA1IDIuNzcgNS40MzYgNC41NiA5LjE4NSA0LjU2IDMuNzY2IDAgNy4xMTItMS44MDIgOS4yMTUtNC41OTMtMS4zOC0xLjQwNC0zLjA3LTIuNDk2LTQuOTctMy4xNTRsLTQuMjE4IDIuMzY3em0tLjAwNS0xNC42M0M3LjQxMi0uMDA1IDUuMzEgMS45MSA1LjMxIDQuMjhoOS4zOTNjMC0yLjM3LTIuMS00LjI4Ni00LjY5Ni00LjI4NnptNi4xMjYgMTAuNzFjLjE1OC0uMDMyLjY0LS4yMzIuNjMtLjMzMy0uMDI1LS4yNC0uNjg2LTUuNTg0LS42ODYtNS41ODRzLS40MjItLjI3LS42ODYtLjI5M2MuMDI0LjIxLjY5IDUuNzYuNzQ1IDYuMjF6bS0xMi4yNTMgMGMtLjE1OC0uMDMyLS42NC0uMjMyLS42My0uMzMzLjAyNS0uMjQuNjg2LTUuNTg0LjY4Ni01LjU4NHMuNDItLjI3LjY4Ni0uMjkzYy0uMDIuMjEtLjY5IDUuNzYtLjc0MiA2LjIxeiIvPjxwYXRoIGQ9Ik0xMCAxMy45NjdoLjAyM2wuOTc1LS41NXYtNC4yMWMuNzgtLjM3NyAxLjMxNC0xLjE3MyAxLjMxNC0yLjA5NyAwLTEuMjg1LTEuMDM1LTIuMzIzLTIuMzItMi4zMjNTNy42NyA1LjgyNSA3LjY3IDcuMTFjMCAuOTIzLjUzNSAxLjcyIDEuMzE1IDIuMDkzVjEzLjRsMS4wMTYuNTY3em0tMS43NjQtLjk4NXYtLjAzNWMwLTMuNjEtMS4zNS02LjU4My0zLjA4My02Ljk2bC0uMDMuMy0uNTIgNC42NyAzLjYzMyAyLjAyNXptMy41Ni0uMDM1YzAgLjAxNCAwIC4wMTguMDAzLjAyM2wzLjYxLTIuMDI1LS41My00LjY4LS4wMjgtLjI3M2MtMS43MjMuNC0zLjA1NyAzLjM2Mi0zLjA1NyA2Ljk1NXoiLz48L2c+PC9zdmc+';
-
-	/**
 	 * Populate the instance and validate RUA plugin is active.
 	 *
 	 * @since   1.6.4
@@ -115,9 +116,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
-		parent::__construct( $vaa );
 
-		if ( ! $this->vaa->is_enabled() ) {
+		if ( is_network_admin() ) {
 			return;
 		}
 
@@ -134,8 +134,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 		$this->ruaMetaPrefix   = ( defined( 'RUA_App::META_PREFIX' ) ) ? RUA_App::META_PREFIX : '_ca_';
 		$this->ruaTypeRestrict = ( defined( 'RUA_App::TYPE_RESTRICT' ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
 		$this->ruaScreen       = ( defined( 'RUA_App::BASE_SCREEN' ) ) ? RUA_App::BASE_SCREEN : 'wprua';
+		$this->cap             = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_options';
 
-		$this->init();
+		$this->priorities['toolbar'] = 40;
+
+		parent::__construct( $vaa );
 	}
 
 	/**
@@ -144,28 +147,14 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * @since   1.7.4
 	 * @access  private
 	 */
-	private function init() {
-		$access_cap = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_options';
+	public function init() {
 
-		if ( current_user_can( $access_cap ) && ! is_network_admin() ) {
-
-			$this->vaa->register_module( array(
-				'id'       => $this->viewKey,
-				'instance' => self::$_instance,
-			) );
-
-			$this->store_levels();
-
-			$this->add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
-
-			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 40, 2 );
+		if ( parent::init() ) {
 			$this->add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_roles_after' ), 10, 2 );
-
-			$this->add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
-			$this->add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
+		} else {
+			// Add this anyway.
+			$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 		}
-
-		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 	}
 
 	/**
@@ -176,17 +165,15 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 */
 	public function do_view() {
 
-		if ( $this->get_levels( $this->store->get_view( $this->viewKey ) ) ) {
+		if ( parent::do_view() ) {
 
 			if ( ! VAA_API::exists_callable( array( 'WPCALoader', 'load' ), 'debug' ) ) {
 				return;
 			}
 			WPCALoader::load();
 
-			$this->selectedLevel     = $this->store->get_view( $this->viewKey );
+			$this->selectedLevel     = $this->store->get_view( $this->type );
 			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
-
-			$this->add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
 
 			$this->vaa->view()->init_user_modifications();
 			$this->add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
@@ -270,18 +257,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Add view type.
-	 *
-	 * @since   1.6.4
-	 * @param   string[]  $types  Existing view types.
-	 * @return  string[]
-	 */
-	public function add_view_type( $types ) {
-		$types[] = $this->viewKey;
-		return $types;
-	}
-
-	/**
 	 * Validate data for this view type
 	 *
 	 * @since   1.7
@@ -289,35 +264,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 * @param   mixed  $data  The view data
 	 * @return  mixed
 	 */
-	public function validate_view_data( $null, $data ) {
+	public function validate_view_data( $null, $data = null ) {
 		if ( is_numeric( $data ) && $this->get_levels( (int) $data ) ) {
-			return $data;
+			return (int) $data;
 		}
 		return $null;
-	}
-
-	/**
-	 * View update handler (Ajax probably), called from main handler.
-	 *
-	 * @since   1.6.4
-	 * @since   1.7    Renamed from `ajax_handler`
-	 * @access  public
-	 * @param   null    $null    Null.
-	 * @param   array   $data    The ajax data for this module.
-	 * @param   string  $type    The view type.
-	 * @return  bool
-	 */
-	public function update_view( $null, $data, $type ) {
-
-		if ( ! $this->is_valid_ajax() || $type !== $this->viewKey ) {
-			return $null;
-		}
-
-		if ( is_numeric( $data ) && $this->get_levels( (int) $data ) ) {
-			$this->store->set_view( (int) $data, $this->viewKey, true );
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -325,11 +276,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
+	 * @since   1.8    Renamed from vaa_admin_bar_view_titles().
 	 * @access  public
 	 * @param   array  $title  The current title(s).
 	 * @return  array
 	 */
-	public function vaa_admin_bar_view_titles( $title ) {
+	public function view_title( $title ) {
 
 		if ( $this->get_levels( $this->selectedLevel ) ) {
 
@@ -438,16 +390,16 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
 			$view_value = $level->ID;
-			$view_data  = array( $this->viewKey => $view_value );
+			$view_data  = array( $this->type => $view_value );
 			if ( $role ) {
 				$view_data['role'] = $role;
 			}
 			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
-			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = VAA_View_Admin_As_Form::do_view_title( $level->post_title, $this->viewKey, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
+			$class = 'vaa-' . $this->type . '-item';
+			$title = VAA_View_Admin_As_Form::do_view_title( $level->post_title, $this->type, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
 			// Check if this level is the current view.
-			if ( $this->store->get_view( $this->viewKey ) ) {
-				if ( VAA_API::is_current_view( $view_value, $this->viewKey ) ) {
+			if ( $this->store->get_view( $this->type ) ) {
+				if ( VAA_API::is_current_view( $view_value, $this->type ) ) {
 					$class .= ' current';
 					if ( 1 === count( $this->store->get_view() ) && empty( $role ) ) {
 						// The node item is the only view and is not related to a role.
@@ -465,10 +417,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 			}
 			$parent = $root;
 			if ( ! empty( $level->post_parent ) ) {
-				$parent = $root . '-' . $this->viewKey . '-' . (int) $level->post_parent;
+				$parent = $root . '-' . $this->type . '-' . (int) $level->post_parent;
 			}
 			$admin_bar->add_node( array(
-				'id'        => $root . '-' . $this->viewKey . '-' . $view_value,
+				'id'        => $root . '-' . $this->type . '-' . $view_value,
 				'parent'    => $parent,
 				'title'     => $title,
 				'href'      => $href,
@@ -522,12 +474,13 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Store the available groups.
+	 * Store the available access levels.
 	 *
 	 * @since   1.6.4
+	 * @since   1.8    Renamed from store_levels().
 	 * @access  private
 	 */
-	private function store_levels() {
+	public function store_data() {
 		if ( is_callable( array( $this->ruaApp, 'get_levels' ) ) ) {
 			$levels = $this->ruaApp->get_levels();
 		} else {
@@ -544,10 +497,11 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 				$this->levels[ $level->ID ] = $level;
 			}
 		}
+		$this->set_data( $this->levels );
 	}
 
 	/**
-	 * Get a group by ID.
+	 * Get an access level by ID.
 	 *
 	 * @since   1.6.4
 	 * @access  public
@@ -561,7 +515,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 		if ( '-1' === $key ) {
 			$key = null;
 		}
-		return VAA_API::get_array_data( $this->levels, $key );
+		return $this->get_data( $key );
 	}
 
 	/**
