@@ -316,20 +316,20 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
+	 * Get the selected user object of a view.
+	 * @return  \WP_User
+	 */
+	public function get_selectedUser() {
+		return $this->selectedUser;
+	}
+
+	/**
 	 * Get selected capabilities of a view.
 	 * @param   string  $key  Cap name.
 	 * @return  bool[]|bool  Array of capabilities or a single capability value.
 	 */
 	public function get_selectedCaps( $key = null ) {
 		return VAA_API::get_array_data( $this->selectedCaps, $key );
-	}
-
-	/**
-	 * Get the selected user object of a view.
-	 * @return  \WP_User
-	 */
-	public function get_selectedUser() {
-		return $this->selectedUser;
 	}
 
 	/**
@@ -357,6 +357,24 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 */
 	public function get_dbVersion() {
 		return strtolower( (string) VIEW_ADMIN_AS_DB_VERSION );
+	}
+
+	/**
+	 * Set the current user object.
+	 * @param   WP_User  $val  User object.
+	 * @return  void
+	 */
+	public function set_curUser( $val ) {
+		$this->curUser = $val;
+	}
+
+	/**
+	 * Set the current user session.
+	 * @param   string  $val  User session ID.
+	 * @return  void
+	 */
+	public function set_curUserSession( $val ) {
+		$this->curUserSession = (string) $val;
 	}
 
 	/**
@@ -425,18 +443,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
-	 * Set the languages.
-	 * @since   1.8
-	 * @param   mixed   $val     Value.
-	 * @param   string  $key     (optional) Role name.
-	 * @param   bool    $append  (optional) Append if it doesn't exist?
-	 * @return  void
-	 */
-	public function set_languages( $val, $key = null, $append = false ) {
-		$this->data['languages'] = (array) VAA_API::set_array_data( $this->data['languages'], $val, $key, $append );
-	}
-
-	/**
 	 * Set the available users.
 	 * @param   mixed   $val     Value.
 	 * @param   string  $key     (optional) User key.
@@ -448,21 +454,15 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
-	 * Set the current user object.
-	 * @param   WP_User  $val  User object.
+	 * Set the languages.
+	 * @since   1.8
+	 * @param   mixed   $val     Value.
+	 * @param   string  $key     (optional) Role name.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 * @return  void
 	 */
-	public function set_curUser( $val ) {
-		$this->curUser = $val;
-	}
-
-	/**
-	 * Set the current user session.
-	 * @param   string  $val  User session ID.
-	 * @return  void
-	 */
-	public function set_curUserSession( $val ) {
-		$this->curUserSession = (string) $val;
+	public function set_languages( $val, $key = null, $append = false ) {
+		$this->data['languages'] = (array) VAA_API::set_array_data( $this->data['languages'], $val, $key, $append );
 	}
 
 	/**
