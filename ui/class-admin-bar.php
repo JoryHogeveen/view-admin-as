@@ -160,16 +160,16 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 *
 		 * @return array|string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_view_titles', $title, (array) $this->store->get_view() );
+		$titles = apply_filters( 'vaa_admin_bar_view_titles', $titles, (array) $this->store->get_view() );
 
-		if ( is_array( $title ) ) {
-			if ( 1 < count( $title ) ) {
+		if ( is_array( $titles ) ) {
+			if ( 1 < count( $titles ) ) {
 				// @todo Help icon for view info?
 				// Translators: Context is a list of view types. Not the verb.
-				$title = __( 'View', VIEW_ADMIN_AS_DOMAIN ) . ': ' . implode( ', ', $title );
+				$title = __( 'View', VIEW_ADMIN_AS_DOMAIN ) . ': ' . implode( ', ', $titles );
 			} else {
-				$type = key( $title );
-				$name = reset( $title );
+				$type = key( $titles );
+				$name = reset( $titles );
 				$title = __( 'Viewing as', VIEW_ADMIN_AS_DOMAIN );
 				if ( $type ) {
 					$title .= ' ' . $type;
