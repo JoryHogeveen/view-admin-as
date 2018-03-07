@@ -452,6 +452,22 @@ final class VAA_View_Admin_As
 	private function load_modules() {
 
 		$includes = array(
+			'user_switcher' => array(
+				'file'  => 'modules/class-users.php',
+				'class' => 'VAA_View_Admin_As_Users',
+			),
+			'role_switcher' => array(
+				'file'  => 'modules/class-roles.php',
+				'class' => 'VAA_View_Admin_As_Roles',
+			),
+			'capability_switcher' => array(
+				'file'  => 'modules/class-caps.php',
+				'class' => 'VAA_View_Admin_As_Caps',
+			),
+			'language_switcher' => array(
+				'file'  => 'modules/class-languages.php',
+				'class' => 'VAA_View_Admin_As_Languages',
+			),
 			'role_defaults' => array(
 				'file'  => 'modules/class-role-defaults.php',
 				'class' => 'VAA_View_Admin_As_Role_Defaults',
@@ -459,10 +475,6 @@ final class VAA_View_Admin_As
 			'role_manager' => array(
 				'file'  => 'modules/class-role-manager.php',
 				'class' => 'VAA_View_Admin_As_Role_Manager',
-			),
-			'language_switcher' => array(
-				'file'  => 'modules/class-languages.php',
-				'class' => 'VAA_View_Admin_As_Languages',
 			),
 		);
 
