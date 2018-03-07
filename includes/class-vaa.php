@@ -244,9 +244,13 @@ final class VAA_View_Admin_As
 			// Fix some compatibility issues, more to come!
 			VAA_View_Admin_As_Compat::get_instance( $this )->init();
 
-			$this->store->store_caps();
-			$this->store->store_roles();
-			$this->store->store_users();
+			/**
+			 * Plugin enabled + update and compat scripts done.
+			 *
+			 * @since  1.8
+			 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
+			 */
+			do_action( 'vaa_view_admin_as_pre_init', $this );
 
 			$this->controller->init();
 			$this->view->init();
