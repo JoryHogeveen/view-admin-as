@@ -105,16 +105,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		// Reset hook.
 		$this->add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
 
-		// Validation hooks.
+		// Validation & update hooks for visitor view.
 		$this->add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
-		$this->add_filter( 'view_admin_as_validate_view_data_caps', array( $this, 'validate_view_data_caps' ), 10, 2 );
-		$this->add_filter( 'view_admin_as_validate_view_data_role', array( $this, 'validate_view_data_role' ), 10, 2 );
-		$this->add_filter( 'view_admin_as_validate_view_data_user', array( $this, 'validate_view_data_user' ), 10, 2 );
-
-		// Update hooks.
-		$this->add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 3 );
-		$this->add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 3 );
-		$this->add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 3 );
 		$this->add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
 
 		// Get the current view.
@@ -282,61 +274,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Handles the caps view since it's a bit more complex.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @param   null    $null  Null.
-	 * @param   mixed   $data  The view data.
-	 * @param   string  $type  The view type.
-	 * @return  bool|array
-	 */
-	public function filter_update_view_caps( $null, $data, $type ) {
-		$success = $null;
-		if ( ! is_array( $data ) || 'caps' !== $type ) {
-			return $success;
-		}
-		$db_view = $this->store->get_view( 'caps' );
-
-		// Check if the selected caps are equal to the default caps.
-		if ( VAA_API::array_equal( $this->store->get_curUser()->allcaps, $data ) ) {
-			// The selected caps are equal to the current user default caps so we can reset the view.
-			$this->reset_view();
-			if ( $db_view ) {
-				// The user was in a custom caps view.
-				$success = true; // and continue.
-			} else {
-				// The user was in his default view, notify the user.
-				$success = array(
-					'success' => false,
-					'data' => array(
-						'type' => 'message',
-						'text' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
-					),
-				);
-			}
-		} else {
-			// Store the selected caps.
-			$new_caps = array_map( 'absint', $data );
-
-			// Check if the new caps selection is different.
-			if ( VAA_API::array_equal( $db_view, $new_caps ) ) {
-				$success = array(
-					'success' => false,
-					'data' => array(
-						'type' => 'message',
-						'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
-					),
-				);
-			} else {
-				$this->store->set_view( $data, $type, true );
-				$success = true;
-			}
-		}
-		return $success;
-	}
-
-	/**
 	 * Check if the provided data is the same as the current view.
 	 *
 	 * @since   1.7
@@ -380,7 +317,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Get the available view types.
+	 * Get the available and enabled view types.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -405,7 +342,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 */
 		$view_types = array_unique( array_merge(
 			array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
-			array( 'user', 'role', 'caps', 'visitor' )
+			array( 'visitor' )
 		) );
 
 		return $view_types;
@@ -668,72 +605,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			}
 		}
 		return $data;
-	}
-
-	/**
-	 * Validate data for role view type.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @param   null   $null  Default return (invalid).
-	 * @param   mixed  $data  The view data.
-	 * @return  mixed
-	 */
-	public function validate_view_data_caps( $null, $data ) {
-		// Caps data must be an array
-		if ( is_array( $data ) ) {
-
-			// The data is an array, most likely from the database.
-			$data = array_map( 'absint', $data );
-			// Sort the new caps the same way we sort the existing caps.
-			ksort( $data );
-
-			// Only allow assigned capabilities if it isn't a super admin.
-			if ( ! VAA_API::is_super_admin() ) {
-				$data = array_intersect_key( $data, $this->store->get_caps() );
-			}
-
-			// @since  1.7.4  Forbidden capabilities.
-			unset( $data['do_not_allow'] );
-			unset( $data['vaa_do_not_allow'] );
-
-			return $data;
-		}
-		return $null;
-	}
-
-	/**
-	 * Validate data for role view type.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @param   null   $null  Default return (invalid).
-	 * @param   mixed  $data  The view data.
-	 * @return  mixed
-	 */
-	public function validate_view_data_role( $null, $data ) {
-		// Role data must be a string and exists in the loaded array of roles.
-		if ( is_string( $data ) && array_key_exists( $data, $this->store->get_roles() ) ) {
-			return $data;
-		}
-		return $null;
-	}
-
-	/**
-	 * Validate data for user view type.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @param   null   $null  Default return (invalid).
-	 * @param   mixed  $data  The view data.
-	 * @return  mixed
-	 */
-	public function validate_view_data_user( $null, $data ) {
-		// User data must be a number and exists in the loaded array of user id's.
-		if ( is_numeric( $data ) && array_key_exists( $data, $this->store->get_users() ) ) {
-			return $data;
-		}
-		return $null;
 	}
 
 	/**
