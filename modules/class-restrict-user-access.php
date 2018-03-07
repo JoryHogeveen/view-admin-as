@@ -57,55 +57,57 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * @see    restrict-user-access/app.php -> get_levels()
 	 * @var    \WP_Post[]  Array of WP_Post objects (RUA access level post type)
 	 */
-	private $levels;
+	protected $levels;
 
 	/**
 	 * @since  1.6.4
+	 * @since  1.8    Renamed from $selectedLevel.
 	 * @var    int  WP_Post ID (RUA access level post type).
 	 */
-	private $selectedLevel;
+	protected $selected;
 
 	/**
 	 * @since  1.6.4
+	 * @since  1.8    Renamed from $selectedLevelCaps.
 	 * @var    array  The caps set for this level.
 	 */
-	private $selectedLevelCaps = array();
+	protected $selectedCaps = array();
 
 	/**
 	 * @since  1.6.4
 	 * @var    \WP_Post_Type  The post type object of the level types.
 	 */
-	private $levelPostType;
+	protected $levelPostType;
 
 	/**
 	 * @since  1.6.4
 	 * @var    \RUA_App
 	 */
-	private $ruaApp;
+	protected $ruaApp;
 
 	/**
 	 * @since  1.7.2
 	 * @var    \RUA_Level_Manager
 	 */
-	private $ruaLevelManager;
+	protected $ruaLevelManager;
 
 	/**
 	 * @since  1.6.4
 	 * @var    string
 	 */
-	private $ruaMetaPrefix;
+	protected $ruaMetaPrefix;
 
 	/**
 	 * @since  1.6.4
 	 * @var    string
 	 */
-	private $ruaTypeRestrict;
+	protected $ruaTypeRestrict;
 
 	/**
 	 * @since  1.7.4
 	 * @var    string
 	 */
-	private $ruaScreen;
+	protected $ruaScreen;
 
 	/**
 	 * Populate the instance and validate RUA plugin is active.
@@ -172,8 +174,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			}
 			WPCALoader::load();
 
-			$this->selectedLevel     = $this->store->get_view( $this->type );
-			$this->selectedLevelCaps = $this->get_level_caps( $this->selectedLevel, true );
+			//$this->selected     = $this->store->get_view( $this->type );
+			$this->selectedCaps = $this->get_level_caps( $this->selected, true );
 
 			$this->vaa->view()->init_user_modifications();
 			$this->add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
@@ -220,7 +222,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 */
 	public function modify_user( $user ) {
 
-		$caps = (array) $this->selectedLevelCaps;
+		$caps = (array) $this->selectedCaps;
 
 		// Merge the caps with the current selected caps, overwrite existing.
 		$caps = array_merge( $this->store->get_selectedCaps(), $caps );
@@ -242,13 +244,13 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 */
 	public function get_user_metadata( $null, $user_id, $meta_key ) {
 		if ( (int) $user_id === (int) $this->store->get_selectedUser()->ID
-		     && $this->get_levels( $this->selectedLevel )
+		     && $this->get_levels( $this->selected )
 		) {
 			// @todo Check for future API updates in RUA plugin
 			if ( $this->ruaMetaPrefix . 'level' === $meta_key ) {
-				return array( $this->selectedLevel );
+				return array( $this->selected );
 			}
-			if ( $this->ruaMetaPrefix . 'level_' . $this->selectedLevel === $meta_key ) {
+			if ( $this->ruaMetaPrefix . 'level_' . $this->selected === $meta_key ) {
 				// Return current time + 120 seconds to make sure this level won't be set as expired.
 				return array( time() + 120 );
 			}
@@ -283,7 +285,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 */
 	public function view_title( $title ) {
 
-		if ( $this->get_levels( $this->selectedLevel ) ) {
+		$current = $this->get_levels( $this->selected );
+		if ( $current ) {
 
 			$view_label = 'Access Level';
 			$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
@@ -293,7 +296,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 				$view_label = $this->levelPostType->labels->name;
 			}
 
-			$title[ $view_label ] = $this->get_levels( $this->selectedLevel )->post_title;
+			$title[ $view_label ] = $current->post_title;
 		}
 		return $title;
 	}
@@ -409,7 +412,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 						$href = false;
 					}
 				} else {
-					$selected = $this->get_levels( $this->selectedLevel );
+					$selected = $this->get_levels( $this->selected );
 					if ( $selected && (int) $selected->post_parent === (int) $view_value ) {
 						$class .= ' current-parent';
 					}
