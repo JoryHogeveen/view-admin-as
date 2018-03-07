@@ -292,6 +292,19 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	/**
 	 * Add admin bar menu info items.
 	 *
+	 * @hooked
+	 * 1:  Info
+	 * 2:  Settings
+	 * 5:  Role Defaults module
+	 * 6:  Role Manager module
+	 * 8:  View combinations
+	 * 9:  Languages view
+	 * 10: Capabilities view
+	 * 20: Roles view
+	 * 30: Users view
+	 * 31: Visitor view
+	 * 40: RUA & Groups view modules
+	 *
 	 * @since   1.6
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
