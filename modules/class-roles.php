@@ -119,7 +119,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 			/**
 			 * Filter documented in /templates/adminbar-role-items.php
 			 */
-			$titles[ __( 'Role', VIEW_ADMIN_AS_DOMAIN ) ] = apply_filters( 'vaa_admin_bar_view_title_role', $title, $role );
+			$titles[ __( 'Role', VIEW_ADMIN_AS_DOMAIN ) ] = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
 		}
 		return $titles;
 	}

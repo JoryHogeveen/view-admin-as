@@ -107,12 +107,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			/**
 			 * Filter documented in /templates/adminbar-user-items.php
 			 */
-			$titles[ $type ] = apply_filters( 'vaa_admin_bar_view_title_user', $title, $user );
+			$titles[ $type ] = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
 
 			/**
 			 * Filter documented in /templates/adminbar-user-items.php
 			 */
-			if ( ! $this->store->get_view( 'role' ) && apply_filters( 'vaa_admin_bar_view_title_user_show_roles', true, $user ) ) {
+			if ( ! $this->store->get_view( 'role' ) && apply_filters( 'vaa_admin_bar_view_title_' . $this->type . '_show_roles', true, $user ) ) {
 				$selected_user_roles = array();
 				foreach ( (array) $user->roles as $role ) {
 					$selected_user_roles[] = $this->store->get_rolenames( $role );
