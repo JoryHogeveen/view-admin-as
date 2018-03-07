@@ -462,13 +462,13 @@ final class VAA_View_Admin_As
 	private function load_modules() {
 
 		$includes = array(
-			'user_switcher' => array(
-				'file'  => 'modules/class-users.php',
-				'class' => 'VAA_View_Admin_As_Users',
-			),
 			'role_switcher' => array(
 				'file'  => 'modules/class-roles.php',
 				'class' => 'VAA_View_Admin_As_Roles',
+			),
+			'user_switcher' => array(
+				'file'  => 'modules/class-users.php',
+				'class' => 'VAA_View_Admin_As_Users',
 			),
 			'capability_switcher' => array(
 				'file'  => 'modules/class-caps.php',
