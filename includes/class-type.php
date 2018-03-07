@@ -83,7 +83,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		) );
 
 		// @todo After init??
-		if ( ! $this->current_user_can( $this->cap ) ) {
+		if ( ! $this->is_vaa_enabled() || ! $this->current_user_can( $this->cap ) ) {
 			return;
 		}
 
