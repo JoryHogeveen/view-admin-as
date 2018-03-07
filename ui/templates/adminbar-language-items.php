@@ -2,7 +2,7 @@
 /**
  * Add role items.
  *
- * @since    1.7
+ * @since    1.8
  * @version  1.8
  *
  * @var  \VAA_View_Admin_As_Roles  $this

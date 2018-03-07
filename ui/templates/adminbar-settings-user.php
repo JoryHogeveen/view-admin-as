@@ -3,7 +3,7 @@
  * Add user setting items.
  *
  * @since    1.7.2
- * @version  1.7.6
+ * @version  1.8
  *
  * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string         $root       The current root item.

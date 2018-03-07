@@ -3,7 +3,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.6
+ * @version 1.8-dev
  * @licence GPL-2.0+
  * @link    https://github.com/JoryHogeveen/view-admin-as
  *
@@ -44,8 +44,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as' ) ) {
 
-	define( 'VIEW_ADMIN_AS_VERSION',    '1.7.6' );
-	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.7.2' );
+	define( 'VIEW_ADMIN_AS_VERSION',    '1.8-dev' );
+	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.8' );
 	define( 'VIEW_ADMIN_AS_DOMAIN',     'view-admin-as' );
 	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
 	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
