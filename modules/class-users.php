@@ -240,12 +240,18 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$check = false;
 
+		$roles = $this->store->get_roles();
+
+		if ( ! $roles ) {
+			return $check;
+		}
+
+		$force = $this->store->get_userSettings( 'force_group_users' );
+		$total = count( $this->get_data() ) + count( $roles );
+
 		// If the amount of items (roles and users combined) is more than 15 users, group them under their roles.
 		// There are no roles to group users on network pages.
-		if ( ! is_network_admin() && (
-				$this->store->get_userSettings( 'force_group_users' ) ||
-				15 < ( count( $this->get_data() ) + count( $this->store->get_roles() ) )
-			) ) {
+		if ( ! is_network_admin() && ( $force || 15 < $total ) ) {
 			$check = true;
 		}
 
