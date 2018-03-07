@@ -222,28 +222,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		$user = $this->store->get_selectedUser();
 
 		/**
-		 * Validate if the WP_User properties are still accessible.
-		 * Currently everything is public but this could possibly change.
-		 *
-		 * @since  1.6.3
-		 */
-		$accessible = false;
-		$public_props = get_object_vars( $user );
-		if ( array_key_exists( 'caps', $public_props ) &&
-		     array_key_exists( 'allcaps', $public_props ) &&
-			 is_callable( array( $user, 'get_role_caps' ) )
-		) {
-			$accessible = true;
-		}
-
 		 * Allow other modules to hook after the initial changes to the current user.
 		 *
 		 * @since  1.6.3
 		 * @since  1.6.4     Changed name (was: `vaa_view_admin_as_modify_current_user`).
 		 * @param  \WP_User  $user        The modified user object.
-		 * @param  bool      $accessible  Are the needed WP_User properties and methods accessible?
 		 */
-		do_action( 'vaa_view_admin_as_modify_user', $user, $accessible );
+		do_action( 'vaa_view_admin_as_modify_user', $user );
 	}
 
 	/**

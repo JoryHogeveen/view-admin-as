@@ -225,12 +225,13 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 	 * @since   1.7.2
 	 * @access  public
 	 * @param   \WP_User  $user        User object.
-	 * @param   bool      $accessible  Are the WP_User properties accessible?
 	 */
-	public function modify_user( $user, $accessible ) {
+	public function modify_user( $user ) {
 
 		$caps = array();
 		if ( $this->selectedGroup ) {
+
+			// Merge the caps with the current selected caps, overwrite existing.
 			$group_caps = (array) $this->selectedGroup->capabilities_deep;
 			foreach ( $group_caps as $group_cap ) {
 				/**
@@ -256,10 +257,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Base
 
 		$this->store->set_selectedCaps( $caps );
 
-		if ( $accessible ) {
-			// Merge the caps with the current user caps, overwrite existing.
-			$user->allcaps = array_merge( $user->caps, $caps );
-		}
+		// Merge the caps with the current user caps, overwrite existing.
+		$user->allcaps = array_merge( $user->caps, $caps );
 	}
 
 	/**

@@ -230,26 +230,18 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @param   \WP_User  $user        User object.
-	 * @param   bool      $accessible  Are the WP_User properties accessible?
 	 */
-	public function modify_user( $user, $accessible ) {
+	public function modify_user( $user ) {
 
 		$caps = (array) $this->selectedLevelCaps;
 
-		if ( $this->store->get_view( 'role' ) || ! $accessible ) {
-			// Merge the caps with the current selected caps, overwrite existing.
-			// Also do the same when WP_User parameters aren't accessible.
-			$caps = array_merge( $this->store->get_selectedCaps(), $caps );
-		} else {
-			$caps = array_merge( $user->allcaps, $caps );
-		}
+		// Merge the caps with the current selected caps, overwrite existing.
+		$caps = array_merge( $this->store->get_selectedCaps(), $caps );
 
 		$this->store->set_selectedCaps( $caps );
 
-		if ( $accessible ) {
-			// Merge the caps with the current user caps, overwrite existing.
-			$user->allcaps = array_merge( $user->caps, $caps );
-		}
+		// Merge the caps with the current user caps, overwrite existing.
+		$user->allcaps = array_merge( $user->caps, $caps );
 	}
 
 	/**
