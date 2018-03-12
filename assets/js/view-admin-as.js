@@ -1206,12 +1206,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		var root                 = VAA_View_Admin_As.root + '-combine-views',
 			prefix               = 'vaa-combine-views',
 			root_prefix          = VAA_View_Admin_As.prefix + root,
+			$root                = $( root_prefix ),
 			combine_types        = $.extend( [], VAA_View_Admin_As.view_types ),
 			combine_selectors    = [],
 			selection            = {},
 			$selection_container = root_prefix + ' #' + prefix + '-selection',
 			$combine_items,
 			is_active = false;
+
+		if ( ! $root.length ) {
+			return;
+		}
 
 		combine_types.splice( combine_types.indexOf( 'caps' ), 1 );
 		combine_types.splice( combine_types.indexOf( 'visitor' ), 1 );
@@ -1497,6 +1502,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			root_prefix = VAA_View_Admin_As.prefix + root,
 			$root = $( root_prefix );
 
+		if ( ! $root.length ) {
+			return;
+		}
+
 		// @since  1.6.3  Add new meta.
 		$root.on( 'click touchend', root + '-meta-add button#' + prefix + '-meta-add', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
@@ -1549,6 +1558,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			prefix = 'vaa-caps-manager-role-manager',
 			root_prefix = VAA_View_Admin_As.prefix + root,
 			$root = $( root_prefix );
+
+		if ( ! $root.length ) {
+			return;
+		}
 
 		// @since  1.7  Update capabilities when selecting a role.
 		$root.on( 'change', 'select#' + prefix + '-edit-role', function() {
