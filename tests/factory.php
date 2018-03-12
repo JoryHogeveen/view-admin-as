@@ -6,9 +6,6 @@
  * @package View_Admin_As
  */
 
-view_admin_as()->include_file( VIEW_ADMIN_AS_DIR . 'includes/class-base.php', 'VAA_View_Admin_As_Base' );
-view_admin_as()->include_file( VIEW_ADMIN_AS_DIR . 'includes/class-module.php', 'VAA_View_Admin_As_Module' );
-
 class VAA_UnitTest_Factory {
 
 	/**
