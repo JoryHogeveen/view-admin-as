@@ -104,6 +104,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 
 		if ( ! is_network_admin() ) {
 
+			if ( $this->current_user_can( 'view_admin_as_combinations' ) ) {
+				// View combinations.
+				$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_combine' ), 8, 2 );
+			}
+
 			// There are no outside visitors on network pages.
 			// Add the visitor view nodes under roles with a fallback to users.
 			$this->add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_menu_visitor' ), 10, 2 );
@@ -549,6 +554,42 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		) );
 
 		$done = true;
+	}
+
+	/**
+	 * Add admin bar menu for view combinations.
+	 * Combine views node as last item in the default group.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @see     'vaa_admin_bar_menu' action
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       (optional) The root item.
+	 * @return  void
+	 */
+	public function admin_bar_menu_combine( $admin_bar, $root = '' ) {
+
+		$admin_bar->add_node( array(
+			'id'     => $root . '-combine-views',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+				'name'  => $root . '-combine-views',
+				'label' => __( 'Combine views', VIEW_ADMIN_AS_DOMAIN ),
+			) ) . VAA_View_Admin_As_Form::do_button( array(
+				'name'  => $root . '-combine-views-apply',
+				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-primary ab-vaa-conditional vaa-alignright',
+				'attr'  => array(
+					'vaa-condition-target' => '#' . $root . '-combine-views',
+				),
+			) ) . '<ul id="vaa-combine-views-selection" class="ab-sub-secondary ab-vaa-results" style="display: none;"></ul>',
+			'href'   => false,
+			'meta'   => array(
+				'title' => esc_attr__( 'Make view combinations', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'vaa-button-container',
+			),
+		) );
+
 	}
 
 	/**
