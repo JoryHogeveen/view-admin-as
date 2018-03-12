@@ -815,6 +815,17 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Sets update class to run a DB update.
+	 * @since   1.8
+	 */
+	public static function run_db_update() {
+		// Make sure the main class is initialized.
+		view_admin_as();
+		// Set the update class to a fresh installation which will trigger the update.
+		VAA_View_Admin_As_Update::$fresh_install = true;
+	}
+
+	/**
 	 * Is this plugin network enabled.
 	 *
 	 * @since   1.7.5
