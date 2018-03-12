@@ -1410,7 +1410,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// Toggle view type combination.
-		$vaa.on( 'change', VAA_View_Admin_As.prefix + ' input.vaa-combine-item', function() {
+		$vaa.on( 'change', 'input.vaa-combine-item', function() {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
