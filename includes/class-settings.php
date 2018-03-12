@@ -88,6 +88,14 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	protected $userMeta = array();
 
 	/**
+	 * User meta from all users.
+	 *
+	 * @since  1.8
+	 * @var    array
+	 */
+	protected $allUserMeta = array();
+
+	/**
 	 * Array of default settings.
 	 *
 	 * @since  1.5
@@ -433,6 +441,83 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			}
 		}
 		return $settings;
+	}
+
+	/**
+	 * Get the meta key results for all users.
+	 *
+	 * @since   1.8
+	 * @global  \wpdb  $wpdb
+	 * @return  array {
+	 *     User ID's as array keys.
+	 *     @type  array  $meta_values  The meta values. Column ID's as array keys.
+	 * }
+	 */
+	public function get_all_user_meta() {
+		if ( ! empty( $this->allUserMeta ) ) {
+			return $this->allUserMeta;
+		}
+
+		global $wpdb;
+		$key = $this->get_userMetaKey();
+
+		// @todo Use WP_Meta_Query ?
+		$sql = 'SELECT * FROM ' . $wpdb->usermeta . ' WHERE meta_key = %s';
+		// @codingStandardsIgnoreLine >> $wpdb->prepare(), check returning false error.
+		$results = (array) $wpdb->get_results( $wpdb->prepare( $sql, $key ) );
+
+		$metas = array();
+
+		foreach ( $results as $key => $meta ) {
+			if ( ! isset( $metas[ $meta->user_id ] ) ) {
+				$metas[ $meta->user_id ] = array();
+			}
+			if ( ! empty( $meta->meta_value ) ) {
+				$metas[ $meta->user_id ][ $meta->umeta_id ] = maybe_unserialize( $meta->meta_value );
+			}
+		}
+
+		$this->allUserMeta = $metas;
+
+		return $metas;
+	}
+
+	/**
+	 * Set the meta values for other users.
+	 * Should be used together with get_all_user_meta() to get column id's.
+	 *
+	 * @since   1.8
+	 * @see     \VAA_View_Admin_As_Settings::get_all_user_meta()
+	 * @param   mixed  $value
+	 * @param   int    $user_id
+	 * @param   int    $column_id
+	 * @return  bool
+	 */
+	public function update_other_user_meta( $value, $user_id, $column_id = null ) {
+		if ( ! $this->allUserMeta ) {
+			$this->get_all_user_meta();
+		}
+
+		// Validate settings.
+		$value = wp_parse_args( $value, array(
+			'settings' => array(),
+		) );
+		$value['settings'] = $this->validate_settings( $value['settings'], 'user', true );
+
+		if ( ! isset( $this->allUserMeta[ $user_id ] ) ) {
+			$column_id = 0;
+			$this->allUserMeta[ $user_id ] = array( $column_id => $value );
+		}
+
+		if ( ! is_int( $column_id ) ) {
+			reset( $this->allUserMeta[ $user_id ] );
+			$column_id = key( $this->allUserMeta[ $user_id ] );
+		}
+
+		$this->allUserMeta[ $user_id ][ $column_id ] = $value;
+
+		// @todo handle multiple columns.
+		return update_user_meta( $user_id, $this->get_userMetaKey(), $value );
 	}
 
 	/**
