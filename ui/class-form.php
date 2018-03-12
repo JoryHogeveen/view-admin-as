@@ -29,18 +29,23 @@ class VAA_View_Admin_As_Form
 	 * @access  public
 	 * @static
 	 *
-	 * @param   string  $title  The title content.
-	 * @param   string  $type   The view type.
-	 * @param   string  $value  The view value.
-	 * @param   array   $attr   (optional) Array of other attributes.
-	 * @param   string  $elem   (optional) HTML element type.
+	 * @param   string                          $title  The title content.
+	 * @param   string|\VAA_View_Admin_As_Type  $type   The view type.
+	 * @param   string                          $value  The view value.
+	 * @param   array                           $attr   (optional) Array of other attributes.
+	 * @param   string                          $elem   (optional) HTML element type.
 	 * @return  string
 	 */
 	public static function do_view_title( $title, $type, $value, $attr = array(), $elem = 'span' ) {
 		$attr = (array) $attr;
 		$class = ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '';
 		$attr['class'] = 'vaa-view-data' . $class;
-		$attr['vaa-view-type'] = $type;
+		if ( $type instanceof VAA_View_Admin_As_Type ) {
+			$attr['vaa-view-type'] = $type->get_type();
+			$attr['vaa-view-type-label'] = $type->get_label_singular();
+		} else {
+			$attr['vaa-view-type'] = $type;
+		}
 		$attr['vaa-view-value'] = $value;
 		$attr = self::parse_to_html_attr( $attr );
 		return '<' . $elem . ' ' . $attr . '>' . $title . '</' . $elem . '>';
