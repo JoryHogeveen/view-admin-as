@@ -324,7 +324,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 */
 	public function admin_bar_menu( $admin_bar, $root, $role = null, $role_obj = null ) {
 
-		if ( ! $this->get_levels() || ! count( (array) $this->get_levels() ) ) {
+		if ( ! $this->get_levels() ) {
 			return;
 		}
 
