@@ -237,8 +237,6 @@ final class VAA_View_Admin_As
 		$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
 		$this->view       = VAA_View_Admin_As_View::get_instance( $this );
 
-		$this->store->init( true );
-
 		$this->set_enabled();
 
 		$this->load_modules();
