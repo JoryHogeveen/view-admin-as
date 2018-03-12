@@ -104,10 +104,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 
 		if ( ! is_network_admin() ) {
 
-			// Add the roles nodes to the admin bar.
-			// Roles are not used on network pages.
-			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_roles' ), 20 );
-
 			// There are no outside visitors on network pages.
 			// Add the visitor view nodes under roles with a fallback to users.
 			$this->add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_menu_visitor' ), 10, 2 );
