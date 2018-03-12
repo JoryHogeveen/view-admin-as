@@ -68,6 +68,9 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 			'update_view'        => 10,
 			'do_view'            => 5,
 		);
+
+		$this->label          = __( 'Roles', VIEW_ADMIN_AS_DOMAIN );
+		$this->label_singular = __( 'Role', VIEW_ADMIN_AS_DOMAIN );
 	}
 
 	/**
@@ -119,7 +122,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 			/**
 			 * Filter documented in /templates/adminbar-role-items.php
 			 */
-			$titles[ __( 'Role', VIEW_ADMIN_AS_DOMAIN ) ] = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
+			$titles[ $this->label_singular ] = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
 		}
 		return $titles;
 	}
@@ -181,7 +184,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . __( 'Roles', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',

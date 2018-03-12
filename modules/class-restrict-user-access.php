@@ -131,7 +131,30 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 
 		$this->priorities['toolbar'] = 40;
 
+		$this->label          = 'Access Levels';
+		$this->label_singular = 'Access Level';
+
+		if ( did_action( 'init' ) ) {
+			$this->set_labels();
+		} else {
+			$this->add_action( 'init', array( $this, 'set_labels' ), 99999 );
+		}
+
 		parent::__construct( $vaa );
+	}
+
+	/**
+	 * Sets the type labels.
+	 * @since   1.8
+	 */
+	public function set_labels() {
+		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
+		if ( ! empty( $this->levelPostType->labels->singular_name ) ) {
+			$this->label_singular = $this->levelPostType->labels->singular_name;
+		}
+		if ( isset( $this->levelPostType->label ) ) {
+			$this->label = $this->levelPostType->label;
+		}
 	}
 
 	/**
@@ -279,15 +302,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 		$current = $this->get_levels( $this->selected );
 		if ( $current ) {
 
-			$view_label = 'Access Level';
-			$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
-			if ( ! empty( $this->levelPostType->labels->singular_name ) ) {
-				$view_label = $this->levelPostType->labels->singular_name;
-			} elseif ( isset( $this->levelPostType->labels->name ) ) {
-				$view_label = $this->levelPostType->labels->name;
-			}
-
-			$titles[ $view_label ] = $current->post_title;
+			$titles[ $this->label_singular ] = $current->post_title;
 		}
 		return $titles;
 	}
@@ -308,11 +323,6 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * @param   \WP_Role       $role_obj   (optional) Role object.
 	 */
 	public function admin_bar_menu( $admin_bar, $root, $role = null, $role_obj = null ) {
-		$view_name = 'Access Levels';
-		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
-		if ( isset( $this->levelPostType->labels->name ) ) {
-			$view_name = $this->levelPostType->labels->name;
-		}
 
 		if ( ! $this->get_levels() || ! count( (array) $this->get_levels() ) ) {
 			return;
@@ -333,7 +343,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			$admin_bar->add_node( array(
 				'id'     => $root . '-title',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $view_name,
+				'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -359,7 +369,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			$admin_bar->add_node( array(
 				'id'     => $root . '-rua-levels',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $view_name,
+				'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon',

@@ -63,6 +63,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			'update_view'        => 10,
 			'do_view'            => 2,
 		);
+
+		$this->label          = __( 'Users', VIEW_ADMIN_AS_DOMAIN );
+		$this->label_singular = __( 'User', VIEW_ADMIN_AS_DOMAIN );
 	}
 
 	/**
@@ -100,7 +103,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$current = $this->get_data( $this->selected );
 		if ( $current ) {
 
-			$type = __( 'User', VIEW_ADMIN_AS_DOMAIN );
+			$type = $this->label_singular;
 			$user = $this->store->get_selectedUser();
 			$title = $user->display_name;
 
@@ -173,7 +176,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . __( 'Users', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title' . ( ( ! $title_submenu ) ? ' ab-vaa-toggle active' : '' ),

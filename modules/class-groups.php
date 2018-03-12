@@ -85,6 +85,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 		$this->priorities['toolbar'] = 40;
 
+		$this->label          = $this->translate_remote( 'Groups' );
+		$this->label_singular = $this->translate_remote( 'Group' );
+
 		parent::__construct( $vaa );
 	}
 
@@ -465,7 +468,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 */
 	public function view_title( $titles = array() ) {
 		if ( $this->selected ) {
-			$titles[ $this->translate_remote( 'Group' ) ] = $this->selected->name;
+			$titles[ $this->label_singular ] = $this->selected->name;
 		}
 		return $titles;
 	}
@@ -497,7 +500,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->translate_remote( 'Groups' ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -510,7 +513,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_description(
 				VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
-				. __( 'Plugin' ) . ': ' . $this->translate_remote( 'Groups' )
+				. __( 'Plugin' ) . ': ' . $this->label
 			),
 			'href'   => menu_page_url( $this->groupsScreen, false ),
 			'meta'   => array(

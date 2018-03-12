@@ -63,6 +63,9 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			'update_view'        => 10,
 			'do_view'            => 8,
 		);
+
+		$this->label          = __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN );
+		$this->label_singular = __( 'Capability', VIEW_ADMIN_AS_DOMAIN );
 	}
 
 	/**
@@ -111,7 +114,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 */
 	public function view_title( $titles = array() ) {
 		if ( $this->selected ) {
-			$titles[] = __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN );
+			$titles[] = $this->label;
 		}
 		return $titles;
 	}
@@ -260,7 +263,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title' . $title_class,
