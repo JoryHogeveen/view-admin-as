@@ -62,7 +62,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 */
 	public function maybe_db_update() {
 		$db_version = strtolower( $this->store->get_optionData( 'db_version' ) );
-		if ( empty( $db_version ) ) {
+		if ( ! $db_version ) {
 			self::$fresh_install = true;
 		}
 		if ( self::$fresh_install || version_compare( $db_version, $this->store->get_dbVersion(), '<' ) ) {
@@ -85,19 +85,23 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 
 		$current_db_version = strtolower( $this->store->get_optionData( 'db_version' ) );
 
-		// Clear the user views for update to 1.5+.
-		if ( version_compare( $current_db_version, '1.5', '<' ) ) {
-			/**
-			 * Reset user meta for all users.
-			 * @since  1.6.2  Use `all` param from delete_user_meta().
-			 */
-			$this->store->delete_user_meta( 'all', false, true ); // true for reset_only.
-			// Reset currently loaded data.
-			$this->store->set_userMeta( false );
-		}
+		// No need to run update script if it's a clean installation.
+		if ( $current_db_version ) {
 
-		if ( version_compare( $current_db_version, '1.7.2', '<' ) ) {
-			$this->update_1_7_2();
+			// Clear the user views for update to 1.5+.
+			if ( version_compare( $current_db_version, '1.5', '<' ) ) {
+				/**
+				 * Reset user meta for all users.
+				 * @since  1.6.2  Use `all` param from delete_user_meta().
+				 */
+				$this->store->delete_user_meta( 'all', false, true ); // true for reset_only.
+				// Reset currently loaded data.
+				$this->store->set_userMeta( false );
+			}
+
+			if ( version_compare( $current_db_version, '1.7.2', '<' ) ) {
+				$this->update_1_7_2();
+			}
 		}
 
 		// Update version, append if needed.
