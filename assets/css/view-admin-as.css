@@ -165,6 +165,9 @@
 #wpadminbar #wp-admin-bar-vaa.menupop ul.ab-sub-secondary {position: static;}
 #wpadminbar #wp-admin-bar-vaa.menupop .menupop > .ab-item:before {top: 1px;}
 
+#wpadminbar #vaa-combine-views-selection .ab-item {padding-right: 28px;}
+#wpadminbar #vaa-combine-views-selection .ab-item .remove {position: absolute; right: 4px;}
+
 /**
  * Buttons
  */
