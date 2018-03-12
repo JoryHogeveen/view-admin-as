@@ -118,27 +118,26 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 * Changes yes/no options to boolean types.
 	 *
 	 * @since   1.7.2
-	 * @global  \wpdb  $wpdb
 	 * @access  private
 	 * @return  void
 	 */
 	private function update_1_7_2() {
-		global $wpdb;
 
-		$sql = 'SELECT * FROM ' . $wpdb->usermeta . ' WHERE meta_key = %s';
-		// @codingStandardsIgnoreLine >> $wpdb->prepare(), check returning false error.
-		$results = (array) $wpdb->get_results( $wpdb->prepare( $sql, 'vaa-view-admin-as' ) );
+		$meta = $this->store->get_all_user_meta();
 
-		foreach ( $results as $meta ) {
-			if ( ! empty( $meta->meta_value ) ) {
-				$value = maybe_unserialize( $meta->meta_value );
-				if ( ! empty( $value['settings'] ) ) {
+		foreach ( $meta as $user_id => $values ) {
+			foreach ( $values as $column_id => $value ) {
+				if ( ! empty( $value['settings'] ) && is_array( $value['settings'] ) ) {
 					foreach ( $value['settings'] as $key => $val ) {
+						if ( is_bool( $val ) ) {
+							// Update already done.
+							continue;
+						}
 						if ( in_array( $key, array( 'force_group_users', 'freeze_locale', 'hide_front' ), true ) ) {
-							$value['settings'][ $key ] = ( 'yes' === $val ) ? true : false;
+							$value['settings'][ $key ] = ( 'yes' === $val );
 						}
 					}
-					update_user_meta( $meta->user_id, 'vaa-view-admin-as', $value );
+					$this->store->update_other_user_meta( $value, $user_id, $column_id );
 				}
 			}
 		}
