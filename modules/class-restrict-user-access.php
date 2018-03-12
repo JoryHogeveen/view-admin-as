@@ -314,7 +314,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			$view_name = $this->levelPostType->labels->name;
 		}
 
-		if ( ! $this->get_levels() || ! count( $this->get_levels() ) ) {
+		if ( ! $this->get_levels() || ! count( (array) $this->get_levels() ) ) {
 			return;
 		}
 
@@ -506,7 +506,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 */
 	public function get_levels( $key = '-1' ) {
 		if ( ! is_numeric( $key ) ) {
-			return false;
+			return null;
 		}
 		if ( '-1' === $key ) {
 			$key = null;
