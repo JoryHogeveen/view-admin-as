@@ -288,6 +288,22 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	public function get_rolenames( $key = null, $translate = true ) {
 		$val = $this->get_data( 'rolenames', $key );
 		if ( ! $val ) {
+
+			/**
+			 * Try to fetch role name from WP core. No security risk here.
+			 * Check for the wp_roles() function in WP 4.3+.
+			 * @since  1.8
+			 */
+			if ( function_exists( 'wp_roles' ) ) {
+				$wp_roles = wp_roles();
+			} else {
+				global $wp_roles;
+			}
+			if ( isset( $wp_roles->role_names[ $key ] ) ) {
+				$this->set_rolenames( $wp_roles->role_names[ $key ], $key, true );
+				return $this->get_rolenames( $key );
+			}
+
 			return ( $key ) ? $key : $val;
 		}
 		if ( ! $translate ) {
