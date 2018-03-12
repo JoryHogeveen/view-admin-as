@@ -121,11 +121,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	/**
 	 * Get the toolbar title for the main VAA node.
 	 *
-	 * Disable some PHPMD checks for this method.
-	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-	 * @SuppressWarnings(PHPMD.NPathComplexity)
-	 * @todo Refactor to enable above checks (separate view classes).
-	 *
 	 * @since   1.7.2
 	 * @access  private
 	 * @see     \VAA_View_Admin_As_Admin_Bar::admin_bar_menu()
