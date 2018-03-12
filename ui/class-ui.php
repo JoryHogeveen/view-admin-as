@@ -63,7 +63,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		// @since  1.8  Add scripts to the customizer container hook.
 		$this->add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		$this->add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
+		$this->add_filter( 'wp_die_handler', array( $this, 'filter_wp_die_handler' ) );
 
 		/**
 		 * Compat with front and WP version lower than 4.2.0.
@@ -342,13 +342,14 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @since   1.5.1   Check for SSL (Moved to VAA_API).
 	 * @since   1.6     More options and better description.
 	 * @since   1.7     Moved to this class from main class.
+	 * @since   1.8     Renamed from die_handler().
 	 * @access  public
 	 * @see     wp_die()
 	 *
 	 * @param   callable  $callback  WP die callback.
 	 * @return  callable  $callback  WP die callback.
 	 */
-	public function die_handler( $callback ) {
+	public function filter_wp_die_handler( $callback ) {
 
 		// Only do something if a view is selected.
 		if ( ! $this->store->get_view() ) {
