@@ -40,12 +40,13 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this->type, $role_key );
 
-		/** Check if the users need to be grouped under their roles.
+		/**
+		 * Check if the users need to be grouped under their roles.
 		 * @var  \VAA_View_Admin_As_Users  $user_view_type
-		 **/
+		 */
 		$user_view_type = view_admin_as()->get_view_types( 'user' );
 		if ( $user_view_type instanceof VAA_View_Admin_As_Users && $user_view_type->group_user_roles() ) {
-			// make sure items are aligned properly when some roles don't have users.
+			// Used to align items properly when some roles don't have users.
 			$class .= ' vaa-menupop';
 			// Check if the current view is a user with this role.
 			if ( $this->store->get_view( 'user' ) &&

@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.4
  * @version 1.8
- * @uses    VAA_View_Admin_As_Type Extends class
+ * @uses    \VAA_View_Admin_As_Type Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 {
@@ -31,7 +31,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 *
 	 * @since  1.6.4
 	 * @static
-	 * @var    VAA_View_Admin_As_RUA
+	 * @var    \VAA_View_Admin_As_RUA
 	 */
 	private static $_instance = null;
 
@@ -105,7 +105,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.6.4
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -499,10 +499,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * Get an access level by ID.
 	 *
 	 * @since   1.6.4
-	 * @see     restrict-user-access/app.php -> get_levels()
+	 * @see     \RUA_App::get_levels()
 	 * @access  public
 	 * @param   string  $key  (optional) The level key.
-	 * @return  \WP_Post[]|\WP_Post|bool  Array of WP_Post objects (RUA access level post type)
+	 * @return  \WP_Post[]|\WP_Post  Array of WP_Post objects (RUA access level post type)
 	 */
 	public function get_levels( $key = '-1' ) {
 		if ( ! is_numeric( $key ) ) {
@@ -573,8 +573,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * @since   1.6.4
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_RUA
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_RUA  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

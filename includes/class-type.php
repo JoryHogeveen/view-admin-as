@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.8
  * @version 1.8
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 {
@@ -72,7 +72,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.8
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		parent::__construct( $vaa );

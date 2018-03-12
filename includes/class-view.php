@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   1.6
  * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
  * @version 1.8
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 {
@@ -27,7 +27,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_View
+	 * @var    \VAA_View_Admin_As_View
 	 */
 	private static $_instance = null;
 
@@ -45,7 +45,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -246,7 +246,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
 	 * @link    http://hookr.io/filters/update_user_metadata/
 	 *
-	 * @global  wpdb    $wpdb
+	 * @global  \wpdb   $wpdb
 	 * @param   null    $null       Whether to allow updating metadata for the given type.
 	 * @param   int     $object_id  Object ID.
 	 * @param   string  $meta_key   Meta key.
@@ -288,7 +288,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @see     'get_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
 	 *
-	 * @global  wpdb    $wpdb
+	 * @global  \wpdb   $wpdb
 	 * @param   null    $null       The value update_metadata() should return.
 	 * @param   int     $object_id  Object ID.
 	 * @param   string  $meta_key   Meta key.
@@ -508,8 +508,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_View
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_View  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

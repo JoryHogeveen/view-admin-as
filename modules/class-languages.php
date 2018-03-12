@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7.5
  * @version 1.8
- * @uses    VAA_View_Admin_As_Type Extends class
+ * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 {
@@ -26,7 +26,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	 *
 	 * @since  1.7.5
 	 * @static
-	 * @var    VAA_View_Admin_As_Languages
+	 * @var    \VAA_View_Admin_As_Languages
 	 */
 	private static $_instance = null;
 
@@ -57,7 +57,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.7.5
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -333,8 +333,8 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	 * @since   1.7.5
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Languages
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Languages  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

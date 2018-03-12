@@ -33,7 +33,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Toolbar
+	 * @var    \VAA_View_Admin_As_Toolbar
 	 */
 	private static $_instance = null;
 
@@ -50,7 +50,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * View Admin As store.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_Store
+	 * @var    \VAA_View_Admin_As_Store
 	 */
 	private $vaa_store = null;
 
@@ -61,7 +61,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -151,8 +151,8 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Toolbar
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Toolbar  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

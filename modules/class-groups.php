@@ -19,7 +19,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7.2
  * @version 1.8
- * @uses    VAA_View_Admin_As_Type Extends class
+ * @uses    \VAA_View_Admin_As_Type Extends class
  */
 final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 {
@@ -28,7 +28,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 *
 	 * @since  1.7.2
 	 * @static
-	 * @var    VAA_View_Admin_As_Groups
+	 * @var    \VAA_View_Admin_As_Groups
 	 */
 	private static $_instance = null;
 
@@ -68,7 +68,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.7.2
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -357,7 +357,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * I use this since I can't hook into the `posts_where` filter from Groups.
 	 *
 	 * @hook    `wp`
-	 * @see     VAA_View_Admin_As_Groups::groups_post_access_user_can_read_post()
+	 * @see     \VAA_View_Admin_As_Groups::groups_post_access_user_can_read_post()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -401,8 +401,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	/**
 	 * Our own implementation for the Groups member shortcodes.
 	 *
-	 * @see  VAA_View_Admin_As_Groups::shortcode_groups_member()
-	 * @see  VAA_View_Admin_As_Groups::shortcode_groups_non_member()
+	 * @see  \VAA_View_Admin_As_Groups::shortcode_groups_member()
+	 * @see  \VAA_View_Admin_As_Groups::shortcode_groups_non_member()
 	 *
 	 * @since   1.7.2
 	 * @param   array   $atts
@@ -632,8 +632,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * @since   1.7.2
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Groups
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Groups  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

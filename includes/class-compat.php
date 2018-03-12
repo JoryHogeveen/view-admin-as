@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @version 1.8
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 {
@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Compat
+	 * @var    \VAA_View_Admin_As_Compat
 	 */
 	private static $_instance = null;
 
@@ -36,7 +36,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -118,7 +118,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
+	 * @see     \VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   array   $caps  The capabilities.
 	 * @param   bool[]  $args  Pass arguments to get only certain capabilities.
@@ -153,7 +153,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.7.3  Renamed from add_capabilities().
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
+	 * @see     \VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   array  $caps  The capabilities.
 	 * @return  array
@@ -362,7 +362,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6    Moved to this class from main class.
 	 * @since   1.6.2  Check for all provided capabilities.
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
+	 * @see     \VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   bool   $bool  Boolean provided by the pods_is_admin hook (not used).
 	 * @param   array  $caps  String or Array provided by the pods_is_admin hook.
@@ -386,7 +386,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
+	 * @see     \VAA_View_Admin_As_Compat::init()
 	 */
 	public function action_members_register_cap_group() {
 		if ( ! function_exists( 'members_register_cap_group' ) ) {
@@ -408,8 +408,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
-	 * @see     URE_Capabilities_Groups_Manager::get_groups_tree()
+	 * @see     \VAA_View_Admin_As_Compat::init()
+	 * @see     \URE_Capabilities_Groups_Manager::get_groups_tree()
 	 * @param   array  $groups  Current groups
 	 * @return  array
 	 */
@@ -428,8 +428,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
-	 * @see     URE_Capabilities_Groups_Manager::get_cap_groups()
+	 * @see     \VAA_View_Admin_As_Compat::init()
+	 * @see     \URE_Capabilities_Groups_Manager::get_cap_groups()
 	 * @param   array   $groups  Current capability groups
 	 * @param   string  $cap_id  Capability identifier
 	 * @return  array
@@ -451,7 +451,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.4
 	 * @access  public
-	 * @see     WP_Admin_UI_Customize::admin_bar_menu()
+	 * @see     \WP_Admin_UI_Customize::admin_bar_menu()
 	 * @param   array  $wauc_nodes
 	 * @param   array  $all_nodes
 	 * @return  array
@@ -510,7 +510,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * Remove our nodes from the WAUC admin bar editor.
 	 * @since   1.7.4
 	 * @access  public
-	 * @see     WP_Admin_UI_Customize::admin_bar_filter_load()
+	 * @see     \WP_Admin_UI_Customize::admin_bar_filter_load()
 	 * @param   array  $all_nodes
 	 * @return  array
 	 */
@@ -539,7 +539,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	/**
 	 * Remove submenu options for WAUC.
 	 * @since   1.7.4
-	 * @see     WP_Admin_UI_Customize::admin_bar_menu_widget()
+	 * @see     \WP_Admin_UI_Customize::admin_bar_menu_widget()
 	 * @param   array  $no_submenu
 	 * @return  array
 	 */
@@ -556,8 +556,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Compat
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Compat  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

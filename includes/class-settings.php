@@ -19,7 +19,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7
  * @version 1.8
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 {
@@ -28,7 +28,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Can only be set with set_for_network().
 	 *
 	 * @since  1.7.5
-	 * @see    VAA_View_Admin_As_Settings::store_optionData()
+	 * @see    \VAA_View_Admin_As_Settings::store_optionData()
 	 * @var    bool
 	 */
 	protected $for_network = false;
@@ -38,7 +38,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Can only be set with store_userMeta().
 	 *
 	 * @since  1.7.5
-	 * @see    VAA_View_Admin_As_Settings::store_userMeta()
+	 * @see    \VAA_View_Admin_As_Settings::store_userMeta()
 	 * @var    int
 	 */
 	protected $for_user = null;
@@ -582,8 +582,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @see    https://developer.wordpress.org/reference/classes/wpdb/update/
 	 * @see    https://developer.wordpress.org/reference/classes/wpdb/delete/
 	 *
-	 * @global  wpdb  $wpdb
-	 * @param   bool  $reset_only  Only reset (not delete) the user meta.
+	 * @global  \wpdb  $wpdb
+	 * @param   bool   $reset_only  Only reset (not delete) the user meta.
 	 * @return  bool
 	 */
 	public function delete_all_user_meta( $reset_only = true ) {

@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7
  * @version 1.8
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 {
@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Controller
+	 * @var    \VAA_View_Admin_As_Controller
 	 */
 	private static $_instance = null;
 
@@ -45,7 +45,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -191,8 +191,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		/**
 		 * Ajax return filters.
 		 *
-		 * @see     view_admin_as_update_view_{$key}
-		 * @see     view_admin_as_handle_ajax_{$key}
+		 * @see     `view_admin_as_update_view_{$key}`
+		 * @see     `view_admin_as_handle_ajax_{$key}`
 		 *
 		 * @since   1.7
 		 * @param   null    $null    Null.
@@ -331,10 +331,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * Add basic view types for automated use in JS and through VAA.
 		 *
 		 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key).
-		 * - Menu items require the rel attribute for the view data to be send (string or numeric).
 		 * - Menu items require the href attribute (the node needs to be an <a> element).
-		 * @see VAA_API::get_vaa_action_link()
-		 * @see VAA_View_Admin_As_Admin_Bar::do_view_title()
+		 * @see \VAA_View_Admin_As_Form::do_view_title()
 		 *
 		 * @since  1.6.2
 		 * @param  array  $array  Empty array.
@@ -430,8 +428,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
-	 * @param   string   $user_login  (not used) String provided by the wp_login hook.
-	 * @param   WP_User  $user        User object provided by the wp_login hook.
+	 * @param   string    $user_login  (not used) String provided by the wp_login hook.
+	 * @param   \WP_User  $user        User object provided by the wp_login hook.
 	 * @return  bool
 	 */
 	public function reset_view( $user_login = null, $user = null ) {
@@ -468,8 +466,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
-	 * @param   string   $user_login  (not used) String provided by the wp_login hook.
-	 * @param   WP_User  $user        User object provided by the wp_login hook.
+	 * @param   string    $user_login  (not used) String provided by the wp_login hook.
+	 * @param   \WP_User  $user        User object provided by the wp_login hook.
 	 * @return  bool
 	 */
 	public function cleanup_views( $user_login = null, $user = null ) {
@@ -510,8 +508,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
-	 * @param   string   $user_login  (not used) String provided by the wp_login hook.
-	 * @param   WP_User  $user        User object provided by the wp_login hook.
+	 * @param   string    $user_login  (not used) String provided by the wp_login hook.
+	 * @param   \WP_User  $user        User object provided by the wp_login hook.
 	 * @return  bool
 	 */
 	public function reset_all_views( $user_login = null, $user = null ) {
@@ -615,8 +613,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Controller
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Controller  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

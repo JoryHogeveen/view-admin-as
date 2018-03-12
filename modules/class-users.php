@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   0.1    View type existed in core.
  * @since   1.8    Created this class.
  * @version 1.8
- * @uses    VAA_View_Admin_As_Type Extends class
+ * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 {
@@ -27,7 +27,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * @since  1.8
 	 * @static
-	 * @var    VAA_View_Admin_As_Users
+	 * @var    \VAA_View_Admin_As_Users
 	 */
 	private static $_instance = null;
 
@@ -50,7 +50,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.8
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -491,11 +491,11 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.6.2
 	 * @since   1.8    Moved to this class from VAA_View_Admin_As_Store
-	 * @see     \WP_User->_init_caps() >> wp-includes/class-wp-user.php
+	 * @see     \WP_User::for_site() ( prev: \WP_User::_init_caps() ) >> wp-includes/class-wp-user.php
 	 * @see     get_metadata() >> `get_user_metadata` filter
 	 * @link    https://developer.wordpress.org/reference/functions/get_metadata/
 	 *
-	 * @global  \wpdb    $wpdb
+	 * @global  \wpdb   $wpdb
 	 * @param   null    $null      The value get_metadata() should return.
 	 * @param   int     $user_id   Object ID.
 	 * @param   string  $meta_key  Meta key.
@@ -584,8 +584,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.8
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Users
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Users  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

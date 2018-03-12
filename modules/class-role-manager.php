@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7
  * @version 1.8
- * @uses    VAA_View_Admin_As_Module Extends class
+ * @uses    \VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 {
@@ -31,7 +31,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since  1.7
 	 * @static
-	 * @var    VAA_View_Admin_As_Role_Manager
+	 * @var    \VAA_View_Admin_As_Role_Manager
 	 */
 	private static $_instance = null;
 
@@ -74,7 +74,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -795,7 +795,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Manager::admin_bar_menu()
+	 * @see     \VAA_View_Admin_As_Role_Manager::admin_bar_menu()
 	 *
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item (vaa).
@@ -1552,8 +1552,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Role_Manager
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Role_Manager  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   0.1    View type existed in core.
  * @since   1.8    Created this class.
  * @version 1.8
- * @uses    VAA_View_Admin_As_Type Extends class
+ * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 {
@@ -27,7 +27,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 *
 	 * @since  1.8
 	 * @static
-	 * @var    VAA_View_Admin_As_Roles
+	 * @var    \VAA_View_Admin_As_Roles
 	 */
 	private static $_instance = null;
 
@@ -50,7 +50,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.8
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -159,7 +159,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		 * Make sure we have the latest added roles.
 		 * It can be that a plugin/theme adds a role after the initial call to store_roles (hook: 'plugins_loaded').
 		 *
-		 * @see    VAA_View_Admin_As::run()
+		 * @see    \VAA_View_Admin_As::run()
 		 * @since  1.6.3
 		 */
 		$this->store_data();
@@ -310,8 +310,8 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 * @since   1.8
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Roles
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Roles  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

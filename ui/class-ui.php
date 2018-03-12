@@ -18,10 +18,19 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   1.6
  * @since   1.7  Renamed from VAA_View_Admin_As_Admin
  * @version 1.8
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 {
+	/**
+	 * The single instance of the class.
+	 *
+	 * @since  1.6
+	 * @static
+	 * @var    \VAA_View_Admin_As_UI
+	 */
+	private static $_instance = null;
+
 	/**
 	 * Plugin links.
 	 *
@@ -31,21 +40,12 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	private $links = array();
 
 	/**
-	 * The single instance of the class.
-	 *
-	 * @since  1.6
-	 * @static
-	 * @var    VAA_View_Admin_As_UI
-	 */
-	private static $_instance = null;
-
-	/**
 	 * Construct function.
 	 *
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -131,7 +131,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * Show row meta on the plugin screen.
 	 *
 	 * @since   1.6.1
-	 * @see     WP_Plugins_List_Table::single_row()
+	 * @see     \WP_Plugins_List_Table::single_row()
 	 * @param   array[]  $links  The existing links.
 	 * @param   string   $file   The plugin file.
 	 * @return  array
@@ -417,8 +417,8 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_UI
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_UI  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

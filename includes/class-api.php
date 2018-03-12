@@ -30,7 +30,7 @@ final class VAA_API
 	 * Check if the user is a super admin.
 	 * It will validate the original user while in a view and no parameter is passed.
 	 *
-	 * @see  VAA_View_Admin_As_Store::is_super_admin()
+	 * @see  \VAA_View_Admin_As_Store::is_super_admin()
 	 *
 	 * @since   1.6.3
 	 * @access  public
@@ -120,7 +120,7 @@ final class VAA_API
 	/**
 	 * Check if the provided data is the same as the current view.
 	 *
-	 * @see  VAA_View_Admin_As_Controller::is_current_view()
+	 * @see  \VAA_View_Admin_As_Controller::is_current_view()
 	 *
 	 * @since   1.7.1
 	 * @access  public
@@ -145,7 +145,7 @@ final class VAA_API
 	/**
 	 * Similar function to current_user_can().
 	 *
-	 * @see  VAA_View_Admin_As_View::current_view_can()
+	 * @see  \VAA_View_Admin_As_View::current_view_can()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -168,7 +168,7 @@ final class VAA_API
 	/**
 	 * Is the current user modified?
 	 *
-	 * @see  VAA_View_Admin_As_View::current_view_can()
+	 * @see  \VAA_View_Admin_As_View::current_view_can()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -520,7 +520,7 @@ final class VAA_API
 	 * Does a string starts with a given string?
 	 *
 	 * @since   1.4
-	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults.
 	 * @access  public
 	 * @static
 	 * @api
@@ -538,7 +538,7 @@ final class VAA_API
 	 * Does a string ends with a given string?
 	 *
 	 * @since   1.4
-	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults.
 	 * @access  public
 	 * @static
 	 * @api

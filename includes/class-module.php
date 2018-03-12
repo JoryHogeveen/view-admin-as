@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.5  (This was one class with VAA_View_Admin_As_Class_Base)
  * @version 1.7.3
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 {

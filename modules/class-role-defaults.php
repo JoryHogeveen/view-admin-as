@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.4
  * @version 1.8
- * @uses    VAA_View_Admin_As_Module Extends class
+ * @uses    \VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 {
@@ -31,7 +31,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since  1.5
 	 * @static
-	 * @var    VAA_View_Admin_As_Role_Defaults
+	 * @var    \VAA_View_Admin_As_Role_Defaults
 	 */
 	private static $_instance = null;
 
@@ -104,7 +104,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.4
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -506,9 +506,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Defaults::update_user_with_role_defaults_multisite_register()
-	 * @see     VAA_View_Admin_As_Role_Defaults::apply_defaults_to_users_by_role()
-	 * @see     VAA_View_Admin_As_Role_Defaults::ajax_handler()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::update_user_with_role_defaults_multisite_register()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::apply_defaults_to_users_by_role()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::ajax_handler()
 	 *
 	 * @see     'user_register' action
 	 * @link    https://developer.wordpress.org/reference/hooks/user_register/
@@ -608,7 +608,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @see     VAA_View_Admin_As_Role_Defaults::vaa_init()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::vaa_init()
 	 * @return  void
 	 */
 	private function init_store_role_defaults() {
@@ -649,7 +649,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.4
 	 * @since   1.5.3   Stop checking $single parameter.
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
 	 * @see     'get_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
@@ -678,7 +678,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
 	 * @see     'update_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
@@ -1270,7 +1270,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Defaults::admin_bar_menu()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::admin_bar_menu()
 	 *
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item (vaa).
@@ -1863,8 +1863,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Role_Defaults
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Role_Defaults  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

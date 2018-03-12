@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   1.3    View type existed in core.
  * @since   1.8    Created this class.
  * @version 1.8
- * @uses    VAA_View_Admin_As_Type Extends class
+ * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 {
@@ -27,7 +27,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 *
 	 * @since  1.8
 	 * @static
-	 * @var    VAA_View_Admin_As_Caps
+	 * @var    \VAA_View_Admin_As_Caps
 	 */
 	private static $_instance = null;
 
@@ -50,7 +50,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.8
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -220,7 +220,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * Make sure we have the latest added capabilities.
 		 * It can be that a plugin/theme adds a capability after the initial call to store_caps (hook: 'plugins_loaded').
 		 *
-		 * @see    VAA_View_Admin_As::run()
+		 * @see    \VAA_View_Admin_As::run()
 		 * @since  1.4.1
 		 */
 		$this->store_data();
@@ -415,7 +415,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			 * Add compatibility for other cap managers.
 			 *
 			 * @since  1.5
-			 * @see    VAA_View_Admin_As_Compat->init()
+			 * @see    \VAA_View_Admin_As_Compat->init()
 			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
 			 * @return array
 			 */
@@ -477,8 +477,8 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 * @since   1.8
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Caps
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Caps  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

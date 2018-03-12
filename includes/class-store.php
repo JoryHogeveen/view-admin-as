@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @version 1.8
- * @uses    VAA_View_Admin_As_Settings Extends class
+ * @uses    \VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 {
@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Store
+	 * @var    \VAA_View_Admin_As_Store
 	 */
 	private static $_instance = null;
 
@@ -51,7 +51,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * View type data.
 	 * You can add custom view data with VAA_View_Admin_As_Store::set_data().
 	 *
-	 * @see    VAA_View_Admin_As_Store::set_data()
+	 * @see    \VAA_View_Admin_As_Store::set_data()
 	 * @since  1.7
 	 * @var    array {
 	 *     Default view data.
@@ -187,7 +187,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * Will validate the original user if it is the current user or no user ID is passed.
 	 * This can prevent invalid checks after a view is applied.
 	 *
-	 * @see     VAA_API::is_super_admin()
+	 * @see     \VAA_API::is_super_admin()
 	 * @internal
 	 *
 	 * @since   1.6.3
@@ -327,7 +327,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Get available languages.
 	 * @param   string  $key  Locale key.
-	 * @return  \string[]|\string  Array of language names or a single language name.
+	 * @return  string[]|string  Array of language names or a single language name.
 	 */
 	public function get_languages( $key = null ) {
 		return $this->get_data( 'languages', $key );
@@ -379,7 +379,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the current user object.
-	 * @param   WP_User  $val  User object.
+	 * @param   \WP_User  $val  User object.
 	 * @return  void
 	 */
 	public function set_curUser( WP_User $val ) {
@@ -485,7 +485,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the selected user object for the current view.
-	 * @param   WP_User  $val  User object.
+	 * @param   \WP_User  $val  User object.
 	 * @return  void
 	 */
 	public function set_selectedUser( $val ) {
@@ -520,8 +520,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Store
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Store  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

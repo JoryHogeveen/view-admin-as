@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.5
  * @version 1.8
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 {
@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.5
 	 * @static
-	 * @var    VAA_View_Admin_As_Admin_Bar
+	 * @var    \VAA_View_Admin_As_Admin_Bar
 	 */
 	private static $_instance = null;
 
@@ -55,7 +55,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * @since   1.5
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -127,7 +127,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.2
 	 * @access  private
-	 * @see     VAA_View_Admin_As_Admin_Bar::admin_bar_menu()
+	 * @see     \VAA_View_Admin_As_Admin_Bar::admin_bar_menu()
 	 * @return  string
 	 */
 	private function get_admin_bar_menu_title() {
@@ -563,8 +563,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class
-	 * @return  $this  VAA_View_Admin_As_Admin_Bar
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class
+	 * @return  \VAA_View_Admin_As_Admin_Bar  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

@@ -25,7 +25,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since  1.4.1
 	 * @static
-	 * @var    VAA_View_Admin_As
+	 * @var    \VAA_View_Admin_As
 	 */
 	private static $_instance = null;
 
@@ -52,7 +52,7 @@ final class VAA_View_Admin_As
 	 * VAA Hooks.
 	 *
 	 * @since  1.8
-	 * @var    VAA_View_Admin_As_Hooks
+	 * @var    \VAA_View_Admin_As_Hooks
 	 */
 	private $hooks = null;
 
@@ -60,7 +60,7 @@ final class VAA_View_Admin_As
 	 * VAA Store.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_Store
+	 * @var    \VAA_View_Admin_As_Store
 	 */
 	private $store = null;
 
@@ -68,7 +68,7 @@ final class VAA_View_Admin_As
 	 * VAA Controller.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_Controller
+	 * @var    \VAA_View_Admin_As_Controller
 	 */
 	private $controller = null;
 
@@ -76,7 +76,7 @@ final class VAA_View_Admin_As
 	 * VAA View handler.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_View
+	 * @var    \VAA_View_Admin_As_View
 	 */
 	private $view = null;
 
@@ -84,7 +84,7 @@ final class VAA_View_Admin_As
 	 * VAA UI classes that are loaded.
 	 *
 	 * @since  1.5
-	 * @see    VAA_View_Admin_As::load_ui()
+	 * @see    \VAA_View_Admin_As::load_ui()
 	 * @var    object[]
 	 */
 	private $ui = array();
@@ -93,8 +93,8 @@ final class VAA_View_Admin_As
 	 * Other VAA modules that are loaded.
 	 *
 	 * @since  1.4
-	 * @see    VAA_View_Admin_As::load_modules()
-	 * @see    VAA_View_Admin_As::register_module()
+	 * @see    \VAA_View_Admin_As::load_modules()
+	 * @see    \VAA_View_Admin_As::register_module()
 	 * @var    object[]
 	 */
 	private $modules = array();
@@ -103,8 +103,8 @@ final class VAA_View_Admin_As
 	 * View types.
 	 *
 	 * @since  1.8
-	 * @see    VAA_View_Admin_As::load_modules()
-	 * @see    VAA_View_Admin_As::register_view_type()
+	 * @see    \VAA_View_Admin_As::load_modules()
+	 * @see    \VAA_View_Admin_As::register_view_type()
 	 * @var    object[]
 	 */
 	private $view_types = array();
@@ -257,7 +257,7 @@ final class VAA_View_Admin_As
 			 * Plugin enabled + update and compat scripts done.
 			 *
 			 * @since  1.8
-			 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
+			 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 			 */
 			do_action( 'vaa_view_admin_as_pre_init', $this );
 
@@ -270,7 +270,7 @@ final class VAA_View_Admin_As
 			 * Init is finished. Hook is used for other classes related to View Admin As.
 			 *
 			 * @since  1.5
-			 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
+			 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 			 */
 			do_action( 'vaa_view_admin_as_init', $this );
 
@@ -507,7 +507,7 @@ final class VAA_View_Admin_As
 		 * Modules loaded. Hook is used for other modules related to View Admin As.
 		 *
 		 * @since  1.6.2
-		 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
+		 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 		 */
 		do_action( 'vaa_view_admin_as_modules_loaded', $this );
 	}
@@ -544,7 +544,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.8
 	 * @access  public
-	 * @return  VAA_View_Admin_As_Hooks
+	 * @return  \VAA_View_Admin_As_Hooks
 	 */
 	public function hooks() {
 		return $this->hooks;
@@ -555,7 +555,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @return  VAA_View_Admin_As_Store
+	 * @return  \VAA_View_Admin_As_Store
 	 */
 	public function store() {
 		return $this->store;
@@ -566,7 +566,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @return  VAA_View_Admin_As_Controller
+	 * @return  \VAA_View_Admin_As_Controller
 	 */
 	public function controller() {
 		return $this->controller;
@@ -577,7 +577,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @return  VAA_View_Admin_As_View
+	 * @return  \VAA_View_Admin_As_View
 	 */
 	public function view() {
 		return $this->view;
@@ -589,9 +589,9 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.1
 	 * @access  public
-	 * @see     VAA_View_Admin_As::load_ui()
+	 * @see     \VAA_View_Admin_As::load_ui()
 	 * @param   string  $key  (optional) UI class name.
-	 * @return  VAA_View_Admin_As_Module|VAA_View_Admin_As_Module[]
+	 * @return  \VAA_View_Admin_As_Module|\VAA_View_Admin_As_Module[]
 	 */
 	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
@@ -604,7 +604,7 @@ final class VAA_View_Admin_As
 	 * @since   1.8
 	 * @access  public
 	 * @param   string  $key  (optional) The type key.
-	 * @return  VAA_View_Admin_As_Type|VAA_View_Admin_As_Type[]
+	 * @return  \VAA_View_Admin_As_Type|\VAA_View_Admin_As_Type[]
 	 */
 	public function get_view_types( $key = null ) {
 		return VAA_API::get_array_data( $this->view_types, $key );
@@ -847,7 +847,7 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 * @static
 	 * @see     view_admin_as()
-	 * @return  $this  VAA_View_Admin_As
+	 * @return  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
