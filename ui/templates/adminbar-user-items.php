@@ -38,7 +38,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		 */
 		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
 
-		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this->type, $user->ID );
+		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
 
 		/**
 		 * Add the user roles to the user title?

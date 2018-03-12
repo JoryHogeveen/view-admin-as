@@ -38,7 +38,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		 */
 		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
 
-		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this->type, $role_key );
+		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $role_key );
 
 		/**
 		 * Check if the users need to be grouped under their roles.

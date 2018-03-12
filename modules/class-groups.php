@@ -537,7 +537,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			$view_data  = array( $this->type => $view_value );
 			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->type . '-item';
-			$title = VAA_View_Admin_As_Form::do_view_title( $group->name, $this->type, $view_value );
+			$title = VAA_View_Admin_As_Form::do_view_title( $group->name, $this, $view_value );
 			// Check if this group is the current view.
 			if ( $this->store->get_view( $this->type ) ) {
 				if ( (int) $this->store->get_view( $this->type ) === (int) $group->group_id ) {

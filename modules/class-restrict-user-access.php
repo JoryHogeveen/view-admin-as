@@ -400,7 +400,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			}
 			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->type . '-item';
-			$title = VAA_View_Admin_As_Form::do_view_title( $level->post_title, $this->type, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
+			$title = VAA_View_Admin_As_Form::do_view_title( $level->post_title, $this, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->type ) ) {
 				if ( VAA_API::is_current_view( $view_value, $this->type ) ) {

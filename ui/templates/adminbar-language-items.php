@@ -40,7 +40,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 		$view_title = ( $locale !== $title ) ? '<code>' . $locale . '</code> | ' . $language : $locale;
 
-		$view_title = VAA_View_Admin_As_Form::do_view_title( $view_title, $this->type, $locale );
+		$view_title = VAA_View_Admin_As_Form::do_view_title( $view_title, $this, $locale );
 
 		// Check if this role is the current view.
 		if ( VAA_API::is_current_view( $locale, $this->type ) ) {
