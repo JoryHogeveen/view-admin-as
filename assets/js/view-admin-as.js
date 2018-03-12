@@ -112,6 +112,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		VAA_View_Admin_As.init_caps();
 		VAA_View_Admin_As.init_users();
+		VAA_View_Admin_As.init_combine_views();
 		VAA_View_Admin_As.init_module_role_defaults();
 		VAA_View_Admin_As.init_module_role_manager();
 		VAA_View_Admin_As.init_auto_js();
@@ -1192,6 +1193,290 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var new_caps = VAA_View_Admin_As.get_selected_capabilities();
 			VAA_View_Admin_As.ajax( { caps : new_caps }, true );
 			return false;
+		} );
+	};
+
+	/**
+	 * Combine views tool.
+	 * @since  1.8
+	 * @return {null}  Nothing.
+	 */
+	VAA_View_Admin_As.init_combine_views = function() {
+
+		var root                 = VAA_View_Admin_As.root + '-combine-views',
+			prefix               = 'vaa-combine-views',
+			root_prefix          = VAA_View_Admin_As.prefix + root,
+			combine_types        = $.extend( [], VAA_View_Admin_As.view_types ),
+			combine_selectors    = [],
+			selection            = {},
+			$selection_container = root_prefix + ' #' + prefix + '-selection',
+			$combine_items,
+			is_active = false;
+
+		combine_types.splice( combine_types.indexOf( 'caps' ), 1 );
+		combine_types.splice( combine_types.indexOf( 'visitor' ), 1 );
+
+		for ( var key in combine_types ) {
+			if ( combine_types.hasOwnProperty( key ) ) {
+				combine_selectors[ combine_types[ key ] ] = VAA_View_Admin_As.prefix + '.vaa-' + combine_types[ key ] + '-item > .ab-item';
+			}
+		}
+		// @todo Capability types needs a workaround.
+		combine_types.push( 'caps' );
+		combine_selectors['caps'] = VAA_View_Admin_As.prefix + VAA_View_Admin_As.root + '-caps > .menupop > .ab-item';
+
+		// Show checkboxes.
+		function enable_combine_views() {
+			is_active = true;
+			$combine_items = $( VAA_View_Admin_As.prefix + '.vaa-combine-item' );
+			if ( $combine_items.length ) {
+				$combine_items.fadeIn('fast');
+			} else {
+				for ( var key in combine_selectors ) {
+					if ( combine_selectors.hasOwnProperty( key ) ) {
+						add_combine_checkboxes( combine_selectors[ key ], key );
+					}
+				}
+				$combine_items = $( VAA_View_Admin_As.prefix + '.vaa-combine-item' );
+				$combine_items.fadeIn('fast');
+			}
+			update_selection_list();
+		}
+
+		// Hide checkboxes and results container.
+		function disable_combine_views() {
+			is_active = false;
+			$( VAA_View_Admin_As.prefix + '.vaa-combine-item' ).fadeOut( 'fast' );
+			if ( $selection_container.is(':visible') ) {
+				$selection_container.slideUp('fast');
+			} else {
+				$selection_container.hide();
+			}
+		}
+
+		// Generate the checkboxes for combine types.
+		function add_combine_checkboxes( elements, type ) {
+			// Late selection init needed for frontend.
+			var $elements = combine_selectors[ type ] = $( elements );
+			$elements.each( function () {
+				var $this = $( this ),
+					val = null,
+					text = $this.text(),
+					$data_el = $this.find('.vaa-view-data'),
+					type_label,
+					attr;
+				if ( $data_el.length ) {
+					val = $data_el.attr('vaa-view-value');
+					text = $data_el.text();
+					type_label = $data_el.attr('vaa-view-type-label');
+				}
+				if ( 'caps' === type ) {
+					val = '';
+					text = $( VAA_View_Admin_As.root + '-caps-title > .ab-item' ).text();
+				}
+				attr = [
+					'type="checkbox"',
+					'class="checkbox vaa-right vaa-combine-item vaa-combine-' + type + '"',
+					'vaa-view-type="' + type + '"',
+					"vaa-view-value='" + val + "'", // Switch quote types for JSON data.
+					'vaa-view-text="' + text + '"',
+					'style="display:none;"'
+				];
+				if ( type_label ) {
+					attr.push( 'vaa-view-type-label="' + type_label + '"' );
+				}
+				$this.parent().prepend( '<input ' + attr.join(' ') + '>' );
+			} );
+		}
+
+		// Parse new combine selection. Also checks for multiple views.
+		function parse_combine_type( element, type ) {
+			var $element = $( element ),
+				val;
+			if ( 'caps' === type ) {
+				val = VAA_View_Admin_As.get_selected_capabilities();
+			} else {
+				val = VAA_View_Admin_As.maybe_json_decode( $element.attr('vaa-view-value') );
+				// Check if it contains a combination of view types parsed as a JSON object.
+				if ( 'object' === typeof val ) {
+					$.each( val, function( val_type, data ) {
+						var $val_element = $( VAA_View_Admin_As.prefix + '.vaa-combine-' + val_type + '[vaa-view-value=' + data + ']' );
+						activate_combine_type( $val_element, val_type, data );
+					} );
+					// Also check the current item since this way the user can deactivate the combination as a whole.
+					$element.prop( { checked: 'checked', disabled: false } );
+					return;
+				}
+			}
+			activate_combine_type( $element, type, val );
+		}
+
+		// Activate/select a combine type.
+		function activate_combine_type( element, type, value ) {
+			var $element = $( element );
+			deactivate_combine_type( type, false );
+			selection[ type ] = {
+				'el': $element,
+				'type': type,
+				'value': value
+			};
+			$( VAA_View_Admin_As.prefix + '.vaa-combine-' + type ).prop( { checked: false, disabled: 'disabled' } );
+			$element.prop( { checked: 'checked', disabled: false } );
+			update_selection_list();
+		}
+
+		// Deactivate/deselect a combine type.
+		function deactivate_combine_type( types, update ) {
+			if ( 'object' !== typeof types ) {
+				type = types;
+				types = {};
+				types[ type ] = 0;
+			}
+			for ( var type in types ) {
+				if ( types.hasOwnProperty( type ) ) {
+					delete selection[ type ];
+					$( VAA_View_Admin_As.prefix + '.vaa-combine-' + type ).prop( { checked: false, disabled: false } );
+				}
+			}
+			if ( update ) {
+				update_selection_list();
+			}
+		}
+
+		// Update the list with current selections.
+		function update_selection_list() {
+
+			// Remove view types that are deselected.
+			$( root_prefix + ' .vaa-combine-selection' ).each( function() {
+				var $this = $(this),
+					type = $this.attr('vaa-view-type');
+				if ( ! selection.hasOwnProperty( type ) ) {
+					$this.slideUp( 'fast', function() { $( this ).remove() } );
+				}
+			} );
+
+			// Append or update view types selection.
+			$.each( selection, function( type, data ) {
+				var text = data.el.attr('vaa-view-text') + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
+					$existing = $( root_prefix + ' .vaa-combine-selection-' + type ),
+					label = data.el.attr( 'vaa-view-type-label' );
+				if ( label ) {
+					text = '<span class="ab-bold">' + label + ':</span> ' + text;
+				}
+				if ( $existing.length ) {
+					$existing.html( text );
+					if ( 'none' === $existing.css( 'display' ) || ! $existing.is(':visible') ) {
+						$existing.slideDown('fast');
+					}
+				} else {
+					var attr = [
+						'class="ab-item ab-empty-item vaa-combine-selection vaa-combine-selection-' + type + '"',
+						'vaa-view-type="' + type + '"',
+						'style="display:none;"'
+					];
+					var html = '<li ' + attr.join(' ') + '>' + text + '</li>';
+					$selection_container.append( html );
+					$( root_prefix + ' .vaa-combine-selection-' + type ).slideDown('fast');
+				}
+			} );
+
+			if ( ! $.isEmptyObject( selection ) ) {
+				if ( 'none' === $selection_container.css( 'display' ) || ! $selection_container.is(':visible') ) {
+					$selection_container.slideDown('fast');
+				}
+			} else {
+				$selection_container.slideUp('fast');
+			}
+		}
+
+		// Enable view combinations.
+		$document.on( 'change', root_prefix + ' input#' + prefix, function() {
+			// Late selection init needed for frontend.
+			$selection_container = $( $selection_container );
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			if ( this.checked ) {
+				enable_combine_views();
+			} else {
+				disable_combine_views();
+			}
+		} );
+
+		// Toggle view type combination.
+		$document.on( 'change', VAA_View_Admin_As.prefix + ' input.vaa-combine-item', function() {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			var $this = $( this ),
+				type = $this.attr('vaa-view-type');
+			if ( this.checked ) {
+				parse_combine_type( $this, type );
+			} else {
+				var val = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-view-value') );
+				// Check if it contains a combination of view types parsed as a JSON object.
+				if ( 'object' === typeof val ) {
+					deactivate_combine_type( val, true );
+					return;
+				}
+				deactivate_combine_type( type, true );
+			}
+		} );
+
+		// Remove view type from combinations.
+		$document.on( 'click touchend', root_prefix + ' .vaa-combine-selection .remove', function() {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			deactivate_combine_type( $(this).parent().attr('vaa-view-type'), true );
+		} );
+
+		// Apply view combination.
+		$document.on( 'click touchend', root_prefix + ' button#' + prefix + '-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var view_data = {};
+			for ( var type in selection ) {
+				if ( selection.hasOwnProperty( type ) ) {
+					view_data[ type ] = selection[ type ].value;
+				}
+			}
+			if ( ! $.isEmptyObject( view_data ) ) {
+				VAA_View_Admin_As.ajax( view_data, true );
+			} else {
+				// @todo Notice text.
+			}
+		} );
+
+		// Prevent default view item handling and trigger checkbox click.
+		$.each( combine_types, function( index, type ) {
+			$document.on( 'click touchend', 'body ' + VAA_View_Admin_As.prefix + '.vaa-'+type+'-item > a.ab-item', function( e ) {
+				if ( true === VAA_View_Admin_As._touchmove || ! is_active ) {
+					return;
+				}
+				e.preventDefault();
+				var $this = $(this);
+				// Fix for responsive views (first click triggers show child items).
+				if ( VAA_View_Admin_As._mobile && $this.parent().hasClass('menupop') && ! $this.next().is(':visible') ) {
+					$this.next().show().parent().addClass('active');
+					return;
+				}
+				if ( ! $this.parent().hasClass('not-a-view') ) {
+					var $combine_item = $this.parent().children('.vaa-combine-item');
+					if ( $combine_item.is(':checked') ) {
+						$combine_item.prop( 'checked', false );
+					} else {
+						$combine_item.prop( 'checked', true );
+					}
+					$combine_item.trigger('change');
+					// Prevent default view item handling.
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					return false;
+				}
+			} );
 		} );
 	};
 
