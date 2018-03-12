@@ -1221,7 +1221,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				combine_selectors[ combine_types[ key ] ] = VAA_View_Admin_As.prefix + '.vaa-' + combine_types[ key ] + '-item > .ab-item';
 			}
 		}
-		// @todo Capability types needs a workaround.
+
+		// Custom selector for capability view.
 		combine_types.push( 'caps' );
 		combine_selectors['caps'] = VAA_View_Admin_As.prefix + VAA_View_Admin_As.root + '-caps > .menupop > .ab-item';
 
@@ -1294,7 +1295,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var $element = $( element ),
 				val;
 			if ( 'caps' === type ) {
-				val = VAA_View_Admin_As.get_selected_capabilities();
+				val = type;
 			} else {
 				val = VAA_View_Admin_As.maybe_json_decode( $element.attr('vaa-view-value') );
 				// Check if it contains a combination of view types parsed as a JSON object.
@@ -1440,7 +1441,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var view_data = {};
 			for ( var type in selection ) {
 				if ( selection.hasOwnProperty( type ) ) {
-					view_data[ type ] = selection[ type ].value;
+					if ( 'caps' === type ) {
+						view_data[ type ] = VAA_View_Admin_As.get_selected_capabilities();
+					} else {
+						view_data[ type ] = selection[ type ].value;
+					}
 				}
 			}
 			if ( ! $.isEmptyObject( view_data ) ) {
