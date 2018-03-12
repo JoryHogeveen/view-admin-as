@@ -1391,7 +1391,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}
 
 		// Enable view combinations.
-		$document.on( 'change', root_prefix + ' input#' + prefix, function() {
+		$root.on( 'change', 'input#' + prefix, function() {
 			// Late selection init needed for frontend.
 			$selection_container = $( $selection_container );
 			if ( true === VAA_View_Admin_As._touchmove ) {
@@ -1405,7 +1405,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// Toggle view type combination.
-		$document.on( 'change', VAA_View_Admin_As.prefix + ' input.vaa-combine-item', function() {
+		$vaa.on( 'change', VAA_View_Admin_As.prefix + ' input.vaa-combine-item', function() {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -1425,7 +1425,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// Remove view type from combinations.
-		$document.on( 'click touchend', root_prefix + ' .vaa-combine-selection .remove', function() {
+		$root.on( 'click touchend', '.vaa-combine-selection .remove', function() {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -1433,7 +1433,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// Apply view combination.
-		$document.on( 'click touchend', root_prefix + ' button#' + prefix + '-apply', function( e ) {
+		$root.on( 'click touchend', 'button#' + prefix + '-apply', function( e ) {
 			if ( true === VAA_View_Admin_As._touchmove ) {
 				return;
 			}
@@ -1457,7 +1457,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Prevent default view item handling and trigger checkbox click.
 		$.each( combine_types, function( index, type ) {
-			$document.on( 'click touchend', 'body ' + VAA_View_Admin_As.prefix + '.vaa-'+type+'-item > a.ab-item', function( e ) {
+			$vaa.on( 'click touchend', '.vaa-' + type + '-item > a.ab-item', function( e ) {
 				if ( true === VAA_View_Admin_As._touchmove || ! is_active ) {
 					return;
 				}
