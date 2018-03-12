@@ -382,7 +382,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @param   WP_User  $val  User object.
 	 * @return  void
 	 */
-	public function set_curUser( $val ) {
+	public function set_curUser( WP_User $val ) {
 		$this->curUser = $val;
 	}
 
