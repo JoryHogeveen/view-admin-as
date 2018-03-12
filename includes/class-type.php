@@ -30,12 +30,20 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	protected $type = '';
 
 	/**
-	 * Selected view.
+	 * The view type label.
 	 *
 	 * @since  1.8
-	 * @var    mixed
+	 * @var    string
 	 */
-	protected $selected = null;
+	protected $label = '';
+
+	/**
+	 * The view type singular label.
+	 *
+	 * @since  1.8
+	 * @var    string
+	 */
+	protected $label_singular = '';
 
 	/**
 	 * The icon for this view type.
@@ -44,6 +52,14 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * @var    string
 	 */
 	protected $icon = '';
+
+	/**
+	 * Selected view.
+	 *
+	 * @since  1.8
+	 * @var    mixed
+	 */
+	protected $selected = null;
 
 	/**
 	 * The hook priorities for this type.
@@ -269,6 +285,28 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 */
 	public function get_type() {
 		return $this->type;
+	}
+
+	/**
+	 * Get the view type label.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @return  string
+	 */
+	public function get_label() {
+		return $this->label;
+	}
+
+	/**
+	 * Get the view type singular label.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @return  string
+	 */
+	public function get_label_singular() {
+		return $this->label_singular;
 	}
 
 } // End class VAA_View_Admin_As_Type.
