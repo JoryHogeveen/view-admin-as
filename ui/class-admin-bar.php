@@ -175,6 +175,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 					$title .= $name;
 				}
 			}
+		} else {
+			$title = (string) $titles;
 		}
 
 		/**
