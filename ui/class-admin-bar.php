@@ -250,10 +250,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 
 		// Add reset button.
 		if ( $this->store->get_view() ) {
-			$rel = 'reset';
 			$name = 'reset-view';
 			if ( 'single' === $this->store->get_userSettings( 'view_mode' ) ) {
-				$rel = 'reload';
 				$name = 'reload';
 			}
 			$admin_bar->add_node( array(
@@ -268,7 +266,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 				'meta'   => array(
 					'title' => esc_attr__( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'vaa-reset-item vaa-button-container',
-					'rel'   => $rel,
 				),
 			) );
 		}
@@ -546,7 +543,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 			'meta'   => array(
 				'title' => esc_attr__( 'View as site visitor', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => $class,
-				'rel'   => true,
 			),
 		) );
 
