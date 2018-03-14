@@ -138,8 +138,17 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 */
 	public function action_plugin_row_meta( $links, $file ) {
 		if ( VIEW_ADMIN_AS_BASENAME === $file ) {
+			$icon_attr = array(
+				'style' => array(
+					'font-size: inherit;',
+					'line-height: inherit;',
+					'display: inline;',
+					'vertical-align: text-top;',
+				),
+			);
 			foreach ( $this->get_links() as $id => $link ) {
-				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . esc_html( $link['title'] ) . '</a>';
+				$title = VAA_View_Admin_As_Form::do_icon( $link['icon'], $icon_attr ) . ' ' . esc_html( $link['title'] );
+				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . $title . '</a>';
 			}
 		}
 		return $links;
