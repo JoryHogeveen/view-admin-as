@@ -108,7 +108,17 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		}
 
 		if ( $link ) {
-			$actions['vaa_view'] = '<a href="' . $link . '">' . __( 'View as', VIEW_ADMIN_AS_DOMAIN ) . '</a>';
+			$icon = 'dashicons-visibility';
+			$icon_attr = array(
+				'style' => array(
+					'font-size: inherit;',
+					'line-height: inherit;',
+					'display: inline;',
+					'vertical-align: text-top;',
+				),
+			);
+			$title = VAA_View_Admin_As_Form::do_icon( $icon, $icon_attr ) . ' ' . esc_html__( 'View as', VIEW_ADMIN_AS_DOMAIN );
+			$actions['vaa_view'] = '<a href="' . $link . '">' . $title . '</a>';
 		}
 		return $actions;
 	}
