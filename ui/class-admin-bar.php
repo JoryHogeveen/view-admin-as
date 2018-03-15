@@ -100,7 +100,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		// Add the global nodes to the admin bar.
 		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_info' ), 1 );
 		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu_settings' ), 2 );
-		$this->add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_modules' ), 1, 2 );
+		$this->add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_view_types' ), 1, 2 );
+		$this->add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_modules' ), 2, 2 );
 
 		if ( ! is_network_admin() ) {
 
@@ -448,6 +449,104 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         self::$root  The main root item.
 		 */
 		do_action( 'vaa_admin_bar_settings_after', $admin_bar, $root, self::$root );
+	}
+
+	/**
+	 * Add admin bar menu view type items.
+	 *
+	 * @since   1.7.1
+	 * @access  public
+	 * @see     'vaa_admin_bar_menu' action
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The current root item.
+	 * @return  void
+	 */
+	public function admin_bar_menu_view_types( $admin_bar, $root ) {
+
+		if ( ! VAA_API::is_super_admin() ) {
+			return;
+		}
+
+		$view_types = $this->vaa->get_view_types();
+
+		// Do not render the view_types group if there are no view types to show.
+		if ( ! $view_types ) {
+			return;
+		}
+
+		$admin_bar->add_group( array(
+			'id'     => self::$root . '-view_types',
+			'parent' => $root,
+			'meta'   => array(
+				'class' => 'ab-sub-secondary',
+			),
+		) );
+
+		$root = self::$root . '-view_types';
+
+		$admin_bar->add_node( array(
+			'id'     => $root . '-title',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-visibility' ) . __( 'View types', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => false,
+			'meta'   => array(
+				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
+				'tabindex' => '0',
+			),
+		) );
+
+		$parent = $root;// . '-title';
+
+		foreach ( $view_types as $type ) {
+			if ( ! $type instanceof VAA_View_Admin_As_Type || ! $type->has_access() ) {
+				continue;
+			}
+
+			$checkbox = array(
+				'name'        => $root . '-' . $type->get_type(),
+				'value'       => $type->is_enabled(),
+				'compare'     => true,
+				'label'       => $type->get_label(),
+				'auto_js' => array(
+					'setting' => 'setting',
+					'key'     => 'view_types',
+					'values'  => array(
+						$type->get_type() => array(
+							'values' => array(
+								'enabled' => array(),
+							),
+						),
+					),
+					'refresh' => false,
+				),
+				'auto_showhide' => true,
+			);
+
+			if ( $type->get_description() ) {
+				$checkbox['description'] = $type->get_description();
+				$checkbox['help'] = true;
+			}
+
+			$admin_bar->add_node( array(
+				'id'     => $root . '-' . $type->get_type(),
+				'parent' => $parent,
+				'title'  => VAA_View_Admin_As_Form::do_checkbox( $checkbox ),
+				'href'   => false,
+				'meta'   => array(),
+			) );
+		}
+
+		/**
+		 * Add items to the view_types group.
+		 *
+		 * @since   1.7.1
+		 * @see     'admin_bar_menu' action
+		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
+		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
+		 * @param   string         $root        The current root item.
+		 * @param   string         self::$root  The main root item.
+		 */
+		do_action( 'vaa_admin_bar_view_types', $admin_bar, $root, self::$root );
 	}
 
 	/**
