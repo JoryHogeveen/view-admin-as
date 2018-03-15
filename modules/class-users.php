@@ -67,6 +67,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$this->label          = __( 'Users', VIEW_ADMIN_AS_DOMAIN );
 		$this->label_singular = __( 'User', VIEW_ADMIN_AS_DOMAIN );
 
+		if ( ! $this->has_access() ) {
+			return;
+		}
+
 		// Users can also be switched from the user list page.
 		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
 			$this->add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
