@@ -179,6 +179,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData( array(
 				'db_version' => null,
+				'settings' => null,
 			) );
 
 			$this->set_userMetaKey( 'vaa-view-admin-as' );
@@ -186,6 +187,13 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 				'settings' => null,
 				'views' => null,
 			) );
+
+			$default = array(
+				'view_types' => array(),
+			);
+			$allowed = array(
+				'view_types' => array(), // No restriction to values.
+			);
 
 			$default_user = array(
 				'admin_menu_location' => 'top-secondary',
