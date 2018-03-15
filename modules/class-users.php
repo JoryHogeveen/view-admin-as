@@ -66,6 +66,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$this->label          = __( 'Users', VIEW_ADMIN_AS_DOMAIN );
 		$this->label_singular = __( 'User', VIEW_ADMIN_AS_DOMAIN );
+
+		// Users can also be switched from the user list page.
+		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
+			$this->add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
+			$this->init_hooks();
+		}
 	}
 
 	/**
@@ -592,6 +598,55 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 		$users = $tmp_users;
 		return $users;
+	}
+
+	/**
+	 * Filter function to add view-as links on user rows in users.php.
+	 *
+	 * @since   1.6
+	 * @since   1.6.3   Check whether to place link + reset link for current user.
+	 * @since   1.8     Moved to this class from VAA_View_Admin_As_UI.
+	 * @access  public
+	 * @param   array     $actions  The existing actions.
+	 * @param   \WP_User  $user     The user object.
+	 * @return  array
+	 */
+	public function filter_user_row_actions( $actions, $user ) {
+
+		if ( is_network_admin() ) {
+			$link = network_admin_url();
+		} else {
+			$link = admin_url();
+		}
+
+		if ( $user->ID === $this->store->get_curUser()->ID ) {
+			// Add reset link if it is the current user and a view is selected.
+			if ( $this->store->get_view() ) {
+				$link = VAA_API::get_reset_link( $link );
+			} else {
+				$link = false;
+			}
+		}
+		elseif ( $this->store->get_users( $user->ID ) || $this->filter_users_by_access( array( $user ) ) ) {
+			$link = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ), $link );
+		} else {
+			$link = false;
+		}
+
+		if ( $link ) {
+			$icon = 'dashicons-visibility';
+			$icon_attr = array(
+				'style' => array(
+					'font-size: inherit;',
+					'line-height: inherit;',
+					'display: inline;',
+					'vertical-align: text-top;',
+				),
+			);
+			$title = VAA_View_Admin_As_Form::do_icon( $icon, $icon_attr ) . ' ' . esc_html__( 'View as', VIEW_ADMIN_AS_DOMAIN );
+			$actions['vaa_view'] = '<a href="' . $link . '">' . $title . '</a>';
+		}
+		return $actions;
 	}
 
 	/**

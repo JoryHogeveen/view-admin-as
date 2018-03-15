@@ -51,9 +51,6 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
-		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
-			$this->add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
-		}
 		$this->add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
 		$this->add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
 		$this->add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
@@ -73,54 +70,6 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		if ( ! is_admin() || ! VAA_API::validate_wp_version( '4.2' ) ) {
 			$this->add_action( 'wp_head', array( $this, 'remove_query_args' ) );
 		}
-	}
-
-	/**
-	 * Filter function to add view-as links on user rows in users.php.
-	 *
-	 * @since   1.6
-	 * @since   1.6.3   Check whether to place link + reset link for current user.
-	 * @access  public
-	 * @param   array     $actions  The existing actions.
-	 * @param   \WP_User  $user     The user object.
-	 * @return  array
-	 */
-	public function filter_user_row_actions( $actions, $user ) {
-
-		if ( is_network_admin() ) {
-			$link = network_admin_url();
-		} else {
-			$link = admin_url();
-		}
-
-		if ( $user->ID === $this->store->get_curUser()->ID ) {
-			// Add reset link if it is the current user and a view is selected.
-			if ( $this->store->get_view() ) {
-				$link = VAA_API::get_reset_link( $link );
-			} else {
-				$link = false;
-			}
-		}
-		elseif ( $this->store->get_users( $user->ID ) ) {
-			$link = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ), $link );
-		} else {
-			$link = false;
-		}
-
-		if ( $link ) {
-			$icon = 'dashicons-visibility';
-			$icon_attr = array(
-				'style' => array(
-					'font-size: inherit;',
-					'line-height: inherit;',
-					'display: inline;',
-					'vertical-align: text-top;',
-				),
-			);
-			$title = VAA_View_Admin_As_Form::do_icon( $icon, $icon_attr ) . ' ' . esc_html__( 'View as', VIEW_ADMIN_AS_DOMAIN );
-			$actions['vaa_view'] = '<a href="' . $link . '">' . $title . '</a>';
-		}
-		return $actions;
 	}
 
 	/**
