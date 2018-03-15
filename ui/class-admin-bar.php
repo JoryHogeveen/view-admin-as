@@ -497,12 +497,14 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 
 		$parent = $root;// . '-title';
 
+		$view_type_nodes = array();
+
 		foreach ( $view_types as $type ) {
 			if ( ! $type instanceof VAA_View_Admin_As_Type || ! $type->has_access() ) {
 				continue;
 			}
 
-			$checkbox = array(
+			$view_type_node = array(
 				'name'        => $root . '-' . $type->get_type(),
 				'value'       => $type->is_enabled(),
 				'compare'     => true,
@@ -523,17 +525,24 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 			);
 
 			if ( $type->get_description() ) {
-				$checkbox['description'] = $type->get_description();
-				$checkbox['help'] = true;
+				$view_type_node['description'] = $type->get_description();
+				$view_type_node['help'] = true;
 			}
 
-			$admin_bar->add_node( array(
+			$view_type_nodes[ $type->get_priority() ][] = array(
 				'id'     => $root . '-' . $type->get_type(),
 				'parent' => $parent,
-				'title'  => VAA_View_Admin_As_Form::do_checkbox( $checkbox ),
+				'title'  => VAA_View_Admin_As_Form::do_checkbox( $view_type_node ),
 				'href'   => false,
 				'meta'   => array(),
-			) );
+			);
+		}
+
+		ksort( $view_type_nodes );
+		foreach ( $view_type_nodes as $nodes ) {
+			foreach ( $nodes as $node ) {
+				$admin_bar->add_node( $node );
+			}
 		}
 
 		/**
