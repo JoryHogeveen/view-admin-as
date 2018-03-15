@@ -317,7 +317,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Get the available and enabled view types.
+	 * Get the available view type keys.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -327,13 +327,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		static $view_types;
 		if ( ! is_null( $view_types ) ) return $view_types;
 
+		$view_types = array_keys( (array) view_admin_as()->get_view_types() );
 		$view_types[] = 'visitor';
-
-		foreach ( view_admin_as()->get_view_types() as $key => $type ) {
-			if ( $type->is_enabled() ) {
-				$view_types[] = $key;
-			}
-		}
 
 		/**
 		 * Add basic view types for automated use in JS and through VAA.
