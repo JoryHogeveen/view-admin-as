@@ -22,6 +22,16 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 {
 	/**
+	 * View type settings.
+	 *
+	 * @since  1.8
+	 * @var    array
+	 */
+	private $settings = array(
+		'enabled' => true,
+	);
+
+	/**
 	 * The view type.
 	 *
 	 * @since  1.8
@@ -307,6 +317,53 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 */
 	public function get_label_singular() {
 		return $this->label_singular;
+	}
+
+	/**
+	 * Get the view type settings.
+	 *
+	 * @since   1.8
+	 * @param   string  $key  Key in the setting array.
+	 * @return  mixed
+	 */
+	final public function get_settings( $key = null ) {
+		return VAA_API::get_array_data( $this->settings, $key );
+	}
+
+	/**
+	 * Set the view type settings.
+	 *
+	 * @since   1.8
+	 * @param   mixed   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  void
+	 */
+	final public function set_settings( $val, $key = null, $append = false ) {
+		$this->settings = VAA_API::set_array_data( $this->settings, $val, $key, $append );
+
+		$view_types = (array) $this->store->get_settings( 'view_types' );
+		$view_types[ $this->type ] = $this->get_settings();
+		$settings = array(
+			'view_types' => $view_types,
+		);
+		$this->store->set_settings( $settings );
+	}
+
+
+	/**
+	 * Set the view type settings.
+	 * Also sets the settings within this instance and VAA store.
+	 *
+	 * @since   1.8
+	 * @param   mixed   $val     Settings.
+	 * @param   string  $key     (optional) Setting key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 * @return  bool
+	 */
+	final public function update_settings( $val, $key = null, $append = false ) {
+		$this->set_settings( $val, $key, $append ); // Also updates store.
+		return $this->store->update_optionData( $this->store->get_optionData() );
 	}
 
 } // End class VAA_View_Admin_As_Type.
