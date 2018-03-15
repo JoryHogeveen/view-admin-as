@@ -449,38 +449,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$users = $this->filter_sort_users_by_role( $users );
 		} // End if().
 
-		foreach ( $users as $user_key => $user ) {
-
-			// If the current user is not a superior admin, run the user filters.
-			if ( true !== $is_superior_admin ) {
-
-				/**
-				 * Implement in_array() on get_super_admins() check instead of is_super_admin().
-				 * Reduces the amount of queries while the end result is the same.
-				 *
-				 * @since  1.5.2
-				 * @see    get_super_admins() >> wp-includes/capabilities.php
-				 * @see    is_super_admin() >> wp-includes/capabilities.php
-				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
-				 */
-				if ( // Remove super admins for multisites.
-					( is_multisite() && in_array( $user->user_login, (array) $super_admins, true ) ) ||
-					// Remove regular admins for normal installs.
-					( ! is_multisite() && $user->has_cap( 'administrator' ) ) ||
-					// Remove users who can access this plugin for non-admin users with the view_admin_as capability.
-					( ! $is_super_admin && $user->has_cap( 'view_admin_as' ) )
-				) {
-					unset( $users[ $user_key ] );
-					continue;
-				}
-			}
-
-			// @since  1.7.6  Remove users who are not allowed to be edited by this user.
-			if ( ! current_user_can( 'edit_user', $user->ID ) ) {
-				unset( $users[ $user_key ] );
-				continue;
-			}
-		}
+		$users = $this->filter_users_by_access( $users );
 
 		$this->set_data( $users );
 	}
@@ -518,6 +487,78 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			return array( $roles );
 		}
 		return $null;
+	}
+
+	/**
+	 * Filter users and remove those who the selected user can't access.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @param   \WP_User[]|\WP_User    $users
+	 * @param   null|int|\WP_User  $user_id
+	 * @return  array
+	 */
+	public function filter_users_by_access( $users, $user_id = null ) {
+
+		if ( ! is_array( $users ) ) {
+			$users = array( $users );
+		}
+
+		$super_admins = get_super_admins();
+		// Load the superior admins.
+		$superior_admins = VAA_API::get_superior_admins();
+
+		// Is the user a super admin?
+		$is_super_admin = VAA_API::is_super_admin( $user_id );
+		// Is it also one of the manually configured superior admins?
+		$is_superior_admin = VAA_API::is_superior_admin( $user_id );
+
+		foreach ( $users as $user_key => $user ) {
+
+			if ( ! $user instanceof WP_User ) {
+				$user = get_user_by( 'ID', $user );
+				unset( $users[ $user_key ] );
+				$user_key = $user->ID;
+				$users[ $user_key ] = $user;
+			}
+
+			// If the current user is not a superior admin, run the user filters.
+			if ( true !== $is_superior_admin ) {
+
+				/**
+				 * Implement in_array() on get_super_admins() check instead of is_super_admin().
+				 * Reduces the amount of queries while the end result is the same.
+				 *
+				 * @since  1.5.2
+				 * @see    get_super_admins() >> wp-includes/capabilities.php
+				 * @see    is_super_admin() >> wp-includes/capabilities.php
+				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
+				 */
+				if ( // Remove super admins for multisites.
+					( is_multisite() && in_array( $user->user_login, (array) $super_admins, true ) ) ||
+					// Remove regular admins for normal installs.
+					( ! is_multisite() && $user->has_cap( 'administrator' ) ) ||
+					// Remove users who can access this plugin for non-admin users with the view_admin_as capability.
+					( ! $is_super_admin && $user->has_cap( 'view_admin_as' ) )
+				) {
+					unset( $users[ $user_key ] );
+					continue;
+				}
+			}
+
+			// @since  1.7.6  Remove users who are not allowed to be edited by this user.
+			if ( ! current_user_can( 'edit_user', $user->ID ) ) {
+				unset( $users[ $user_key ] );
+				continue;
+			}
+		}
+
+		return $users;
 	}
 
 	/**
