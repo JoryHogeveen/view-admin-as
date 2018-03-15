@@ -161,8 +161,6 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			return;
 		}
 
-		$title_submenu = ( ! $this->group_user_roles() && 15 < count( $this->get_data() ) );
-
 		$main_root = $root;
 		$root = $main_root . '-users';
 
@@ -183,6 +181,19 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				'tabindex' => '0',
 			),
 		) );
+
+		if ( ! $this->group_user_roles() && 15 < count( $this->get_data() ) ) {
+			$admin_bar->add_group( array(
+				'id' => $root . '-all',
+				'parent' => $root . '-title',
+				'meta'   => array(
+					'class' => 'vaa-auto-max-height',
+				),
+			) );
+
+			$title_submenu = true;
+			$root = $root . '-all';
+		};
 
 		/**
 		 * Add items at the beginning of the users group.
@@ -214,18 +225,6 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 					'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu ab-vaa-results"></ul>',
 				),
 			) );
-		}
-
-		if ( $title_submenu ) {
-			$admin_bar->add_group( array(
-				'id' => $root . '-all',
-				'parent' => $root . '-title',
-				'meta'   => array(
-					'class' => 'vaa-auto-max-height',
-				),
-			) );
-
-			$root = $root . '-all';
 		}
 
 		// Add the users.
