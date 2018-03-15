@@ -56,6 +56,14 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	protected $label_singular = '';
 
 	/**
+	 * The view type description.
+	 *
+	 * @since  1.8
+	 * @var    string
+	 */
+	protected $description = '';
+
+	/**
 	 * The icon for this view type.
 	 *
 	 * @since  1.8
@@ -355,6 +363,17 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 */
 	public function get_label_singular() {
 		return $this->label_singular;
+	}
+
+	/**
+	 * Get the view type description.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @return  string
+	 */
+	public function get_description() {
+		return $this->description;
 	}
 
 	/**
