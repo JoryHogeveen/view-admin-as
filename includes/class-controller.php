@@ -327,6 +327,14 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		static $view_types;
 		if ( ! is_null( $view_types ) ) return $view_types;
 
+		$view_types[] = 'visitor';
+
+		foreach ( view_admin_as()->get_view_types() as $key => $type ) {
+			if ( $type->is_enabled() ) {
+				$view_types[] = $key;
+			}
+		}
+
 		/**
 		 * Add basic view types for automated use in JS and through VAA.
 		 *
@@ -338,10 +346,14 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * @param  array  $array  Empty array.
 		 * @return array  An array of strings (view types).
 		 */
-		$view_types = array_unique( array_merge(
-			array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
-			array( 'visitor' )
-		) );
+		$dep_view_types = apply_filters( 'view_admin_as_view_types', array() );
+		if ( $dep_view_types ) {
+
+			$view_types = array_unique( array_merge(
+				array_filter( $dep_view_types, 'is_string' ),
+				$view_types
+			) );
+		}
 
 		return $view_types;
 	}
