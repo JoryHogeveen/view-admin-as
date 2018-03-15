@@ -41,14 +41,20 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function is_super_admin( $user_id = null ) {
+		static $done = array();
 		if ( $user_id instanceof WP_User ) {
 			$user_id = $user_id->ID;
+		}
+		if ( isset( $done[ $user_id ] ) ) {
+			return $done[ $user_id ];
 		}
 
 		$store = view_admin_as()->store();
 		if ( $store ) {
-			return $store->is_super_admin( $user_id );
+			$done[ $user_id ] = $store->is_super_admin( $user_id );
+			return $done[ $user_id ];
 		}
+
 		return is_super_admin( $user_id );
 	}
 
@@ -67,8 +73,12 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function is_superior_admin( $user_id = null ) {
+		static $done = array();
 		if ( $user_id instanceof WP_User ) {
 			$user_id = $user_id->ID;
+		}
+		if ( isset( $done[ $user_id ] ) ) {
+			return $done[ $user_id ];
 		}
 
 		// If it's the current user or null, don't pass the user ID to make sure we check the original user status.
@@ -84,7 +94,8 @@ final class VAA_API
 		}
 
 		// Is it a super admin and is it one of the manually configured superior admins?
-		return (bool) ( true === $is_super_admin && in_array( (int) $user_id, self::get_superior_admins(), true ) );
+		$done[ $user_id ] = (bool) ( true === $is_super_admin && in_array( (int) $user_id, self::get_superior_admins(), true ) );
+		return $done[ $user_id ];
 	}
 
 	/**
