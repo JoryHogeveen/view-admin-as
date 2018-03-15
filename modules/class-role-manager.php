@@ -772,14 +772,48 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 		$root = $root . '-role-manager';
 
-		// Notice for capability editor location.
-		$admin_bar->add_node( array(
-			'id'     => $root . '-intro',
-			'parent' => $root,
-			// Translators: %s stands for "Capabilities".
-			'title'  => sprintf( __( 'You can add/edit roles under "%s"', VIEW_ADMIN_AS_DOMAIN ), __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ) ),
-			'href'   => false,
-		) );
+		$view_type = view_admin_as()->get_view_types( 'caps' );
+		$view_type_label = $view_type->get_label();
+
+		// This module required the role view type to gain all it's features.
+		if ( ! $view_type->is_enabled() ) {
+			$admin_bar->add_node( array(
+				'id'     => $root . '-dependency',
+				'parent' => $root,
+				'title'  => VAA_View_Admin_As_Form::do_button( array(
+					'name'    => $root . 'dependency-caps',
+					'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-warning' )
+					             // Translators: %s stands for the translated view type label "Capabilities".
+					             . sprintf( __( 'Please enable the "%s" view type to add/edit roles', VIEW_ADMIN_AS_DOMAIN ), $view_type_label ),
+					'auto_js' => array(
+						'setting' => 'setting',
+						'key'     => 'view_types',
+						'values'  => array(
+							'caps' => array(
+								'values' => array(
+									'enabled' => array(),
+								),
+							),
+						),
+						'refresh' => true,
+					),
+					'value' => true,
+				) ),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'vaa-button-container',
+				),
+			) );
+		} else {
+			// Notice for capability editor location.
+			$admin_bar->add_node( array(
+				'id'     => $root . '-intro',
+				'parent' => $root,
+				// Translators: %s stands for the translated view type label "Capabilities".
+				'title'  => sprintf( __( 'You can add/edit roles under "%s"', VIEW_ADMIN_AS_DOMAIN ), $view_type_label ),
+				'href'   => false,
+			) );
+		}
 
 		$this->admin_bar_menu_bulk_actions( $admin_bar, $root );
 	}
