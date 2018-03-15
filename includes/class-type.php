@@ -117,6 +117,37 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	}
 
 	/**
+	 * Is enabled?
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @return  bool
+	 */
+	public function is_enabled() {
+		return ( ! empty( $this->settings['enabled'] ) );
+	}
+
+	/**
+	 * Set plugin enabled true/false.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @param   bool  $bool       Enable or disable?
+	 * @param   bool  $update_db  Do database update? (default true).
+	 * @return  bool
+	 */
+	public function set_enable( $bool = false, $update_db = true ) {
+		$success = true;
+		if ( $update_db ) {
+			$success = $this->update_settings( (bool) $bool, 'enable', true );
+		}
+		if ( $success ) {
+			$this->settings['enabled'] = (bool) $bool;
+		}
+		return $success;
+	}
+
+	/**
 	 * Setup module and hooks.
 	 *
 	 * @since   1.8
