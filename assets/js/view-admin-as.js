@@ -175,12 +175,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				args = { 0: { target: args, delay: delay } };
 			}
 			$.each( args, function( key, data ) {
-				var timeout = null;
+				var timeout = null,
+					$target = $( data.target );
 				// Don't validate target property. It's mandatory so let the console notify the developer.
 				if ( ! data.hasOwnProperty( 'delay' ) ) {
 					data.delay = delay;
 				}
-				var $target = $( data.target );
 				$target.hide();
 				$this.on( 'mouseenter', function() {
 					timeout = setTimeout( function() {
@@ -321,11 +321,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var $sub = $(this).parent('.menupop').children('.ab-sub-wrapper');
 			if ( $sub.length ) {
 				if ( $sub.hasClass('active') ) {
-					$sub.slideUp('fast');
-					$sub.removeClass('active');
+					$sub.slideUp('fast').removeClass('active');
 				} else {
-					$sub.slideDown('fast');
-					$sub.addClass('active');
+					$sub.slideDown('fast').addClass('active');
 				}
 			}
 		} );
