@@ -519,7 +519,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 							),
 						),
 					),
-					'refresh' => false,
+					'refresh' => true,
 				),
 				'auto_showhide' => true,
 			);
@@ -534,7 +534,9 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 				'parent' => $parent,
 				'title'  => VAA_View_Admin_As_Form::do_checkbox( $view_type_node ),
 				'href'   => false,
-				'meta'   => array(),
+				'meta'   => array(
+					'class' => 'auto-height',
+				),
 			);
 		}
 
