@@ -24,6 +24,14 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 {
 	/**
+	 * The key to use for filters.
+	 * Passed to __construct() as first parameter.
+	 * @since  1.8
+	 * @var    string
+	 */
+	private $_filter_postfix = '';
+
+	/**
 	 * Is this option for a network installation?
 	 * Can only be set with set_for_network().
 	 *
@@ -247,6 +255,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 
 		} // End if().
 
+		$this->_filter_postfix = $id;
+
 		/**
 		 * Set the default global settings.
 		 *
@@ -405,6 +415,11 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		if ( ! is_array( $current ) ) {
 			$current = $defaults;
 		}
+
+		$settings = apply_filters(
+			'view_admin_as_update_' . $type . '_settings' . $this->_filter_postfix,
+			$settings, $current, $defaults, $allowed
+		);
 
 		$settings = $this->validate_settings( $settings, $type, false );
 
