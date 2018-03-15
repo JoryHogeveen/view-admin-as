@@ -616,14 +616,14 @@ final class VAA_View_Admin_As
 	 * @since   1.8
 	 * @param   array  $data {
 	 *     Required. An array of module info.
-	 *     @type  string  $id        The view type name, choose wisely since this is used for validation.
-	 *     @type  object  $instance  The view type class reference/instance.
+	 *     @type  string                  $id        The view type name, choose wisely since this is used for validation.
+	 *     @type  VAA_View_Admin_As_Type  $instance  The view type class reference/instance.
 	 * }
 	 * @return  bool  Successfully registered?
 	 */
 	public function register_view_type( $data ) {
 		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
-		     ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		     ! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Type
 		) {
 			$this->view_types[ $data['id'] ] = $data['instance'];
 			return true;
@@ -651,14 +651,14 @@ final class VAA_View_Admin_As
 	 * @since   1.6.1
 	 * @param   array  $data {
 	 *     Required. An array of module info.
-	 *     @type  string  $id        The module name, choose wisely since this is used for validation.
-	 *     @type  object  $instance  The module class reference/instance.
+	 *     @type  string                    $id        The module name, choose wisely since this is used for validation.
+	 *     @type  VAA_View_Admin_As_Module  $instance  The module class reference/instance.
 	 * }
 	 * @return  bool  Successfully registered?
 	 */
 	public function register_module( $data ) {
 		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
-		     ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		     ! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Module
 		) {
 			$this->modules[ $data['id'] ] = $data['instance'];
 			return true;
