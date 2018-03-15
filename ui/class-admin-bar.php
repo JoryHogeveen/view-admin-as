@@ -582,7 +582,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-plugins' ) . __( 'Modules', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'vaa-has-icon ab-vaa-title', // ab-vaa-toggle active.
+				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				'tabindex' => '0',
 			),
 		) );
