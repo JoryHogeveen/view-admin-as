@@ -82,6 +82,11 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 */
 	public function do_view() {
 
+		if ( ! $this->is_enabled() ) {
+			// Store the single selected user.
+			$this->validate_target_user( $this->selected );
+		}
+
 		if ( parent::do_view() ) {
 
 			/**
@@ -106,7 +111,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @return  array
 	 */
 	public function view_title( $titles = array() ) {
-		$current = $this->get_data( $this->selected );
+		$current = $this->validate_target_user( $this->selected );
 		if ( $current ) {
 
 			$type = $this->label_singular;
@@ -144,7 +149,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 */
 	public function validate_view_data( $null, $data = null ) {
 		// User data must be a number and exists in the loaded array of user id's.
-		if ( is_numeric( $data ) && array_key_exists( $data, $this->get_data() ) ) {
+		if ( is_numeric( $data ) && $this->validate_target_user( $data ) ) {
 			return $data;
 		}
 		return $null;
@@ -163,7 +168,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		static $done;
 		if ( $done ) return;
 
-		if ( ! $this->get_data() ) {
+		if ( ! $this->is_enabled() || ! $this->get_data() ) {
 			return;
 		}
 
@@ -281,6 +286,31 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		return $check;
+	}
+
+	/**
+	 * Check if the original user can access a user (view as).
+	 * Also checks the current store.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @param   int|\WP_User  $user
+	 * @return  \WP_User
+	 */
+	public function validate_target_user( $user ) {
+		$user_id = ( $user instanceof WP_User ) ? $user->ID : $user;
+
+		if ( $this->is_enabled() || $this->get_data( $user_id ) ) {
+			return $this->get_data( $user_id );
+		}
+
+		$check = $this->filter_users_by_access( array( $user ) );
+		if ( ! empty( $check[ $user_id ] ) ) {
+			$user = $check[ $user_id ];
+			$this->set_data( $user, $user->ID, true );
+			return $user;
+		}
+		return null;
 	}
 
 	/**
