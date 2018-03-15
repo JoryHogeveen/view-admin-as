@@ -71,6 +71,11 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 
 		$this->label          = __( 'Roles', VIEW_ADMIN_AS_DOMAIN );
 		$this->label_singular = __( 'Role', VIEW_ADMIN_AS_DOMAIN );
+
+		// Roles should always be stored because of dependencies.
+		if ( ! $this->is_enabled() ) {
+			$this->store_data();
+		}
 	}
 
 	/**
