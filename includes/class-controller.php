@@ -342,12 +342,19 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * - Menu items require the href attribute (the node needs to be an <a> element).
 		 * @see \VAA_View_Admin_As_Form::do_view_title()
 		 *
+		 * @deprecated  1.8
+		 *
 		 * @since  1.6.2
 		 * @param  array  $array  Empty array.
 		 * @return array  An array of strings (view types).
 		 */
 		$dep_view_types = apply_filters( 'view_admin_as_view_types', array() );
 		if ( $dep_view_types ) {
+
+			/** @see https://developer.wordpress.org/reference/functions/apply_filters_deprecated/ */
+			if ( function_exists( '_deprecated_hook' ) ) {
+				_deprecated_hook( 'view_admin_as_view_types', 1.8, 'view_admin_as()->register_view_type()' );
+			}
 
 			$view_types = array_unique( array_merge(
 				array_filter( $dep_view_types, 'is_string' ),

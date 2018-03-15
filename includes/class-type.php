@@ -193,7 +193,6 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 
 		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), $this->priorities['toolbar'], 2 );
 
-		$this->add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
 
 		$this->add_filter( 'view_admin_as_validate_view_data_' . $this->type, array( $this, 'validate_view_data' ), $this->priorities['validate_view_data'], 3 );
 		$this->add_filter( 'view_admin_as_update_view_' . $this->type, array( $this, 'update_view' ), $this->priorities['update_view'], 3 );
@@ -231,18 +230,6 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 */
 	public function init_user_modifications() {
 		$this->vaa->view()->init_user_modifications();
-	}
-
-	/**
-	 * Add view type.
-	 *
-	 * @since   1.8
-	 * @param   string[]  $types  Existing view types.
-	 * @return  string[]
-	 */
-	public function add_view_type( $types ) {
-		$types[] = $this->type;
-		return $types;
 	}
 
 	/**
