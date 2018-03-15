@@ -132,8 +132,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 
 		$this->user_has_access = $this->current_user_can( $this->cap );
 
-		// @todo After init??
-		if ( ! $this->is_vaa_enabled() || ! $this->has_access() ) {
+		if ( ! $this->has_access() ) {
 			return;
 		}
 
@@ -155,7 +154,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * @return  bool
 	 */
 	public function has_access() {
-		return $this->user_has_access;
+		return (bool) ( $this->is_vaa_enabled() && $this->user_has_access );
 	}
 
 	/**
