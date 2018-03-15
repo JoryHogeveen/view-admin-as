@@ -216,13 +216,12 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 */
 	protected function init_hooks() {
 
-		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), $this->priorities['toolbar'], 2 );
+		$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), $this->get_priority( 'toolbar' ), 2 );
 
+		$this->add_filter( 'view_admin_as_validate_view_data_' . $this->type, array( $this, 'validate_view_data' ), $this->get_priority( 'validate_view_data' ), 3 );
+		$this->add_filter( 'view_admin_as_update_view_' . $this->type, array( $this, 'update_view' ), $this->get_priority( 'update_view' ), 3 );
 
-		$this->add_filter( 'view_admin_as_validate_view_data_' . $this->type, array( $this, 'validate_view_data' ), $this->priorities['validate_view_data'], 3 );
-		$this->add_filter( 'view_admin_as_update_view_' . $this->type, array( $this, 'update_view' ), $this->priorities['update_view'], 3 );
-
-		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ), $this->priorities['do_view'] );
+		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ), $this->get_priority( 'do_view' ) );
 	}
 
 	/**
@@ -238,7 +237,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 
 		if ( $this->selected ) {
 
-			$this->add_filter( 'vaa_admin_bar_view_titles', array( $this, 'view_title' ), $this->priorities['view_title'] );
+			$this->add_filter( 'vaa_admin_bar_view_titles', array( $this, 'view_title' ), $this->get_priority( 'view_title' ) );
 			return true;
 		}
 		return false;
@@ -386,6 +385,14 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 */
 	public function get_description() {
 		return $this->description;
+	}
+
+	/**
+	 * @param string $key
+	 * @return int
+	 */
+	public function get_priority( $key = 'toolbar' ) {
+		return (int) ( isset( $this->priorities[ $key ] ) ) ? $this->priorities[ $key ] : 10;
 	}
 
 	/**
