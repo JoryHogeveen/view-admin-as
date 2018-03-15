@@ -179,7 +179,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'vaa-has-icon ab-vaa-title' . ( ( ! $title_submenu ) ? ' ab-vaa-toggle active' : '' ),
+				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
 				'tabindex' => '0',
 			),
 		) );
