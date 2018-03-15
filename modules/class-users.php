@@ -262,7 +262,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$roles = $this->store->get_roles();
 
-		if ( ! $roles ) {
+		if ( ! $roles || ! VAA_API::is_view_type_enabled( 'role' ) ) {
 			return $check;
 		}
 
