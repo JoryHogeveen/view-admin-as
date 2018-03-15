@@ -80,6 +80,14 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	protected $selected = null;
 
 	/**
+	 * Does the original user has access?
+	 *
+	 * @since  1.8
+	 * @var    bool
+	 */
+	protected $user_has_access = false;
+
+	/**
 	 * The hook priorities for this type.
 	 *
 	 * @since  1.8
@@ -122,8 +130,10 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 			'instance' => $this,
 		) );
 
+		$this->user_has_access = $this->current_user_can( $this->cap );
+
 		// @todo After init??
-		if ( ! $this->is_vaa_enabled() || ! $this->current_user_can( $this->cap ) ) {
+		if ( ! $this->is_vaa_enabled() || ! $this->has_access() ) {
 			return;
 		}
 
@@ -135,6 +145,17 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		if ( $this->is_enabled() ) {
 			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'init' ) );
 		}
+	}
+
+	/**
+	 * Does the original user has access to this view type?
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @return  bool
+	 */
+	public function has_access() {
+		return $this->user_has_access;
 	}
 
 	/**
@@ -179,14 +200,12 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 
 		$this->store_data();
 
-		if ( ! $this->get_data() ) {
-			// No view data available.
-			return false;
+		if ( $this->has_access() && $this->get_data() ) {
+			$this->init_hooks();
+			return true;
 		}
 
-		$this->init_hooks();
-
-		return true;
+		return false;
 	}
 
 	/**
