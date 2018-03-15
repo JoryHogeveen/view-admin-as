@@ -125,6 +125,7 @@ class VAA_View_Admin_As_Hooks
 	 * @param   string    $hook      The name of the WordPress action.
 	 * @param   callable  $callback  The callable.
 	 * @param   int       $priority  (optional) The priority at which the function would be fired. Default: 10.
+	 *                               Pass `null` to let this class try to find the priority.
 	 */
 	public function remove_action( $hook, $callback, $priority = 10 ) {
 		$priority = $this->_validate_priority( $this->_actions, $hook, $callback, $priority );
@@ -140,6 +141,7 @@ class VAA_View_Admin_As_Hooks
 	 * @param   string    $hook      The name of the WordPress filter.
 	 * @param   callable  $callback  The callable.
 	 * @param   int       $priority  (optional) The priority at which the function would be fired. Default: 10.
+	 *                               Pass `null` to let this class try to find the priority.
 	 */
 	public function remove_filter( $hook, $callback, $priority = 10 ) {
 		$priority = $this->_validate_priority( $this->_filters, $hook, $callback, $priority );
@@ -336,7 +338,7 @@ class VAA_View_Admin_As_Hooks
 	 * @return  int  Default: 10.
 	 */
 	protected function _validate_priority( $hooks, $hook, $callback, $priority ) {
-		if ( null === $priority ) {
+		if ( ! is_numeric( $priority ) ) {
 			$priority = $this->_find_priority( $hooks, $hook, $callback );
 			if ( ! $priority ) {
 				return 10;
