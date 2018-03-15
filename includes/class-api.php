@@ -242,6 +242,25 @@ final class VAA_API
 	}
 
 	/**
+	 * Check if a view type is enabled.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $type  The view type key.
+	 * @return  bool
+	 */
+	public static function is_view_type_enabled( $type ) {
+		$type = view_admin_as()->get_view_types( $type );
+		if ( $type instanceof VAA_View_Admin_As_Type ) {
+			return $type->is_enabled();
+		}
+		return false;
+	}
+
+	/**
 	 * Generate a VAA action link.
 	 *
 	 * @since   1.7
