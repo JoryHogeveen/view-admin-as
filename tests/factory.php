@@ -186,6 +186,12 @@ class VAA_UnitTest_Factory {
 		}
 		self::clear_did_action();
 
+		if ( self::$store ) {
+			// Required to properly reset access.
+			// @todo Improve load logic in core and test factory.
+			self::$store->init( true );
+		}
+
 		self::$vaa->init( true );
 
 		self::$store = self::$vaa->store();
