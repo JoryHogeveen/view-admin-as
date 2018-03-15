@@ -87,6 +87,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 		$this->label          = $this->translate_remote( 'Groups' );
 		$this->label_singular = $this->translate_remote( 'Group' );
+		$this->description    = __( 'Plugin' ) . ': ' . $this->label;
 
 		parent::__construct( $vaa );
 	}

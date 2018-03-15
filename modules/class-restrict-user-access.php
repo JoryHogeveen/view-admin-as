@@ -133,6 +133,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 
 		$this->label          = 'Access Levels';
 		$this->label_singular = 'Access Level';
+		$this->description    = __( 'Plugin' ) . ': ' . $this->translate_remote( 'Restrict User Access' );
 
 		if ( did_action( 'init' ) ) {
 			$this->set_labels();
