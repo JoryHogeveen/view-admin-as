@@ -113,7 +113,14 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 			return;
 		}
 
-		$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'init' ) );
+		$view_types = $this->store->get_settings( 'view_types' );
+		if ( isset( $view_types[ $this->type ] ) ) {
+			$this->settings = $view_types[ $this->type ];
+		}
+
+		if ( $this->is_enabled() ) {
+			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'init' ) );
+		}
 	}
 
 	/**
