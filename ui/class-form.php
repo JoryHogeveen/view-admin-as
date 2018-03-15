@@ -82,6 +82,9 @@ class VAA_View_Admin_As_Form
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;
 		$args['attr']['class'] = 'button' . $class;
+		if ( ! empty( $args['value'] ) ) {
+			$args['attr']['value'] = $args['value'];
+		};
 
 		$attr = $args['attr'];
 		if ( ! empty( $args['auto_js'] ) && empty( $args['auto_js']['event'] ) ) {
