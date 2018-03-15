@@ -109,6 +109,12 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
+		static $done;
+		if ( ! $done ) {
+			$this->add_filter( 'view_admin_as_update_global_settings', array( 'VAA_View_Admin_As_Type', 'filter_update_view_types' ), 1, 3 );
+			$done = true;
+		}
+
 		parent::__construct( $vaa );
 
 		$this->vaa->register_view_type( array(
@@ -408,6 +414,32 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	final public function update_settings( $val, $key = null, $append = false ) {
 		$this->set_settings( $val, $key, $append ); // Also updates store.
 		return $this->store->update_optionData( $this->store->get_optionData() );
+	}
+
+	/**
+	 * Update the active view types.
+	 *
+	 * @since  1.8
+	 * @static
+	 * @param  array  $data
+	 * @return mixed
+	 */
+	final public static function filter_update_view_types( $data ) {
+		if ( empty( $data['view_types'] ) ) {
+			return $data;
+		}
+
+		foreach ( $data['view_types'] as $type => $settings ) {
+			$type = view_admin_as()->get_view_types( $type );
+			if ( ! $type instanceof VAA_View_Admin_As_Type ) {
+				continue;
+			}
+			$type->set_settings( $settings );
+		}
+
+		$data['view_types'] = view_admin_as()->store()->get_settings( 'view_types' );
+
+		return $data;
 	}
 
 } // End class VAA_View_Admin_As_Type.
