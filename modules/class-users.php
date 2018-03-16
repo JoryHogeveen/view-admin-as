@@ -562,6 +562,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			if ( ! $user instanceof WP_User ) {
 				$user = get_user_by( 'ID', $user );
 				unset( $users[ $user_key ] );
+				if ( ! $user instanceof WP_User ) {
+					continue;
+				}
 				$user_key = $user->ID;
 				$users[ $user_key ] = $user;
 			}
