@@ -775,7 +775,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$view_type = view_admin_as()->get_view_types( 'caps' );
 		$view_type_label = $view_type->get_label();
 
-		// This module required the role view type to gain all it's features.
+		// This module requires the capability view type to enable all it's features.
 		if ( ! $view_type->is_enabled() ) {
 			$admin_bar->add_node( array(
 				'id'     => $root . '-dependency',

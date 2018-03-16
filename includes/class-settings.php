@@ -26,6 +26,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * The key to use for filters.
 	 * Passed to __construct() as first parameter.
+	 *
 	 * @since  1.8
 	 * @var    string
 	 */

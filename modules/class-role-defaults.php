@@ -1084,7 +1084,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 		$root = $root . '-role-defaults';
 
-		// This module required the role view type to gain all it's features.
+		// This module requires the role view type to enable all it's features.
 		if ( ! VAA_API::is_view_type_enabled( 'role' ) ) {
 			$view_type = view_admin_as()->get_view_types( 'role' );
 			$admin_bar->add_node( array(
