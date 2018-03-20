@@ -203,6 +203,13 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
+= 1.7.6.1 =
+
+*	**Compatibility:** Improve customizer compatibility. [#88](https://github.com/JoryHogeveen/view-admin-as/issues/88)
+*	**Compatibility/Fix:** Frontend error with Yoast SEO. [Yoast SEO #9285](https://github.com/Yoast/wordpress-seo/pull/9285)
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/90)
+
 = 1.7.6 =
 
 *	**Feature:** Role manager: Option to migrate users to another role after deleting a role. [#86](https://github.com/JoryHogeveen/view-admin-as/issues/86)
