@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.4
+ * @version 1.7.6.1
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
@@ -331,13 +331,23 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		// @since  1.7.4  Yoast SEO 5.5+  Load integration on front end.
 		if ( ! is_admin() && VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Integration', 'register_hooks' ) ) ) {
 			/**
-			 * Registers the capabilities in the `members_get_capabilities` filter.
-			 * @since Yoast SEO 5.8+
-			 * @link https://github.com/Yoast/wordpress-seo/pull/7937
+			 * Make sure WPSEO_Options::$backfill is instantiated.
+			 * @link  https://github.com/Yoast/wordpress-seo/pull/9285
+			 * @since Yoast SEO 7.1+
+			 * @since 1.7.6.1
 			 */
-			if ( VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Factory', 'get' ), 'debug' ) ) {
-				$wpseo = new WPSEO_Capability_Manager_Integration( WPSEO_Capability_Manager_Factory::get() );
-				$wpseo->register_hooks();
+			if ( VAA_API::exists_callable( array( 'WPSEO_Options', 'get_instance' ) ) ) {
+				WPSEO_Options::get_instance();
+
+				/**
+				 * Registers the capabilities in the `members_get_capabilities` filter.
+				 * @since Yoast SEO 5.8+
+				 * @link https://github.com/Yoast/wordpress-seo/pull/7937
+				 */
+				if ( VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Factory', 'get' ), 'debug' ) ) {
+					$wpseo = new WPSEO_Capability_Manager_Integration( WPSEO_Capability_Manager_Factory::get() );
+					$wpseo->register_hooks();
+				}
 			}
 		}
 

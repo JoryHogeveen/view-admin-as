@@ -5,7 +5,7 @@ Tags: admin, view, roles, users, switch, user switching, role switching, capabil
 Requires at least: 4.1
 Tested up to: 4.9
 Requires PHP: 5.2.4
-Stable tag: 1.7.6
+Stable tag: 1.7.6.1
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -202,6 +202,13 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 11. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.7.6.1 =
+
+*	**Compatibility:** Improve customizer compatibility. [#88](https://github.com/JoryHogeveen/view-admin-as/issues/88)
+*	**Compatibility/Fix:** Frontend error with Yoast SEO. [Yoast SEO #9285](https://github.com/Yoast/wordpress-seo/pull/9285)
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/90)
 
 = 1.7.6 =
 

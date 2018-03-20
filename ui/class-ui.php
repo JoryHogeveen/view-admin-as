@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Renamed from VAA_View_Admin_As_Admin
- * @version 1.7.6
+ * @version 1.7.6.1
  * @uses    VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
@@ -60,6 +60,8 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		// @since  1.7.6.1  Add scripts to the customizer container hook.
+		add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 
