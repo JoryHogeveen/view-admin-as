@@ -60,6 +60,8 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		// @since  1.7.6.1  Add scripts to the customizer container hook.
+		add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
 
