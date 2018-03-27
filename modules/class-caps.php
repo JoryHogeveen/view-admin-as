@@ -361,7 +361,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $parent, $main_root );
 
 		// Add caps actions.
-		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-actions.php' );
+		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-actions.php';
 
 		/**
 		 * Add items at the after of the caps actions.
@@ -376,7 +376,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $parent, $main_root );
 
 		// Add the caps.
-		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-items.php' );
+		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-items.php';
 
 		/**
 		 * Add items at the end of the caps group.

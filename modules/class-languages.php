@@ -208,7 +208,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		do_action( 'vaa_admin_bar_languages_before', $admin_bar, $root );
 
 		// Add the levels.
-		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-language-items.php' );
+		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-language-items.php';
 
 		/**
 		 * Add items at the end of the rua group.

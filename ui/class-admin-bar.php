@@ -436,7 +436,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		do_action( 'vaa_admin_bar_settings_before', $admin_bar, $root, self::$root );
 
 		// Add user setting nodes.
-		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-settings-user.php' );
+		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-settings-user.php';
 
 		/**
 		 * Add items at the end of the settings group.

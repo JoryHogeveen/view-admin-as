@@ -92,7 +92,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 	}
 
 	// Include main init class file.
-	require_once( VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php' );
+	require_once VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php';
 
 	/**
 	 * Main instance of View Admin As.
@@ -120,7 +120,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 			// Translators: %s stands for the class name.
 			. ' <code>(' . sprintf( esc_html__( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')</code></p></div>';
 	}
-	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	deactivate_plugins( plugin_basename( __FILE__ ) );
 
 } // End if().

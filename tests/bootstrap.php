@@ -33,7 +33,7 @@ $GLOBALS['wp_tests_options'] = array(
 	'active_plugins' => array( TEST_VAA_PLUGIN_PATH ),
 );
 
-require_once( TEST_VAA_DIR . 'functions.php' );
+require_once TEST_VAA_DIR . 'functions.php';
 
 require_once $_tests_dir . '/includes/functions.php';
 
@@ -46,7 +46,7 @@ require $_tests_dir . '/includes/bootstrap.php';
 
 echo 'Installing View Admin As' . PHP_EOL;
 
-require_once( TEST_VAA_DIR . 'factory.php' );
+require_once TEST_VAA_DIR . 'factory.php';
 VAA_UnitTest_Factory::get_instance();
 
 if ( ! is_multisite() ) {

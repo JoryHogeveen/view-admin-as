@@ -210,7 +210,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		do_action( 'vaa_admin_bar_roles_before', $admin_bar, $main_root );
 
 		// Add the roles.
-		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-role-items.php' );
+		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-role-items.php';
 
 		/**
 		 * Add items at the end of the roles group.

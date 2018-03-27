@@ -243,7 +243,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		// Add the users.
-		include( VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-items.php' );
+		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-items.php';
 
 		/**
 		 * Add items at the end of the users group.

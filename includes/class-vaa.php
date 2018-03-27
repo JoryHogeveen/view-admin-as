@@ -805,7 +805,7 @@ final class VAA_View_Admin_As
 
 		if ( ! $valid ) {
 			// Too bad..
-			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
 		}
 
@@ -834,7 +834,7 @@ final class VAA_View_Admin_As
 		if ( is_bool( $check ) ) {
 			return $check;
 		}
-		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		$check = (bool) is_plugin_active_for_network( VIEW_ADMIN_AS_BASENAME );
 		return $check;
 	}
