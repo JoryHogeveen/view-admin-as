@@ -141,6 +141,13 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 			$this->settings = $view_types[ $this->type ];
 		}
 
+		/**
+		 * Change enabled status.
+		 * @param  bool  $enabled  Default.
+		 * @return bool
+		 */
+		$this->set_enable( apply_filters( 'view_admin_as_enable_view_type_' . $this->type, $this->is_enabled() ), false );
+
 		if ( $this->is_enabled() ) {
 			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'init' ) );
 		}
