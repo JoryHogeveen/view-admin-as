@@ -457,6 +457,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		foreach ( $data['view_types'] as $type => $settings ) {
 			$type = view_admin_as()->get_view_types( $type );
 			if ( ! $type instanceof VAA_View_Admin_As_Type ) {
+				unset( $data['view_types'][ $type ] );
 				continue;
 			}
 			$type->set_settings( $settings );
