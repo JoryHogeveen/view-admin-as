@@ -111,7 +111,7 @@
 #wpadminbar #wp-admin-bar-vaa .auto-height > .ab-item {height: auto;}
 
 /* Descriptions */
-#wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal;}
+#wpadminbar #wp-admin-bar-vaa .ab-item .description {height: auto; line-height: 1.2; font-size: 0.8em; font-style: italic; margin-bottom: 7px; white-space: normal; color: inherit;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .description:first-child:not(:only-child) {margin-bottom: 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .description .ab-icon {line-height: 1 !important; font-size: 1em !important; padding: 1px 0; margin-right: 3px; width: auto; height: 1em;}
 
