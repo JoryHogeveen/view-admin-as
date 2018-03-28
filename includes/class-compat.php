@@ -77,7 +77,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		$this->add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
 
 		/**
-		 * Get caps from other plugins.
+		 * Get all capabilities.
 		 * @since  1.5
 		 */
 		$this->add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
@@ -122,7 +122,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @param   array   $caps  The capabilities.
 	 * @param   bool[]  $args  Pass arguments to get only certain capabilities.
-	 * @return  array
+	 * @return  array   Both key and values are the capabilities.
 	 */
 	public function get_capabilities( $caps = array(), $args = array() ) {
 
@@ -137,14 +137,24 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		}
 
 		if ( $args['wp'] ) {
-			$caps = array_merge( $this->get_wordpress_capabilities(), $caps );
+			$caps = $this->get_wordpress_capabilities( $caps );
 		}
 
 		if ( $args['plugins'] ) {
-			$caps = array_merge( $this->get_plugin_capabilities(), $caps );
+			$caps = $this->get_plugin_capabilities( $caps );
 		}
 
-		return $caps;
+		// @since  1.8  Make sure both keys and values are capabilities.
+		$all_caps = array();
+		foreach ( $caps as $cap_key => $cap ) {
+			if ( is_string( $cap ) && ! is_numeric( $cap ) ) {
+				$all_caps[ $cap ] = $cap;
+			} else {
+				$all_caps[ $cap_key ] = $cap_key;
+			}
+		}
+
+		return $all_caps;
 	}
 
 	/**
