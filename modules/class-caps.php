@@ -428,7 +428,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			// Add new capabilities to the capability array as disabled.
 			foreach ( $all_caps as $cap_key => $cap_val ) {
 				if ( is_numeric( $cap_key ) ) {
-					// Try to convert numeric (faulty) keys. Some developers just don't get it..
+					// Try to convert numeric (faulty) keys.
 					$add_caps[ (string) $cap_val ] = 0;
 				} else {
 					$add_caps[ (string) $cap_key ] = 0;

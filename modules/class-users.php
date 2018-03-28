@@ -473,7 +473,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 			} else {
 
-				// @todo Notice on debug?
+				// @todo Notice on debug? If so, check if the query gave an error before doing so...
 
 				// Fallback to WP native functions.
 				$user_args = array(

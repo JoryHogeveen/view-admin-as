@@ -454,7 +454,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	/**
 	 * Add admin bar menu view type items.
 	 *
-	 * @since   1.7.1
+	 * @since   1.8
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
