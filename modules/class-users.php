@@ -46,6 +46,14 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	protected $icon = 'dashicons-admin-users';
 
 	/**
+	 * Provide ajax search instead of loading all users at once?
+	 *
+	 * @since  1.8  Ajax search UI not available yet.
+	 * @var    bool
+	 */
+	protected $ajax_search = false;
+
+	/**
 	 * Populate the instance.
 	 *
 	 * @since   1.8
@@ -172,12 +180,13 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		static $done;
 		if ( $done ) return;
 
-		if ( ! $this->is_enabled() || ! $this->get_data() ) {
+		if ( ! $this->is_enabled() ) {
 			return;
 		}
 
 		$main_root = $root;
 		$root = $main_root . '-users';
+		$title_submenu = false;
 
 		$admin_bar->add_group( array(
 			'id'     => $root,
@@ -480,6 +489,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				}
 
 				$users = get_users( $user_args );
+			}
+
+			// @todo Switch to ajax search because of load time.
+			if ( (int) $args['limit'] <= count( $users ) ) {
+				$this->ajax_search = true;
+				return;
 			}
 
 			// Sort users by role and filter them on available roles.
