@@ -242,8 +242,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			) );
 		}
 
-		// Add the users.
-		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-items.php';
+		if ( $this->get_data() ) {
+			// Add the users.
+			include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-items.php';
+		}
 
 		/**
 		 * Add items at the end of the users group.
@@ -331,11 +333,22 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.8    Moved from VAA_View_Admin_As_Store.
 	 * @access  public
 	 * @global  \wpdb  $wpdb
+	 * @param   array  $args  Function arguments.
 	 * @return  void
 	 */
-	public function store_data() {
+	public function store_data( $args = array() ) {
 
 		global $wpdb;
+
+		$args = wp_parse_args( $args, array(
+			/**
+			 * Change the limit for querying users.
+			 * @since  1.8
+			 * @param  int  $limit  Default: 100.
+			 * @return int
+			 */
+			'limit' => (int) apply_filters( 'view_admin_as_user_query_limit', 100 ),
+		) );
 
 		$super_admins = get_super_admins();
 		// Load the superior admins.
@@ -361,6 +374,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			'left_join' => "INNER JOIN {$wpdb->usermeta} usermeta ON ( users.ID = usermeta.user_id )",
 			'where'     => "WHERE ( usermeta.meta_key = '{$wpdb->get_blog_prefix()}capabilities' )",
 			'order_by'  => "ORDER BY users.display_name ASC",
+			'limit'     => "LIMIT {$args['limit']}",
 		);
 
 		if ( is_network_admin() ) {
@@ -475,6 +489,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 					'orderby' => 'display_name',
 					// @since  1.5.2  Exclude the current user.
 					'exclude' => array_merge( $superior_admins, array( $this->store->get_curUser()->ID ) ),
+					// @since  1.8  Limit the number of users to return.
+					'number' => $args['limit'],
 				);
 				// @since  1.5.2  Do not get regular admins for normal installs (WP 4.4+).
 				if ( ! is_multisite() && ! $is_superior_admin ) {
