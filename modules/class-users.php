@@ -222,25 +222,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 */
 		do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
 
-		if ( $this->group_user_roles() || $title_submenu ) {
-			$title = '';
-			if ( $this->group_user_roles() ) {
-				$title = VAA_View_Admin_As_Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) );
-			}
-			$admin_bar->add_node( array(
-				'id'     => $root . '-searchusers',
-				'parent' => $root,
-				'title'  => $title . VAA_View_Admin_As_Form::do_input( array(
-					'name'        => $root . '-searchusers',
-					'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'ab-vaa-search search-users',
-					'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu ab-vaa-results"></ul>',
-				),
-			) );
-		}
+		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-actions.php';
 
 		if ( $this->get_data() ) {
 			// Add the users.
