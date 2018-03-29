@@ -1098,6 +1098,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				$.post( VAA_View_Admin_As.ajaxurl, post_data, function( response ) {
 					clearInterval( loading_interval );
 					clearTimeout( ajax_delay_timer );
+					if ( response.hasOwnProperty( 'success' ) && response.success ) {
+						$search_results.html( response.data );
+					} else {
+						$search_results.html( no_results );
+					}
 				} );
 
 			}, 500 );
