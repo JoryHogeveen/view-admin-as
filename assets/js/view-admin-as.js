@@ -1039,6 +1039,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 * @since  1.2
 		 * @since  1.8  As a function.
 		 * @param  {string}  search  The search value.
+		 * @return {void}  Nothing.
 		 */
 		function search_users( search ) {
 			$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
@@ -1066,11 +1067,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( '' === $.trim( $search_results.html() ) ) {
 				$search_results.html( no_results );
 			}
+			VAA_View_Admin_As.autoMaxHeight();
 		}
 
 		/**
 		 * @since  1.8
 		 * @param  {string}  search  The search value.
+		 * @return {void}  Nothing.
 		 */
 		function search_users_ajax( search ) {
 			clearTimeout( ajax_delay_timer );
@@ -1103,6 +1106,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					} else {
 						$search_results.html( no_results );
 					}
+					VAA_View_Admin_As.autoMaxHeight();
 				} );
 
 			}, 500 );
