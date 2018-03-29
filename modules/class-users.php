@@ -340,7 +340,6 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @return  void
 	 */
 	public function store_data( $args = array() ) {
-
 		global $wpdb;
 
 		$args = wp_parse_args( $args, array(
@@ -516,6 +515,11 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				// @since  1.5.2  Do not get regular admins for normal installs (WP 4.4+).
 				if ( ! is_multisite() && ! $is_superior_admin ) {
 					$user_args['role__not_in'] = 'administrator';
+				}
+				// @since  1.8  Search for users.
+				if ( ! empty( $args['search'] ) ) {
+					$user_args['search'] = $args['search'];
+					$user_args['search_columns'] = (array) $args['search_by'];
 				}
 
 				$users = get_users( $user_args );
