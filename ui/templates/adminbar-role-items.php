@@ -20,8 +20,9 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
 	}
-
-	$parent = $root;
+	if ( ! isset( $parent ) ) {
+		$parent = $root;
+	}
 
 	foreach ( $this->store->get_roles() as $role_key => $role ) {
 		$href   = VAA_API::get_vaa_action_link( array( $this->type => $role_key ), $this->store->get_nonce( true ) );
