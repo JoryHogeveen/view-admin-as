@@ -1299,18 +1299,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// Show checkboxes.
 		function enable_combine_views() {
 			is_active = true;
+			add_combine_checkboxes();
 			$combine_items = $( VAA_View_Admin_As.prefix + '.vaa-combine-item' );
-			if ( $combine_items.length ) {
-				$combine_items.fadeIn('fast');
-			} else {
-				for ( var key in combine_selectors ) {
-					if ( combine_selectors.hasOwnProperty( key ) ) {
-						add_combine_checkboxes( combine_selectors[ key ], key );
-					}
-				}
-				$combine_items = $( VAA_View_Admin_As.prefix + '.vaa-combine-item' );
-				$combine_items.fadeIn('fast');
-			}
+			$combine_items.fadeIn('fast');
 			update_selection_list();
 		}
 
