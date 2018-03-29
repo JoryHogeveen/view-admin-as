@@ -46,7 +46,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			'href'   => false,
 			'meta'   => array(
 				'class' => 'ab-vaa-search search-users' . ( ( $this->ajax_search ) ? ' search-ajax' : '' ),
-				'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu ab-vaa-results"></ul>',
+				'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary vaa-auto-max-height ab-submenu ab-vaa-results"></ul>',
 			),
 		) );
 	}
