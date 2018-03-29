@@ -1339,11 +1339,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var $elements = $( elements );
 			$elements.each( function () {
 				var $this = $( this ),
+					$parent = $this.parent(),
 					val = null,
 					text = $this.text(),
 					$data_el = $this.find('.vaa-view-data'),
 					type_label,
 					attr;
+				if ( $parent.find('.vaa-combine-item').length ) {
+					// Already exists.
+					return true;
+				}
 				if ( $data_el.length ) {
 					val = $data_el.attr('vaa-view-value');
 					text = $data_el.text();
@@ -1364,7 +1369,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				if ( type_label ) {
 					attr.push( 'vaa-view-type-label="' + type_label + '"' );
 				}
-				$this.parent().prepend( '<input ' + attr.join(' ') + '>' );
+				$parent.prepend( '<input ' + attr.join(' ') + '>' );
 			} );
 		}
 
