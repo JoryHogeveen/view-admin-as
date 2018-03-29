@@ -512,7 +512,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @since  1.7
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Info for the redirect: { redirect: URL }
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.refresh = function( data ) {
 		if ( data.hasOwnProperty( 'redirect' ) ) {
@@ -539,7 +539,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.notice = function( notice, type, timeout ) {
 		var root = '#wpadminbar .vaa-notice',
@@ -577,7 +577,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.item_notice = function( parent, notice, type, timeout ) {
 		var root = '.vaa-notice',
@@ -618,7 +618,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Data to use.
 	 * @param  {string}  type  The notice/overlay type (notice, error, message, warning, success).
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.popup = function( data, type ) {
 		type = ( 'undefined' === typeof type ) ? 'notice' : type;
@@ -696,7 +696,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @since  1.7.4
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object|string}  data  Data to use.
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.download = function( data ) {
 		var content = '',
@@ -738,7 +738,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Automatic option handling.
 	 * @since  1.7.2
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.init_auto_js = function() {
 
@@ -1003,7 +1003,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * USERS.
 	 * Extra functions for user views.
 	 * @since  1.2
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
@@ -1036,10 +1036,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		/**
+		 * Search users from the DOM.
+		 *
 		 * @since  1.2
 		 * @since  1.8  As a function.
 		 * @param  {string}  search  The search value.
-		 * @return {void}  Nothing.
+		 * @return {void} Nothing.
 		 */
 		function search_users( search ) {
 			$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
@@ -1071,9 +1073,11 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}
 
 		/**
+		 * Search users with AJAX.
+		 *
 		 * @since  1.8
 		 * @param  {string}  search  The search value.
-		 * @return {void}  Nothing.
+		 * @return {void} Nothing.
 		 */
 		function search_users_ajax( search ) {
 			clearTimeout( ajax_delay_timer );
@@ -1116,7 +1120,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * CAPABILITIES.
 	 * @since  1.3
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
@@ -1171,12 +1175,18 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return capabilities;
 		};
 
-		// Since  1.7  Set the selected capabilities.
+		/**
+		 * Set the selected capabilities.
+		 * @since  1.7
+		 * @param  {object}  capabilities  The capabilities.
+		 * @return {void} Nothing.
+ 		 */
 		VAA_View_Admin_As.set_selected_capabilities = function( capabilities ) {
 			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
-				var $this = $(this);
-				if ( capabilities.hasOwnProperty( $this.attr('value') ) ) {
-					if ( capabilities[ $this.attr('value') ] ) {
+				var $this = $(this),
+					val   = $this.attr('value');
+				if ( capabilities.hasOwnProperty( val ) ) {
+					if ( capabilities[ val ] ) {
 						$this.prop( 'checked', true );
 					} else {
 						$this.prop( 'checked', false );
@@ -1335,7 +1345,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 		}
 
-		// Generate the checkboxes for combine types.
+		/**
+		 * Generate the checkboxes for combine types.
+		 * @param  {string}  elements  The elements selector to search for.
+		 * @param  {string}  type      The view type.
+		 * @return {void} Nothing.
+ 		 */
 		function add_combine_checkboxes( elements, type ) {
 			if ( ! elements || ! type ) {
 				for ( var key in combine_selectors ) {
@@ -1383,7 +1398,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		}
 
-		// Parse new combine selection. Also checks for multiple views.
+		/**
+		 * Parse new combine selection. Also checks for multiple views.
+		 * @param  {string}  element  The element selector.
+		 * @param  {string}  type     The view type.
+		 * @return {void} Nothing.
+		 */
 		function parse_combine_type( element, type ) {
 			var $element = $( element ),
 				val;
@@ -1405,7 +1425,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			activate_combine_type( $element, type, val );
 		}
 
-		// Activate/select a combine type.
+		/**
+		 * Activate/select a combine type.
+		 * @param  {string}  element  The element selector.
+		 * @param  {string}  type     The view type.
+		 * @param  {string}  value    The view value.
+		 * @return {void} Nothing.
+		 */
 		function activate_combine_type( element, type, value ) {
 			var $element = $( element );
 			deactivate_combine_type( type, false );
@@ -1419,7 +1445,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			update_selection_list();
 		}
 
-		// Deactivate/deselect a combine type.
+		/**
+		 * Deactivate/deselect a combine type.
+		 * @param  {string|object}  types   The view types.
+		 * @param  {boolean}        update  Update selection list?
+		 * @return {void} Nothing.
+ 		 */
 		function deactivate_combine_type( types, update ) {
 			if ( 'object' !== typeof types ) {
 				type = types;
@@ -1581,7 +1612,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Defaults.
 	 * @since  1.4
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
@@ -1635,7 +1666,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Manager.
 	 * @since  1.7
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_manager = function() {
 
@@ -1721,7 +1752,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 *
 	 * @since  1.7.4
 	 * @param  {object}  data  The auto_js data.
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.assign_file_content = function( data ) {
 		if ( 'function' !== typeof FileReader ) {
