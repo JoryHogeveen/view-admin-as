@@ -1094,7 +1094,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				var post_data = {
 					'action': 'view_admin_as_search_users',
 					'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
-					// @since  1.6.2  Use JSON data.
 					'view_admin_as_search_users': search
 				};
 
@@ -1103,6 +1102,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					clearTimeout( ajax_delay_timer );
 					if ( response.hasOwnProperty( 'success' ) && response.success ) {
 						$search_results.html( response.data );
+						VAA_View_Admin_As.reinit_combine_views();
 					} else {
 						$search_results.html( no_results );
 					}
@@ -1295,6 +1295,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// Custom selector for capability view.
 		combine_types.push( 'caps' );
 		combine_selectors['caps'] = VAA_View_Admin_As.prefix + VAA_View_Admin_As.root + '-caps > .menupop > .ab-item';
+
+		VAA_View_Admin_As.reinit_combine_views = function() {
+			if ( is_active ) {
+				enable_combine_views();
+			} else {
+				add_combine_checkboxes();
+			}
+			$.each( selection, function ( type, data ) {
+				data.el = $( data.el );
+				if ( data.el.length ) {
+					data.el.prop( 'checked', true );
+					activate_combine_type( data.el, data.type, data.value );
+				}
+			} );
+		};
 
 		// Show checkboxes.
 		function enable_combine_views() {
