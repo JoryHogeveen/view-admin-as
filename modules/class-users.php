@@ -470,7 +470,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$user_query = array(
 			'select'    => "SELECT users.*, usermeta.meta_value AS roles",
 			'from'      => "FROM {$wpdb->users} users",
-			'left_join' => "INNER JOIN {$wpdb->usermeta} usermeta ON ( users.ID = usermeta.user_id )",
+			'join'      => "INNER JOIN {$wpdb->usermeta} usermeta ON ( users.ID = usermeta.user_id )",
 			'where'     => "WHERE ( usermeta.meta_key = '{$wpdb->get_blog_prefix()}capabilities' )",
 			'order_by'  => "ORDER BY users.display_name ASC",
 			'limit'     => 'LIMIT ' . $limit,
