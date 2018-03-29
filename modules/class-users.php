@@ -350,8 +350,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			 * @param  int  $limit  Default: 100.
 			 * @return int
 			 */
-			'limit' => (int) apply_filters( 'view_admin_as_user_query_limit', 100 ),
+			'limit' => apply_filters( 'view_admin_as_user_query_limit', 100 ),
 		) );
+
+		$limit = (int) $args['limit'];
 
 		$super_admins = get_super_admins();
 		// Load the superior admins.
@@ -377,7 +379,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			'left_join' => "INNER JOIN {$wpdb->usermeta} usermeta ON ( users.ID = usermeta.user_id )",
 			'where'     => "WHERE ( usermeta.meta_key = '{$wpdb->get_blog_prefix()}capabilities' )",
 			'order_by'  => "ORDER BY users.display_name ASC",
-			'limit'     => "LIMIT {$args['limit']}",
+			'limit'     => 'LIMIT ' . $limit,
 		);
 
 		if ( is_network_admin() ) {
@@ -493,7 +495,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 					// @since  1.5.2  Exclude the current user.
 					'exclude' => array_merge( $superior_admins, array( $this->store->get_curUser()->ID ) ),
 					// @since  1.8  Limit the number of users to return.
-					'number' => $args['limit'],
+					'number' => $limit,
 				);
 				// @since  1.5.2  Do not get regular admins for normal installs (WP 4.4+).
 				if ( ! is_multisite() && ! $is_superior_admin ) {
@@ -503,8 +505,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				$users = get_users( $user_args );
 			}
 
-			// @todo Switch to ajax search because of load time.
-			if ( (int) $args['limit'] <= count( $users ) ) {
+			// @since  1.8  Switch to ajax search because of load time.
+			if ( $limit <= count( $users ) ) {
 				$this->ajax_search = true;
 				return;
 			}
