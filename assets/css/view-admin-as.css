@@ -89,6 +89,7 @@
 
 /* Search results */
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results {margin: 6px 0; padding: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-results.vaa-auto-max-height {margin-right: 10px;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-results:empty {display: none;}
 
 /* Spacing for first level sub groups */
