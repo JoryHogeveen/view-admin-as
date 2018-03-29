@@ -1009,41 +1009,74 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		var root = VAA_View_Admin_As.root + '-users',
 			root_prefix = VAA_View_Admin_As.prefix + root,
-			$root = $( root_prefix );
+			$root = $( root_prefix ),
+			$search_node = $( root_prefix + ' .ab-vaa-search.search-users' );
+
+		if ( ! $search_node.length ) {
+			return;
+		}
+
+		var search_ajax = $search_node.hasClass('search-ajax'),
+			ajax_delay_timer,
+			$search_results  = $search_node.find( '.ab-vaa-results' ),
+			no_results = '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>';
 
 		// Search users.
 		$root.on( 'keyup', '.ab-vaa-search.search-users input', function() {
-			$( VAA_View_Admin_As.prefix + ' .ab-vaa-search .ab-vaa-results' ).empty();
-			var input_text = $(this).val();
-			if ( 1 <= input_text.length ) {
-				$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
-					var name = $( '.ab-item', this ).text();
-					if ( -1 < name.toLowerCase().indexOf( input_text.toLowerCase() ) ) {
-						var exists = false;
-						$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results .vaa-user-item .ab-item' ).each(function() {
-							if ( -1 < $(this).text().indexOf( name ) ) {
-								exists = $(this);
-							}
-						} );
-						var role = $(this).parents('.vaa-role-item').find('> .ab-item > .vaa-view-data');
-						role = ( role ) ? role.text() : '';
-						if ( role && false !== exists && exists.length ) {
-							exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
-						} else {
-							role = ( role ) ? ' &nbsp; <span class="user-role">(' + role + ')</span>' : '';
-							$(this).clone()
-							       .appendTo( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
-							       .children('.ab-item')
-							       .append( role );
-						}
-					}
-				} );
-				if ( '' === $.trim( $( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' ).html() ) ) {
-					$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
-						.append( '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>' );
+			$search_results.empty();
+			var $this = $(this),
+				search = $this.val();
+			if ( 1 <= search.trim().length ) {
+				if ( search_ajax ) {
+					search_users_ajax( search );
+				} else {
+					search_users( search );
 				}
 			}
 		} );
+
+		/**
+		 * @since  1.2
+		 * @since  1.8  As a function.
+		 * @param  {string}  search  The search value.
+		 */
+		function search_users( search ) {
+			$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
+				var name = $( '.ab-item', this ).text();
+				if ( -1 < name.toLowerCase().indexOf( search.toLowerCase() ) ) {
+					var exists = false;
+					$( '.vaa-user-item .ab-item', $search_results ).each(function() {
+						if ( -1 < $(this).text().indexOf( name ) ) {
+							exists = $(this);
+						}
+					} );
+					var role = $(this).parents('.vaa-role-item').find('> .ab-item > .vaa-view-data');
+					role = ( role ) ? role.text() : '';
+					if ( role && false !== exists && exists.length ) {
+						exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
+					} else {
+						role = ( role ) ? ' &nbsp; <span class="user-role">(' + role + ')</span>' : '';
+						$(this).clone()
+						       .appendTo( $search_results )
+						       .children('.ab-item')
+						       .append( role );
+					}
+				}
+			} );
+			if ( '' === $.trim( $search_results.html() ) ) {
+				$search_results.html( no_results );
+			}
+		}
+
+		/**
+		 * @since  1.8
+		 * @param  {string}  search  The search value.
+		 */
+		function search_users_ajax( search ) {
+			clearTimeout( ajax_delay_timer );
+			ajax_delay_timer = setTimeout( function() {
+			}, 500 );
+		}
 	};
 
 	/**
