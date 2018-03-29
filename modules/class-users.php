@@ -351,6 +351,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			 * @return int
 			 */
 			'limit' => apply_filters( 'view_admin_as_user_query_limit', 100 ),
+			'search' => '',
+			'search_by' => 'display_name', // @todo: display_name|user_login|user_email
 		) );
 
 		$limit = (int) $args['limit'];
@@ -381,6 +383,20 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			'order_by'  => "ORDER BY users.display_name ASC",
 			'limit'     => 'LIMIT ' . $limit,
 		);
+
+		/**
+		 * Search for users.
+		 * @since  1.8
+		 * @link https://developer.wordpress.org/reference/classes/wp_user_query/prepare_query/
+		 * @link https://developer.wordpress.org/reference/classes/wp_user_query/get_search_sql/
+		 */
+		if ( ! empty( $args['search'] ) ) {
+			if ( ! in_array( $args['search_by'], array( 'display_name', 'user_login', 'user_email' ), true ) ) {
+				$args['search_by'] = 'display_name';
+			}
+			$args['search'] = esc_sql( $args['search'] );
+			$user_query['where'] .= " AND users.{$args['search_by']} LIKE '%{$args['search']}%'";
+		}
 
 		if ( is_network_admin() ) {
 
