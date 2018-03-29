@@ -127,6 +127,7 @@ final class VAA_View_Admin_As
 		'VAA_View_Admin_As_Compat'     => 'includes/class-compat.php',
 		'VAA_View_Admin_As_Type'       => 'includes/class-type.php',
 		'VAA_View_Admin_As_Module'     => 'includes/class-module.php',
+		'VAA_View_Admin_As_Form'       => 'ui/class-form.php',
 	);
 
 	/**
@@ -424,10 +425,6 @@ final class VAA_View_Admin_As
 	private function load_ui() {
 
 		$includes = array(
-			'form' => array(
-				'file'  => 'ui/class-form.php',
-				'class' => 'VAA_View_Admin_As_Form',
-			),
 			'ui' => array(
 				'file'  => 'ui/class-ui.php',
 				'class' => 'VAA_View_Admin_As_UI',
