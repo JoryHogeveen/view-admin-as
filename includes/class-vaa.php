@@ -127,7 +127,7 @@ final class VAA_View_Admin_As
 		'VAA_View_Admin_As_Compat'     => 'includes/class-compat.php',
 		'VAA_View_Admin_As_Type'       => 'includes/class-type.php',
 		'VAA_View_Admin_As_Module'     => 'includes/class-module.php',
-		'VAA_View_Admin_As_Form'       => 'ui/class-form.php',
+		'VAA_View_Admin_As_Form'       => 'includes/class-form.php',
 	);
 
 	/**

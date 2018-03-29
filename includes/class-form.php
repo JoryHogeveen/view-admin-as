@@ -1,6 +1,6 @@
 <?php
 /**
- * View Admin As - Form UI
+ * View Admin As - Form
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
@@ -11,12 +11,13 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 }
 
 /**
- * Form UI for View Admin As.
+ * Form elements for View Admin As.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.6
+ * @since   1.8    Moved to the includes folder.
+ * @version 1.8
  */
 class VAA_View_Admin_As_Form
 {
@@ -49,6 +50,30 @@ class VAA_View_Admin_As_Form
 		$attr['vaa-view-value'] = $value;
 		$attr = self::parse_to_html_attr( $attr );
 		return '<' . $elem . ' ' . $attr . '>' . $title . '</' . $elem . '>';
+	}
+
+	/**
+	 * Get multiple form elements in one call.
+	 *
+	 * @since   1.7.2  Moved to this class from admin bar class.
+	 * @access  public
+	 * @static
+	 *
+	 * @param   array  $args  An array of key => value pairs matching form methods.
+	 * @return  string
+	 */
+	public static function do_multiple( $args ) {
+		$return = array();
+		foreach ( $args as $key => $value ) {
+			$method = $key;
+			if ( is_callable( array( 'VAA_View_Admin_As_Form', $key ) ) ) {
+				$return[] = self::$method( $value );
+			} elseif ( is_callable( array( 'VAA_View_Admin_As_Form', 'do_' . $key ) ) ) {
+				$method = 'do_' . $key;
+				$return[] = self::$method( $value );
+			}
+		}
+		return implode( '', $return );
 	}
 
 	/**
