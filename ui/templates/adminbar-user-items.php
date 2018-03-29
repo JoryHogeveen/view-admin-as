@@ -20,10 +20,17 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
 	}
+	if ( ! isset( $parent ) ) {
+		$parent = $root;
+	}
+
+	if ( ! isset( $title_submenu ) ) {
+		$title_submenu = false;
+	}
 
 	foreach ( $this->store->get_users() as $user ) {
 		// Reset parent for each loop due to groupUserRoles.
-		$parent = $root;
+		$item_parent = $parent;
 		$href   = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-' . $this->type . '-item';
 		$title  = $user->display_name;
@@ -69,7 +76,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 		$user_node = array(
 			'id'     => $root . '-' . $this->type . '-' . $user->ID,
-			'parent' => $parent,
+			'parent' => $item_parent,
 			'title'  => $view_title,
 			'href'   => $href,
 			'meta'   => array(
@@ -83,12 +90,12 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			// Users grouped under roles.
 			foreach ( $user->roles as $role ) {
 				$user_role_node = $user_node;
-				$parent = $main_root . '-roles-role-' . $role;
-				$group  = $parent . '-users';
+				$item_parent = $main_root . '-roles-role-' . $role;
+				$group  = $item_parent . '-users';
 				if ( ! $admin_bar->get_node( $group ) ) {
 					$admin_bar->add_group( array(
 						'id' => $group,
-						'parent' => $parent,
+						'parent' => $item_parent,
 						'meta'   => array(
 							'class' => 'vaa-auto-max-height',
 						),

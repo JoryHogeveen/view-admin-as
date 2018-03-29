@@ -244,7 +244,6 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			) );
 
 			$title_submenu = true;
-			$root = $root . '-all';
 		};
 
 		/**
@@ -262,6 +261,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-actions.php';
 
 		if ( $this->get_data() ) {
+			if ( $title_submenu ) {
+				$parent = $root . '-all';
+			}
 			// Add the users.
 			include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-items.php';
 		}
