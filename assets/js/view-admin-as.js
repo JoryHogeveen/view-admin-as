@@ -1336,7 +1336,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			// Late selection init needed for frontend.
-			var $elements = combine_selectors[ type ] = $( elements );
+			var $elements = $( elements );
 			$elements.each( function () {
 				var $this = $( this ),
 					val = null,
