@@ -1327,6 +1327,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Generate the checkboxes for combine types.
 		function add_combine_checkboxes( elements, type ) {
+			if ( ! elements || ! type ) {
+				for ( var key in combine_selectors ) {
+					if ( combine_selectors.hasOwnProperty( key ) ) {
+						add_combine_checkboxes( combine_selectors[ key ], key );
+					}
+				}
+				return;
+			}
 			// Late selection init needed for frontend.
 			var $elements = combine_selectors[ type ] = $( elements );
 			$elements.each( function () {
