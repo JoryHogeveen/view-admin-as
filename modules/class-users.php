@@ -85,6 +85,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
 			$this->add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
 		}
+
+		if ( VAA_API::is_ajax_request( 'view_admin_as_search_users' ) ) {
+			$this->ajax_search_users();
+		}
 	}
 
 	/**
@@ -333,6 +337,70 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			return $user;
 		}
 		return null;
+	}
+
+	/**
+	 * Search users with AJAX.
+	 *
+	 * @since   1.8
+	 */
+	public function ajax_search_users() {
+		$args = VAA_API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as_search_users' );
+		if ( ! $args ) {
+			wp_send_json_error( __( 'Cheatin uh?', VIEW_ADMIN_AS_DOMAIN ) );
+			die();
+		}
+
+		if ( ! is_array( $args ) ) {
+			$args = array(
+				'search' => $args,
+			);
+		}
+
+		$users = $this->search_users( $args );
+
+		if ( ! $users ) {
+			wp_send_json_error();
+			die();
+		}
+
+		$return = '';
+		foreach ( $users as $user ) {
+			$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ) );
+			$class = 'vaa-' . $this->type . '-item';
+			$title = $user->display_name;
+
+			/**
+			 * Filter documented in /templates/adminbar-user-items.php
+			 */
+			$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
+
+			$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
+
+			/**
+			 * Filter documented in /templates/adminbar-user-items.php
+			 */
+			if ( ! $this->store->get_view( 'role' ) && apply_filters( 'vaa_admin_bar_view_title_' . $this->type . '_show_roles', true, $user ) ) {
+				$selected_user_roles = array();
+				foreach ( (array) $user->roles as $role ) {
+					$selected_user_roles[] = $this->store->get_rolenames( $role );
+				}
+				$view_title .= ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
+			}
+
+			$attr = array(
+				'href' => $href,
+				'class' => 'ab-item',
+				// Translators: %s stands for the user display name.
+				'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
+			);
+
+			$item = '<a ' . VAA_View_Admin_As_Form::parse_to_html_attr( $attr ) . '>' . $view_title . '</a>';
+			$return .= '<li class="' . $class . '">' . $item . '</a>';
+		}
+
+		wp_send_json_success( $return );
+		die();
 	}
 
 	/**
