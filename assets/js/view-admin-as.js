@@ -1304,6 +1304,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			$.each( selection, function ( type, data ) {
 				data.el = $( data.el );
+				if ( ! data.el.length || ! document.contains( data.el[0] ) ) {
+					// Try to find the element.
+					data.el = $( VAA_View_Admin_As.prefix + '.vaa-combine-item[vaa-view-type=' + data.type + '][vaa-view-value=' + data.value + ']' );
+				}
 				if ( data.el.length ) {
 					data.el.prop( 'checked', true );
 					activate_combine_type( data.el, data.type, data.value );
