@@ -311,6 +311,18 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
+	 * Search users.
+	 *
+	 * @since   1.8
+	 * @param   array  $args  Function arguments.
+	 * @return  \WP_User[]
+	 */
+	public function search_users( $args = array() ) {
+		$this->store_data( $args );
+		return $this->get_data();
+	}
+
+	/**
 	 * Store available users.
 	 *
 	 * Disable some PHPMD checks for this method.
