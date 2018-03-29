@@ -28,54 +28,24 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$title_submenu = false;
 	}
 
-	if ( $this->ajax_search ) {
-
-		$notice = __( 'You have too many users. For performance users are disabled in the admin bar. You can still switch from the users page.', VIEW_ADMIN_AS_DOMAIN );
-		$title = VAA_View_Admin_As_Form::do_description( $notice );
-		$title .= VAA_View_Admin_As_Form::do_button( array(
-			'name'    => $root . '-disable',
-			// Translators: %s stands for the translated view type label "Users".
-			'label'   => sprintf( __( 'Disable %s', VIEW_ADMIN_AS_DOMAIN ), $this->get_label() ),
-			'auto_js' => array(
-				'setting' => 'setting',
-				'key'     => 'view_types',
-				'values'  => array(
-					'user' => array(
-						'values' => array(
-							'enabled' => array(),
-						),
-					),
-				),
-				'refresh' => true,
-			),
-			'value' => false,
-		) );
-		$admin_bar->add_node( array(
-			'id' => $root . '-usersnotice',
-			'parent' => $root,
-			'title' => $title,
-			'href' => admin_url( 'users.php' ),
-			'meta' => array(
-				'class' => 'auto-height',
-			),
-		) );
-
-	} elseif ( $title_submenu || $this->group_user_roles() ) {
+	if ( $title_submenu || $this->ajax_search || $this->group_user_roles() ) {
 
 		$title = '';
+		$placeholder = esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN );
 		if ( $this->group_user_roles() ) {
 			$title = VAA_View_Admin_As_Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) );
+			$placeholder .= ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')';
 		}
 		$admin_bar->add_node( array(
 			'id'     => $root . '-searchusers',
 			'parent' => $root,
 			'title'  => $title . VAA_View_Admin_As_Form::do_input( array(
 				'name'        => $root . '-searchusers',
-				'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')',
+				'placeholder' => $placeholder,
 			) ),
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-search search-users',
+				'class' => 'ab-vaa-search search-users' . ( ( $this->ajax_search ) ? ' search-ajax' : '' ),
 				'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary ab-submenu ab-vaa-results"></ul>',
 			),
 		) );
