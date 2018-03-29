@@ -621,7 +621,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			// @since  1.8  Switch to ajax search because of load time.
 			if ( $limit <= count( $users ) ) {
 				$this->ajax_search = true;
-				return;
+				if ( ! VAA_API::is_ajax_request( 'view_admin_as_search_users' ) ) {
+					return;
+				}
 			}
 
 			// Sort users by role and filter them on available roles.
