@@ -151,6 +151,29 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
+	 * View update handler (Ajax probably), called from main handler.
+	 *
+	 * @since   1.8   Renamed from `ajax_handler`
+	 * @access  public
+	 * @param   null    $null    Null.
+	 * @param   mixed   $data    The ajax data for this module.
+	 * @param   string  $type    The view type.
+	 * @return  bool
+	 */
+	public function update_view( $null, $data, $type = null ) {
+
+		if ( $type !== $this->type ) {
+			return $null;
+		}
+
+		if ( $this->validate_view_data( null, $data ) ) {
+			$this->store->set_view( $data, $this->type, true );
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Validate data for this view type
 	 *
 	 * @since   1.7
