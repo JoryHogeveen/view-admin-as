@@ -321,8 +321,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	public function validate_target_user( $user ) {
 		$user_id = ( $user instanceof WP_User ) ? $user->ID : $user;
 
-		if ( $this->is_enabled() || $this->get_data( $user_id ) ) {
-			return $this->get_data( $user_id );
+		$check = $this->get_data( $user_id );
+		if ( $check ) {
+			return $check;
 		}
 
 		$check = $this->filter_users_by_access( array( $user ) );
