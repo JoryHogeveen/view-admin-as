@@ -94,7 +94,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 */
 	public function do_view() {
 
-		if ( ! $this->is_enabled() && $this->selected ) {
+		if ( $this->selected && ( ! $this->is_enabled() || $this->ajax_search ) ) {
 			// Store the single selected user.
 			$this->validate_target_user( $this->selected );
 		}
