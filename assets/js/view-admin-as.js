@@ -1075,6 +1075,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		function search_users_ajax( search ) {
 			clearTimeout( ajax_delay_timer );
 			ajax_delay_timer = setTimeout( function() {
+				var post_data = {
+					'action': 'view_admin_as_search_users',
+					'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
+					// @since  1.6.2  Use JSON data.
+					'view_admin_as_search_users': search
+				};
+
+				$.post( VAA_View_Admin_As.ajaxurl, post_data, function( response ) {
+					clearTimeout( ajax_delay_timer );
+				} );
+
 			}, 500 );
 		}
 	};
