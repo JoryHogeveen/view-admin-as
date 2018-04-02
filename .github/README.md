@@ -32,9 +32,11 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Switch between roles
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
+*	Switch language/locale on backend and frontend
+*	Make combinations of the above view types
 *	Easily switch back anytime
 *	Completely secure (see *Security* below)
-*	Do this all without logging out and easily go back to your own (default) user view!
+*	Do all the above without logging out!
 
 ### Module: Role defaults (screen settings)
 
@@ -56,6 +58,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Clone roles
 *	Import/Export roles, can also download (and upload) setting files
 *	Update role capabilities from current view
+*	Automatically migrate users to another role after deleting a role
 
 ## Compatibility & Integrations
 
@@ -75,6 +78,7 @@ This plugin will work with most other plugins but these are tested:
 *	**User Switching** *(Not sure why you'd want this but yes, switch-ception is possible!)*
 *	**WPFront User Role Editor**
 *	**WP Admin UI Customize 1.5.11+**
+*	**Yoast SEO**
 
 Full list of tested plugins and details: [Compatibility & Integrations](https://github.com/JoryHogeveen/view-admin-as/wiki/Compatibility-&-Integrations)
 
