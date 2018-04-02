@@ -29,6 +29,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
 *	Switch language/locale on backend and frontend
+*	Make combinations of the above view types
 *	Easily switch back anytime
 *	Completely secure (see *Security* below)
 *	Do all the above without logging out!
@@ -126,8 +127,12 @@ Main file dir: `/wp-content/mu-plugins/view-admin-as.php`
 == Frequently Asked Questions ==
 
 = 1. How do I switch to a user, role or visitor? =
-Just click on the link!
-If the amount of users is more than 10 you can find them under their roles or you can search for them.
+Just click on the link in the toolbar!
+
+If the amount of users and roles combined is more than 15 you can find the users under their roles or you can search for them.
+  
+If the amount of users is more than 100 the plugin will switch to AJAX search and won't load users in advance for performance.  
+This limit can be changed through the filter: `view_admin_as_user_query_limit`
 
 = 2. How does the capability system work? =
 Only the capabilities that are allowed for your user are shown.
@@ -164,7 +169,7 @@ If so, these are filtered. Viewing Admins can only be done when you are a Super 
 Why? To protect your fellow admin! You have no power over equal users..
 *Unless you are a superior admin... [Read more](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters#view_admin_as_superior_admins)*
 
-If this is not the case, please make sure you aren't overlooking something.
+If this is not the case, please make sure you aren't overlooking something.  
 If that is not the case, please contact me! See next item.
 
 = 6. It's not working! / I found a bug! =
