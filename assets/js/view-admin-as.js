@@ -1505,7 +1505,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 			} );
 
-			if ( ! $.isEmptyObject( selection ) ) {
+			if ( is_active && ! $.isEmptyObject( selection ) ) {
 				if ( 'none' === $selection_container.css( 'display' ) || ! $selection_container.is(':visible') ) {
 					$selection_container.slideDown('fast');
 				}
