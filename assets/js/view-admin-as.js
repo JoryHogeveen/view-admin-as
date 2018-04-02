@@ -1306,6 +1306,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		combine_types.push( 'caps' );
 		combine_selectors['caps'] = VAA_View_Admin_As.prefix + VAA_View_Admin_As.root + '-caps > .menupop > .ab-item';
 
+		// Re-init. Checks for new view type nodes.
 		VAA_View_Admin_As.reinit_combine_views = function() {
 			if ( is_active ) {
 				enable_combine_views();
@@ -1418,7 +1419,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						activate_combine_type( $val_element, val_type, data );
 					} );
 					// Also check the current item since this way the user can deactivate the combination as a whole.
-					$element.prop( { checked: 'checked', disabled: false } );
+					$element.prop( { checked: true, disabled: false } );
 					return;
 				}
 			}
@@ -1440,8 +1441,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				'type': type,
 				'value': value
 			};
-			$( VAA_View_Admin_As.prefix + '.vaa-combine-' + type ).prop( { checked: false, disabled: 'disabled' } );
-			$element.prop( { checked: 'checked', disabled: false } );
+			$( VAA_View_Admin_As.prefix + '.vaa-combine-' + type ).prop( { checked: false, disabled: true } );
+			$element.prop( { checked: true, disabled: false } );
 			update_selection_list();
 		}
 
