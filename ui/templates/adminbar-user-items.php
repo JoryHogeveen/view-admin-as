@@ -33,17 +33,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$item_parent = $parent;
 		$href   = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-' . $this->type . '-item';
-		$title  = $user->display_name;
-
-		/**
-		 * Change the display title for user nodes.
-		 *
-		 * @since  1.8
-		 * @param  string    $title  User display name.
-		 * @param  \WP_User  $user   The user object.
-		 * @return string
-		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
+		$title  = $this->get_view_title( $user );
 
 		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
 

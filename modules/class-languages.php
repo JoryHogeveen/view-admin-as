@@ -144,15 +144,32 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	public function view_title( $titles = array() ) {
 		$language = $this->get_data( $this->selected );
 		if ( $language ) {
-			$locale = $this->selected;
-			$title  = $language;
-
-			/**
-			 * Filter documented in /templates/adminbar-language-items.php
-			 */
-			$titles[ /* No need for view type key. */ ] = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $locale );
+			$titles[ /* No need for view type key. */ ] = $this->get_view_title( $this->selected );
 		}
 		return $titles;
+	}
+
+	/**
+	 * Get the view title.
+	 *
+	 * @since   1.8
+	 * @param   string  $locale  The locale.
+	 * @return  string
+	 */
+	public function get_view_title( $locale ) {
+		$title = $this->get_data( $locale );
+
+		/**
+		 * Change the display title for language nodes.
+		 *
+		 * @since  1.8
+		 * @param  string  $title   Language (native).
+		 * @param  string  $locale  The locale.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $locale );
+
+		return $title;
 	}
 
 	/**

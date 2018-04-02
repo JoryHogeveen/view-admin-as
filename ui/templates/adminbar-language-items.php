@@ -5,10 +5,10 @@
  * @since    1.8
  * @version  1.8
  *
- * @var  \VAA_View_Admin_As_Roles  $this
- * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.
- * @var  string                    $root       The current root item.
- * @var  string                    $main_root  The main VAA root item.
+ * @var  \VAA_View_Admin_As_Languages  $this
+ * @var  \WP_Admin_Bar                 $admin_bar  The toolbar object.
+ * @var  string                        $root       The current root item.
+ * @var  string                        $main_root  The main VAA root item.
  */
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
@@ -26,17 +26,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	foreach ( $this->store->get_languages() as $locale => $language ) {
 		$href   = VAA_API::get_vaa_action_link( array( $this->type => $locale ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-' . $this->type . '-item';
-		$title  = $language;
-
-		/**
-		 * Change the display title for language nodes.
-		 *
-		 * @since  1.8
-		 * @param  string  $title   Language (native).
-		 * @param  string  $locale  The locale.
-		 * @return string
-		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $locale );
+		$title  = $this->get_view_title( $locale );
 
 		$view_title = ( $locale !== $title ) ? '<code>' . $locale . '</code> | ' . $language : $locale;
 

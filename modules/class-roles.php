@@ -121,15 +121,32 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	public function view_title( $titles = array() ) {
 		$current = $this->get_data( $this->selected );
 		if ( $current ) {
-			$role = $current;
-			$title = $this->store->get_rolenames( $this->selected );
-
-			/**
-			 * Filter documented in /templates/adminbar-role-items.php
-			 */
-			$titles[ $this->label_singular ] = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
+			$titles[ $this->label_singular ] = $this->get_view_title( $current );
 		}
 		return $titles;
+	}
+
+	/**
+	 * Get the view title.
+	 *
+	 * @since   1.8
+	 * @param   \WP_Role  $role
+	 * @return  string
+	 */
+	public function get_view_title( $role ) {
+		$title = $this->store->get_rolenames( $role->name );
+
+		/**
+		 * Change the display title for role nodes.
+		 *
+		 * @since  1.8
+		 * @param  string    $title  Role name (translated).
+		 * @param  \WP_Role  $role   The role object.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
+
+		return $title;
 	}
 
 	/**

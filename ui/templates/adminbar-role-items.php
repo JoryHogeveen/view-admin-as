@@ -27,17 +27,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	foreach ( $this->store->get_roles() as $role_key => $role ) {
 		$href   = VAA_API::get_vaa_action_link( array( $this->type => $role_key ), $this->store->get_nonce( true ) );
 		$class  = 'vaa-' . $this->type . '-item';
-		$title  = $this->store->get_rolenames( $role_key );
-
-		/**
-		 * Change the display title for role nodes.
-		 *
-		 * @since  1.8
-		 * @param  string    $title  Role name (translated).
-		 * @param  \WP_Role  $role   The role object.
-		 * @return string
-		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
+		$title  = $this->get_view_title( $role );
 
 		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $role_key );
 

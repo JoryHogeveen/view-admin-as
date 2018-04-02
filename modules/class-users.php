@@ -133,12 +133,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 			$type = $this->label_singular;
 			$user = $this->store->get_selectedUser();
-			$title = $user->display_name;
-
-			/**
-			 * Filter documented in /templates/adminbar-user-items.php
-			 */
-			$titles[ $type ] = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
+			$titles[ $type ] = $this->get_view_title( $user );
 
 			/**
 			 * Filter documented in /templates/adminbar-user-items.php
@@ -152,6 +147,32 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			}
 		}
 		return $titles;
+	}
+
+	/**
+	 * Get the view title.
+	 *
+	 * @since   1.8
+	 * @param   \WP_User  $user
+	 * @return  string
+	 */
+	public function get_view_title( $user ) {
+		$title = $user->display_name;
+		if ( ! $title ) {
+			$title = $user->nickname;
+		}
+
+		/**
+		 * Change the display title for user nodes.
+		 *
+		 * @since  1.8
+		 * @param  string    $title  User display name.
+		 * @param  \WP_User  $user   The user object.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
+
+		return $title;
 	}
 
 	/**
@@ -370,12 +391,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		foreach ( $users as $user ) {
 			$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ) );
 			$class = 'vaa-' . $this->type . '-item';
-			$title = $user->display_name;
-
-			/**
-			 * Filter documented in /templates/adminbar-user-items.php
-			 */
-			$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
+			$title = $this->get_view_title( $user );
 
 			$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
 
