@@ -306,13 +306,14 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 			return ( $key ) ? $key : $val;
 		}
-		if ( ! $translate ) {
-			return $val;
+		if ( $translate ) {
+			if ( is_array( $val ) ) {
+				$val = array_map( 'translate_user_role', $val );
+			} else {
+				$val = translate_user_role( $val );
+			}
 		}
-		if ( is_array( $val ) ) {
-			return array_map( 'translate_user_role', $val );
-		}
-		return translate_user_role( $val );
+		return $val;
 	}
 
 	/**
