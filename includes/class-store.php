@@ -301,7 +301,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			}
 			if ( isset( $wp_roles->role_names[ $key ] ) ) {
 				$this->set_rolenames( $wp_roles->role_names[ $key ], $key, true );
-				return $this->get_rolenames( $key );
+				return $this->get_rolenames( $key, $translate );
 			}
 
 			return ( $key ) ? $key : $val;
