@@ -274,9 +274,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 				var $this = $(this);
 				// Fix for responsive views (first click triggers show child items).
-				if ( VAA_View_Admin_As._mobile && $this.parent().hasClass('menupop') && ! $this.next().is(':visible') ) {
-					$this.next().show().parent().addClass('active');
-					return;
+				if ( VAA_View_Admin_As._mobile ) {
+					var $parent = $this.parent();
+					if ( $parent.hasClass('menupop') && ! $parent.hasClass('active') ) {
+						$parent.addClass('active');
+						$this.next().show();
+						return false;
+					}
 				}
 				if ( ! $this.parent().hasClass('not-a-view') ) {
 					var view_data = {},
@@ -1589,9 +1593,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				e.preventDefault();
 				var $this = $(this);
 				// Fix for responsive views (first click triggers show child items).
-				if ( VAA_View_Admin_As._mobile && $this.parent().hasClass('menupop') && ! $this.next().is(':visible') ) {
-					$this.next().show().parent().addClass('active');
-					return;
+				if ( VAA_View_Admin_As._mobile ) {
+					var $parent = $this.parent();
+					if ( $parent.hasClass('menupop') && ! $parent.hasClass('active') ) {
+						$parent.addClass('active');
+						$this.next().show();
+						return false;
+					}
 				}
 				if ( ! $this.parent().hasClass('not-a-view') ) {
 					var $combine_item = $this.parent().children('.vaa-combine-item');
