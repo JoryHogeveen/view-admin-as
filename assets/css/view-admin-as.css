@@ -417,6 +417,12 @@
 	#wpadminbar #wp-admin-bar-vaa .vaa-menupop div li {margin-left: 12px;}
 
 	/**
+	 * Icon fixes
+	 */
+	#wpadminbar #vaa-combine-views-selection .ab-item {padding-right: 48px;}
+	#wpadminbar #vaa-combine-views-selection .ab-item > span.remove {margin-right: 0; padding: 10px; top: 0; right: 0;}
+
+	/**
 	 * Toggle
 	 */
 	#wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .vaa-role-item.menupop > .ab-item {padding-left: 15px;}
