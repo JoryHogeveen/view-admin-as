@@ -1596,13 +1596,16 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				e.preventDefault();
 				var $this = $(this);
 				if ( ! $this.parent().hasClass('not-a-view') ) {
-					var $combine_item = $this.parent().children('.vaa-combine-item');
-					if ( $combine_item.is(':checked') ) {
-						$combine_item.prop( 'checked', false );
-					} else {
-						$combine_item.prop( 'checked', true );
+					if ( ! VAA_View_Admin_As._mobile ) {
+						var $combine_item = $this.parent().children('.vaa-combine-item');
+						if ( $combine_item.is(':checked') ) {
+							$combine_item.prop( 'checked', false );
+						} else {
+							$combine_item.prop( 'checked', true );
+						}
+						$combine_item.trigger('change');
 					}
-					$combine_item.trigger('change');
+
 					// Prevent default view item handling.
 					e.stopPropagation();
 					e.stopImmediatePropagation();
