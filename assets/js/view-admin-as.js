@@ -282,7 +282,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						return false;
 					}
 				}
-				if ( ! $this.parent().hasClass('not-a-view') ) {
+
+				$this.data( 'vaa-continue-event', true ).trigger( 'vaa-apply-view' );
+
+				if ( ! $this.parent().hasClass('not-a-view') && $this.data( 'vaa-continue-event' ) ) {
 					var view_data = {},
 						val = $this.find('.vaa-view-data').attr('vaa-view-value');
 					// If the value is an object (JSON) we assume it contains the view type key.
@@ -1586,21 +1589,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Prevent default view item handling and trigger checkbox click.
 		$.each( combine_types, function( index, type ) {
-			$vaa.on( 'click touchend', '.vaa-' + type + '-item > a.ab-item', function( e ) {
-				if ( true === VAA_View_Admin_As._touchmove || ! is_active ) {
+			$vaa.on( 'vaa-apply-view', '.vaa-' + type + '-item > a.ab-item', function( e ) {
+				if ( ! is_active ) {
 					return;
 				}
 				e.preventDefault();
 				var $this = $(this);
-				// Fix for responsive views (first click triggers show child items).
-				if ( VAA_View_Admin_As._mobile ) {
-					var $parent = $this.parent();
-					if ( $parent.hasClass('menupop') && ! $parent.hasClass('active') ) {
-						$parent.addClass('active');
-						$this.next().show();
-						return false;
-					}
-				}
 				if ( ! $this.parent().hasClass('not-a-view') ) {
 					var $combine_item = $this.parent().children('.vaa-combine-item');
 					if ( $combine_item.is(':checked') ) {
@@ -1612,6 +1606,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					// Prevent default view item handling.
 					e.stopPropagation();
 					e.stopImmediatePropagation();
+					$this.data( 'vaa-continue-event', false );
 					return false;
 				}
 			} );
