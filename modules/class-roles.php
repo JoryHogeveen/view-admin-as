@@ -61,6 +61,10 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 
 		parent::__construct( $vaa );
 
+		if ( ! $this->has_access() ) {
+			return;
+		}
+
 		$this->priorities = array(
 			'toolbar'            => 20,
 			'view_title'         => 8,

@@ -69,6 +69,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
+		if ( ! $this->has_access() ) {
+			return;
+		}
+
 		$this->priorities = array(
 			'toolbar'            => 30,
 			'view_title'         => 5,
@@ -79,10 +83,6 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$this->label          = __( 'Users', VIEW_ADMIN_AS_DOMAIN );
 		$this->label_singular = __( 'User', VIEW_ADMIN_AS_DOMAIN );
-
-		if ( ! $this->has_access() ) {
-			return;
-		}
 
 		$this->init_hooks();
 

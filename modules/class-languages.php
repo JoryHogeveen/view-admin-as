@@ -63,6 +63,10 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
+		if ( ! $this->has_access() ) {
+			return;
+		}
+
 		$this->priorities = array(
 			'toolbar'            => 9,
 			'view_title'         => 90,

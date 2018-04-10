@@ -56,6 +56,10 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
+		if ( ! $this->has_access() ) {
+			return;
+		}
+
 		$this->priorities = array(
 			'toolbar'            => 10,
 			'view_title'         => 80,

@@ -73,23 +73,23 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 
-		if ( is_network_admin() ) {
-			return;
-		}
-
-		if ( ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), 'debug' ) ) {
+		if ( is_network_admin() || ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), 'debug' ) ) {
 			return;
 		}
 
 		$this->cap = ( defined( 'GROUPS_ADMINISTER_GROUPS' ) ) ? GROUPS_ADMINISTER_GROUPS : 'manage_options';
+
+		parent::__construct( $vaa );
+
+		if ( ! $this->has_access() ) {
+			return;
+		}
 
 		$this->priorities['toolbar'] = 40;
 
 		$this->label          = $this->translate_remote( 'Groups' );
 		$this->label_singular = $this->translate_remote( 'Group' );
 		$this->description    = __( 'Plugin' ) . ': ' . $this->label;
-
-		parent::__construct( $vaa );
 	}
 
 	/**

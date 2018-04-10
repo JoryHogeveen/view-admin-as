@@ -125,19 +125,19 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 		$this->ruaScreen       = ( defined( 'RUA_App::BASE_SCREEN' ) ) ? RUA_App::BASE_SCREEN : 'wprua';
 		$this->cap             = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_options';
 
+		parent::__construct( $vaa );
+
+		if ( ! $this->has_access() ) {
+			return;
+		}
+
 		$this->priorities['toolbar'] = 40;
 
 		$this->label          = 'Access Levels';
 		$this->label_singular = 'Access Level';
 		$this->description    = __( 'Plugin' ) . ': ' . $this->translate_remote( 'Restrict User Access' );
 
-		if ( did_action( 'init' ) ) {
-			$this->set_labels();
-		} else {
-			$this->add_action( 'init', array( $this, 'set_labels' ), 99999 );
-		}
-
-		parent::__construct( $vaa );
+		$this->add_action( 'init', array( $this, 'set_labels' ), 99999 );
 	}
 
 	/**
@@ -165,7 +165,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 		if ( parent::init() ) {
 			$this->add_action( 'vaa_admin_bar_roles_after', array( $this, 'admin_bar_roles_after' ), 10, 2 );
 		} else {
-			// Add this anyway.
+			// Add this anyway to reset user level caps.
 			$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 		}
 	}
