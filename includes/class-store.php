@@ -71,7 +71,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	);
 
 	/**
-	 * Current user object.
+	 * Current (initial) user object.
 	 *
 	 * @since  0.1
 	 * @since  1.6    Moved to this class from main class.
@@ -80,7 +80,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	private $curUser;
 
 	/**
-	 * Current user session.
+	 * Current (initial) user session.
 	 *
 	 * @since  1.3.4
 	 * @since  1.6    Moved to this class from main class.
@@ -89,7 +89,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	private $curUserSession = '';
 
 	/**
-	 * Current user data.
+	 * Current (initial) user data.
 	 * Will contain all properties of the original current user object.
 	 *
 	 * @since  1.6.3
@@ -99,7 +99,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	private $curUserData = array();
 
 	/**
-	 * Does the current user has full access to all features of this plugin?
+	 * Does the current (initial) user has full access to all features of this plugin?
 	 *
 	 * @since  1.6.3
 	 * @since  1.7.3  Not static anymore.
@@ -197,7 +197,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  bool
 	 */
 	public function is_super_admin( $user_id = null ) {
-		if ( null === $user_id || (int) get_current_user_id() === (int) $user_id ) {
+		if ( null === $user_id || (int) $this->curUser->ID === (int) $user_id ) {
 			return $this->curUserHasFullAccess;
 		}
 		return is_super_admin( $user_id );
