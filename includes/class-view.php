@@ -474,8 +474,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		$cap = (string) $cap;
 
 		if ( is_array( $caps ) &&
-		     array_key_exists( $cap, $caps ) &&
-		     1 === (int) $caps[ $cap ] &&
+		     ! empty( $caps[ $cap ] ) &&
 		     'do_not_allow' !== $cap &&
 		     'do_not_allow' !== $caps[ $cap ]
 		) {
