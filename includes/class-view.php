@@ -447,6 +447,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * Similar function to current_user_can().
 	 *
 	 * @since   1.6.2
+	 * @since   1.8    Check for non-scalar types being passed as first parameter.
 	 * @access  public
 	 *
 	 * @param   string  $cap   The capability.
@@ -459,6 +460,18 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		if ( empty( $caps ) ) {
 			$caps = $this->store->get_selectedCaps();
 		}
+
+		if ( ! is_scalar( $cap ) ) {
+			$cap = (array) $cap;
+			foreach ( $cap as $capability ) {
+				if ( ! $this->current_view_can( $capability, $caps ) ) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		$cap = (string) $cap;
 
 		if ( is_array( $caps ) &&
 		     array_key_exists( $cap, $caps ) &&
