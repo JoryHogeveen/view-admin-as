@@ -132,7 +132,7 @@ Just click on the link in the toolbar!
 If the amount of users and roles combined is more than 15 you can find the users under their roles or you can search for them.
   
 If the amount of users is more than 100 the plugin will switch to AJAX search and won't load users in advance for performance.  
-This limit can be changed through the filter: `view_admin_as_user_query_limit`
+This limit can be changed through the filter: [`view_admin_as_user_query_limit`](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters#view_admin_as_user_query_limit)
 
 = 2. How does the capability system work? =
 Only the capabilities that are allowed for your user are shown.
