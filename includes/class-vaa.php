@@ -600,11 +600,21 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.8
 	 * @access  public
-	 * @param   string  $key  (optional) The type key.
+	 * @param   string  $key           (optional) The type key.
+	 * @param   bool    $check_access  (optional) Check if the user has access? Default: true.
 	 * @return  \VAA_View_Admin_As_Type|\VAA_View_Admin_As_Type[]
 	 */
-	public function get_view_types( $key = null ) {
-		return VAA_API::get_array_data( $this->view_types, $key );
+	public function get_view_types( $key = null, $check_access = true ) {
+		$view_types = $this->view_types;
+		if ( $check_access ) {
+			foreach ( $view_types as $type => $instance ) {
+				if ( ! $instance->has_access() ) {
+					unset( $view_types[ $type ] );
+				}
+			}
+		}
+		$view_types = VAA_API::get_array_data( $view_types, $key );
+		return $view_types;
 	}
 
 	/**

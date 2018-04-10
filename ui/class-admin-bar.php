@@ -500,9 +500,6 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$view_type_nodes = array();
 
 		foreach ( $view_types as $type ) {
-			if ( ! $type instanceof VAA_View_Admin_As_Type || ! $type->has_access() ) {
-				continue;
-			}
 
 			$view_type_node = array(
 				'name'        => $root . '-' . $type->get_type(),
