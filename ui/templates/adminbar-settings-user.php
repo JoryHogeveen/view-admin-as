@@ -115,8 +115,10 @@ if ( isset( $this ) &&
 	 * Disable super admin checks while switched.
 	 *
 	 * @since   1.7.3
+	 * @since   1.8    Don't use VAA_API since users that are super admins but don't have full access could
+	 *                 still want to use this setting.
 	 */
-	if ( VAA_API::is_super_admin() ) {
+	if ( is_super_admin( view_admin_as()->store()->get_curUser() ) ) {
 		$admin_bar->add_node(
 			array(
 				'id'     => $root . '-disable-super-admin',
