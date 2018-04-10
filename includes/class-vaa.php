@@ -95,7 +95,7 @@ final class VAA_View_Admin_As
 	 * @since  1.4
 	 * @see    \VAA_View_Admin_As::load_modules()
 	 * @see    \VAA_View_Admin_As::register_module()
-	 * @var    object[]
+	 * @var    \VAA_View_Admin_As_Module[]
 	 */
 	private $modules = array();
 
@@ -105,7 +105,7 @@ final class VAA_View_Admin_As
 	 * @since  1.8
 	 * @see    \VAA_View_Admin_As::load_modules()
 	 * @see    \VAA_View_Admin_As::register_view_type()
-	 * @var    object[]
+	 * @var    \VAA_View_Admin_As_Type[]
 	 */
 	private $view_types = array();
 

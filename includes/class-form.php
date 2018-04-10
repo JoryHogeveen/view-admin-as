@@ -54,12 +54,13 @@ class VAA_View_Admin_As_Form
 
 	/**
 	 * Get multiple form elements in one call.
+	 * Note: Method calls are limited to one parameter!
 	 *
-	 * @since   1.7.2  Moved to this class from admin bar class.
+	 * @since   1.8
 	 * @access  public
 	 * @static
 	 *
-	 * @param   array  $args  An array of key => value pairs matching form methods.
+	 * @param   array  $args  An array of key => value (form method first parameter).
 	 * @return  string
 	 */
 	public static function do_multiple( $args ) {
