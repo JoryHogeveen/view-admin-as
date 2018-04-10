@@ -117,8 +117,9 @@ if ( isset( $this ) &&
 	 * @since   1.7.3
 	 * @since   1.8    Don't use VAA_API since users that are super admins but don't have full access could
 	 *                 still want to use this setting.
+	 *                 Also check if the installation is a network.
 	 */
-	if ( is_super_admin( view_admin_as()->store()->get_curUser() ) ) {
+	if ( is_multisite() && is_super_admin( view_admin_as()->store()->get_curUser()->ID ) ) {
 		$admin_bar->add_node(
 			array(
 				'id'     => $root . '-disable-super-admin',
