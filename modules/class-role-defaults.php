@@ -1087,33 +1087,35 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		// This module requires the role view type to enable all it's features.
 		if ( ! VAA_API::is_view_type_enabled( 'role' ) ) {
 			$view_type = view_admin_as()->get_view_types( 'role' );
-			$admin_bar->add_node( array(
-				'id'     => $root . '-dependency',
-				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_button( array(
-					'name'    => $root . 'dependency-role',
-					'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-warning' )
-								 // Translators: %s stands for the translated view type label "Roles".
-								 . sprintf( __( 'Please enable the "%s" view type to set role defaults', VIEW_ADMIN_AS_DOMAIN ), $view_type->get_label() ),
-					'auto_js' => array(
-						'setting' => 'setting',
-						'key'     => 'view_types',
-						'values'  => array(
-							'role' => array(
-								'values' => array(
-									'enabled' => array(),
+			if ( $view_type instanceof VAA_View_Admin_As_Roles ) {
+				$admin_bar->add_node( array(
+					'id'     => $root . '-dependency',
+					'parent' => $root,
+					'title'  => VAA_View_Admin_As_Form::do_button( array(
+						'name'    => $root . 'dependency-role',
+						'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-warning' )
+									 // Translators: %s stands for the translated view type label "Roles".
+									 . sprintf( __( 'Please enable the "%s" view type to set role defaults', VIEW_ADMIN_AS_DOMAIN ), $view_type->get_label() ),
+						'auto_js' => array(
+							'setting' => 'setting',
+							'key'     => 'view_types',
+							'values'  => array(
+								'role' => array(
+									'values' => array(
+										'enabled' => array(),
+									),
 								),
 							),
+							'refresh' => true,
 						),
-						'refresh' => true,
+						'value' => true,
+					) ),
+					'href'   => false,
+					'meta'   => array(
+						'class' => 'vaa-button-container',
 					),
-					'value' => true,
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'vaa-button-container',
-				),
-			) );
+				) );
+			}
 		}
 
 		// @since  1.4  Enable apply defaults on register.
