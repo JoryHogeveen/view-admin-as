@@ -205,7 +205,7 @@ class VAA_UnitTest_Factory {
 			// Resets is_enabled. Required because of force reinit.
 			self::$vaa->set_enabled();
 
-			foreach ( self::$vaa->get_view_types() as $type ) {
+			foreach ( self::$vaa->get_view_types( null, false ) as $type ) {
 				/** @var \VAA_View_Admin_As_Type $type */
 				$type->init();
 			}
