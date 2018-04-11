@@ -296,18 +296,26 @@ final class VAA_API
 	}
 
 	/**
-	 * Check if a view type is enabled.
+	 * Check if a view type is enabled. Pass an array to check multiple view types.
 	 *
 	 * @since   1.8
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $type  The view type key.
+	 * @param   string|array  $type  The view type key.
 	 * @return  bool
 	 */
 	public static function is_view_type_enabled( $type ) {
 		$type = view_admin_as()->get_view_types( $type );
+		if ( is_array( $type ) ) {
+			foreach ( $type as $view_type ) {
+				if ( ! $view_type instanceof VAA_View_Admin_As_Type || ! $view_type->is_enabled() ) {
+					return false;
+				}
+			}
+			return true;
+		}
 		if ( $type instanceof VAA_View_Admin_As_Type ) {
 			return $type->is_enabled();
 		}
