@@ -27,6 +27,48 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 final class VAA_API
 {
 	/**
+	 * Check if a user has full access to this plugin.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   \WP_User|int  $user  The user to check.
+	 * @return  bool
+	 */
+	public static function user_has_full_access( $user ) {
+		if ( ! $user instanceof WP_User ) {
+			$user = get_user_by( 'ID', $user );
+			if ( ! $user ) {
+				return false;
+			}
+		}
+
+		if ( is_multisite() ) {
+			return is_super_admin( $user->ID );
+		}
+
+		/**
+		 * For single installations is_super_admin() isn't enough since it only checks for `delete_users`.
+		 * @since  1.7.6
+		 * @link   https://wordpress.org/support/topic/required-capabilities-2/
+		 */
+		$caps = array(
+			'edit_users',
+			'delete_plugins',
+		);
+
+		foreach ( $caps as $cap ) {
+			if ( ! $user->has_cap( $cap ) ) {
+				return false;
+			}
+		}
+
+		return is_super_admin( $user->ID );
+	}
+
+	/**
 	 * Check if the user is a super admin.
 	 * It will validate the original user while in a view and no parameter is passed.
 	 *
