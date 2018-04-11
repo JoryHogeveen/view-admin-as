@@ -206,7 +206,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * This can prevent invalid checks after a view is applied.
 	 *
 	 * @see     \VAA_API::is_super_admin()
-	 * @internal
+	 * @deprecated
+	 * @todo    Remove in 1.9
 	 *
 	 * @since   1.6.3
 	 * @since   1.7.3  Not static anymore.
@@ -215,6 +216,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  bool
 	 */
 	public function is_super_admin( $user_id = null ) {
+		_deprecated_function( __FUNCTION__, '1.8', 'VAA_API::is_super_admin()' );
 		if ( null === $user_id || (int) $this->curUser->ID === (int) $user_id ) {
 			return $this->curUserHasFullAccess;
 		}
