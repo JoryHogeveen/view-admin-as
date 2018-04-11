@@ -197,7 +197,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		if ( $user instanceof WP_User ) {
 			$user = $user->ID;
 		}
-		return (bool) ( $this->get_curUser()->ID === $user );
+		return (bool) ( (int) $this->get_curUser()->ID === (int) $user );
 	}
 
 	/**
