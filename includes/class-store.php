@@ -178,6 +178,15 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
+	 * Does the current (original) user has full access to this plugin?
+	 * @since   1.8
+	 * @return  bool
+	 */
+	public function cur_user_has_full_access() {
+		return (bool) $this->curUserHasFullAccess;
+	}
+
+	/**
 	 * Helper function for is_super_admin().
 	 * Will validate the original user if it is the current user or no user ID is passed.
 	 * This can prevent invalid checks after a view is applied.
