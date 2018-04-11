@@ -15,7 +15,6 @@
  * - disable_super_admin
  * - hide_front
  * - freeze_locale
- * - force_group_users
  */
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
@@ -243,47 +242,6 @@ if ( isset( $this ) &&
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'auto-height',
-				),
-			)
-		);
-	}
-
-	/**
-	 * force_group_users setting.
-	 *
-	 * @since   1.5.2
-	 * @since   1.8    Enhance checks whether to show this setting or not.
-	 */
-	if ( VAA_API::is_view_type_enabled( array( 'role', 'user' ) ) &&
-	     $this->store->get_roles() &&
-	     (
-	     	! view_admin_as()->get_view_types( 'user' )->group_user_roles() ||
-	        15 >= ( count( (array) $this->store->get_users() ) + count( (array) $this->store->get_roles() ) )
-	     )
-	) {
-		$admin_bar->add_node(
-			array(
-				'id'     => $root . '-force-group-users',
-				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_checkbox(
-					array(
-						'name'        => $root . '-force-group-users',
-						'value'       => $this->store->get_userSettings( 'force_group_users' ),
-						'compare'     => true,
-						'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
-						'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
-						'help'        => true,
-						'auto_js' => array(
-							'setting' => 'user_setting',
-							'key'     => 'force_group_users',
-							'refresh' => true,
-						),
-						'auto_showhide' => true,
-					)
-				),
-				'href'   => false,
-				'meta'   => array(
-					'class'    => 'auto-height',
 				),
 			)
 		);

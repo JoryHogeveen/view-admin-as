@@ -86,6 +86,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$this->init_hooks();
 
+		if ( $this->is_enabled() ) {
+			$this->add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ), 10, 2 );
+		}
+
 		// Users can also be switched from the user list page.
 		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
 			$this->add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
@@ -307,6 +311,59 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, $main_root );
 
 		$done = true;
+	}
+
+	/**
+	 * User view type settings.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
+	 * @param   string         $root       The root item.
+	 */
+	public function admin_bar_menu_settings( $admin_bar, $root ) {
+
+		/**
+		 * force_group_users setting.
+		 *
+		 * @since   1.5.2
+		 * @since   1.8    Moved to this class & enhance checks whether to show this setting or not.
+		 */
+		if ( ! $this->ajax_search &&
+		     VAA_API::is_view_type_enabled( 'role' ) &&
+		     $this->store->get_roles() &&
+		     (
+		         ! $this->group_user_roles() ||
+		         15 >= ( count( (array) $this->store->get_users() ) + count( (array) $this->store->get_roles() ) )
+		     )
+		) {
+			$admin_bar->add_node(
+				array(
+					'id'     => $root . '-force-group-users',
+					'parent' => $root,
+					'title'  => VAA_View_Admin_As_Form::do_checkbox(
+						array(
+							'name'        => $root . '-force-group-users',
+							'value'       => $this->store->get_userSettings( 'force_group_users' ),
+							'compare'     => true,
+							'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
+							'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
+							'help'        => true,
+							'auto_js' => array(
+								'setting' => 'user_setting',
+								'key'     => 'force_group_users',
+								'refresh' => true,
+							),
+							'auto_showhide' => true,
+						)
+					),
+					'href'   => false,
+					'meta'   => array(
+						'class'    => 'auto-height',
+					),
+				)
+			);
+		}
 	}
 
 	/**
