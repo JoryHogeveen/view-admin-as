@@ -323,6 +323,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$check = false;
 
+		if ( $this->ajax_search ) {
+			return $check;
+		}
+
 		$roles = $this->store->get_roles();
 
 		if ( ! $roles || ! VAA_API::is_view_type_enabled( 'role' ) ) {
