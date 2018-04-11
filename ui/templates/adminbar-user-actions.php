@@ -31,17 +31,15 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	if ( $title_submenu || $this->ajax_search || $this->group_user_roles() ) {
 
 		$title = '';
-		$placeholder = esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN );
 		if ( $this->group_user_roles() ) {
 			$title = VAA_View_Admin_As_Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) );
-			$placeholder .= ' (' . strtolower( __( 'Username', VIEW_ADMIN_AS_DOMAIN ) ) . ')';
 		}
 		$admin_bar->add_node( array(
 			'id'     => $root . '-searchusers',
 			'parent' => $root,
 			'title'  => $title . VAA_View_Admin_As_Form::do_input( array(
 				'name'        => $root . '-searchusers',
-				'placeholder' => $placeholder,
+				'placeholder' => __( 'Search', VIEW_ADMIN_AS_DOMAIN ),
 			) ),
 			'href'   => false,
 			'meta'   => array(
