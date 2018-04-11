@@ -166,12 +166,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Get the current user session (WP 4.0+).
 		$this->set_curUserSession( (string) wp_get_session_token() );
 
-		$this->curUserHasFullAccess = (
-			is_super_admin( $this->get_curUser()->ID ) &&
-			// @since  1.7.6  For single installations is_super_admin() isn't enough since it only checks for `delete_users`.
-			user_can( $this->get_curUser(), 'edit_users' ) &&
-			user_can( $this->get_curUser(), 'delete_plugins' )
-		);
+		$this->curUserHasFullAccess = VAA_API::user_has_full_access( $this->get_curUser() );
 		$this->curUserData = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
@@ -200,7 +195,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		if ( null === $user_id || (int) $this->curUser->ID === (int) $user_id ) {
 			return $this->curUserHasFullAccess;
 		}
-		return is_super_admin( $user_id );
+		return VAA_API::user_has_full_access( $user_id );
 	}
 
 	/**
