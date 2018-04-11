@@ -82,24 +82,26 @@ final class VAA_API
 
 	/**
 	 * Check if the user is a super admin.
+	 * This check is more strict for single installations since it checks VAA_API::user_has_full_access.
 	 * It will validate the original user while in a view and no parameter is passed.
 	 *
 	 * @see  \VAA_View_Admin_As_Store::is_super_admin()
 	 *
 	 * @since   1.6.3
+	 * @since   1.8    Check full access.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   int|\WP_User  $user_id  (optional) Default: current user.
+	 * @param   int|\WP_User  $user  (optional) Default: current user.
 	 * @return  bool
 	 */
-	public static function is_super_admin( $user_id = null ) {
-		if ( $user_id instanceof WP_User ) {
-			$user_id = $user_id->ID;
+	public static function is_super_admin( $user = null ) {
+		if ( null === $user || view_admin_as()->store()->is_curUser( $user ) ) {
+			return view_admin_as()->store()->cur_user_has_full_access();
 		}
 
-		return view_admin_as()->store()->is_super_admin( $user_id );
+		return self::user_has_full_access( $user );
 	}
 
 	/**
@@ -109,6 +111,7 @@ final class VAA_API
 	 * @since   1.5.3
 	 * @since   1.6    Moved to this class from main class
 	 * @since   1.6.3  Improve is_super_admin() check
+	 * @since   1.8    Enhance code to reflect VAA_API::is_super_admin() changes.
 	 * @access  public
 	 * @static
 	 * @api
@@ -117,21 +120,25 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function is_superior_admin( $user_id = null ) {
-		if ( $user_id instanceof WP_User ) {
-			$user_id = $user_id->ID;
-		}
 
 		// If it's the current user or null, don't pass the user ID to make sure we check the original user status.
 		$is_super_admin = self::is_super_admin(
-			( null !== $user_id && (int) get_current_user_id() === (int) $user_id ) ? null : $user_id
+			( null !== $user_id && view_admin_as()->store()->is_curUser( $user_id ) ) ? null : $user_id
 		);
+
+		// Full access is required.
+		if ( ! $is_super_admin ) {
+			return false;
+		}
 
 		if ( null === $user_id ) {
 			$user_id = view_admin_as()->store()->get_originalUserData( 'ID' );
+		} elseif ( $user_id instanceof WP_User ) {
+			$user_id = $user_id->ID;
 		}
 
-		// Is it a super admin and is it one of the manually configured superior admins?
-		return (bool) ( true === $is_super_admin && in_array( (int) $user_id, self::get_superior_admins(), true ) );
+		// Is it one of the manually configured superior admins?
+		return (bool) ( in_array( (int) $user_id, self::get_superior_admins(), true ) );
 	}
 
 	/**
