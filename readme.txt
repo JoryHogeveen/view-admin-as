@@ -204,7 +204,8 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 8. Module Role defaults window (tabs are normally closed)
 9. Module Role manager main window (tabs are normally closed)
 10. Module Role manager capability window (tabs is normally closed)
-11. Access levels taken from the "Restrict User Access" plugin
+11. View combinations
+12. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
 
