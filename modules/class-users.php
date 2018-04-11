@@ -334,7 +334,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		     $this->store->get_roles() &&
 		     (
 		         ! $this->group_user_roles() ||
-		         15 >= ( count( (array) $this->store->get_users() ) + count( (array) $this->store->get_roles() ) )
+		         15 >= ( count( (array) $this->get_data() ) + count( (array) $this->store->get_roles() ) )
 		     )
 		) {
 			$admin_bar->add_node(
