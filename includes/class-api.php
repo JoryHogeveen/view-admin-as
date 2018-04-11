@@ -59,6 +59,18 @@ final class VAA_API
 			'delete_plugins',
 		);
 
+		/**
+		 * Filter the capabilities required to gain full access to this plugin.
+		 * Note: Single site only!
+		 * Note: is_super_admin() is always checked!
+		 *
+		 * @since  1.8
+		 * @param  array     $caps  The default capabilities.
+		 * @param  \WP_User  $user  The user that is being validated.
+		 * @return array
+		 */
+		$caps = apply_filters( 'view_admin_as_full_access_capabilities', $caps, $user );
+
 		foreach ( $caps as $cap ) {
 			if ( ! $user->has_cap( $cap ) ) {
 				return false;
