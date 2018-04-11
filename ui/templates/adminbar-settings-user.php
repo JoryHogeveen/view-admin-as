@@ -252,10 +252,14 @@ if ( isset( $this ) &&
 	 * force_group_users setting.
 	 *
 	 * @since   1.5.2
+	 * @since   1.8    Enhance checks whether to show this setting or not.
 	 */
 	$user_view_type = view_admin_as()->get_view_types( 'user' );
-	if ( ! $user_view_type instanceof VAA_View_Admin_As_Users || ! $user_view_type->group_user_roles() ||
-	     15 >= ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) )
+	if ( VAA_API::is_view_type_enabled( 'role' ) && $this->store->get_roles() &&
+	     (
+	     	( $user_view_type instanceof VAA_View_Admin_As_Users && ! $user_view_type->group_user_roles() ) ||
+	        15 >= ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) )
+	     )
 	) {
 		$admin_bar->add_node(
 			array(
