@@ -187,6 +187,20 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
+	 * Compare user to the current (original) user.
+	 *
+	 * @since   1.8
+	 * @param   \WP_User|int  $user  The user to compare.
+	 * @return  bool
+	 */
+	public function is_curUser( $user ) {
+		if ( $user instanceof WP_User ) {
+			$user = $user->ID;
+		}
+		return (bool) ( $this->get_curUser()->ID === $user );
+	}
+
+	/**
 	 * Helper function for is_super_admin().
 	 * Will validate the original user if it is the current user or no user ID is passed.
 	 * This can prevent invalid checks after a view is applied.
