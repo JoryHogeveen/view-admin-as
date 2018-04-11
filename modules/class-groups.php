@@ -90,6 +90,20 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		$this->label          = $this->translate_remote( 'Groups' );
 		$this->label_singular = $this->translate_remote( 'Group' );
 		$this->description    = __( 'Plugin' ) . ': ' . $this->label;
+
+		// Add groups capabilities.
+		$this->capabilities[] = $this->cap;
+		if ( defined( 'GROUPS_ACCESS_GROUPS' ) ) {
+			$this->capabilities[] = GROUPS_ACCESS_GROUPS;
+		}
+		if ( defined( 'GROUPS_ADMINISTER_OPTIONS' ) ) {
+			$this->capabilities[] = GROUPS_ADMINISTER_OPTIONS;
+		}
+		if ( defined( 'GROUPS_RESTRICT_ACCESS' ) ) {
+			$this->capabilities[] = GROUPS_RESTRICT_ACCESS;
+		}
+		// Do not add to VAA capabilities.
+		$this->add_filter( 'members_get_capabilities', array( $this, 'add_capabilities' ) );
 	}
 
 	/**
