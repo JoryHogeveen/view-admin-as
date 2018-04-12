@@ -351,13 +351,14 @@
  */
 @media screen and (min-width: 783px) {
 	/* Full popup form elements */
-	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input,
-	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select {float: left; clear: none; width: auto;}
-	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input button {margin: 5px 0;}
-	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input input,
-	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select select {width: auto;}
-	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-input input + button.input-overlay,
-	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup > ul li.ab-vaa-select select + button.input-overlay {position: static; vertical-align: top;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup ul {overflow: hidden;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup ul li.ab-vaa-input,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup ul li.ab-vaa-select {float: left; clear: none; width: auto;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup ul li.ab-vaa-input button {margin: 5px 0;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup ul li.ab-vaa-input input,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup ul li.ab-vaa-select select {width: auto;}
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup ul li.ab-vaa-input input + button.input-overlay,
+	#wpadminbar #wp-admin-bar-vaa.fullPopupActive .ab-sub-wrapper.fullPopup ul li.ab-vaa-select select + button.input-overlay {position: static; vertical-align: top;}
 }
 
 @media screen and (max-width: 782px) {
