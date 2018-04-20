@@ -387,8 +387,12 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * @param string $key
-	 * @return int
+	 * Get an action priority.
+	 * Default: toolbar priority.
+	 *
+	 * @since   1.8
+	 * @param   string  $key
+	 * @return  int
 	 */
 	public function get_priority( $key = 'toolbar' ) {
 		return (int) ( isset( $this->priorities[ $key ] ) ) ? $this->priorities[ $key ] : 10;
@@ -427,7 +431,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 
 
 	/**
-	 * Set the view type settings.
+	 * Update the view type settings in the database.
 	 * Also sets the settings within this instance and VAA store.
 	 *
 	 * @since   1.8

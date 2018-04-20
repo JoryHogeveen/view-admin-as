@@ -618,7 +618,7 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Register view types
+	 * Register view types.
 	 *
 	 * @since   1.8
 	 * @param   array  $data {
@@ -674,7 +674,7 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Add a welcome notice for new users
+	 * Add a welcome notice for new users.
 	 *
 	 * @since   1.7
 	 * @access  public
