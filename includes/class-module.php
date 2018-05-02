@@ -17,8 +17,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5  (This was one class with VAA_View_Admin_As_Class_Base)
- * @version 1.7.3
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 {
@@ -70,12 +70,13 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.5.1
 	 * @since   1.6.2  Make database update optional.
-	 * @access  protected
+	 * @since   1.8    Make this method public.
+	 * @access  public
 	 * @param   bool  $bool       Enable or disable?
 	 * @param   bool  $update_db  Do database update? (default true).
 	 * @return  bool
 	 */
-	protected function set_enable( $bool = false, $update_db = true ) {
+	public function set_enable( $bool = false, $update_db = true ) {
 		$success = true;
 		if ( $update_db && $this->get_optionKey() ) {
 			$success = $this->update_optionData( (bool) $bool, 'enable', true );

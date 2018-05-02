@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.5
+ * @version 1.8
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -112,6 +112,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		VAA_View_Admin_As.init_caps();
 		VAA_View_Admin_As.init_users();
+		VAA_View_Admin_As.init_combine_views();
 		VAA_View_Admin_As.init_module_role_defaults();
 		VAA_View_Admin_As.init_module_role_manager();
 		VAA_View_Admin_As.init_auto_js();
@@ -174,12 +175,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				args = { 0: { target: args, delay: delay } };
 			}
 			$.each( args, function( key, data ) {
-				var timeout = null;
+				var timeout = null,
+					$target = $( data.target );
 				// Don't validate target property. It's mandatory so let the console notify the developer.
 				if ( ! data.hasOwnProperty( 'delay' ) ) {
 					data.delay = delay;
 				}
-				var $target = $( data.target );
 				$target.hide();
 				$this.on( 'mouseenter', function() {
 					timeout = setTimeout( function() {
@@ -267,24 +268,31 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// @since  1.6.2  Process basic views.
 		$.each( VAA_View_Admin_As.view_types, function( index, type ) {
 			$vaa.on( 'click touchend', '.vaa-' + type + '-item > a.ab-item', function( e ) {
+				e.preventDefault();
 				if ( true === VAA_View_Admin_As._touchmove ) {
 					return;
 				}
-				e.preventDefault();
 				var $this = $(this);
 				// Fix for responsive views (first click triggers show child items).
-				if ( VAA_View_Admin_As._mobile && $this.parent().hasClass('menupop') && ! $this.next().is(':visible') ) {
-					$this.next().show().parent().addClass('active');
-					return;
-				}
-				if ( ! $this.parent().hasClass('not-a-view') ) {
-					var view_data = {},
-						val = $this.attr('rel');
-					if ( ! val ) {
-						val = $this.find('.vaa-view-data').attr('vaa-view-value');
+				if ( VAA_View_Admin_As._mobile ) {
+					var $parent = $this.parent();
+					if ( $parent.hasClass('menupop') && ! $parent.hasClass('active') ) {
+						$parent.addClass('active');
+						$this.next().show();
+						return false;
 					}
+				}
+
+				$this.data( 'vaa-continue-event', true ).trigger( 'vaa-apply-view' );
+
+				if ( ! $this.parent().hasClass('not-a-view') && $this.data( 'vaa-continue-event' ) ) {
+					var view_data = {},
+						val = $this.find('.vaa-view-data').attr('vaa-view-value');
+					// If the value is an object (JSON) we assume it contains the view type key.
 					view_data[ type ] = VAA_View_Admin_As.maybe_json_decode( val );
-					view_data = ( 'object' === typeof view_data[ type ] ) ? view_data[ type ] : view_data;
+					if ( 'object' === typeof view_data[ type ] ) {
+						view_data = view_data[ type ];
+					}
 					VAA_View_Admin_As.ajax( view_data, true );
 					return false;
 				}
@@ -320,11 +328,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			var $sub = $(this).parent('.menupop').children('.ab-sub-wrapper');
 			if ( $sub.length ) {
 				if ( $sub.hasClass('active') ) {
-					$sub.slideUp('fast');
-					$sub.removeClass('active');
+					$sub.slideUp('fast').removeClass('active');
 				} else {
-					$sub.slideDown('fast');
-					$sub.addClass('active');
+					$sub.slideDown('fast').addClass('active');
 				}
 			}
 		} );
@@ -400,7 +406,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Remove overlay on click outside of container.
 		$document.on( 'mouseup.vaa_overlay', function( e ) {
-			$( '.vaa-overlay-container', $overlay ).each( function() {
+			$( '.vaa-popup', $overlay ).each( function() {
 				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
 					VAA_View_Admin_As.overlay( false );
 					return false;
@@ -513,7 +519,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @since  1.7
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Info for the redirect: { redirect: URL }
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.refresh = function( data ) {
 		if ( data.hasOwnProperty( 'redirect' ) ) {
@@ -540,7 +546,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.notice = function( notice, type, timeout ) {
 		var root = '#wpadminbar .vaa-notice',
@@ -578,7 +584,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @param  {string}  notice   The notice text.
 	 * @param  {string}  type     The notice type (notice, error, message, warning, success).
 	 * @param  {int}     timeout  Time to wait before auto-remove notice (milliseconds), pass `false` or `0` to prevent auto-removal.
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.item_notice = function( parent, notice, type, timeout ) {
 		var root = '.vaa-notice',
@@ -619,7 +625,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object}  data  Data to use.
 	 * @param  {string}  type  The notice/overlay type (notice, error, message, warning, success).
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.popup = function( data, type ) {
 		type = ( 'undefined' === typeof type ) ? 'notice' : type;
@@ -629,9 +635,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		var html = '';
 
-		html += '<div class="vaa-overlay-container vaa-' + type + '">';
+		html += '<div class="vaa-popup vaa-' + type + '">';
 		html += '<span class="remove dashicons dashicons-dismiss"></span>';
-		html += '<div class="vaa-response-data">';
+		html += '<div class="vaa-popup-content">';
 
 		// If it's not an object assume it's a string and convert it to the proper object form.
 		if ( 'object' !== typeof data ) {
@@ -655,7 +661,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			html += '<textarea style="width: 100%;" readonly>' + String( data.textarea ) + '</textarea>';
 		}
 
-		// End: .vaa-response-data & .vaa-overlay-container
+		// End: .vaa-popup-content & .vaa-popup
 		html += '</div></div>';
 
 		// Trigger the overlay.
@@ -666,10 +672,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		var root = '#vaa-overlay',
 			$overlay = $( root ),
-			$overlay_container = $( root + ' .vaa-overlay-container' ),
-			$popup_response = $( root + ' .vaa-response-data' );
+			$popup = $( root + ' .vaa-popup' ),
+			$popup_content = $( root + ' .vaa-popup-content' );
 
-		var textarea = $( 'textarea', $popup_response );
+		var textarea = $( 'textarea', $popup_content );
 		if ( textarea.length ) {
 			// Select full text on click.
 			textarea.on( 'click', function() { $(this).select(); } );
@@ -683,8 +689,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			// 80% of screen height - padding + border;
 			var max_height = ( $overlay.height() * .8 ) - 24;
-			$overlay_container.css( 'max-height', max_height );
-			$popup_response.css( 'max-height', max_height );
+			$popup.css( 'max-height', max_height );
+			$popup_content.css( 'max-height', max_height );
 		};
 		popupMaxHeight();
 		$window.on( 'resize', function() {
@@ -697,7 +703,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @since  1.7.4
 	 * @see    VAA_View_Admin_As.ajax()
 	 * @param  {object|string}  data  Data to use.
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.download = function( data ) {
 		var content = '',
@@ -739,7 +745,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Automatic option handling.
 	 * @since  1.7.2
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.init_auto_js = function() {
 
@@ -1004,51 +1010,124 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * USERS.
 	 * Extra functions for user views.
 	 * @since  1.2
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
 		var root = VAA_View_Admin_As.root + '-users',
 			root_prefix = VAA_View_Admin_As.prefix + root,
-			$root = $( root_prefix );
+			$root = $( root_prefix ),
+			$search_node = $( root_prefix + ' .ab-vaa-search.search-users' );
+
+		if ( ! $search_node.length ) {
+			return;
+		}
+
+		var search_ajax = $search_node.hasClass('search-ajax'),
+			ajax_delay_timer,
+			$search_results  = $search_node.find( '.ab-vaa-results' ),
+			no_results = '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>';
 
 		// Search users.
 		$root.on( 'keyup', '.ab-vaa-search.search-users input', function() {
-			$( VAA_View_Admin_As.prefix + ' .ab-vaa-search .ab-vaa-results' ).empty();
-			var input_text = $(this).val();
-			if ( 1 <= input_text.length ) {
-				$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
-					var name = $( '.ab-item', this ).text();
-					if ( -1 < name.toLowerCase().indexOf( input_text.toLowerCase() ) ) {
-						var exists = false;
-						$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results .vaa-user-item .ab-item' ).each(function() {
-							if ( -1 < $(this).text().indexOf( name ) ) {
-								exists = $(this);
-							}
-						} );
-						var role = $(this).parents('.vaa-role-item').children('.ab-item').attr('rel');
-						if ( false !== exists && exists.length ) {
-							exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
-						} else {
-							$(this).clone()
-							       .appendTo( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
-							       .children('.ab-item')
-							       .append( ' &nbsp; <span class="user-role">(' + role + ')</span>' );
-						}
-					}
-				} );
-				if ( '' === $.trim( $( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' ).html() ) ) {
-					$( VAA_View_Admin_As.prefix + '.ab-vaa-search .ab-vaa-results' )
-						.append( '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>' );
+			$search_results.empty();
+			var $this = $(this),
+				search = $this.val();
+			if ( 1 <= search.trim().length ) {
+				if ( search_ajax ) {
+					search_users_ajax( search );
+				} else {
+					search_users( search );
 				}
 			}
 		} );
+
+		/**
+		 * Search users from the DOM.
+		 *
+		 * @since  1.2
+		 * @since  1.8  As a function.
+		 * @param  {string}  search  The search value.
+		 * @return {void} Nothing.
+		 */
+		function search_users( search ) {
+			$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
+				var name = $( '.ab-item', this ).text();
+				if ( -1 < name.toLowerCase().indexOf( search.toLowerCase() ) ) {
+					var exists = false;
+					$( '.vaa-user-item .ab-item', $search_results ).each(function() {
+						if ( -1 < $(this).text().indexOf( name ) ) {
+							exists = $(this);
+						}
+					} );
+					var role = $(this).parents('.vaa-role-item').find('> .ab-item > .vaa-view-data');
+					role = ( role ) ? role.text() : '';
+					if ( role && false !== exists && exists.length ) {
+						exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
+					} else {
+						role = ( role ) ? ' &nbsp; <span class="user-role">(' + role + ')</span>' : '';
+						$(this).clone()
+						       .appendTo( $search_results )
+						       .children('.ab-item')
+						       .append( role );
+					}
+				}
+			} );
+			if ( '' === $.trim( $search_results.html() ) ) {
+				$search_results.html( no_results );
+			}
+			VAA_View_Admin_As.autoMaxHeight();
+		}
+
+		/**
+		 * Search users with AJAX.
+		 *
+		 * @since  1.8
+		 * @param  {string}  search  The search value.
+		 * @return {void} Nothing.
+		 */
+		function search_users_ajax( search ) {
+			clearTimeout( ajax_delay_timer );
+			ajax_delay_timer = setTimeout( function() {
+
+				$search_results.html( '<div class="ab-item ab-empty-item">. . . </div>' );
+
+				var $loading = $( '.ab-item', $search_results ),
+					loading = '. . . ',
+					loading_interval = setInterval( function() {
+						if ( 20 < loading.length ) {
+							loading = '. . . ';
+						}
+						loading += '. ';
+						$loading.html( loading );
+					}, 500 );
+
+				var post_data = {
+					'action': 'view_admin_as_search_users',
+					'_vaa_nonce': VAA_View_Admin_As._vaa_nonce,
+					'view_admin_as_search_users': search
+				};
+
+				$.post( VAA_View_Admin_As.ajaxurl, post_data, function( response ) {
+					clearInterval( loading_interval );
+					clearTimeout( ajax_delay_timer );
+					if ( response.hasOwnProperty( 'success' ) && response.success ) {
+						$search_results.html( response.data );
+						VAA_View_Admin_As.reinit_combine_views();
+					} else {
+						$search_results.html( no_results );
+					}
+					VAA_View_Admin_As.autoMaxHeight();
+				} );
+
+			}, 500 );
+		}
 	};
 
 	/**
 	 * CAPABILITIES.
 	 * @since  1.3
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
@@ -1103,18 +1182,24 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			return capabilities;
 		};
 
-		// Since  1.7  Set the selected capabilities.
+		/**
+		 * Set the selected capabilities.
+		 * @since  1.7
+		 * @param  {object}  capabilities  The capabilities.
+		 * @return {void} Nothing.
+ 		 */
 		VAA_View_Admin_As.set_selected_capabilities = function( capabilities ) {
 			$( root_prefix + '-select-options .vaa-cap-item input' ).each( function() {
-				var $this = $(this);
-				if ( capabilities.hasOwnProperty( $this.attr('value') ) ) {
-					if ( capabilities[ $this.attr('value') ] ) {
-						$this.attr( 'checked', 'checked' );
+				var $this = $(this),
+					val   = $this.attr('value');
+				if ( capabilities.hasOwnProperty( val ) ) {
+					if ( capabilities[ val ] ) {
+						$this.prop( 'checked', true );
 					} else {
-						$this.attr( 'checked', false );
+						$this.prop( 'checked', false );
 					}
 				} else {
-					$this.attr( 'checked', false );
+					$this.prop( 'checked', false );
 				}
 			} );
 		};
@@ -1194,9 +1279,347 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	};
 
 	/**
+	 * Combine views tool.
+	 * @since  1.8
+	 * @return {null}  Nothing.
+	 */
+	VAA_View_Admin_As.init_combine_views = function() {
+
+		var root                 = VAA_View_Admin_As.root + '-combine-views',
+			prefix               = 'vaa-combine-views',
+			root_prefix          = VAA_View_Admin_As.prefix + root,
+			$root                = $( root_prefix ),
+			combine_types        = $.extend( [], VAA_View_Admin_As.view_types ),
+			combine_selectors    = [],
+			selection            = {},
+			$selection_container = root_prefix + ' #' + prefix + '-selection',
+			$combine_items,
+			is_active = false;
+
+		if ( ! $root.length ) {
+			return;
+		}
+
+		combine_types.splice( combine_types.indexOf( 'caps' ), 1 );
+		combine_types.splice( combine_types.indexOf( 'visitor' ), 1 );
+
+		for ( var key in combine_types ) {
+			if ( combine_types.hasOwnProperty( key ) ) {
+				combine_selectors[ combine_types[ key ] ] = VAA_View_Admin_As.prefix + '.vaa-' + combine_types[ key ] + '-item > .ab-item';
+			}
+		}
+
+		// Custom selector for capability view.
+		combine_types.push( 'caps' );
+		combine_selectors['caps'] = VAA_View_Admin_As.prefix + VAA_View_Admin_As.root + '-caps > .menupop > .ab-item';
+
+		// Re-init. Checks for new view type nodes.
+		VAA_View_Admin_As.reinit_combine_views = function() {
+			if ( is_active ) {
+				enable_combine_views();
+			} else {
+				add_combine_checkboxes();
+			}
+			$.each( selection, function ( type, data ) {
+				data.el = $( data.el );
+				if ( ! data.el.length || ! data.el.closest( 'body' ).length ) {
+					// Try to find the element.
+					data.el = $( VAA_View_Admin_As.prefix + '.vaa-combine-item[vaa-view-type=' + data.type + '][vaa-view-value=' + data.value + ']' );
+				}
+				if ( data.el.length ) {
+					data.el.prop( 'checked', true );
+					activate_combine_type( data.el, data.type, data.value );
+				}
+			} );
+		};
+
+		// Show checkboxes.
+		function enable_combine_views() {
+			is_active = true;
+			add_combine_checkboxes();
+			$combine_items = $( VAA_View_Admin_As.prefix + '.vaa-combine-item' );
+			$combine_items.fadeIn('fast');
+			update_selection_list();
+		}
+
+		// Hide checkboxes and results container.
+		function disable_combine_views() {
+			is_active = false;
+			$( VAA_View_Admin_As.prefix + '.vaa-combine-item' ).fadeOut( 'fast' );
+			if ( $selection_container.is(':visible') ) {
+				$selection_container.slideUp('fast');
+			} else {
+				$selection_container.hide();
+			}
+		}
+
+		/**
+		 * Generate the checkboxes for combine types.
+		 * @param  {string}  elements  The elements selector to search for.
+		 * @param  {string}  type      The view type.
+		 * @return {void} Nothing.
+ 		 */
+		function add_combine_checkboxes( elements, type ) {
+			if ( ! elements || ! type ) {
+				for ( var key in combine_selectors ) {
+					if ( combine_selectors.hasOwnProperty( key ) ) {
+						add_combine_checkboxes( combine_selectors[ key ], key );
+					}
+				}
+				return;
+			}
+			// Late selection init needed for frontend.
+			var $elements = $( elements );
+			$elements.each( function () {
+				var $this = $( this ),
+					$parent = $this.parent(),
+					val = null,
+					text = $this.text(),
+					$data_el = $this.find('.vaa-view-data'),
+					type_label,
+					attr;
+				if ( $parent.find('.vaa-combine-item').length ) {
+					// Already exists.
+					return true;
+				}
+				if ( $data_el.length ) {
+					val = $data_el.attr('vaa-view-value');
+					text = $data_el.text();
+					type_label = $data_el.attr('vaa-view-type-label');
+				}
+				if ( 'caps' === type ) {
+					val = '';
+					text = $( VAA_View_Admin_As.root + '-caps-title > .ab-item' ).text();
+				}
+				attr = [
+					'type="checkbox"',
+					'class="checkbox vaa-right vaa-combine-item vaa-combine-' + type + '"',
+					'vaa-view-type="' + type + '"',
+					"vaa-view-value='" + val + "'", // Switch quote types for JSON data.
+					'vaa-view-text="' + text + '"',
+					'style="display:none;"'
+				];
+				if ( type_label ) {
+					attr.push( 'vaa-view-type-label="' + type_label + '"' );
+				}
+				$parent.prepend( '<input ' + attr.join(' ') + '>' );
+			} );
+		}
+
+		/**
+		 * Parse new combine selection. Also checks for multiple views.
+		 * @param  {string}  element  The element selector.
+		 * @param  {string}  type     The view type.
+		 * @return {void} Nothing.
+		 */
+		function parse_combine_type( element, type ) {
+			var $element = $( element ),
+				val;
+			if ( 'caps' === type ) {
+				val = type;
+			} else {
+				val = VAA_View_Admin_As.maybe_json_decode( $element.attr('vaa-view-value') );
+				// Check if it contains a combination of view types parsed as a JSON object.
+				if ( 'object' === typeof val ) {
+					$.each( val, function( val_type, data ) {
+						var $val_element = $( VAA_View_Admin_As.prefix + '.vaa-combine-' + val_type + '[vaa-view-value=' + data + ']' );
+						activate_combine_type( $val_element, val_type, data );
+					} );
+					// Also check the current item since this way the user can deactivate the combination as a whole.
+					$element.prop( { checked: true, disabled: false } );
+					return;
+				}
+			}
+			activate_combine_type( $element, type, val );
+		}
+
+		/**
+		 * Activate/select a combine type.
+		 * @param  {string}  element  The element selector.
+		 * @param  {string}  type     The view type.
+		 * @param  {string}  value    The view value.
+		 * @return {void} Nothing.
+		 */
+		function activate_combine_type( element, type, value ) {
+			var $element = $( element );
+			deactivate_combine_type( type, false );
+			selection[ type ] = {
+				'el': $element,
+				'type': type,
+				'value': value
+			};
+			$( VAA_View_Admin_As.prefix + '.vaa-combine-' + type ).prop( { checked: false, disabled: true } );
+			$element.prop( { checked: true, disabled: false } );
+			update_selection_list();
+		}
+
+		/**
+		 * Deactivate/deselect a combine type.
+		 * @param  {string|object}  types   The view types.
+		 * @param  {boolean}        update  Update selection list?
+		 * @return {void} Nothing.
+ 		 */
+		function deactivate_combine_type( types, update ) {
+			if ( 'object' !== typeof types ) {
+				type = types;
+				types = {};
+				types[ type ] = 0;
+			}
+			for ( var type in types ) {
+				if ( types.hasOwnProperty( type ) ) {
+					delete selection[ type ];
+					$( VAA_View_Admin_As.prefix + '.vaa-combine-' + type ).prop( { checked: false, disabled: false } );
+				}
+			}
+			if ( update ) {
+				update_selection_list();
+			}
+		}
+
+		// Update the list with current selections.
+		function update_selection_list() {
+
+			// Remove view types that are deselected.
+			$( root_prefix + ' .vaa-combine-selection' ).each( function() {
+				var $this = $(this),
+					type = $this.attr('vaa-view-type');
+				if ( ! selection.hasOwnProperty( type ) ) {
+					$this.slideUp( 'fast', function() { $( this ).remove() } );
+				}
+			} );
+
+			// Append or update view types selection.
+			$.each( selection, function( type, data ) {
+				var text = data.el.attr('vaa-view-text') + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
+					$existing = $( root_prefix + ' .vaa-combine-selection-' + type ),
+					label = data.el.attr( 'vaa-view-type-label' );
+				if ( label ) {
+					text = '<span class="ab-bold">' + label + ':</span> ' + text;
+				}
+				if ( $existing.length ) {
+					$existing.html( text );
+					if ( 'none' === $existing.css( 'display' ) || ! $existing.is(':visible') ) {
+						$existing.slideDown('fast');
+					}
+				} else {
+					var attr = [
+						'class="ab-item ab-empty-item vaa-combine-selection vaa-combine-selection-' + type + '"',
+						'vaa-view-type="' + type + '"',
+						'style="display:none;"'
+					];
+					var html = '<li ' + attr.join(' ') + '>' + text + '</li>';
+					$selection_container.append( html );
+					$( root_prefix + ' .vaa-combine-selection-' + type ).slideDown('fast');
+				}
+			} );
+
+			if ( is_active && ! $.isEmptyObject( selection ) ) {
+				if ( 'none' === $selection_container.css( 'display' ) || ! $selection_container.is(':visible') ) {
+					$selection_container.slideDown('fast');
+				}
+			} else {
+				$selection_container.slideUp('fast');
+			}
+		}
+
+		// Enable view combinations.
+		$root.on( 'change', 'input#' + prefix, function() {
+			// Late selection init needed for frontend.
+			$selection_container = $( $selection_container );
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			if ( this.checked ) {
+				enable_combine_views();
+			} else {
+				disable_combine_views();
+			}
+		} );
+
+		// Toggle view type combination.
+		$vaa.on( 'change', 'input.vaa-combine-item', function() {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			var $this = $( this ),
+				type = $this.attr('vaa-view-type');
+			if ( this.checked ) {
+				parse_combine_type( $this, type );
+			} else {
+				var val = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-view-value') );
+				// Check if it contains a combination of view types parsed as a JSON object.
+				if ( 'object' === typeof val ) {
+					deactivate_combine_type( val, true );
+					return;
+				}
+				deactivate_combine_type( type, true );
+			}
+		} );
+
+		// Remove view type from combinations.
+		$root.on( 'click touchend', '.vaa-combine-selection .remove', function() {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			deactivate_combine_type( $(this).parent().attr('vaa-view-type'), true );
+		} );
+
+		// Apply view combination.
+		$root.on( 'click touchend', 'button#' + prefix + '-apply', function( e ) {
+			if ( true === VAA_View_Admin_As._touchmove ) {
+				return;
+			}
+			e.preventDefault();
+			var view_data = {};
+			for ( var type in selection ) {
+				if ( selection.hasOwnProperty( type ) ) {
+					if ( 'caps' === type ) {
+						view_data[ type ] = VAA_View_Admin_As.get_selected_capabilities();
+					} else {
+						view_data[ type ] = selection[ type ].value;
+					}
+				}
+			}
+			if ( ! $.isEmptyObject( view_data ) ) {
+				VAA_View_Admin_As.ajax( view_data, true );
+			} else {
+				// @todo Notice text.
+			}
+		} );
+
+		// Prevent default view item handling and trigger checkbox click.
+		$.each( combine_types, function( index, type ) {
+			$vaa.on( 'vaa-apply-view', '.vaa-' + type + '-item > a.ab-item', function( e ) {
+				if ( ! is_active ) {
+					return;
+				}
+				e.preventDefault();
+				var $this = $(this);
+				if ( ! $this.parent().hasClass('not-a-view') ) {
+					if ( ! VAA_View_Admin_As._mobile ) {
+						var $combine_item = $this.parent().children('.vaa-combine-item');
+						if ( $combine_item.is(':checked') ) {
+							$combine_item.prop( 'checked', false );
+						} else {
+							$combine_item.prop( 'checked', true );
+						}
+						$combine_item.trigger('change');
+					}
+
+					// Prevent default view item handling.
+					e.stopPropagation();
+					e.stopImmediatePropagation();
+					$this.data( 'vaa-continue-event', false );
+					return false;
+				}
+			} );
+		} );
+	};
+
+	/**
 	 * MODULE: Role Defaults.
 	 * @since  1.4
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
@@ -1204,6 +1627,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			prefix = 'vaa-role-defaults',
 			root_prefix = VAA_View_Admin_As.prefix + root,
 			$root = $( root_prefix );
+
+		if ( ! $root.length ) {
+			return;
+		}
 
 		// @since  1.6.3  Add new meta.
 		$root.on( 'click touchend', root + '-meta-add button#' + prefix + '-meta-add', function( e ) {
@@ -1246,7 +1673,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * MODULE: Role Manager.
 	 * @since  1.7
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.init_module_role_manager = function() {
 
@@ -1257,6 +1684,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			prefix = 'vaa-caps-manager-role-manager',
 			root_prefix = VAA_View_Admin_As.prefix + root,
 			$root = $( root_prefix );
+
+		if ( ! $root.length ) {
+			return;
+		}
 
 		// @since  1.7  Update capabilities when selecting a role.
 		$root.on( 'change', 'select#' + prefix + '-edit-role', function() {
@@ -1328,7 +1759,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 *
 	 * @since  1.7.4
 	 * @param  {object}  data  The auto_js data.
-	 * @return {void}  Nothing.
+	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.assign_file_content = function( data ) {
 		if ( 'function' !== typeof FileReader ) {

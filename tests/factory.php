@@ -6,9 +6,6 @@
  * @package View_Admin_As
  */
 
-view_admin_as()->include_file( VIEW_ADMIN_AS_DIR . 'includes/class-base.php', 'VAA_View_Admin_As_Base' );
-view_admin_as()->include_file( VIEW_ADMIN_AS_DIR . 'includes/class-module.php', 'VAA_View_Admin_As_Module' );
-
 class VAA_UnitTest_Factory {
 
 	/**
@@ -181,8 +178,20 @@ class VAA_UnitTest_Factory {
 	 * Re-init VAA.
 	 */
 	static function vaa_reinit() {
-		remove_all_actions( 'vaa_view_admin_as_init' );
 		self::$vaa = view_admin_as();
+
+		// Once loaded the first time, remove existing VAA filters.
+		if ( self::$vaa->hooks() ) {
+			self::$vaa->hooks()->remove_own_filters();
+		}
+		self::clear_did_action();
+
+		if ( self::$store ) {
+			// Required to properly reset access.
+			// @todo Improve load logic in core and test factory.
+			self::$store->init( true );
+		}
+
 		self::$vaa->init( true );
 
 		self::$store = self::$vaa->store();
@@ -196,14 +205,35 @@ class VAA_UnitTest_Factory {
 			// Resets is_enabled. Required because of force reinit.
 			self::$vaa->set_enabled();
 
-			// Reload VAA type data.
-			self::$store->store_users();
-			self::$store->store_roles();
-			self::$store->store_caps();
+			foreach ( self::$vaa->get_view_types( null, false ) as $type ) {
+				/** @var \VAA_View_Admin_As_Type $type */
+				$type->init();
+			}
 
 		}
 
 		//echo PHP_EOL . 'View Admin As re-init done.' . PHP_EOL;
+	}
+
+	/**
+	 * Clear did_action() returns after reinit.
+	 */
+	static function clear_did_action() {
+		global $wp_actions;
+		$find = array(
+			'view_admin_as',
+			'vaa_view_admin_as',
+			'vaa_admin_bar',
+			'_view_admin_as',
+			'_vaa_view_admin_as',
+		);
+		foreach ( $wp_actions as $key => $counter ) {
+			foreach ( $find as $compare ) {
+				if ( 0 === strpos( $key, $compare ) ) {
+					unset( $wp_actions[ $key ] );
+				}
+			}
+		}
 	}
 
 	public static function get_instance() {

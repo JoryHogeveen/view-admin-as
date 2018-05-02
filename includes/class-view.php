@@ -17,8 +17,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
- * @version 1.7.4
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 {
@@ -27,7 +27,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_View
+	 * @var    \VAA_View_Admin_As_View
 	 */
 	private static $_instance = null;
 
@@ -45,7 +45,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -76,15 +76,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 
 		// @since  1.6.4  Set the current user as the selected user by default.
 		$this->store->set_selectedUser( $this->store->get_curUser() );
+		$this->store->set_selectedCaps( $this->store->get_curUser()->allcaps );
 
 		/**
-		 * USER & VISITOR.
+		 * VISITOR.
 		 * Current user object views (switches current user).
 		 *
-		 * @since  0.1    User view.
 		 * @since  1.6.2  Visitor view.
 		 */
-		if ( $this->store->get_view( 'user' ) || $this->store->get_view( 'visitor' ) ) {
+		if ( $this->store->get_view( 'visitor' ) ) {
 
 			/**
 			 * Change current user object so changes can be made on various screen settings.
@@ -92,23 +92,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 			 *
 			 * If it is a visitor view it will convert the false return from 'user' to 0.
 			 */
-			$this->store->set_selectedUser( wp_set_current_user( (int) $this->store->get_view( 'user' ) ) );
+			$this->store->set_selectedUser( wp_set_current_user( 0 ) );
 
 			// @since  1.6.2  Set the caps for this view (user view).
 			if ( isset( $this->store->get_selectedUser()->allcaps ) ) {
 				$this->store->set_selectedCaps( $this->store->get_selectedUser()->allcaps );
 			}
-		}
-
-		/**
-		 * ROLES & CAPS.
-		 * Capability based views (modifies current user).
-		 *
-		 * @since  0.1  Role view
-		 * @since  1.3  Caps view
-		 */
-		if ( $this->store->get_view( 'role' ) || $this->store->get_view( 'caps' ) ) {
-			$this->init_user_modifications();
 		}
 
 		/**
@@ -134,7 +123,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 */
 		$freeze_locale = apply_filters( 'view_admin_as_freeze_locale', $this->store->get_userSettings( 'freeze_locale' ) );
 		if ( $freeze_locale && (int) $this->store->get_curUser()->ID !== (int) $this->store->get_selectedUser()->ID ) {
-			add_action( 'after_setup_theme', array( $this, 'freeze_locale' ), 0 );
+			$this->add_action( 'after_setup_theme', array( $this, 'freeze_locale' ), 0 );
 		}
 	}
 
@@ -152,26 +141,26 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 
 		$this->is_user_modified = true;
 
-		add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_user' ), 99 );
+		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'modify_user' ), 99 );
 
 		/**
 		 * Make sure the $current_user view data isn't overwritten again by switch_blog functions.
 		 * @see    This filter is documented in wp-includes/ms-blogs.php
 		 * @since  1.6.3
 		 */
-		add_action( 'switch_blog', array( $this, 'modify_user' ) );
+		$this->add_action( 'switch_blog', array( $this, 'modify_user' ) );
 
 		/**
 		 * Prevent some meta updates for the current user while in modification to the current user are active.
 		 * @since  1.6.3
 		 */
-		add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
+		$this->add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
 
 		/**
 		 * Get capabilities and user level from current user view object instead of database.
 		 * @since  1.6.4
 		 */
-		add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
+		$this->add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
 		// `user_has_cap` priority.
 		$priority = -999999999;
@@ -197,7 +186,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * @since  1.7.2  Changed priority to set is at the beginning instead of as last
 		 *                to allow other plugins to filter based on the modified user.
 		 */
-		add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), $priority, 4 );
+		$this->add_filter( 'user_has_cap', array( $this, 'filter_user_has_cap' ), $priority, 4 );
 
 		/**
 		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
@@ -205,14 +194,16 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 *
 		 * @since  0.1
 		 */
-		add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
+		$this->add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
 
 		/**
 		 * Disable super admin status for the current user.
 		 * @since  1.7.3
+		 * @since  1.8    Check for multisite.
 		 */
-		if ( ! is_network_admin() &&
-		     VAA_API::is_super_admin( $this->store->get_selectedUser()->ID ) &&
+		if ( is_multisite() &&
+		     ! is_network_admin() &&
+		     is_super_admin( $this->store->get_selectedUser()->ID ) &&
 		     $this->store->get_userSettings( 'disable_super_admin' )
 		) {
 			$this->disable_super_admin();
@@ -234,69 +225,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		$user = $this->store->get_selectedUser();
 
 		/**
-		 * Validate if the WP_User properties are still accessible.
-		 * Currently everything is public but this could possibly change.
-		 *
-		 * @since  1.6.3
-		 */
-		$accessible = false;
-		$public_props = get_object_vars( $user );
-		if ( array_key_exists( 'caps', $public_props ) &&
-		     array_key_exists( 'allcaps', $public_props ) &&
-			 is_callable( array( $user, 'get_role_caps' ) )
-		) {
-			$accessible = true;
-		}
-
-		/**
-		 * Role view.
-		 *
-		 * @since  0.1
-		 */
-		if ( $this->store->get_roles( $this->store->get_view( 'role' ) ) instanceof WP_Role ) {
-			if ( ! $accessible ) {
-				// @since  1.6.2  Set the caps for this view here instead of in the mapper function.
-				$this->store->set_selectedCaps(
-					$this->store->get_roles( $this->store->get_view( 'role' ) )->capabilities
-				);
-			} else {
-				// @since  1.6.3  Set the current user's role to the current view.
-				$user->caps = array( $this->store->get_view( 'role' ) => 1 );
-				// Sets the `allcaps` and `roles` properties correct.
-				$user->get_role_caps();
-			}
-		}
-
-		/**
-		 * Caps view.
-		 *
-		 * @since  1.3
-		 */
-		if ( is_array( $this->store->get_view( 'caps' ) ) ) {
-			if ( ! $accessible ) {
-				$this->store->set_selectedCaps( $this->store->get_view( 'caps' ) );
-			} else {
-				// @since  1.6.3  Set the current user's caps (roles) to the current view.
-				$user->allcaps = array_merge(
-					(array) array_filter( $this->store->get_view( 'caps' ) ),
-					(array) $user->caps // Contains the current user roles.
-				);
-			}
-		}
-
-		if ( $accessible ) {
-			$this->store->set_selectedCaps( $user->allcaps );
-		}
-
-		/**
 		 * Allow other modules to hook after the initial changes to the current user.
 		 *
 		 * @since  1.6.3
 		 * @since  1.6.4     Changed name (was: `vaa_view_admin_as_modify_current_user`).
 		 * @param  \WP_User  $user        The modified user object.
-		 * @param  bool      $accessible  Are the needed WP_User properties and methods accessible?
 		 */
-		do_action( 'vaa_view_admin_as_modify_user', $user, $accessible );
+		do_action( 'vaa_view_admin_as_modify_user', $user );
 	}
 
 	/**
@@ -313,7 +248,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
 	 * @link    http://hookr.io/filters/update_user_metadata/
 	 *
-	 * @global  wpdb    $wpdb
+	 * @global  \wpdb   $wpdb
 	 * @param   null    $null       Whether to allow updating metadata for the given type.
 	 * @param   int     $object_id  Object ID.
 	 * @param   string  $meta_key   Meta key.
@@ -355,7 +290,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @see     'get_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
 	 *
-	 * @global  wpdb    $wpdb
+	 * @global  \wpdb   $wpdb
 	 * @param   null    $null       The value update_metadata() should return.
 	 * @param   int     $object_id  Object ID.
 	 * @param   string  $meta_key   Meta key.
@@ -514,6 +449,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * Similar function to current_user_can().
 	 *
 	 * @since   1.6.2
+	 * @since   1.8    Check for non-scalar types being passed as first parameter.
 	 * @access  public
 	 *
 	 * @param   string  $cap   The capability.
@@ -527,9 +463,20 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 			$caps = $this->store->get_selectedCaps();
 		}
 
+		if ( ! is_scalar( $cap ) ) {
+			$cap = (array) $cap;
+			foreach ( $cap as $capability ) {
+				if ( ! $this->current_view_can( $capability, $caps ) ) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		$cap = (string) $cap;
+
 		if ( is_array( $caps ) &&
-		     array_key_exists( $cap, $caps ) &&
-		     1 === (int) $caps[ $cap ] &&
+		     ! empty( $caps[ $cap ] ) &&
 		     'do_not_allow' !== $cap &&
 		     'do_not_allow' !== $caps[ $cap ]
 		) {
@@ -575,8 +522,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_View
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_View  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

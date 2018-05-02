@@ -22,34 +22,87 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.6
+ * @version 1.8
  */
 final class VAA_API
 {
 	/**
-	 * Check if the user is a super admin.
-	 * It will validate the original user while in a view and no parameter is passed.
+	 * Check if a user has full access to this plugin.
 	 *
-	 * @see  VAA_View_Admin_As_Store::is_super_admin()
-	 *
-	 * @since   1.6.3
+	 * @since   1.8
 	 * @access  public
 	 * @static
 	 * @api
 	 *
-	 * @param   int|\WP_User  $user_id  (optional) Default: current user.
+	 * @param   \WP_User|int  $user  The user to check.
 	 * @return  bool
 	 */
-	public static function is_super_admin( $user_id = null ) {
-		if ( $user_id instanceof WP_User ) {
-			$user_id = $user_id->ID;
+	public static function user_has_full_access( $user ) {
+		if ( ! $user instanceof WP_User ) {
+			$user = get_user_by( 'ID', $user );
+			if ( ! $user ) {
+				return false;
+			}
 		}
 
-		$store = view_admin_as()->store();
-		if ( $store ) {
-			return $store->is_super_admin( $user_id );
+		if ( is_multisite() ) {
+			return is_super_admin( $user->ID );
 		}
-		return is_super_admin( $user_id );
+
+		/**
+		 * For single installations is_super_admin() isn't enough since it only checks for `delete_users`.
+		 * @since  1.7.6
+		 * @link   https://wordpress.org/support/topic/required-capabilities-2/
+		 */
+		$caps = array(
+			'edit_users',
+			'delete_plugins',
+		);
+
+		/**
+		 * Filter the capabilities required to gain full access to this plugin.
+		 * Note: Single site only!
+		 * Note: is_super_admin() is always checked!
+		 *
+		 * @since  1.8
+		 * @param  array     $caps  The default capabilities.
+		 * @param  \WP_User  $user  The user that is being validated.
+		 * @return array
+		 */
+		$caps = apply_filters( 'view_admin_as_full_access_capabilities', $caps, $user );
+
+		foreach ( $caps as $cap ) {
+			if ( ! $user->has_cap( $cap ) ) {
+				return false;
+			}
+		}
+
+		return is_super_admin( $user->ID );
+	}
+
+	/**
+	 * Check if the user is a super admin.
+	 * This check is more strict for single installations since it checks VAA_API::user_has_full_access.
+	 * It will validate the original user while in a view and no parameter is passed.
+	 *
+	 * @see  \VAA_API::user_has_full_access()
+	 * @see  \VAA_View_Admin_As_Store::cur_user_has_full_access()
+	 *
+	 * @since   1.6.3
+	 * @since   1.8    Check full access.
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   int|\WP_User  $user  (optional) Default: current user.
+	 * @return  bool
+	 */
+	public static function is_super_admin( $user = null ) {
+		if ( null === $user || view_admin_as()->store()->is_curUser( $user ) ) {
+			return view_admin_as()->store()->cur_user_has_full_access();
+		}
+
+		return self::user_has_full_access( $user );
 	}
 
 	/**
@@ -59,6 +112,7 @@ final class VAA_API
 	 * @since   1.5.3
 	 * @since   1.6    Moved to this class from main class
 	 * @since   1.6.3  Improve is_super_admin() check
+	 * @since   1.8    Enhance code to reflect VAA_API::is_super_admin() changes.
 	 * @access  public
 	 * @static
 	 * @api
@@ -67,24 +121,25 @@ final class VAA_API
 	 * @return  bool
 	 */
 	public static function is_superior_admin( $user_id = null ) {
-		if ( $user_id instanceof WP_User ) {
-			$user_id = $user_id->ID;
-		}
 
 		// If it's the current user or null, don't pass the user ID to make sure we check the original user status.
 		$is_super_admin = self::is_super_admin(
-			( null !== $user_id && (int) get_current_user_id() === (int) $user_id ) ? null : $user_id
+			( null !== $user_id && view_admin_as()->store()->is_curUser( $user_id ) ) ? null : $user_id
 		);
 
-		if ( null === $user_id ) {
-			$store = view_admin_as()->store();
-			if ( $store ) {
-				$user_id = $store->get_originalUserData( 'ID' );
-			}
+		// Full access is required.
+		if ( ! $is_super_admin ) {
+			return false;
 		}
 
-		// Is it a super admin and is it one of the manually configured superior admins?
-		return (bool) ( true === $is_super_admin && in_array( (int) $user_id, self::get_superior_admins(), true ) );
+		if ( null === $user_id ) {
+			$user_id = view_admin_as()->store()->get_originalUserData( 'ID' );
+		} elseif ( $user_id instanceof WP_User ) {
+			$user_id = $user_id->ID;
+		}
+
+		// Is it one of the manually configured superior admins?
+		return (bool) ( in_array( (int) $user_id, self::get_superior_admins(), true ) );
 	}
 
 	/**
@@ -120,7 +175,7 @@ final class VAA_API
 	/**
 	 * Check if the provided data is the same as the current view.
 	 *
-	 * @see  VAA_View_Admin_As_Controller::is_current_view()
+	 * @see  \VAA_View_Admin_As_Controller::is_current_view()
 	 *
 	 * @since   1.7.1
 	 * @access  public
@@ -145,7 +200,7 @@ final class VAA_API
 	/**
 	 * Similar function to current_user_can().
 	 *
-	 * @see  VAA_View_Admin_As_View::current_view_can()
+	 * @see  \VAA_View_Admin_As_View::current_view_can()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -168,7 +223,7 @@ final class VAA_API
 	/**
 	 * Is the current user modified?
 	 *
-	 * @see  VAA_View_Admin_As_View::current_view_can()
+	 * @see  \VAA_View_Admin_As_View::current_view_can()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -217,8 +272,8 @@ final class VAA_API
 	 */
 	public static function is_vaa_toolbar_showing() {
 
-		if ( class_exists( 'VAA_View_Admin_As_Toolbar' ) && VAA_View_Admin_As_Toolbar::$showing ) {
-			return true;
+		if ( class_exists( 'VAA_View_Admin_As_Toolbar' ) ) {
+			return (bool) VAA_View_Admin_As_Toolbar::$showing;
 		}
 		return false;
 	}
@@ -237,6 +292,33 @@ final class VAA_API
 
 		if ( is_customize_preview() && is_admin() ) {
 			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Check if a view type is enabled. Pass an array to check multiple view types.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string|array  $type  The view type key.
+	 * @return  bool
+	 */
+	public static function is_view_type_enabled( $type ) {
+		$type = view_admin_as()->get_view_types( $type );
+		if ( is_array( $type ) ) {
+			foreach ( $type as $view_type ) {
+				if ( ! $view_type instanceof VAA_View_Admin_As_Type || ! $view_type->is_enabled() ) {
+					return false;
+				}
+			}
+			return true;
+		}
+		if ( $type instanceof VAA_View_Admin_As_Type ) {
+			return $type->is_enabled();
 		}
 		return false;
 	}
@@ -520,7 +602,7 @@ final class VAA_API
 	 * Does a string starts with a given string?
 	 *
 	 * @since   1.4
-	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults.
 	 * @access  public
 	 * @static
 	 * @api
@@ -538,7 +620,7 @@ final class VAA_API
 	 * Does a string ends with a given string?
 	 *
 	 * @since   1.4
-	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults
+	 * @since   1.7  Moved from VAA_View_Admin_As_Role_Defaults.
 	 * @access  public
 	 * @static
 	 * @api

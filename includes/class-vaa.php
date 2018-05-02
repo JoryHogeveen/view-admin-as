@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.5
+ * @version 1.8
  */
 final class VAA_View_Admin_As
 {
@@ -25,7 +25,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since  1.4.1
 	 * @static
-	 * @var    VAA_View_Admin_As
+	 * @var    \VAA_View_Admin_As
 	 */
 	private static $_instance = null;
 
@@ -49,10 +49,18 @@ final class VAA_View_Admin_As
 	private $notices = array();
 
 	/**
+	 * VAA Hooks.
+	 *
+	 * @since  1.8
+	 * @var    \VAA_View_Admin_As_Hooks
+	 */
+	private $hooks = null;
+
+	/**
 	 * VAA Store.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_Store
+	 * @var    \VAA_View_Admin_As_Store
 	 */
 	private $store = null;
 
@@ -60,7 +68,7 @@ final class VAA_View_Admin_As
 	 * VAA Controller.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_Controller
+	 * @var    \VAA_View_Admin_As_Controller
 	 */
 	private $controller = null;
 
@@ -68,7 +76,7 @@ final class VAA_View_Admin_As
 	 * VAA View handler.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_View
+	 * @var    \VAA_View_Admin_As_View
 	 */
 	private $view = null;
 
@@ -76,7 +84,7 @@ final class VAA_View_Admin_As
 	 * VAA UI classes that are loaded.
 	 *
 	 * @since  1.5
-	 * @see    VAA_View_Admin_As::load_ui()
+	 * @see    \VAA_View_Admin_As::load_ui()
 	 * @var    object[]
 	 */
 	private $ui = array();
@@ -85,11 +93,42 @@ final class VAA_View_Admin_As
 	 * Other VAA modules that are loaded.
 	 *
 	 * @since  1.4
-	 * @see    VAA_View_Admin_As::load_modules()
-	 * @see    VAA_View_Admin_As::register_module()
-	 * @var    object[]
+	 * @see    \VAA_View_Admin_As::load_modules()
+	 * @see    \VAA_View_Admin_As::register_module()
+	 * @var    \VAA_View_Admin_As_Module[]
 	 */
 	private $modules = array();
+
+	/**
+	 * View types.
+	 *
+	 * @since  1.8
+	 * @see    \VAA_View_Admin_As::load_modules()
+	 * @see    \VAA_View_Admin_As::register_view_type()
+	 * @var    \VAA_View_Admin_As_Type[]
+	 */
+	private $view_types = array();
+
+	/**
+	 * Class registry
+	 *
+	 * @since  1.8
+	 * @var    array
+	 */
+	private $classes = array(
+		'VAA_API'                      => 'includes/class-api.php',
+		'VAA_View_Admin_As_Base'       => 'includes/class-base.php',
+		'VAA_View_Admin_As_Hooks'      => 'includes/class-hooks.php',
+		'VAA_View_Admin_As_Settings'   => 'includes/class-settings.php',
+		'VAA_View_Admin_As_Store'      => 'includes/class-store.php',
+		'VAA_View_Admin_As_Controller' => 'includes/class-controller.php',
+		'VAA_View_Admin_As_View'       => 'includes/class-view.php',
+		'VAA_View_Admin_As_Update'     => 'includes/class-update.php',
+		'VAA_View_Admin_As_Compat'     => 'includes/class-compat.php',
+		'VAA_View_Admin_As_Type'       => 'includes/class-type.php',
+		'VAA_View_Admin_As_Module'     => 'includes/class-module.php',
+		'VAA_View_Admin_As_Form'       => 'includes/class-form.php',
+	);
 
 	/**
 	 * Init function to register plugin hook.
@@ -100,10 +139,13 @@ final class VAA_View_Admin_As
 	 * @since   1.4.1   Creates instance.
 	 * @since   1.5     Make private.
 	 * @since   1.5.1   Added notice on class name conflict + validate versions.
+	 * @since   1.8     spl_autoload_register().
 	 * @access  private
 	 */
 	private function __construct() {
 		self::$_instance = $this;
+
+		spl_autoload_register( array( $this, '_autoload' ) );
 
 		add_action( 'init', array( $this, 'load_textdomain' ) );
 
@@ -118,6 +160,23 @@ final class VAA_View_Admin_As
 
 		// Lets start!
 		add_action( 'plugins_loaded', array( $this, 'init' ), -99999 );
+	}
+
+	/**
+	 * Class autoloader if needed.
+	 *
+	 * @since   1.8
+	 * @access  private
+	 * @internal
+	 * @param   string  $class  The class name.
+	 */
+	public function _autoload( $class ) {
+		if ( 0 !== strpos( $class, 'VAA_' ) ) {
+			return;
+		}
+		if ( isset( $this->classes[ $class ] ) ) {
+			$this->include_file( VIEW_ADMIN_AS_DIR . $this->classes[ $class ], $class );
+		}
 	}
 
 	/**
@@ -155,47 +214,8 @@ final class VAA_View_Admin_As
 	 */
 	private function load() {
 
-		$includes = array(
-			array(
-				'file'  => 'includes/class-api.php',
-				'class' => 'VAA_API',
-			),
-			array(
-				'file'  => 'includes/class-base.php',
-				'class' => 'VAA_View_Admin_As_Base',
-			),
-			array(
-				'file'  => 'includes/class-settings.php',
-				'class' => 'VAA_View_Admin_As_Settings',
-			),
-			array(
-				'file'  => 'includes/class-store.php',
-				'class' => 'VAA_View_Admin_As_Store',
-			),
-			array(
-				'file'  => 'includes/class-controller.php',
-				'class' => 'VAA_View_Admin_As_Controller',
-			),
-			array(
-				'file'  => 'includes/class-view.php',
-				'class' => 'VAA_View_Admin_As_View',
-			),
-			array(
-				'file'  => 'includes/class-update.php',
-				'class' => 'VAA_View_Admin_As_Update',
-			),
-			array(
-				'file'  => 'includes/class-compat.php',
-				'class' => 'VAA_View_Admin_As_Compat',
-			),
-			array(
-				'file'  => 'includes/class-module.php',
-				'class' => 'VAA_View_Admin_As_Module',
-			),
-		);
-
-		foreach ( $includes as $inc ) {
-			if ( ! $this->include_file( VIEW_ADMIN_AS_DIR . $inc['file'], $inc['class'] ) ) {
+		foreach ( $this->classes as $class => $file ) {
+			if ( ! $this->include_file( VIEW_ADMIN_AS_DIR . $file, $class ) ) {
 				return false;
 			}
 		}
@@ -213,11 +233,10 @@ final class VAA_View_Admin_As
 	 */
 	private function run() {
 
+		$this->hooks      = new VAA_View_Admin_As_Hooks();
 		$this->store      = VAA_View_Admin_As_Store::get_instance( $this );
 		$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
 		$this->view       = VAA_View_Admin_As_View::get_instance( $this );
-
-		$this->store->init( true );
 
 		$this->set_enabled();
 
@@ -235,9 +254,13 @@ final class VAA_View_Admin_As
 			// Fix some compatibility issues, more to come!
 			VAA_View_Admin_As_Compat::get_instance( $this )->init();
 
-			$this->store->store_caps();
-			$this->store->store_roles();
-			$this->store->store_users();
+			/**
+			 * Plugin enabled + update and compat scripts done.
+			 *
+			 * @since  1.8
+			 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
+			 */
+			do_action( 'vaa_view_admin_as_pre_init', $this );
 
 			$this->controller->init();
 			$this->view->init();
@@ -248,7 +271,7 @@ final class VAA_View_Admin_As
 			 * Init is finished. Hook is used for other classes related to View Admin As.
 			 *
 			 * @since  1.5
-			 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
+			 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 			 */
 			do_action( 'vaa_view_admin_as_init', $this );
 
@@ -329,8 +352,8 @@ final class VAA_View_Admin_As
 		}
 
 		// Load file.
-		if ( empty( $class ) || ! class_exists( $class ) ) {
-			include_once( $file );
+		if ( empty( $class ) || ! class_exists( $class, false ) ) {
+			include_once $file;
 		} else {
 			$this->add_error_notice( $class . '::' . __METHOD__, array(
 				'type' => 'notice-error',
@@ -351,7 +374,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @param   array  $includes {
+	 * @param   array[]|string[]  $includes {
 	 *     An array of files to include.
 	 *     @type  string  $file   The file to include. Directory starts from the plugin folder.
 	 *     @type  string  $class  The class name.
@@ -364,6 +387,15 @@ final class VAA_View_Admin_As
 		$group = (array) $group;
 
 		foreach ( $includes as $key => $inc ) {
+
+			if ( is_string( $inc ) ) {
+				$inc = array(
+					'file' => $inc,
+				);
+				if ( is_string( $key ) ) {
+					$inc['class'] = $key;
+				}
+			}
 
 			if ( empty( $inc['file'] ) ) {
 				continue;
@@ -393,10 +425,6 @@ final class VAA_View_Admin_As
 	private function load_ui() {
 
 		$includes = array(
-			'form' => array(
-				'file'  => 'ui/class-form.php',
-				'class' => 'VAA_View_Admin_As_Form',
-			),
 			'ui' => array(
 				'file'  => 'ui/class-ui.php',
 				'class' => 'VAA_View_Admin_As_UI',
@@ -429,6 +457,22 @@ final class VAA_View_Admin_As
 	private function load_modules() {
 
 		$includes = array(
+			'role_switcher' => array(
+				'file'  => 'modules/class-roles.php',
+				'class' => 'VAA_View_Admin_As_Roles',
+			),
+			'user_switcher' => array(
+				'file'  => 'modules/class-users.php',
+				'class' => 'VAA_View_Admin_As_Users',
+			),
+			'capability_switcher' => array(
+				'file'  => 'modules/class-caps.php',
+				'class' => 'VAA_View_Admin_As_Caps',
+			),
+			'language_switcher' => array(
+				'file'  => 'modules/class-languages.php',
+				'class' => 'VAA_View_Admin_As_Languages',
+			),
 			'role_defaults' => array(
 				'file'  => 'modules/class-role-defaults.php',
 				'class' => 'VAA_View_Admin_As_Role_Defaults',
@@ -436,10 +480,6 @@ final class VAA_View_Admin_As
 			'role_manager' => array(
 				'file'  => 'modules/class-role-manager.php',
 				'class' => 'VAA_View_Admin_As_Role_Manager',
-			),
-			'language_switcher' => array(
-				'file'  => 'modules/class-languages.php',
-				'class' => 'VAA_View_Admin_As_Languages',
 			),
 		);
 
@@ -464,7 +504,7 @@ final class VAA_View_Admin_As
 		 * Modules loaded. Hook is used for other modules related to View Admin As.
 		 *
 		 * @since  1.6.2
-		 * @param  VAA_View_Admin_As  $this  The main View Admin As object.
+		 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 		 */
 		do_action( 'vaa_view_admin_as_modules_loaded', $this );
 	}
@@ -497,11 +537,22 @@ final class VAA_View_Admin_As
 	}
 
 	/**
+	 * Get the hooks class.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @return  \VAA_View_Admin_As_Hooks
+	 */
+	public function hooks() {
+		return $this->hooks;
+	}
+
+	/**
 	 * Get the store class.
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @return  VAA_View_Admin_As_Store
+	 * @return  \VAA_View_Admin_As_Store
 	 */
 	public function store() {
 		return $this->store;
@@ -512,7 +563,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.7
 	 * @access  public
-	 * @return  VAA_View_Admin_As_Controller
+	 * @return  \VAA_View_Admin_As_Controller
 	 */
 	public function controller() {
 		return $this->controller;
@@ -523,7 +574,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @return  VAA_View_Admin_As_View
+	 * @return  \VAA_View_Admin_As_View
 	 */
 	public function view() {
 		return $this->view;
@@ -535,12 +586,56 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.1
 	 * @access  public
-	 * @see     VAA_View_Admin_As::load_ui()
+	 * @see     \VAA_View_Admin_As::load_ui()
 	 * @param   string  $key  (optional) UI class name.
-	 * @return  object|object[]
+	 * @return  \VAA_View_Admin_As_Module|\VAA_View_Admin_As_Module[]
 	 */
 	public function get_ui( $key = null ) {
 		return VAA_API::get_array_data( $this->ui, $key );
+	}
+
+	/**
+	 * Get view types.
+	 * If a key is provided it will only return that view type.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @param   string  $key           (optional) The type key.
+	 * @param   bool    $check_access  (optional) Check if the user has access? Default: true.
+	 * @return  \VAA_View_Admin_As_Type|\VAA_View_Admin_As_Type[]
+	 */
+	public function get_view_types( $key = null, $check_access = true ) {
+		$view_types = $this->view_types;
+		if ( $check_access ) {
+			foreach ( $view_types as $type => $instance ) {
+				if ( ! $instance->has_access() ) {
+					unset( $view_types[ $type ] );
+				}
+			}
+		}
+		$view_types = VAA_API::get_array_data( $view_types, $key );
+		return $view_types;
+	}
+
+	/**
+	 * Register view types.
+	 *
+	 * @since   1.8
+	 * @param   array  $data {
+	 *     Required. An array of module info.
+	 *     @type  string                  $id        The view type name, choose wisely since this is used for validation.
+	 *     @type  VAA_View_Admin_As_Type  $instance  The view type class reference/instance.
+	 * }
+	 * @return  bool  Successfully registered?
+	 */
+	public function register_view_type( $data ) {
+		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
+		     ! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Type
+		) {
+			$this->view_types[ $data['id'] ] = $data['instance'];
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -563,14 +658,14 @@ final class VAA_View_Admin_As
 	 * @since   1.6.1
 	 * @param   array  $data {
 	 *     Required. An array of module info.
-	 *     @type  string  $id        The module name, choose wisely since this is used for validation.
-	 *     @type  object  $instance  The module class reference/instance.
+	 *     @type  string                    $id        The module name, choose wisely since this is used for validation.
+	 *     @type  VAA_View_Admin_As_Module  $instance  The module class reference/instance.
 	 * }
 	 * @return  bool  Successfully registered?
 	 */
 	public function register_module( $data ) {
 		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
-		     ! empty( $data['instance'] ) && is_object( $data['instance'] )
+		     ! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Module
 		) {
 			$this->modules[ $data['id'] ] = $data['instance'];
 			return true;
@@ -579,7 +674,7 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Add a welcome notice for new users
+	 * Add a welcome notice for new users.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -717,11 +812,22 @@ final class VAA_View_Admin_As
 
 		if ( ! $valid ) {
 			// Too bad..
-			require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 			deactivate_plugins( VIEW_ADMIN_AS_BASENAME );
 		}
 
 		return $valid;
+	}
+
+	/**
+	 * Sets update class to run a DB update.
+	 * @since   1.8
+	 */
+	public static function run_db_update() {
+		// Make sure the main class is initialized.
+		view_admin_as();
+		// Set the update class to a fresh installation which will trigger the update.
+		VAA_View_Admin_As_Update::$fresh_install = true;
 	}
 
 	/**
@@ -735,7 +841,7 @@ final class VAA_View_Admin_As
 		if ( is_bool( $check ) ) {
 			return $check;
 		}
-		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		$check = (bool) is_plugin_active_for_network( VIEW_ADMIN_AS_BASENAME );
 		return $check;
 	}
@@ -748,7 +854,7 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 * @static
 	 * @see     view_admin_as()
-	 * @return  $this  VAA_View_Admin_As
+	 * @return  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {

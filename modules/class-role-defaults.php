@@ -21,8 +21,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4
- * @version 1.7.4
- * @uses    VAA_View_Admin_As_Module Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 {
@@ -31,7 +31,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since  1.5
 	 * @static
-	 * @var    VAA_View_Admin_As_Role_Defaults
+	 * @var    \VAA_View_Admin_As_Role_Defaults
 	 */
 	private static $_instance = null;
 
@@ -104,7 +104,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.4
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -122,7 +122,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since 1.6
 		 */
 		$this->capabilities = array( 'view_admin_as_role_defaults' );
-		add_filter( 'view_admin_as_add_capabilities', array( $this, 'add_capabilities' ) );
+		$this->add_filter( 'view_admin_as_add_capabilities', array( $this, 'add_capabilities' ) );
 
 		// Load data.
 		$this->set_optionData( get_option( $this->get_optionKey() ) );
@@ -145,8 +145,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.5.3    Disable for network pages.
 		 */
 		if ( ! is_network_admin() && $this->current_user_can( 'view_admin_as_role_defaults' ) ) {
-			add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-			add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
+			$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+			$this->add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
 		}
 	}
 
@@ -197,15 +197,15 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		// Setting: Automatically apply defaults to new users.
 		if ( $this->get_optionData( 'apply_defaults_on_register' ) ) {
 			if ( is_multisite() ) {
-				add_action( 'add_user_to_blog', array( $this, 'update_user_with_role_defaults_multisite_register' ), 100, 3 );
+				$this->add_action( 'add_user_to_blog', array( $this, 'update_user_with_role_defaults_multisite_register' ), 100, 3 );
 			} else {
-				add_action( 'user_register', array( $this, 'update_user_with_role_defaults' ), 100, 1 );
+				$this->add_action( 'user_register', array( $this, 'update_user_with_role_defaults' ), 100, 1 );
 			}
 		}
 
 		// Setting: Hide the screen options for all users who can't access role defaults.
 		if ( $this->get_optionData( 'disable_user_screen_options' ) && ! $this->current_user_can( 'view_admin_as_role_defaults' ) ) {
-			add_filter( 'screen_options_show_screen', '__return_false', 100 );
+			$this->add_filter( 'screen_options_show_screen', '__return_false', 100 );
 		}
 
 		/**
@@ -215,7 +215,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.6
 		 * @since  1.6.2  Move to footer (changed hook).
 		 */
-		add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
+		$this->add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
 
 		$done = true;
 	}
@@ -233,7 +233,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( VAA_API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section.
-			add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
+			$this->add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
 		}
 
 		// Add adminbar menu items in role section.
@@ -243,7 +243,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$this->init_store_role_defaults();
 
 			// Show the admin bar node.
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 5, 2 );
+			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 5, 2 );
 		}
 	}
 
@@ -506,9 +506,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Defaults::update_user_with_role_defaults_multisite_register()
-	 * @see     VAA_View_Admin_As_Role_Defaults::apply_defaults_to_users_by_role()
-	 * @see     VAA_View_Admin_As_Role_Defaults::ajax_handler()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::update_user_with_role_defaults_multisite_register()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::apply_defaults_to_users_by_role()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::ajax_handler()
 	 *
 	 * @see     'user_register' action
 	 * @link    https://developer.wordpress.org/reference/hooks/user_register/
@@ -608,14 +608,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  private
-	 * @see     VAA_View_Admin_As_Role_Defaults::vaa_init()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::vaa_init()
 	 * @return  void
 	 */
 	private function init_store_role_defaults() {
 		if ( $this->store->get_view( 'role' ) && $this->is_enabled() ) {
-			add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
-			add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
-			add_filter( 'vaa_admin_bar_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
+			$this->add_filter( 'get_user_metadata' , array( $this, 'filter_get_user_metadata' ), 10, 4 );
+			$this->add_filter( 'update_user_metadata' , array( $this, 'filter_update_user_metadata' ), 10, 5 );
+			$this->add_filter( 'vaa_admin_bar_title', array( $this, 'vaa_title_recording_role_defaults' ), 999 );
 		}
 	}
 
@@ -649,7 +649,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.4
 	 * @since   1.5.3   Stop checking $single parameter.
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
 	 * @see     'get_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
@@ -678,7 +678,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
 	 * @see     'update_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
@@ -1084,6 +1084,40 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 		$root = $root . '-role-defaults';
 
+		// This module requires the role view type to enable all it's features.
+		if ( ! VAA_API::is_view_type_enabled( 'role' ) ) {
+			$view_type = view_admin_as()->get_view_types( 'role' );
+			if ( $view_type instanceof VAA_View_Admin_As_Roles ) {
+				$admin_bar->add_node( array(
+					'id'     => $root . '-dependency',
+					'parent' => $root,
+					'title'  => VAA_View_Admin_As_Form::do_button( array(
+						'name'    => $root . 'dependency-role',
+						'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-warning' )
+									 // Translators: %s stands for the translated view type label "Roles".
+									 . sprintf( __( 'Please enable the "%s" view type to set role defaults', VIEW_ADMIN_AS_DOMAIN ), $view_type->get_label() ),
+						'auto_js' => array(
+							'setting' => 'setting',
+							'key'     => 'view_types',
+							'values'  => array(
+								'role' => array(
+									'values' => array(
+										'enabled' => array(),
+									),
+								),
+							),
+							'refresh' => true,
+						),
+						'value' => true,
+					) ),
+					'href'   => false,
+					'meta'   => array(
+						'class' => 'vaa-button-container',
+					),
+				) );
+			}
+		}
+
 		// @since  1.4  Enable apply defaults on register.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-register-enable',
@@ -1270,7 +1304,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Defaults::admin_bar_menu()
+	 * @see     \VAA_View_Admin_As_Role_Defaults::admin_bar_menu()
 	 *
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item (vaa).
@@ -1863,8 +1897,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Role_Defaults
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Role_Defaults  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

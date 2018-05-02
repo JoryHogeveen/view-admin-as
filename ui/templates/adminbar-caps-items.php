@@ -3,11 +3,12 @@
  * Add caps items.
  *
  * @since    1.7
- * @version  1.7.4
+ * @version  1.8
  *
- * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
- * @var  string         $root       The current root item.
- * @var  string         $main_root  The main VAA root item.
+ * @var  \VAA_View_Admin_As_Caps  $this
+ * @var  \WP_Admin_Bar            $admin_bar  The toolbar object.
+ * @var  string                   $root       The current root item.
+ * @var  string                   $main_root  The main VAA root item.
  */
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
@@ -28,7 +29,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$class   = 'vaa-cap-item';
 		$checked = (bool) $granted;
 		// check if we've selected a capability view and we've changed some capabilities.
-		$selected_caps = $this->store->get_view( 'caps' );
+		$selected_caps = $this->store->get_view( $this->type );
 		if ( isset( $selected_caps[ $cap ] ) ) {
 			$checked = (bool) $selected_caps[ $cap ];
 		}

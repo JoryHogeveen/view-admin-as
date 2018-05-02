@@ -16,8 +16,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.4
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 {
@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Controller
+	 * @var    \VAA_View_Admin_As_Controller
 	 */
 	private static $_instance = null;
 
@@ -45,21 +45,21 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
 		// When a user logs in or out, reset the view to default.
-		add_action( 'wp_login',  array( $this, 'cleanup_views' ), 10, 2 );
-		add_action( 'wp_login',  array( $this, 'reset_view' ), 10, 2 );
-		add_action( 'wp_logout', array( $this, 'reset_view' ) );
+		$this->add_action( 'wp_login',  array( $this, 'cleanup_views' ), 10, 2 );
+		$this->add_action( 'wp_login',  array( $this, 'reset_view' ), 10, 2 );
+		$this->add_action( 'wp_logout', array( $this, 'reset_view' ) );
 
 		// Not needed, the delete_user actions already remove all metadata, keep code for possible future use.
-		//add_action( 'remove_user_from_blog', array( $this->store, 'delete_user_meta' ) );
-		//add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
-		//add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
+		//$this->add_action( 'remove_user_from_blog', array( $this->store, 'delete_user_meta' ) );
+		//$this->add_action( 'wpmu_delete_user', array( $this->store, 'delete_user_meta' ) );
+		//$this->add_action( 'wp_delete_user', array( $this->store, 'delete_user_meta' ) );
 
 		/**
 		 * Change expiration time for view meta.
@@ -103,19 +103,11 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		}
 
 		// Reset hook.
-		add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
+		$this->add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
 
-		// Validation hooks.
-		add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
-		add_filter( 'view_admin_as_validate_view_data_caps', array( $this, 'validate_view_data_caps' ), 10, 2 );
-		add_filter( 'view_admin_as_validate_view_data_role', array( $this, 'validate_view_data_role' ), 10, 2 );
-		add_filter( 'view_admin_as_validate_view_data_user', array( $this, 'validate_view_data_user' ), 10, 2 );
-
-		// Update hooks.
-		add_filter( 'view_admin_as_update_view_caps', array( $this, 'filter_update_view_caps' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_role', array( $this, 'filter_update_view' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_user', array( $this, 'filter_update_view' ), 10, 3 );
-		add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
+		// Validation & update hooks for visitor view.
+		$this->add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
+		$this->add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
 
 		// Get the current view.
 		$this->store->set_view( $this->get_view() );
@@ -125,8 +117,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			$this->ajax_view_admin_as();
 		} else {
 			// Admin selector ajax return (fallback).
-			add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
-			//add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+			$this->add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+			//$this->add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 		}
 	}
 
@@ -199,8 +191,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		/**
 		 * Ajax return filters.
 		 *
-		 * @see     view_admin_as_update_view_{$key}
-		 * @see     view_admin_as_handle_ajax_{$key}
+		 * @see     `view_admin_as_update_view_{$key}`
+		 * @see     `view_admin_as_handle_ajax_{$key}`
 		 *
 		 * @since   1.7
 		 * @param   null    $null    Null.
@@ -282,61 +274,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Handles the caps view since it's a bit more complex.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @param   null    $null  Null.
-	 * @param   mixed   $data  The view data.
-	 * @param   string  $type  The view type.
-	 * @return  bool|array
-	 */
-	public function filter_update_view_caps( $null, $data, $type ) {
-		$success = $null;
-		if ( ! is_array( $data ) || 'caps' !== $type ) {
-			return $success;
-		}
-		$db_view = $this->store->get_view( 'caps' );
-
-		// Check if the selected caps are equal to the default caps.
-		if ( VAA_API::array_equal( $this->store->get_curUser()->allcaps, $data ) ) {
-			// The selected caps are equal to the current user default caps so we can reset the view.
-			$this->reset_view();
-			if ( $db_view ) {
-				// The user was in a custom caps view.
-				$success = true; // and continue.
-			} else {
-				// The user was in his default view, notify the user.
-				$success = array(
-					'success' => false,
-					'data' => array(
-						'type' => 'message',
-						'text' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
-					),
-				);
-			}
-		} else {
-			// Store the selected caps.
-			$new_caps = array_map( 'absint', $data );
-
-			// Check if the new caps selection is different.
-			if ( VAA_API::array_equal( $db_view, $new_caps ) ) {
-				$success = array(
-					'success' => false,
-					'data' => array(
-						'type' => 'message',
-						'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
-					),
-				);
-			} else {
-				$this->store->set_view( $data, $type, true );
-				$success = true;
-			}
-		}
-		return $success;
-	}
-
-	/**
 	 * Check if the provided data is the same as the current view.
 	 *
 	 * @since   1.7
@@ -380,7 +317,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Get the available view types.
+	 * Get the available view type keys.
 	 *
 	 * @since   1.7
 	 * @access  public
@@ -390,23 +327,35 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		static $view_types;
 		if ( ! is_null( $view_types ) ) return $view_types;
 
+		$view_types = array_keys( (array) view_admin_as()->get_view_types() );
+		$view_types[] = 'visitor';
+
 		/**
 		 * Add basic view types for automated use in JS and through VAA.
 		 *
 		 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key).
-		 * - Menu items require the rel attribute for the view data to be send (string or numeric).
 		 * - Menu items require the href attribute (the node needs to be an <a> element).
-		 * @see VAA_API::get_vaa_action_link()
-		 * @see VAA_View_Admin_As_Admin_Bar::do_view_title()
+		 * @see \VAA_View_Admin_As_Form::do_view_title()
+		 *
+		 * @deprecated  1.8
 		 *
 		 * @since  1.6.2
 		 * @param  array  $array  Empty array.
 		 * @return array  An array of strings (view types).
 		 */
-		$view_types = array_unique( array_merge(
-			array_filter( apply_filters( 'view_admin_as_view_types', array() ), 'is_string' ),
-			array( 'user', 'role', 'caps', 'visitor' )
-		) );
+		$dep_view_types = apply_filters( 'view_admin_as_view_types', array() );
+		if ( $dep_view_types ) {
+
+			/** @see https://developer.wordpress.org/reference/functions/apply_filters_deprecated/ */
+			if ( function_exists( '_deprecated_hook' ) ) {
+				_deprecated_hook( 'view_admin_as_view_types', 1.8, 'view_admin_as()->register_view_type()' );
+			}
+
+			$view_types = array_unique( array_merge(
+				array_filter( $dep_view_types, 'is_string' ),
+				$view_types
+			) );
+		}
 
 		return $view_types;
 	}
@@ -493,8 +442,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
-	 * @param   string   $user_login  (not used) String provided by the wp_login hook.
-	 * @param   WP_User  $user        User object provided by the wp_login hook.
+	 * @param   string    $user_login  (not used) String provided by the wp_login hook.
+	 * @param   \WP_User  $user        User object provided by the wp_login hook.
 	 * @return  bool
 	 */
 	public function reset_view( $user_login = null, $user = null ) {
@@ -531,8 +480,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
-	 * @param   string   $user_login  (not used) String provided by the wp_login hook.
-	 * @param   WP_User  $user        User object provided by the wp_login hook.
+	 * @param   string    $user_login  (not used) String provided by the wp_login hook.
+	 * @param   \WP_User  $user        User object provided by the wp_login hook.
 	 * @return  bool
 	 */
 	public function cleanup_views( $user_login = null, $user = null ) {
@@ -573,8 +522,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
-	 * @param   string   $user_login  (not used) String provided by the wp_login hook.
-	 * @param   WP_User  $user        User object provided by the wp_login hook.
+	 * @param   string    $user_login  (not used) String provided by the wp_login hook.
+	 * @param   \WP_User  $user        User object provided by the wp_login hook.
 	 * @return  bool
 	 */
 	public function reset_all_views( $user_login = null, $user = null ) {
@@ -671,72 +620,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	}
 
 	/**
-	 * Validate data for role view type.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @param   null   $null  Default return (invalid).
-	 * @param   mixed  $data  The view data.
-	 * @return  mixed
-	 */
-	public function validate_view_data_caps( $null, $data ) {
-		// Caps data must be an array
-		if ( is_array( $data ) ) {
-
-			// The data is an array, most likely from the database.
-			$data = array_map( 'absint', $data );
-			// Sort the new caps the same way we sort the existing caps.
-			ksort( $data );
-
-			// Only allow assigned capabilities if it isn't a super admin.
-			if ( ! VAA_API::is_super_admin() ) {
-				$data = array_intersect_key( $data, $this->store->get_caps() );
-			}
-
-			// @since  1.7.4  Forbidden capabilities.
-			unset( $data['do_not_allow'] );
-			unset( $data['vaa_do_not_allow'] );
-
-			return $data;
-		}
-		return $null;
-	}
-
-	/**
-	 * Validate data for role view type.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @param   null   $null  Default return (invalid).
-	 * @param   mixed  $data  The view data.
-	 * @return  mixed
-	 */
-	public function validate_view_data_role( $null, $data ) {
-		// Role data must be a string and exists in the loaded array of roles.
-		if ( is_string( $data ) && array_key_exists( $data, $this->store->get_roles() ) ) {
-			return $data;
-		}
-		return $null;
-	}
-
-	/**
-	 * Validate data for user view type.
-	 *
-	 * @since   1.7
-	 * @access  public
-	 * @param   null   $null  Default return (invalid).
-	 * @param   mixed  $data  The view data.
-	 * @return  mixed
-	 */
-	public function validate_view_data_user( $null, $data ) {
-		// User data must be a number and exists in the loaded array of user id's.
-		if ( is_numeric( $data ) && array_key_exists( $data, $this->store->get_users() ) ) {
-			return $data;
-		}
-		return $null;
-	}
-
-	/**
 	 * Main Instance.
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
@@ -744,8 +627,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Controller
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Controller  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

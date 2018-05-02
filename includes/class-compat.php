@@ -16,8 +16,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.6.1
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 {
@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Compat
+	 * @var    \VAA_View_Admin_As_Compat
 	 */
 	private static $_instance = null;
 
@@ -36,7 +36,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -53,7 +53,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function init() {
 
-		add_action( 'vaa_view_admin_as_init', array( $this, 'init_after' ) );
+		$this->add_action( 'vaa_view_admin_as_init', array( $this, 'init_after' ) );
 
 		/**
 		 * Add our caps to the members plugin.
@@ -66,32 +66,32 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		 *
 		 * @since  1.6
 		 */
-		add_filter( 'members_get_capabilities', array( $this, 'get_vaa_capabilities' ) );
-		add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
+		$this->add_filter( 'members_get_capabilities', array( $this, 'get_vaa_capabilities' ) );
+		$this->add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
 
 		/**
 		 * Add our caps to the User Role Editor plugin (URE).
 		 * @since  1.6.4
 		 */
-		add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
-		add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
+		$this->add_filter( 'ure_capabilities_groups_tree', array( $this, 'filter_ure_capabilities_groups_tree' ) );
+		$this->add_filter( 'ure_custom_capability_groups', array( $this, 'filter_ure_custom_capability_groups' ), 10, 2 );
 
 		/**
-		 * Get caps from other plugins.
+		 * Get all capabilities.
 		 * @since  1.5
 		 */
-		add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
+		$this->add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
 
 		/**
 		 * WP Admin UI Customize 1.5.11+.
 		 * @since  1.7.4
 		 */
 		// wauc_admin_bar_default_load
-		add_filter( 'wauc_admin_bar_menu_add_nodes', array( $this, 'filter_wauc_admin_bar_menu_add_nodes' ), 10, 2 );
-		add_filter( 'wauc_admin_bar_filter_load', array( $this, 'filter_wauc_admin_bar_filter_load' ) );
-		add_filter( 'wauc_admin_bar_menu_widget_no_submenu', array( $this, 'filter_wauc_admin_bar_menu_widget_no_submenu' ) );
-		add_filter( 'wauc_admin_bar_menu_widget_title_readonly_vaa', '__return_true' );
-		add_filter( 'wauc_admin_bar_menu_widget_disable_target_vaa', '__return_true' );
+		$this->add_filter( 'wauc_admin_bar_menu_add_nodes', array( $this, 'filter_wauc_admin_bar_menu_add_nodes' ), 10, 2 );
+		$this->add_filter( 'wauc_admin_bar_filter_load', array( $this, 'filter_wauc_admin_bar_filter_load' ) );
+		$this->add_filter( 'wauc_admin_bar_menu_widget_no_submenu', array( $this, 'filter_wauc_admin_bar_menu_widget_no_submenu' ) );
+		$this->add_filter( 'wauc_admin_bar_menu_widget_title_readonly_vaa', '__return_true' );
+		$this->add_filter( 'wauc_admin_bar_menu_widget_disable_target_vaa', '__return_true' );
 
 	}
 
@@ -109,7 +109,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		     (int) $this->store->get_curUser()->ID === (int) $this->store->get_selectedUser()->ID
 		) {
 			// Only apply the filter if the current user is modified.
-			add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
+			$this->add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
 		}
 	}
 
@@ -118,11 +118,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
+	 * @see     \VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   array   $caps  The capabilities.
 	 * @param   bool[]  $args  Pass arguments to get only certain capabilities.
-	 * @return  array
+	 * @return  array   Both key and values are the capabilities.
 	 */
 	public function get_capabilities( $caps = array(), $args = array() ) {
 
@@ -137,14 +137,24 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		}
 
 		if ( $args['wp'] ) {
-			$caps = array_merge( $this->get_wordpress_capabilities(), $caps );
+			$caps = $this->get_wordpress_capabilities( $caps );
 		}
 
 		if ( $args['plugins'] ) {
-			$caps = array_merge( $this->get_plugin_capabilities(), $caps );
+			$caps = $this->get_plugin_capabilities( $caps );
 		}
 
-		return $caps;
+		// @since  1.8  Make sure both keys and values are capabilities.
+		$all_caps = array();
+		foreach ( $caps as $cap_key => $cap ) {
+			if ( is_string( $cap ) && ! is_numeric( $cap ) ) {
+				$all_caps[ $cap ] = $cap;
+			} else {
+				$all_caps[ $cap_key ] = $cap_key;
+			}
+		}
+
+		return $all_caps;
 	}
 
 	/**
@@ -153,7 +163,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.7.3  Renamed from add_capabilities().
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
+	 * @see     \VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   array  $caps  The capabilities.
 	 * @return  array
@@ -329,25 +339,20 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		} // End if().
 
 		// @since  1.7.4  Yoast SEO 5.5+  Load integration on front end.
-		if ( ! is_admin() && VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Integration', 'register_hooks' ) ) ) {
+		if ( ! is_admin() ) {
 			/**
-			 * Make sure WPSEO_Options::$backfill is instantiated.
-			 * @link  https://github.com/Yoast/wordpress-seo/pull/9285
-			 * @since Yoast SEO 7.1+
-			 * @since 1.7.6.1
+			 * @since  1.8  Yoast SEO - Check for API function.
+			 * @link   https://github.com/Yoast/wordpress-seo/pull/9365
 			 */
-			if ( VAA_API::exists_callable( array( 'WPSEO_Options', 'get_instance' ) ) ) {
-				WPSEO_Options::get_instance();
-
-				/**
-				 * Registers the capabilities in the `members_get_capabilities` filter.
-				 * @since Yoast SEO 5.8+
-				 * @link https://github.com/Yoast/wordpress-seo/pull/7937
-				 */
-				if ( VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Factory', 'get' ), 'debug' ) ) {
-					$wpseo = new WPSEO_Capability_Manager_Integration( WPSEO_Capability_Manager_Factory::get() );
-					$wpseo->register_hooks();
-				}
+			if ( function_exists( 'wpseo_get_capabilities' ) ) {
+				$caps = array_merge( (array) wpseo_get_capabilities(), $caps );
+			} elseif ( defined( 'WPSEO_VERSION' ) ) {
+				$yoast_seo_caps = array(
+					'wpseo_bulk_edit',
+					'wpseo_edit_advanced_metadata',
+					'wpseo_manage_options',
+				);
+				$caps = array_merge( $yoast_seo_caps, $caps );
 			}
 		}
 
@@ -372,7 +377,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6    Moved to this class from main class.
 	 * @since   1.6.2  Check for all provided capabilities.
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
+	 * @see     \VAA_View_Admin_As_Compat::init()
 	 *
 	 * @param   bool   $bool  Boolean provided by the pods_is_admin hook (not used).
 	 * @param   array  $caps  String or Array provided by the pods_is_admin hook.
@@ -396,7 +401,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
+	 * @see     \VAA_View_Admin_As_Compat::init()
 	 */
 	public function action_members_register_cap_group() {
 		if ( ! function_exists( 'members_register_cap_group' ) ) {
@@ -418,8 +423,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
-	 * @see     URE_Capabilities_Groups_Manager::get_groups_tree()
+	 * @see     \VAA_View_Admin_As_Compat::init()
+	 * @see     \URE_Capabilities_Groups_Manager::get_groups_tree()
 	 * @param   array  $groups  Current groups
 	 * @return  array
 	 */
@@ -438,8 +443,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Compat::init()
-	 * @see     URE_Capabilities_Groups_Manager::get_cap_groups()
+	 * @see     \VAA_View_Admin_As_Compat::init()
+	 * @see     \URE_Capabilities_Groups_Manager::get_cap_groups()
 	 * @param   array   $groups  Current capability groups
 	 * @param   string  $cap_id  Capability identifier
 	 * @return  array
@@ -461,7 +466,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.7.4
 	 * @access  public
-	 * @see     WP_Admin_UI_Customize::admin_bar_menu()
+	 * @see     \WP_Admin_UI_Customize::admin_bar_menu()
 	 * @param   array  $wauc_nodes
 	 * @param   array  $all_nodes
 	 * @return  array
@@ -520,7 +525,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * Remove our nodes from the WAUC admin bar editor.
 	 * @since   1.7.4
 	 * @access  public
-	 * @see     WP_Admin_UI_Customize::admin_bar_filter_load()
+	 * @see     \WP_Admin_UI_Customize::admin_bar_filter_load()
 	 * @param   array  $all_nodes
 	 * @return  array
 	 */
@@ -549,7 +554,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	/**
 	 * Remove submenu options for WAUC.
 	 * @since   1.7.4
-	 * @see     WP_Admin_UI_Customize::admin_bar_menu_widget()
+	 * @see     \WP_Admin_UI_Customize::admin_bar_menu_widget()
 	 * @param   array  $no_submenu
 	 * @return  array
 	 */
@@ -566,8 +571,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Compat
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Compat  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

@@ -16,35 +16,19 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.5
- * @version 1.7.5
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Type Extends class
  */
-final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
+class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 {
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since  1.7.5
 	 * @static
-	 * @var    VAA_View_Admin_As_Languages
+	 * @var    \VAA_View_Admin_As_Languages
 	 */
 	private static $_instance = null;
-
-	/**
-	 * The available languages.
-	 *
-	 * @since  1.7.5
-	 * @var    array
-	 */
-	private $languages;
-
-	/**
-	 * Selected language locale.
-	 *
-	 * @since  1.7.5
-	 * @var    string
-	 */
-	private $selectedLanguage;
 
 	/**
 	 * Option key.
@@ -58,54 +42,41 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 * @since  1.7.5
 	 * @var    string
 	 */
-	private $viewKey = 'locale';
+	protected $type = 'locale';
+
+	/**
+	 * The icon for this view type.
+	 *
+	 * @since  1.8
+	 * @var    string
+	 */
+	protected $icon = 'dashicons-translation';
 
 	/**
 	 * Populate the instance.
 	 *
 	 * @since   1.7.5
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
-		if ( ! $this->vaa->is_enabled() ) {
+		if ( ! $this->has_access() ) {
 			return;
 		}
 
-		$this->init();
-	}
+		$this->priorities = array(
+			'toolbar'            => 9,
+			'view_title'         => 90,
+			'validate_view_data' => 10,
+			'update_view'        => 10,
+			'do_view'            => 10,
+		);
 
-	/**
-	 * Setup module and hooks.
-	 *
-	 * @since   1.7.5
-	 * @access  private
-	 */
-	private function init() {
-
-		$this->vaa->register_module( array(
-			'id'       => $this->viewKey,
-			'instance' => self::$_instance,
-		) );
-
-		$this->store_languages();
-
-		if ( ! $this->get_languages() ) {
-			// Only one language installed.
-			return;
-		}
-
-		add_filter( 'view_admin_as_view_types', array( $this, 'add_view_type' ) );
-
-		add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 3, 2 );
-
-		add_filter( 'view_admin_as_validate_view_data_' . $this->viewKey, array( $this, 'validate_view_data' ), 10, 2 );
-		add_filter( 'view_admin_as_update_view_' . $this->viewKey, array( $this, 'update_view' ), 10, 3 );
-
-		add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
+		$this->label          = __( 'Languages', VIEW_ADMIN_AS_DOMAIN );
+		$this->label_singular = __( 'Language', VIEW_ADMIN_AS_DOMAIN );
 	}
 
 	/**
@@ -116,17 +87,13 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 */
 	public function do_view() {
 
-		if ( $this->get_languages( $this->store->get_view( $this->viewKey ) ) ) {
+		if ( parent::do_view() ) {
 
-			$this->selectedLanguage = $this->store->get_view( $this->viewKey );
-
-			add_filter( 'vaa_admin_bar_view_titles', array( $this, 'vaa_admin_bar_view_titles' ) );
-
-			add_filter( 'locale', array( $this, 'filter_locale' ) );
-			add_action( 'after_setup_theme', array( $this, 'action_switch_to_locale' ), 0 );
+			$this->add_filter( 'locale', array( $this, 'filter_locale' ) );
+			$this->add_action( 'after_setup_theme', array( $this, 'action_switch_to_locale' ), 0 );
 
 			// Overwrite user setting for freeze locale.
-			add_filter( 'view_admin_as_freeze_locale', '__return_false', 99 );
+			$this->add_filter( 'view_admin_as_freeze_locale', '__return_false', 99 );
 		}
 	}
 
@@ -139,7 +106,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 * @return  string
 	 */
 	public function filter_locale() {
-		return $this->selectedLanguage;
+		return $this->selected;
 	}
 
 	/**
@@ -150,20 +117,8 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 */
 	public function action_switch_to_locale() {
 		if ( function_exists( 'switch_to_locale' ) ) {
-			switch_to_locale( $this->selectedLanguage );
+			switch_to_locale( $this->selected );
 		}
-	}
-
-	/**
-	 * Add view type.
-	 *
-	 * @since   1.7.5
-	 * @param   string[]  $types  Existing view types.
-	 * @return  string[]
-	 */
-	public function add_view_type( $types ) {
-		$types[] = $this->viewKey;
-		return $types;
 	}
 
 	/**
@@ -175,48 +130,49 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function validate_view_data( $null, $data = null ) {
-		if ( is_string( $data ) && $this->get_languages( $data ) ) {
+		if ( is_string( $data ) && $this->get_data( $data ) ) {
 			return $data;
 		}
 		return $null;
 	}
 
 	/**
-	 * View update handler (Ajax probably), called from main handler.
-	 *
-	 * @since   1.7.5   Renamed from `ajax_handler`
-	 * @access  public
-	 * @param   null    $null    Null.
-	 * @param   array   $data    The ajax data for this module.
-	 * @param   string  $type    The view type.
-	 * @return  bool
-	 */
-	public function update_view( $null, $data, $type ) {
-
-		if ( ! $this->is_valid_ajax() || $type !== $this->viewKey ) {
-			return $null;
-		}
-
-		if ( is_string( $data ) && $this->get_languages( $data ) ) {
-			$this->store->set_view( $data, $this->viewKey, true );
-			return true;
-		}
-		return false;
-	}
-
-	/**
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.7.5
+	 * @since   1.8    Renamed from vaa_admin_bar_view_titles().
 	 * @access  public
-	 * @param   array  $title  The current title(s).
+	 * @param   array  $titles  The current title(s).
 	 * @return  array
 	 */
-	public function vaa_admin_bar_view_titles( $title = array() ) {
-		$language = $this->get_languages( $this->selectedLanguage );
+	public function view_title( $titles = array() ) {
+		$language = $this->get_data( $this->selected );
 		if ( $language ) {
-			$title[] = $language;
+			$titles[ /* No need for view type key. */ ] = $this->get_view_title( $this->selected );
 		}
+		return $titles;
+	}
+
+	/**
+	 * Get the view title.
+	 *
+	 * @since   1.8
+	 * @param   string  $locale  The locale.
+	 * @return  string
+	 */
+	public function get_view_title( $locale ) {
+		$title = $this->get_data( $locale );
+
+		/**
+		 * Change the display title for language nodes.
+		 *
+		 * @since  1.8
+		 * @param  string  $title   Language (native).
+		 * @param  string  $locale  The locale.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $locale );
+
 		return $title;
 	}
 
@@ -246,10 +202,10 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-translation' ) . __( 'Languages', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
-				'class'    => 'vaa-has-icon ab-vaa-title' . ( ( $this->store->get_view( $this->viewKey ) ) ? ' current' : '' ),
+				'class'    => 'vaa-has-icon ab-vaa-title' . ( ( $this->store->get_view( $this->type ) ) ? ' current' : '' ),
 				'tabindex' => '0',
 			),
 		) );
@@ -262,8 +218,6 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			),
 		) );
 
-		$parent = $root . '-languages';
-
 		/**
 		 * Add items at the beginning of the rua group.
 		 *
@@ -275,34 +229,7 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 		do_action( 'vaa_admin_bar_languages_before', $admin_bar, $root );
 
 		// Add the levels.
-		foreach ( $this->get_languages() as $locale => $language ) {
-			$view_value = $locale;
-			$view_data  = array( $this->viewKey => $view_value );
-			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
-			$class = 'vaa-' . $this->viewKey . '-item';
-			$title = ( $locale !== $language ) ? '<code>' . $locale . '</code> | ' . $language : $locale;
-			$title = VAA_View_Admin_As_Form::do_view_title( $title, $this->viewKey, $view_value );
-			// Check if this level is the current view.
-			if ( $this->store->get_view( $this->viewKey ) ) {
-				if ( VAA_API::is_current_view( $view_value, $this->viewKey ) ) {
-					$class .= ' current';
-					$href = false;
-				}
-			}
-			//$parent = $root;
-			$admin_bar->add_node( array(
-				'id'        => $root . '-' . $this->viewKey . '-' . $view_value,
-				'parent'    => $parent,
-				'title'     => $title,
-				'href'      => $href,
-				'meta'      => array(
-					// Translators: %s stands for the language name.
-					'title'     => sprintf( __( 'View in %s', VIEW_ADMIN_AS_DOMAIN ), $language ),
-					'class'     => $class,
-					'rel'       => $view_value,
-				),
-			) );
-		} // End foreach().
+		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-language-items.php';
 
 		/**
 		 * Add items at the end of the rua group.
@@ -319,13 +246,14 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 * Store the available languages.
 	 *
 	 * @since   1.7.5
-	 * @access  private
+	 * @since   1.8    Renamed from store_languages().
+	 * @access  public
 	 */
-	private function store_languages() {
+	public function store_data() {
 
 		$installed = get_available_languages();
 
-		if ( 1 === count( $installed ) ) {
+		if ( ! $installed || ( 1 === count( $installed ) && 'en_US' === reset( $installed ) ) ) {
 			return;
 		}
 
@@ -337,20 +265,22 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 			$languages = $this->get_wp_languages( $languages );
 		}
 
-		$this->languages['en_US'] = 'English';
+		$data_languages['en_US'] = 'English';
 
 		// Same order as WordPress.
 		sort( $installed );
 
 		foreach ( $installed as $locale ) {
 			if ( array_key_exists( $locale, $languages ) ) {
-				$this->languages[ $locale ] = $languages[ $locale ];
+				$data_languages[ $locale ] = $languages[ $locale ];
 			}
 		}
 
 		if ( $languages !== $existing ) {
-			$this->store->update_optionData( $this->languages, $this->optionKey, true );
+			$this->store->update_optionData( $data_languages, $this->optionKey, true );
 		}
+
+		$this->set_data( $data_languages );
 	}
 
 	/**
@@ -388,21 +318,35 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	}
 
 	/**
+	 * Set the view type data.
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @param   mixed   $val
+	 * @param   string  $key     (optional) The data key.
+	 * @param   bool    $append  (optional) Append if it doesn't exist?
+	 */
+	public function set_data( $val, $key = null, $append = true ) {
+		$this->store->set_languages( $val, $key, $append );
+	}
+
+	/**
 	 * Get a language by locale.
 	 *
 	 * @since   1.7.5
+	 * @since   1.8    Renamed from get_languages().
 	 * @access  public
 	 * @param   string  $key  (optional) The language locale.
 	 * @return  mixed
 	 */
-	public function get_languages( $key = '-1' ) {
+	public function get_data( $key = '-1' ) {
 		if ( ! is_string( $key ) ) {
 			return false;
 		}
 		if ( '-1' === $key ) {
 			$key = null;
 		}
-		return VAA_API::get_array_data( $this->languages, $key );
+		return $this->store->get_languages( $key );
 	}
 
 	/**
@@ -413,8 +357,8 @@ final class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Base
 	 * @since   1.7.5
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Languages
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Languages  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

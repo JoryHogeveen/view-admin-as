@@ -17,11 +17,20 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @since   1.7  Renamed from VAA_View_Admin_As_Admin
- * @version 1.7.6.1
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 {
+	/**
+	 * The single instance of the class.
+	 *
+	 * @since  1.6
+	 * @static
+	 * @var    \VAA_View_Admin_As_UI
+	 */
+	private static $_instance = null;
+
 	/**
 	 * Plugin links.
 	 *
@@ -31,39 +40,27 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	private $links = array();
 
 	/**
-	 * The single instance of the class.
-	 *
-	 * @since  1.6
-	 * @static
-	 * @var    VAA_View_Admin_As_UI
-	 */
-	private static $_instance = null;
-
-	/**
 	 * Construct function.
 	 *
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 		parent::__construct( $vaa );
 
-		if ( 'browse' === $this->store->get_userSettings( 'view_mode' ) ) {
-			add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
-		}
-		add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
-		add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
-		add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
+		$this->add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
+		$this->add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );
+		$this->add_filter( 'removable_query_args', array( $this, 'filter_removable_query_args' ) );
 
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		$this->add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		$this->add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		// @since  1.7.6.1  Add scripts to the customizer container hook.
-		add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		$this->add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
-		add_filter( 'wp_die_handler', array( $this, 'die_handler' ) );
+		$this->add_filter( 'wp_die_handler', array( $this, 'filter_wp_die_handler' ) );
 
 		/**
 		 * Compat with front and WP version lower than 4.2.0.
@@ -71,46 +68,8 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		 * @link   https://developer.wordpress.org/reference/functions/wp_admin_canonical_url/
 		 */
 		if ( ! is_admin() || ! VAA_API::validate_wp_version( '4.2' ) ) {
-			add_action( 'wp_head', array( $this, 'remove_query_args' ) );
+			$this->add_action( 'wp_head', array( $this, 'remove_query_args' ) );
 		}
-	}
-
-	/**
-	 * Filter function to add view-as links on user rows in users.php.
-	 *
-	 * @since   1.6
-	 * @since   1.6.3   Check whether to place link + reset link for current user.
-	 * @access  public
-	 * @param   array     $actions  The existing actions.
-	 * @param   \WP_User  $user     The user object.
-	 * @return  array
-	 */
-	public function filter_user_row_actions( $actions, $user ) {
-
-		if ( is_network_admin() ) {
-			$link = network_admin_url();
-		} else {
-			$link = admin_url();
-		}
-
-		if ( $user->ID === $this->store->get_curUser()->ID ) {
-			// Add reset link if it is the current user and a view is selected.
-			if ( $this->store->get_view() ) {
-				$link = VAA_API::get_reset_link( $link );
-			} else {
-				$link = false;
-			}
-		}
-		elseif ( $this->store->get_users( $user->ID ) ) {
-			$link = VAA_API::get_vaa_action_link( array( 'user' => $user->ID ), $this->store->get_nonce( true ), $link );
-		} else {
-			$link = false;
-		}
-
-		if ( $link ) {
-			$actions['vaa_view'] = '<a href="' . $link . '">' . __( 'View as', VIEW_ADMIN_AS_DOMAIN ) . '</a>';
-		}
-		return $actions;
 	}
 
 	/**
@@ -131,15 +90,24 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * Show row meta on the plugin screen.
 	 *
 	 * @since   1.6.1
-	 * @see     WP_Plugins_List_Table::single_row()
+	 * @see     \WP_Plugins_List_Table::single_row()
 	 * @param   array[]  $links  The existing links.
 	 * @param   string   $file   The plugin file.
 	 * @return  array
 	 */
 	public function action_plugin_row_meta( $links, $file ) {
 		if ( VIEW_ADMIN_AS_BASENAME === $file ) {
+			$icon_attr = array(
+				'style' => array(
+					'font-size: inherit;',
+					'line-height: inherit;',
+					'display: inline;',
+					'vertical-align: text-top;',
+				),
+			);
 			foreach ( $this->get_links() as $id => $link ) {
-				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . esc_html( $link['title'] ) . '</a>';
+				$title = VAA_View_Admin_As_Form::do_icon( $link['icon'], $icon_attr ) . ' ' . esc_html( $link['title'] );
+				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . $title . '</a>';
 			}
 		}
 		return $links;
@@ -292,13 +260,13 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		wp_enqueue_style(
 			'vaa_view_admin_as_style',
 			VIEW_ADMIN_AS_URL . 'assets/css/view-admin-as' . $suffix . '.css',
-			array(),
+			array( 'admin-bar' ),
 			$version
 		);
 		wp_enqueue_script(
 			'vaa_view_admin_as_script',
 			VIEW_ADMIN_AS_URL . 'assets/js/view-admin-as' . $suffix . '.js',
-			array( 'jquery' ),
+			array( 'jquery', 'admin-bar' ),
 			$version,
 			true // load in footer.
 		);
@@ -342,13 +310,14 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @since   1.5.1   Check for SSL (Moved to VAA_API).
 	 * @since   1.6     More options and better description.
 	 * @since   1.7     Moved to this class from main class.
+	 * @since   1.8     Renamed from die_handler().
 	 * @access  public
 	 * @see     wp_die()
 	 *
 	 * @param   callable  $callback  WP die callback.
 	 * @return  callable  $callback  WP die callback.
 	 */
-	public function die_handler( $callback ) {
+	public function filter_wp_die_handler( $callback ) {
 
 		// Only do something if a view is selected.
 		if ( ! $this->store->get_view() ) {
@@ -416,8 +385,8 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_UI
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_UI  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.5
  * @since   1.7.3  Renamed from VAA_View_Admin_As_Class_Base
- * @version 1.7.4
+ * @version 1.8
  */
 abstract class VAA_View_Admin_As_Base
 {
@@ -26,7 +26,7 @@ abstract class VAA_View_Admin_As_Base
 	 * View Admin As object.
 	 *
 	 * @since  1.5
-	 * @var    VAA_View_Admin_As
+	 * @var    \VAA_View_Admin_As
 	 */
 	protected $vaa = null;
 
@@ -34,7 +34,7 @@ abstract class VAA_View_Admin_As_Base
 	 * View Admin As store object.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_Store
+	 * @var    \VAA_View_Admin_As_Store
 	 */
 	protected $store = null;
 
@@ -53,7 +53,7 @@ abstract class VAA_View_Admin_As_Base
 	 * @since   1.5.3
 	 * @since   1.6    $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
 	 */
 	protected function __construct( $vaa = null ) {
 		// Load resources.
@@ -67,7 +67,7 @@ abstract class VAA_View_Admin_As_Base
 	 * @since   1.6    $vaa param.
 	 * @access  public
 	 * @final
-	 * @param   VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  (optional) Pass VAA object.
 	 * @return  void
 	 */
 	final public function load_vaa( $vaa = null ) {
@@ -137,6 +137,28 @@ abstract class VAA_View_Admin_As_Base
 			$caps[ $cap ] = $cap;
 		}
 		return $caps;
+	}
+
+	/**
+	 * Add a new action to this plugin hooks registry.
+	 *
+	 * @since   1.8
+	 * @see     \VAA_View_Admin_As_Hooks::add_action()
+	 * @inheritdoc
+	 */
+	public function add_action( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
+		view_admin_as()->hooks()->add_action( $hook, $callback, $priority, $accepted_args );
+	}
+
+	/**
+	 * Add a new filter to this plugin hooks registry.
+	 *
+	 * @since   1.8
+	 * @see     \VAA_View_Admin_As_Hooks::add_filter()
+	 * @inheritdoc
+	 */
+	public function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
+		view_admin_as()->hooks()->add_filter( $hook, $callback, $priority, $accepted_args );
 	}
 
 	/**

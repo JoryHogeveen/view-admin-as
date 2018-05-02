@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6
  * @version 1.7.4
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 {
@@ -26,7 +26,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Update
+	 * @var    \VAA_View_Admin_As_Update
 	 */
 	private static $_instance = null;
 
@@ -45,7 +45,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param.
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -62,7 +62,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 */
 	public function maybe_db_update() {
 		$db_version = strtolower( $this->store->get_optionData( 'db_version' ) );
-		if ( empty( $db_version ) ) {
+		if ( ! $db_version ) {
 			self::$fresh_install = true;
 		}
 		if ( self::$fresh_install || version_compare( $db_version, $this->store->get_dbVersion(), '<' ) ) {
@@ -85,19 +85,23 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 
 		$current_db_version = strtolower( $this->store->get_optionData( 'db_version' ) );
 
-		// Clear the user views for update to 1.5+.
-		if ( version_compare( $current_db_version, '1.5', '<' ) ) {
-			/**
-			 * Reset user meta for all users.
-			 * @since  1.6.2  Use `all` param from delete_user_meta().
-			 */
-			$this->store->delete_user_meta( 'all', false, true ); // true for reset_only.
-			// Reset currently loaded data.
-			$this->store->set_userMeta( false );
-		}
+		// No need to run update script if it's a clean installation.
+		if ( $current_db_version ) {
 
-		if ( version_compare( $current_db_version, '1.7.2', '<' ) ) {
-			$this->update_1_7_2();
+			// Clear the user views for update to 1.5+.
+			if ( version_compare( $current_db_version, '1.5', '<' ) ) {
+				/**
+				 * Reset user meta for all users.
+				 * @since  1.6.2  Use `all` param from delete_user_meta().
+				 */
+				$this->store->delete_user_meta( 'all', false, true ); // true for reset_only.
+				// Reset currently loaded data.
+				$this->store->set_userMeta( false );
+			}
+
+			if ( version_compare( $current_db_version, '1.7.2', '<' ) ) {
+				$this->update_1_7_2();
+			}
 		}
 
 		// Update version, append if needed.
@@ -114,27 +118,26 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 * Changes yes/no options to boolean types.
 	 *
 	 * @since   1.7.2
-	 * @global  \wpdb  $wpdb
 	 * @access  private
 	 * @return  void
 	 */
 	private function update_1_7_2() {
-		global $wpdb;
 
-		$sql = 'SELECT * FROM ' . $wpdb->usermeta . ' WHERE meta_key = %s';
-		// @codingStandardsIgnoreLine >> $wpdb->prepare(), check returning false error.
-		$results = (array) $wpdb->get_results( $wpdb->prepare( $sql, 'vaa-view-admin-as' ) );
+		$meta = $this->store->get_all_user_meta();
 
-		foreach ( $results as $meta ) {
-			if ( ! empty( $meta->meta_value ) ) {
-				$value = maybe_unserialize( $meta->meta_value );
-				if ( ! empty( $value['settings'] ) ) {
+		foreach ( $meta as $user_id => $values ) {
+			foreach ( $values as $column_id => $value ) {
+				if ( ! empty( $value['settings'] ) && is_array( $value['settings'] ) ) {
 					foreach ( $value['settings'] as $key => $val ) {
+						if ( is_bool( $val ) ) {
+							// Update already done.
+							continue;
+						}
 						if ( in_array( $key, array( 'force_group_users', 'freeze_locale', 'hide_front' ), true ) ) {
-							$value['settings'][ $key ] = ( 'yes' === $val ) ? true : false;
+							$value['settings'][ $key ] = ( 'yes' === $val );
 						}
 					}
-					update_user_meta( $meta->user_id, 'vaa-view-admin-as', $value );
+					$this->store->update_other_user_meta( $value, $user_id, $column_id );
 				}
 			}
 		}
@@ -151,8 +154,8 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Update
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Update  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

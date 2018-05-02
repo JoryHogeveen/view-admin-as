@@ -3,7 +3,7 @@
  * Add user setting items.
  *
  * @since    1.7.2
- * @version  1.7.6
+ * @version  1.8
  *
  * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string         $root       The current root item.
@@ -15,7 +15,6 @@
  * - disable_super_admin
  * - hide_front
  * - freeze_locale
- * - force_group_users
  */
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
@@ -115,8 +114,11 @@ if ( isset( $this ) &&
 	 * Disable super admin checks while switched.
 	 *
 	 * @since   1.7.3
+	 * @since   1.8    Don't use VAA_API since users that are super admins but don't have full access could
+	 *                 still want to use this setting.
+	 *                 Also check if the installation is a network.
 	 */
-	if ( VAA_API::is_super_admin() ) {
+	if ( is_multisite() && is_super_admin( view_admin_as()->store()->get_curUser()->ID ) ) {
 		$admin_bar->add_node(
 			array(
 				'id'     => $root . '-disable-super-admin',
@@ -240,42 +242,6 @@ if ( isset( $this ) &&
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'auto-height',
-				),
-			)
-		);
-	}
-
-	/**
-	 * force_group_users setting.
-	 *
-	 * @since   1.5.2
-	 */
-	if ( empty( $this->groupUserRoles ) ||
-	     15 >= ( count( $this->store->get_users() ) + count( $this->store->get_roles() ) )
-	) {
-		$admin_bar->add_node(
-			array(
-				'id'     => $root . '-force-group-users',
-				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_checkbox(
-					array(
-						'name'        => $root . '-force-group-users',
-						'value'       => $this->store->get_userSettings( 'force_group_users' ),
-						'compare'     => true,
-						'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
-						'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
-						'help'        => true,
-						'auto_js' => array(
-							'setting' => 'user_setting',
-							'key'     => 'force_group_users',
-							'refresh' => true,
-						),
-						'auto_showhide' => true,
-					)
-				),
-				'href'   => false,
-				'meta'   => array(
-					'class'    => 'auto-height',
 				),
 			)
 		);

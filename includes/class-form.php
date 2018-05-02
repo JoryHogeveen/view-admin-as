@@ -1,6 +1,6 @@
 <?php
 /**
- * View Admin As - Form UI
+ * View Admin As - Form
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
@@ -11,12 +11,13 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 }
 
 /**
- * Form UI for View Admin As.
+ * Form elements for View Admin As.
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.7.6
+ * @since   1.8    Moved to the includes folder.
+ * @version 1.8
  */
 class VAA_View_Admin_As_Form
 {
@@ -29,21 +30,51 @@ class VAA_View_Admin_As_Form
 	 * @access  public
 	 * @static
 	 *
-	 * @param   string  $title  The title content.
-	 * @param   string  $type   The view type.
-	 * @param   string  $value  The view value.
-	 * @param   array   $attr   (optional) Array of other attributes.
-	 * @param   string  $elem   (optional) HTML element type.
+	 * @param   string                          $title  The title content.
+	 * @param   string|\VAA_View_Admin_As_Type  $type   The view type.
+	 * @param   string                          $value  The view value.
+	 * @param   array                           $attr   (optional) Array of other attributes.
+	 * @param   string                          $elem   (optional) HTML element type.
 	 * @return  string
 	 */
 	public static function do_view_title( $title, $type, $value, $attr = array(), $elem = 'span' ) {
 		$attr = (array) $attr;
 		$class = ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '';
 		$attr['class'] = 'vaa-view-data' . $class;
-		$attr['vaa-view-type'] = $type;
+		if ( $type instanceof VAA_View_Admin_As_Type ) {
+			$attr['vaa-view-type'] = $type->get_type();
+			$attr['vaa-view-type-label'] = $type->get_label_singular();
+		} else {
+			$attr['vaa-view-type'] = $type;
+		}
 		$attr['vaa-view-value'] = $value;
 		$attr = self::parse_to_html_attr( $attr );
 		return '<' . $elem . ' ' . $attr . '>' . $title . '</' . $elem . '>';
+	}
+
+	/**
+	 * Get multiple form elements in one call.
+	 * Note: Method calls are limited to one parameter!
+	 *
+	 * @since   1.8
+	 * @access  public
+	 * @static
+	 *
+	 * @param   array  $args  An array of key => value (form method first parameter).
+	 * @return  string
+	 */
+	public static function do_multiple( $args ) {
+		$return = array();
+		foreach ( $args as $key => $value ) {
+			$method = $key;
+			if ( is_callable( array( 'VAA_View_Admin_As_Form', $key ) ) ) {
+				$return[] = self::$method( $value );
+			} elseif ( is_callable( array( 'VAA_View_Admin_As_Form', 'do_' . $key ) ) ) {
+				$method = 'do_' . $key;
+				$return[] = self::$method( $value );
+			}
+		}
+		return implode( '', $return );
 	}
 
 	/**
@@ -77,6 +108,12 @@ class VAA_View_Admin_As_Form
 		$args['attr']['id'] = $id;
 		$args['attr']['name'] = $name;
 		$args['attr']['class'] = 'button' . $class;
+		if ( isset( $args['value'] ) ) {
+			if ( is_bool( $args['value'] ) ) {
+				$args['value'] = (int) $args['value'];
+			}
+			$args['attr']['value'] = (string) $args['value'];
+		};
 
 		$attr = $args['attr'];
 		if ( ! empty( $args['auto_js'] ) && empty( $args['auto_js']['event'] ) ) {

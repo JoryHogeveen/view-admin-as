@@ -3,7 +3,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1
- * @version 1.7.6.1
+ * @version 1.8
  * @licence GPL-2.0+
  * @link    https://github.com/JoryHogeveen/view-admin-as
  *
@@ -11,7 +11,7 @@
  * Plugin Name:       View Admin As
  * Plugin URI:        https://wordpress.org/plugins/view-admin-as/
  * Description:       View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set default screen settings for roles.
- * Version:           1.7.6.1
+ * Version:           1.8
  * Author:            Jory Hogeveen
  * Author URI:        https://www.keraweb.nl
  * Text Domain:       view-admin-as
@@ -44,8 +44,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as' ) ) {
 
-	define( 'VIEW_ADMIN_AS_VERSION',    '1.7.6.1' );
-	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.7.2' );
+	define( 'VIEW_ADMIN_AS_VERSION',    '1.8' );
+	define( 'VIEW_ADMIN_AS_DB_VERSION', '1.8' );
 	define( 'VIEW_ADMIN_AS_DOMAIN',     'view-admin-as' );
 	define( 'VIEW_ADMIN_AS_FILE',       __FILE__ );
 	define( 'VIEW_ADMIN_AS_BASENAME',   plugin_basename( VIEW_ADMIN_AS_FILE ) );
@@ -92,7 +92,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 	}
 
 	// Include main init class file.
-	require_once( VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php' );
+	require_once VIEW_ADMIN_AS_DIR . 'includes/class-vaa.php';
 
 	/**
 	 * Main instance of View Admin As.
@@ -100,7 +100,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 	 *
 	 * @since   1.4.1
 	 * @since   1.6.4   Changed to lowercase (style fix).
-	 * @return  VAA_View_Admin_As
+	 * @return  \VAA_View_Admin_As
 	 */
 	function view_admin_as() {
 		return VAA_View_Admin_As::get_instance();
@@ -120,7 +120,7 @@ if ( ! class_exists( 'VAA_View_Admin_As' ) && ! function_exists( 'view_admin_as'
 			// Translators: %s stands for the class name.
 			. ' <code>(' . sprintf( esc_html__( 'Class %s already exists', 'view-admin-as' ), 'VAA_View_Admin_As' ) . ')</code></p></div>';
 	}
-	require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	deactivate_plugins( plugin_basename( __FILE__ ) );
 
 } // End if().

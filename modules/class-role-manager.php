@@ -21,8 +21,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.6
- * @uses    VAA_View_Admin_As_Module Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 {
@@ -31,7 +31,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since  1.7
 	 * @static
-	 * @var    VAA_View_Admin_As_Role_Manager
+	 * @var    \VAA_View_Admin_As_Role_Manager
 	 */
 	private static $_instance = null;
 
@@ -74,7 +74,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
@@ -107,8 +107,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 		$this->init();
 
-		add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-		add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
+		$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+		$this->add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
 	}
 
 	/**
@@ -161,19 +161,19 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		if ( VAA_API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section.
-			add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
+			$this->add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
 		}
 
 		// Add adminbar menu items in role section.
 		if ( $this->is_enabled() ) {
 
 			// Show the admin bar node.
-			add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 6, 2 );
-			add_action( 'vaa_admin_bar_caps_manager_before', array( $this, 'admin_bar_menu_caps' ), 6, 2 );
+			$this->add_action( 'vaa_admin_bar_menu', array( $this, 'admin_bar_menu' ), 6, 2 );
+			$this->add_action( 'vaa_admin_bar_caps_manager_before', array( $this, 'admin_bar_menu_caps' ), 6, 2 );
 
 			// Add custom capabilities.
 			if ( $this->store->get_view( 'caps' ) ) {
-				add_filter( 'view_admin_as_get_capabilities', array( $this, 'filter_custom_view_capabilities' ), 11, 2 );
+				$this->add_filter( 'view_admin_as_get_capabilities', array( $this, 'filter_custom_view_capabilities' ), 11, 2 );
 			}
 		}
 	}
@@ -772,14 +772,50 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 		$root = $root . '-role-manager';
 
-		// Notice for capability editor location.
-		$admin_bar->add_node( array(
-			'id'     => $root . '-intro',
-			'parent' => $root,
-			// Translators: %s stands for "Capabilities".
-			'title'  => sprintf( __( 'You can add/edit roles under "%s"', VIEW_ADMIN_AS_DOMAIN ), __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN ) ),
-			'href'   => false,
-		) );
+		$view_type = view_admin_as()->get_view_types( 'caps' );
+		if ( $view_type instanceof VAA_View_Admin_As_Caps ) {
+			$view_type_label = $view_type->get_label();
+
+			// This module requires the capability view type to enable all it's features.
+			if ( ! $view_type->is_enabled() ) {
+				$admin_bar->add_node( array(
+					'id'     => $root . '-dependency',
+					'parent' => $root,
+					'title'  => VAA_View_Admin_As_Form::do_button( array(
+						'name'    => $root . 'dependency-caps',
+						'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-warning' )
+						             // Translators: %s stands for the translated view type label "Capabilities".
+						             . sprintf( __( 'Please enable the "%s" view type to add/edit roles', VIEW_ADMIN_AS_DOMAIN ), $view_type_label ),
+						'auto_js' => array(
+							'setting' => 'setting',
+							'key'     => 'view_types',
+							'values'  => array(
+								'caps' => array(
+									'values' => array(
+										'enabled' => array(),
+									),
+								),
+							),
+							'refresh' => true,
+						),
+						'value' => true,
+					) ),
+					'href'   => false,
+					'meta'   => array(
+						'class' => 'vaa-button-container',
+					),
+				) );
+			} else {
+				// Notice for capability editor location.
+				$admin_bar->add_node( array(
+					'id'     => $root . '-intro',
+					'parent' => $root,
+					// Translators: %s stands for the translated view type label "Capabilities".
+					'title'  => sprintf( __( 'You can add/edit roles under "%s"', VIEW_ADMIN_AS_DOMAIN ), $view_type_label ),
+					'href'   => false,
+				) );
+			}
+		}
 
 		$this->admin_bar_menu_bulk_actions( $admin_bar, $root );
 	}
@@ -795,7 +831,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7  Separated the tools from the main function.
 	 * @access  public
-	 * @see     VAA_View_Admin_As_Role_Manager::admin_bar_menu()
+	 * @see     \VAA_View_Admin_As_Role_Manager::admin_bar_menu()
 	 *
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item (vaa).
@@ -1552,8 +1588,8 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @since   1.5
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Role_Manager
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Role_Manager  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

@@ -11,7 +11,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 }
 
 if ( ! class_exists( 'WP_Admin_Bar' ) && file_exists( ABSPATH . WPINC . '/class-wp-admin-bar.php' ) ) {
-	require_once( ABSPATH . WPINC . '/class-wp-admin-bar.php' );
+	require_once ABSPATH . WPINC . '/class-wp-admin-bar.php';
 }
 
 if ( class_exists( 'WP_Admin_Bar' ) ) {
@@ -22,7 +22,7 @@ if ( class_exists( 'WP_Admin_Bar' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6
- * @version 1.7.6
+ * @version 1.8
  * @see     wp-includes/class-wp-admin-bar.php
  * @uses    \WP_Admin_Bar Extends class
  */
@@ -33,7 +33,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 *
 	 * @since  1.6
 	 * @static
-	 * @var    VAA_View_Admin_As_Toolbar
+	 * @var    \VAA_View_Admin_As_Toolbar
 	 */
 	private static $_instance = null;
 
@@ -50,7 +50,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * View Admin As store.
 	 *
 	 * @since  1.6
-	 * @var    VAA_View_Admin_As_Store
+	 * @var    \VAA_View_Admin_As_Store
 	 */
 	private $vaa_store = null;
 
@@ -61,13 +61,13 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6
 	 * @since   1.6.1  $vaa param
 	 * @access  protected
-	 * @param   VAA_View_Admin_As  $vaa  The main VAA object.
+	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
 	protected function __construct( $vaa ) {
 		self::$_instance = $this;
 		$this->vaa_store = view_admin_as()->store();
 
-		add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
+		view_admin_as()->hooks()->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 	}
 
 	/**
@@ -80,7 +80,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 */
 	public function vaa_init() {
 		// @since  1.7.6  Changed hook from `init` to `wp_loaded` (later).
-		add_action( 'wp_loaded', array( $this, 'vaa_toolbar_init' ) );
+		view_admin_as()->hooks()->add_action( 'wp_loaded', array( $this, 'vaa_toolbar_init' ) );
 	}
 
 	/**
@@ -105,11 +105,8 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 
 			self::$showing = true;
 
-			wp_enqueue_script( 'admin-bar' );
-			wp_enqueue_style( 'admin-bar' );
-
-			add_action( 'wp_footer', array( $this, 'vaa_toolbar_render' ), 100 );
-			add_action( 'customize_controls_print_footer_scripts', array( $this, 'vaa_toolbar_render' ), 100 );
+			view_admin_as()->hooks()->add_action( 'wp_footer', array( $this, 'vaa_toolbar_render' ), 100 );
+			view_admin_as()->hooks()->add_action( 'customize_controls_print_footer_scripts', array( $this, 'vaa_toolbar_render' ), 100 );
 		}
 	}
 
@@ -154,8 +151,8 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6
 	 * @access  public
 	 * @static
-	 * @param   VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  $this  VAA_View_Admin_As_Toolbar
+	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
+	 * @return  \VAA_View_Admin_As_Toolbar  $this
 	 */
 	public static function get_instance( $caller = null ) {
 		if ( is_null( self::$_instance ) ) {

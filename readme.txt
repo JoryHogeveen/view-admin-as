@@ -5,7 +5,7 @@ Tags: admin, view, roles, users, switch, user switching, role switching, capabil
 Requires at least: 4.1
 Tested up to: 4.9
 Requires PHP: 5.2.4
-Stable tag: 1.7.6.1
+Stable tag: 1.8
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -29,6 +29,7 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Temporarily change your own capabilities (non-destructively)
 *	View your site as an unregistered visitor
 *	Switch language/locale on backend and frontend
+*	Make combinations of the above view types
 *	Easily switch back anytime
 *	Completely secure (see *Security* below)
 *	Do all the above without logging out!
@@ -126,8 +127,12 @@ Main file dir: `/wp-content/mu-plugins/view-admin-as.php`
 == Frequently Asked Questions ==
 
 = 1. How do I switch to a user, role or visitor? =
-Just click on the link!
-If the amount of users is more than 10 you can find them under their roles or you can search for them.
+Just click on the link in the toolbar!
+
+If the amount of users and roles combined is more than 15 you can find the users under their roles or you can search for them.
+  
+If the amount of users is more than 100 the plugin will switch to AJAX search and won't load users in advance for performance.  
+This limit can be changed through the filter: [`view_admin_as_user_query_limit`](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters#view_admin_as_user_query_limit)
 
 = 2. How does the capability system work? =
 Only the capabilities that are allowed for your user are shown.
@@ -164,7 +169,7 @@ If so, these are filtered. Viewing Admins can only be done when you are a Super 
 Why? To protect your fellow admin! You have no power over equal users..
 *Unless you are a superior admin... [Read more](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters#view_admin_as_superior_admins)*
 
-If this is not the case, please make sure you aren't overlooking something.
+If this is not the case, please make sure you aren't overlooking something.  
 If that is not the case, please contact me! See next item.
 
 = 6. It's not working! / I found a bug! =
@@ -199,9 +204,29 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 8. Module Role defaults window (tabs are normally closed)
 9. Module Role manager main window (tabs are normally closed)
 10. Module Role manager capability window (tabs is normally closed)
-11. Access levels taken from the "Restrict User Access" plugin
+11. View combinations
+12. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.8 =
+
+*	**Feature:** View combinations UI. [#18](https://github.com/JoryHogeveen/view-admin-as/issues/18)
+*	**Feature/Enhancement:** Limit user query to max 100 users for performance. Switch to AJAX search if there are more users than this limit. [#19](https://github.com/JoryHogeveen/view-admin-as/issues/19)
+*	**Accessibility:** New filter: `view_admin_as_user_query_limit` to change the limit used to query users.
+*	**Accessibility:** New filters: `vaa_admin_bar_view_title_role` & `vaa_admin_bar_view_title_user` & `vaa_admin_bar_view_title_locale` to change the titles for role, users and languages.
+*	**Accessibility:** New filter: `vaa_admin_bar_view_title_user_show_roles` to remove the roles from user nodes.
+*	**Accessibility:** New filter: `view_admin_as_full_access_capabilities` for single site installations to change the capabilities required to gain full access to this plugin.
+*	**Enhancement:** Use a class autoloader.
+*	**Enhancement:** Stop using the `rel` attribute for view type data.
+*	**Enhancement:** Access validation logic.
+*	**Compatibility:** Patch Yoast SEO compatibility. [Yoast SEO #9365](https://github.com/Yoast/wordpress-seo/pull/9365)
+*	**Refactoring:** Action/Filter hook manager class. [#77](https://github.com/JoryHogeveen/view-admin-as/issues/77) 
+*	**Refactoring:** Refactor all view types as separate modules. [#84](https://github.com/JoryHogeveen/view-admin-as/issues/84)
+*	**Fix:** Use `prop` instead of `attr` for `checked` attributes in checkbox inputs.
+*	**Updated/Added:** Screenshots.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/78)
 
 = 1.7.6.1 =
 

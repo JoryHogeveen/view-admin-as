@@ -18,17 +18,26 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7
- * @version 1.7.6
- * @uses    VAA_View_Admin_As_Base Extends class
+ * @version 1.8
+ * @uses    \VAA_View_Admin_As_Base Extends class
  */
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 {
+	/**
+	 * The key to use for filters.
+	 * Passed to __construct() as first parameter.
+	 *
+	 * @since  1.8
+	 * @var    string
+	 */
+	private $_filter_postfix = '';
+
 	/**
 	 * Is this option for a network installation?
 	 * Can only be set with set_for_network().
 	 *
 	 * @since  1.7.5
-	 * @see    VAA_View_Admin_As_Settings::store_optionData()
+	 * @see    \VAA_View_Admin_As_Settings::store_optionData()
 	 * @var    bool
 	 */
 	protected $for_network = false;
@@ -38,7 +47,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Can only be set with store_userMeta().
 	 *
 	 * @since  1.7.5
-	 * @see    VAA_View_Admin_As_Settings::store_userMeta()
+	 * @see    \VAA_View_Admin_As_Settings::store_userMeta()
 	 * @var    int
 	 */
 	protected $for_user = null;
@@ -86,6 +95,14 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @var    array
 	 */
 	protected $userMeta = array();
+
+	/**
+	 * User meta from all users.
+	 *
+	 * @since  1.8
+	 * @var    array
+	 */
+	protected $allUserMeta = array();
 
 	/**
 	 * Array of default settings.
@@ -171,6 +188,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData( array(
 				'db_version' => null,
+				'settings' => null,
 			) );
 
 			$this->set_userMetaKey( 'vaa-view-admin-as' );
@@ -178,6 +196,13 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 				'settings' => null,
 				'views' => null,
 			) );
+
+			$default = array(
+				'view_types' => array(),
+			);
+			$allowed = array(
+				'view_types' => array(), // No restriction to values.
+			);
 
 			$default_user = array(
 				'admin_menu_location' => 'top-secondary',
@@ -199,11 +224,11 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			);
 
 			// @todo Remove?
-			add_filter( 'view_admin_as_validate_view_data_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
-			add_filter( 'view_admin_as_validate_view_data_user_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
+			$this->add_filter( 'view_admin_as_validate_view_data_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
+			$this->add_filter( 'view_admin_as_validate_view_data_user_setting', array( $this, 'filter_validate_settings' ), 10, 3 );
 
-			add_filter( 'view_admin_as_handle_ajax_setting', array( $this, 'filter_update_settings' ), 10, 3 );
-			add_filter( 'view_admin_as_handle_ajax_user_setting', array( $this, 'filter_update_settings' ), 10, 3 );
+			$this->add_filter( 'view_admin_as_handle_ajax_setting', array( $this, 'filter_update_settings' ), 10, 3 );
+			$this->add_filter( 'view_admin_as_handle_ajax_user_setting', array( $this, 'filter_update_settings' ), 10, 3 );
 
 			// Make identifier empty for the filters.
 			$id = '';
@@ -230,6 +255,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$id = '_' . $id;
 
 		} // End if().
+
+		$this->_filter_postfix = $id;
 
 		/**
 		 * Set the default global settings.
@@ -390,6 +417,11 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$current = $defaults;
 		}
 
+		$settings = apply_filters(
+			'view_admin_as_update_' . $type . '_settings' . $this->_filter_postfix,
+			$settings, $current, $defaults, $allowed
+		);
+
 		$settings = $this->validate_settings( $settings, $type, false );
 
 		foreach ( $settings as $setting => $value ) {
@@ -433,6 +465,83 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			}
 		}
 		return $settings;
+	}
+
+	/**
+	 * Get the meta key results for all users.
+	 *
+	 * @since   1.8
+	 * @global  \wpdb  $wpdb
+	 * @return  array {
+	 *     User ID's as array keys.
+	 *     @type  array  $meta_values  The meta values. Column ID's as array keys.
+	 * }
+	 */
+	public function get_all_user_meta() {
+		if ( ! empty( $this->allUserMeta ) ) {
+			return $this->allUserMeta;
+		}
+
+		global $wpdb;
+		$key = $this->get_userMetaKey();
+
+		// @todo Use WP_Meta_Query ?
+		$sql = 'SELECT * FROM ' . $wpdb->usermeta . ' WHERE meta_key = %s';
+		// @codingStandardsIgnoreLine >> $wpdb->prepare(), check returning false error.
+		$results = (array) $wpdb->get_results( $wpdb->prepare( $sql, $key ) );
+
+		$metas = array();
+
+		foreach ( $results as $key => $meta ) {
+			if ( ! isset( $metas[ $meta->user_id ] ) ) {
+				$metas[ $meta->user_id ] = array();
+			}
+			if ( ! empty( $meta->meta_value ) ) {
+				$metas[ $meta->user_id ][ $meta->umeta_id ] = maybe_unserialize( $meta->meta_value );
+			}
+		}
+
+		$this->allUserMeta = $metas;
+
+		return $metas;
+	}
+
+	/**
+	 * Set the meta values for other users.
+	 * Should be used together with get_all_user_meta() to get column id's.
+	 *
+	 * @since   1.8
+	 * @see     \VAA_View_Admin_As_Settings::get_all_user_meta()
+	 * @param   mixed  $value
+	 * @param   int    $user_id
+	 * @param   int    $column_id
+	 * @return  bool
+	 */
+	public function update_other_user_meta( $value, $user_id, $column_id = null ) {
+		if ( ! $this->allUserMeta ) {
+			$this->get_all_user_meta();
+		}
+
+		// Validate settings.
+		$value = wp_parse_args( $value, array(
+			'settings' => array(),
+		) );
+		$value['settings'] = $this->validate_settings( $value['settings'], 'user', true );
+
+		if ( ! isset( $this->allUserMeta[ $user_id ] ) ) {
+			$column_id = 0;
+			$this->allUserMeta[ $user_id ] = array( $column_id => $value );
+		}
+
+		if ( ! is_int( $column_id ) ) {
+			reset( $this->allUserMeta[ $user_id ] );
+			$column_id = key( $this->allUserMeta[ $user_id ] );
+		}
+
+		$this->allUserMeta[ $user_id ][ $column_id ] = $value;
+
+		// @todo handle multiple columns.
+		return update_user_meta( $user_id, $this->get_userMetaKey(), $value );
 	}
 
 	/**
@@ -497,8 +606,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @see    https://developer.wordpress.org/reference/classes/wpdb/update/
 	 * @see    https://developer.wordpress.org/reference/classes/wpdb/delete/
 	 *
-	 * @global  wpdb  $wpdb
-	 * @param   bool  $reset_only  Only reset (not delete) the user meta.
+	 * @global  \wpdb  $wpdb
+	 * @param   bool   $reset_only  Only reset (not delete) the user meta.
 	 * @return  bool
 	 */
 	public function delete_all_user_meta( $reset_only = true ) {
