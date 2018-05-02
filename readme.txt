@@ -209,6 +209,25 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
+= 1.8 =
+
+*	**Feature:** View combinations UI. [#18](https://github.com/JoryHogeveen/view-admin-as/issues/18)
+*	**Feature/Enhancement:** Limit user query to max 100 users for performance. Switch to AJAX search if there are more users than this limit. [#19](https://github.com/JoryHogeveen/view-admin-as/issues/19)
+*	**Accessibility:** New filter: `view_admin_as_user_query_limit` to change the limit used to query users.
+*	**Accessibility:** New filters: `vaa_admin_bar_view_title_role` & `vaa_admin_bar_view_title_user` & `vaa_admin_bar_view_title_locale` to change the titles for role, users and languages.
+*	**Accessibility:** New filter: `vaa_admin_bar_view_title_user_show_roles` to remove the roles from user nodes.
+*	**Accessibility:** New filter: `view_admin_as_full_access_capabilities` for single site installations to change the capabilities required to gain full access to this plugin.
+*	**Enhancement:** Use a class autoloader.
+*	**Enhancement:** Stop using the `rel` attribute for view type data.
+*	**Enhancement:** Access validation logic.
+*	**Compatibility:** Patch Yoast SEO compatibility. [Yoast SEO #9365](https://github.com/Yoast/wordpress-seo/pull/9365)
+*	**Refactoring:** Action/Filter hook manager class. [#77](https://github.com/JoryHogeveen/view-admin-as/issues/77) 
+*	**Refactoring:** Refactor all view types as separate modules. [#84](https://github.com/JoryHogeveen/view-admin-as/issues/84)
+*	**Fix:** Use `prop` instead of `attr` for `checked` attributes in checkbox inputs.
+*	**Updated/Added:** Screenshots.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/78)
+
 = 1.7.6.1 =
 
 *	**Compatibility:** Improve customizer compatibility. [#88](https://github.com/JoryHogeveen/view-admin-as/issues/88)
