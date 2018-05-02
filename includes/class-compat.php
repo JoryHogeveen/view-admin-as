@@ -339,25 +339,20 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		} // End if().
 
 		// @since  1.7.4  Yoast SEO 5.5+  Load integration on front end.
-		if ( ! is_admin() && VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Integration', 'register_hooks' ) ) ) {
+		if ( ! is_admin() ) {
 			/**
-			 * Make sure WPSEO_Options::$backfill is instantiated.
-			 * @link  https://github.com/Yoast/wordpress-seo/pull/9285
-			 * @since Yoast SEO 7.1+
-			 * @since 1.7.6.1
+			 * @since  1.8  Yoast SEO - Check for API function.
+			 * @link   https://github.com/Yoast/wordpress-seo/pull/9365
 			 */
-			if ( VAA_API::exists_callable( array( 'WPSEO_Options', 'get_instance' ) ) ) {
-				WPSEO_Options::get_instance();
-
-				/**
-				 * Registers the capabilities in the `members_get_capabilities` filter.
-				 * @since Yoast SEO 5.8+
-				 * @link https://github.com/Yoast/wordpress-seo/pull/7937
-				 */
-				if ( VAA_API::exists_callable( array( 'WPSEO_Capability_Manager_Factory', 'get' ), 'debug' ) ) {
-					$wpseo = new WPSEO_Capability_Manager_Integration( WPSEO_Capability_Manager_Factory::get() );
-					$wpseo->register_hooks();
-				}
+			if ( function_exists( 'wpseo_get_capabilities' ) ) {
+				$caps = array_merge( (array) wpseo_get_capabilities(), $caps );
+			} elseif ( defined( 'WPSEO_VERSION' ) ) {
+				$yoast_seo_caps = array(
+					'wpseo_bulk_edit',
+					'wpseo_edit_advanced_metadata',
+					'wpseo_manage_options',
+				);
+				$caps = array_merge( $yoast_seo_caps, $caps );
 			}
 		}
 
