@@ -85,7 +85,8 @@ final class VAA_API
 	 * This check is more strict for single installations since it checks VAA_API::user_has_full_access.
 	 * It will validate the original user while in a view and no parameter is passed.
 	 *
-	 * @see  \VAA_View_Admin_As_Store::is_super_admin()
+	 * @see  \VAA_API::user_has_full_access()
+	 * @see  \VAA_View_Admin_As_Store::cur_user_has_full_access()
 	 *
 	 * @since   1.6.3
 	 * @since   1.8    Check full access.
