@@ -15,3 +15,11 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+# Ignore
+/.github export-ignore
+/bin export-ignore
+/tests export-ignore
+.* export-ignore
+composer.json export-ignore
+phpunit.xml export-ignore
