@@ -2,7 +2,7 @@
 /**
  * Add caps actions.
  *
- * @since    1.7
+ * @since    1.7.0
  * @version  1.7.4
  *
  * @var  \VAA_View_Admin_As_Caps  $this

@@ -7,7 +7,7 @@
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.3.4
- * @version 1.7
+ * @version 1.7.0
  */
 
 //if uninstall not called from WordPress exit

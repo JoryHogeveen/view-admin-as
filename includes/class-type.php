@@ -15,8 +15,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.8
- * @version 1.8
+ * @since   1.8.0
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
@@ -24,7 +24,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * View type settings.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    array
 	 */
 	private $settings = array(
@@ -34,7 +34,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * The view type.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $type = '';
@@ -42,7 +42,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * The view type label.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $label = '';
@@ -50,7 +50,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * The view type singular label.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $label_singular = '';
@@ -58,7 +58,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * The view type description.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $description = '';
@@ -66,7 +66,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * The icon for this view type.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $icon = '';
@@ -74,7 +74,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Selected view.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    mixed
 	 */
 	protected $selected = null;
@@ -82,7 +82,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Does the original user has access?
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    bool
 	 */
 	protected $user_has_access = false;
@@ -90,7 +90,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * The hook priorities for this type.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    int[]
 	 */
 	protected $priorities = array(
@@ -104,7 +104,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * The capability required for this view type.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $cap = 'view_admin_as';
@@ -112,7 +112,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Populate the instance.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -149,7 +149,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Does the original user has access to this view type?
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  bool
 	 */
@@ -160,7 +160,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Is enabled?
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  bool
 	 */
@@ -171,7 +171,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Set plugin enabled true/false.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   bool  $bool       Enable or disable?
 	 * @param   bool  $update_db  Do database update? (default true).
@@ -191,7 +191,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Setup module and hooks.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @return  bool  Successful init?
 	 */
@@ -210,7 +210,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Setup hooks.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 */
 	protected function init_hooks() {
@@ -226,7 +226,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Apply this view type if active.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  bool  Is this view type active?
 	 */
@@ -247,7 +247,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * Adds the actions and filters to modify the current user object.
 	 * Can only be run once.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  void
 	 */
@@ -258,7 +258,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * View update handler (Ajax probably), called from main handler.
 	 *
-	 * @since   1.8   Renamed from `ajax_handler`
+	 * @since   1.8.0   Renamed from `ajax_handler()`
 	 * @access  public
 	 * @param   null    $null    Null.
 	 * @param   array   $data    The ajax data for this module.
@@ -281,7 +281,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Validate data for this view type
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
@@ -292,7 +292,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Change the VAA admin bar menu title.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @return  array
@@ -302,7 +302,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Add the admin bar items.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item.
@@ -312,7 +312,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Store the available languages.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  private
 	 */
 	abstract public function store_data();
@@ -320,7 +320,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Set the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   mixed   $val
 	 * @param   string  $key     (optional) The data key.
@@ -333,7 +333,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Get the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   string  $key  (optional) The data key.
 	 * @return  mixed
@@ -345,7 +345,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Get the view type id.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  string
 	 */
@@ -356,7 +356,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Get the view type label.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  string
 	 */
@@ -367,7 +367,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Get the view type singular label.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  string
 	 */
@@ -378,7 +378,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Get the view type description.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  string
 	 */
@@ -390,7 +390,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * Get an action priority.
 	 * Default: toolbar priority.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string  $key
 	 * @return  int
 	 */
@@ -401,7 +401,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Get the view type settings.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string  $key  Key in the setting array.
 	 * @return  mixed
 	 */
@@ -412,7 +412,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Set the view type settings.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   mixed   $val     Settings.
 	 * @param   string  $key     (optional) Setting key.
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
@@ -434,7 +434,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * Update the view type settings in the database.
 	 * Also sets the settings within this instance and VAA store.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   mixed   $val     Settings.
 	 * @param   string  $key     (optional) Setting key.
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
@@ -448,7 +448,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Update the active view types.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @static
 	 * @param  array  $data
 	 * @return mixed

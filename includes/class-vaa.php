@@ -15,8 +15,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   0.1
- * @version 1.8
+ * @since   0.1.0
+ * @version 1.8.0
  */
 final class VAA_View_Admin_As
 {
@@ -32,7 +32,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Enable functionalities for this user?
 	 *
-	 * @since  0.1
+	 * @since  0.1.0
 	 * @var    bool
 	 */
 	private $enable = false;
@@ -51,7 +51,7 @@ final class VAA_View_Admin_As
 	/**
 	 * VAA Hooks.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    \VAA_View_Admin_As_Hooks
 	 */
 	private $hooks = null;
@@ -59,7 +59,7 @@ final class VAA_View_Admin_As
 	/**
 	 * VAA Store.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @var    \VAA_View_Admin_As_Store
 	 */
 	private $store = null;
@@ -67,7 +67,7 @@ final class VAA_View_Admin_As
 	/**
 	 * VAA Controller.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @var    \VAA_View_Admin_As_Controller
 	 */
 	private $controller = null;
@@ -75,7 +75,7 @@ final class VAA_View_Admin_As
 	/**
 	 * VAA View handler.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @var    \VAA_View_Admin_As_View
 	 */
 	private $view = null;
@@ -83,7 +83,7 @@ final class VAA_View_Admin_As
 	/**
 	 * VAA UI classes that are loaded.
 	 *
-	 * @since  1.5
+	 * @since  1.5.0
 	 * @see    \VAA_View_Admin_As::load_ui()
 	 * @var    object[]
 	 */
@@ -92,7 +92,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Other VAA modules that are loaded.
 	 *
-	 * @since  1.4
+	 * @since  1.4.0
 	 * @see    \VAA_View_Admin_As::load_modules()
 	 * @see    \VAA_View_Admin_As::register_module()
 	 * @var    \VAA_View_Admin_As_Module[]
@@ -102,7 +102,7 @@ final class VAA_View_Admin_As
 	/**
 	 * View types.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @see    \VAA_View_Admin_As::load_modules()
 	 * @see    \VAA_View_Admin_As::register_view_type()
 	 * @var    \VAA_View_Admin_As_Type[]
@@ -112,7 +112,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Class registry
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    array
 	 */
 	private $classes = array(
@@ -134,12 +134,12 @@ final class VAA_View_Admin_As
 	 * Init function to register plugin hook.
 	 * Private to make sure it isn't declared elsewhere.
 	 *
-	 * @since   0.1
+	 * @since   0.1.0
 	 * @since   1.3.3   Changes init hook to plugins_loaded for theme compatibility.
 	 * @since   1.4.1   Creates instance.
-	 * @since   1.5     Make private.
+	 * @since   1.5.0   Make private.
 	 * @since   1.5.1   Added notice on class name conflict + validate versions.
-	 * @since   1.8     spl_autoload_register().
+	 * @since   1.8.0   spl_autoload_register().
 	 * @access  private
 	 */
 	private function __construct() {
@@ -165,7 +165,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Class autoloader if needed.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  private
 	 * @internal
 	 * @param   string  $class  The class name.
@@ -182,7 +182,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Instantiate function that checks if the plugin is already loaded.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @param   bool  $redo  (optional) Force re-init?
 	 */
@@ -208,7 +208,7 @@ final class VAA_View_Admin_As
 	 * Verify that our classes don't exist yet.
 	 * Returns false on conflict.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  private
 	 * @return  bool  Load successfully completed?
 	 */
@@ -227,7 +227,7 @@ final class VAA_View_Admin_As
 	 * Run the plugin!
 	 * Check current user, load necessary data and register all used hooks.
 	 *
-	 * @since   0.1
+	 * @since   0.1.0
 	 * @access  private
 	 * @return  void
 	 */
@@ -257,7 +257,7 @@ final class VAA_View_Admin_As
 			/**
 			 * Plugin enabled + update and compat scripts done.
 			 *
-			 * @since  1.8
+			 * @since  1.8.0
 			 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 			 */
 			do_action( 'vaa_view_admin_as_pre_init', $this );
@@ -270,7 +270,7 @@ final class VAA_View_Admin_As
 			/**
 			 * Init is finished. Hook is used for other classes related to View Admin As.
 			 *
-			 * @since  1.5
+			 * @since  1.5.0
 			 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 			 */
 			do_action( 'vaa_view_admin_as_init', $this );
@@ -293,7 +293,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Is enabled?
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @return  bool
 	 */
@@ -304,9 +304,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Validate if the current user has access to the functionalities.
 	 *
-	 * @since   0.1    Check if the current user had administrator rights (is_super_admin).
+	 * @since   0.1.0  Check if the current user had administrator rights (is_super_admin).
 	 *                 Disable plugin functions for network admin pages.
-	 * @since   1.4    Make sure we have a session for the current user.
+	 * @since   1.4.0  Make sure we have a session for the current user.
 	 * @since   1.5.1  If a user has the correct capability (view_admin_as + edit_users) this plugin is also enabled, use with care.
 	 *                 Note that in network installations the non-admin user also needs the manage_network_users
 	 *                 capability (of not the edit_users will return false).
@@ -372,7 +372,7 @@ final class VAA_View_Admin_As
 	 * Helper function to include files. Checks class existence and throws an error if needed.
 	 * Also adds the class to a supplied group if available.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 * @param   array[]|string[]  $includes {
 	 *     An array of files to include.
@@ -416,9 +416,9 @@ final class VAA_View_Admin_As
 	/**
 	 * Load the user interface.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @since   1.5.1   Added notice on class name conflict.
-	 * @since   1.6     Added our toolbar class.
+	 * @since   1.6.0   Added our toolbar class.
 	 * @access  private
 	 * @return  void
 	 */
@@ -450,7 +450,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Load the modules.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  private
 	 * @return  void
 	 */
@@ -512,8 +512,8 @@ final class VAA_View_Admin_As
 	/**
 	 * Load plugin textdomain.
 	 *
-	 * @since   1.2
-	 * @since   1.6  Hooked into init hook, check for is_enabled() required.
+	 * @since   1.2.0
+	 * @since   1.6.0  Hooked into init hook, check for is_enabled() required.
 	 * @access  public
 	 * @return  void
 	 */
@@ -539,7 +539,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Get the hooks class.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @return  \VAA_View_Admin_As_Hooks
 	 */
@@ -550,7 +550,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Get the store class.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @return  \VAA_View_Admin_As_Store
 	 */
@@ -561,7 +561,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Get the controller class.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 * @return  \VAA_View_Admin_As_Controller
 	 */
@@ -572,7 +572,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Get the view class.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @return  \VAA_View_Admin_As_View
 	 */
@@ -598,7 +598,7 @@ final class VAA_View_Admin_As
 	 * Get view types.
 	 * If a key is provided it will only return that view type.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   string  $key           (optional) The type key.
 	 * @param   bool    $check_access  (optional) Check if the user has access? Default: true.
@@ -620,7 +620,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Register view types.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   array  $data {
 	 *     Required. An array of module info.
 	 *     @type  string                  $id        The view type name, choose wisely since this is used for validation.
@@ -642,7 +642,7 @@ final class VAA_View_Admin_As
 	 * Get current modules.
 	 * If a key is provided it will only return that module.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @see     VAA_View_Admin_As::load_modules()
 	 * @param   string  $key  (optional) The module key.
@@ -676,7 +676,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Add a welcome notice for new users.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 */
 	public function welcome_notice() {
@@ -785,7 +785,7 @@ final class VAA_View_Admin_As
 	 * Checks for valid resources.
 	 *
 	 * @since   1.5.1
-	 * @since   1.6    Returns conflict status.
+	 * @since   1.6.0  Returns conflict status.
 	 * @access  private
 	 * @global  string  $wp_version  WordPress version.
 	 * @return  bool
@@ -821,7 +821,7 @@ final class VAA_View_Admin_As
 
 	/**
 	 * Sets update class to run a DB update.
-	 * @since   1.8
+	 * @since   1.8.0
 	 */
 	public static function run_db_update() {
 		// Make sure the main class is initialized.
@@ -866,7 +866,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Magic method to output a string if trying to use the object as a string.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @return  string
 	 */
@@ -877,7 +877,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Magic method to keep the object from being cloned.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @return  void
 	 */
@@ -892,7 +892,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Magic method to keep the object from being unserialized.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @return  void
 	 */
@@ -907,7 +907,7 @@ final class VAA_View_Admin_As
 	/**
 	 * Magic method to prevent a fatal error when calling a method that doesn't exist.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @param   string  $method  The method name.
 	 * @param   array   $args    The method arguments.

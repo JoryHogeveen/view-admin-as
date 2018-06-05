@@ -17,8 +17,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.7
- * @version 1.8
+ * @since   1.7.0
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
@@ -27,7 +27,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * The key to use for filters.
 	 * Passed to __construct() as first parameter.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	private $_filter_postfix = '';
@@ -57,9 +57,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Always starts with `vaa_`.
 	 * Keys are parsed with underscores as spacing.
 	 *
-	 * @since  1.4
-	 * @since  1.6  Moved to this class from main class.
-	 * @since  1.7  Moved to this class from store class.
+	 * @since  1.4.0
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @var    string
 	 */
 	protected $optionKey = null;
@@ -67,9 +67,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Database option data.
 	 *
-	 * @since  1.4
-	 * @since  1.6  Moved to this class from main class.
-	 * @since  1.7  Moved to this class from store class.
+	 * @since  1.4.0
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @var    array
 	 */
 	protected $optionData = array();
@@ -80,8 +80,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Keys are parsed with dashes as spacing.
 	 *
 	 * @since  1.3.4
-	 * @since  1.6    Moved to this class from main class.
-	 * @since  1.7    Moved to this class from store class.
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @var    string
 	 */
 	protected $userMetaKey = null;
@@ -89,9 +89,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * User meta value for settings ans views.
 	 *
-	 * @since  1.5
-	 * @since  1.6  Moved to this class from main class.
-	 * @since  1.7  Moved to this class from store class.
+	 * @since  1.5.0
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @var    array
 	 */
 	protected $userMeta = array();
@@ -99,7 +99,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * User meta from all users.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    array
 	 */
 	protected $allUserMeta = array();
@@ -107,9 +107,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Array of default settings.
 	 *
-	 * @since  1.5
-	 * @since  1.6  Moved to this class from main class.
-	 * @since  1.7  Moved to this class from store class.
+	 * @since  1.5.0
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @var    array
 	 */
 	protected $defaultSettings = array();
@@ -117,9 +117,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Array of allowed settings.
 	 *
-	 * @since  1.5
-	 * @since  1.6  Moved to this class from main class.
-	 * @since  1.7  Moved to this class from store class.
+	 * @since  1.5.0
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @var    array
 	 */
 	protected $allowedSettings = array();
@@ -127,11 +127,11 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Array of default settings.
 	 *
-	 * @since  1.5
+	 * @since  1.5.0
 	 * @since  1.5.2  Added force_group_users.
-	 * @since  1.6    Moved to this class from main class.
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since  1.6.1  Added freeze_locale.
-	 * @since  1.7    Moved to this class from store class.
+	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @var    array
 	 */
 	protected $defaultUserSettings = array();
@@ -140,11 +140,11 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Array of allowed settings.
 	 * Setting name (key) => array( values ).
 	 *
-	 * @since  1.5
+	 * @since  1.5.0
 	 * @since  1.5.2  Added force_group_users.
-	 * @since  1.6    Moved to this class from main class.
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since  1.6.1  Added freeze_locale.
-	 * @since  1.7    Moved to this class from store class.
+	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @var    array
 	 */
 	protected $allowedUserSettings = array();
@@ -152,7 +152,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Sets the default data.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  protected
 	 * @param   string  $id    Identifier for this settings instance.
 	 * @param   array   $args  {
@@ -261,7 +261,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		/**
 		 * Set the default global settings.
 		 *
-		 * @since  1.7
+		 * @since  1.7.0
 		 * @param  array
 		 * @return array
 		 */
@@ -270,7 +270,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		/**
 		 * Set the allowed global settings.
 		 *
-		 * @since  1.7
+		 * @since  1.7.0
 		 * @param  array {
 		 *     Settings array (key = setting name).
 		 *     @type  array  Array of allowed values.
@@ -282,7 +282,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		/**
 		 * Set the default settings for users.
 		 *
-		 * @since  1.7
+		 * @since  1.7.0
 		 * @param  array
 		 * @return array
 		 */
@@ -291,7 +291,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		/**
 		 * Set the allowed settings for users.
 		 *
-		 * @since  1.7
+		 * @since  1.7.0
 		 * @param  array {
 		 *     Settings array (key = setting name).
 		 *     @type  array  Array of allowed values.
@@ -305,7 +305,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Validate hook for settings.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   null    $null  Default return (invalid).
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $key   The data key.
@@ -326,8 +326,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Validate hook for settings.
 	 *
-	 * @since   1.7
-	 * @since   1.7.3   Renamed from filter_store_settings().
+	 * @since   1.7.0
+	 * @since   1.7.3   Renamed from `filter_store_settings()`.
 	 * @param   null    $null  Default return (invalid).
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $key   The data key.
@@ -349,9 +349,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Validate setting data based on allowed settings.
 	 * Will also merge with the default settings unless third $merge parameter is false.
 	 *
-	 * @since   1.5
-	 * @since   1.6  Moved to this class from main class.
-	 * @since   1.7  Moved to this class from store class. Added third $merge parameter.
+	 * @since   1.5.0
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since   1.7.0  Moved from `VAA_View_Admin_As_Store`. Added third `$merge` parameter.
 	 * @access  public
 	 *
 	 * @param   array       $settings  The new settings.
@@ -391,10 +391,10 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Store settings based on allowed settings.
 	 * Also merges with the default settings.
 	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.7    Moved to this class from store class.
-	 * @since   1.7.3  Renamed from store_settings().
+	 * @since   1.5.0
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since   1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since   1.7.3  Renamed from `store_settings()`.
 	 * @access  public
 	 *
 	 * @param   array   $settings  The new settings.
@@ -447,7 +447,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Checks if the setting exists, removes it otherwise.
 	 * Checks if the setting is allowed, otherwise sets it to the default value.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   array  $settings  The new settings.
 	 * @param   array  $defaults  The default settings.
 	 * @param   array  $allowed   The allowed settings.
@@ -470,7 +470,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Get the meta key results for all users.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @global  \wpdb  $wpdb
 	 * @return  array {
 	 *     User ID's as array keys.
@@ -510,7 +510,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Set the meta values for other users.
 	 * Should be used together with get_all_user_meta() to get column id's.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @see     \VAA_View_Admin_As_Settings::get_all_user_meta()
 	 * @param   mixed  $value
 	 * @param   int    $user_id
@@ -547,10 +547,10 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Delete or reset all View Admin As metadata for this user.
 	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.5.0
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since   1.6.2  Option to remove the VAA metadata for all users.
-	 * @since   1.7    Moved to this class from store class.
+	 * @since   1.7.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @access  public
 	 *
 	 * @param   int|string  $user_id     ID of the user being deleted/removed (pass `all` for all users).
@@ -600,7 +600,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Delete or reset all View Admin As metadata for all users.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 *
 	 * @see    https://developer.wordpress.org/reference/classes/wpdb/update/
@@ -851,7 +851,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	/**
 	 * Store the option data.
 	 * @param   bool  $network  Is network option?
-	 * @since   1.7.x
+	 * @since   1.7.5
 	 */
 	protected function store_optionData( $network = false ) {
 		$this->set_for_network( $network );
@@ -865,7 +865,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 
 	/**
 	 * Store the user meta.
-	 * @since   1.7.x
+	 * @since   1.7.5
 	 * @param   int   $user_id  The user ID this metadata is for.
 	 * @param   bool  $single NOT SUPPORTED YET!
 	 */
@@ -907,7 +907,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 
 	/**
 	 * Set whether this instance if for a network option.
-	 * @since   1.7.x
+	 * @since   1.7.5
 	 * @param   bool  $bool
 	 */
 	protected function set_for_network( $bool ) {
@@ -916,7 +916,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 
 	/**
 	 * Set whether this instance if for a network option.
-	 * @since   1.7.x
+	 * @since   1.7.5
 	 * @return  bool
 	 */
 	public function is_for_network() {

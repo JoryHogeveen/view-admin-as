@@ -3,7 +3,7 @@
  * Add user setting items.
  *
  * @since    1.7.2
- * @version  1.8
+ * @version  1.8.0
  *
  * @var  \WP_Admin_Bar  $admin_bar  The toolbar object.
  * @var  string         $root       The current root item.
@@ -30,7 +30,7 @@ if ( isset( $this ) &&
 	/**
 	 * admin_menu_location setting.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 */
 	$admin_bar->add_node(
 		array(
@@ -71,7 +71,7 @@ if ( isset( $this ) &&
 	/**
 	 * view_mode setting.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 */
 	$admin_bar->add_node(
 		array(
@@ -114,7 +114,7 @@ if ( isset( $this ) &&
 	 * Disable super admin checks while switched.
 	 *
 	 * @since   1.7.3
-	 * @since   1.8    Don't use VAA_API since users that are super admins but don't have full access could
+	 * @since   1.8.0  Don't use VAA_API since users that are super admins but don't have full access could
 	 *                 still want to use this setting.
 	 *                 Also check if the installation is a network.
 	 */
@@ -150,7 +150,7 @@ if ( isset( $this ) &&
 	/**
 	 * hide_front setting.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 */
 	$admin_bar->add_node(
 		array(

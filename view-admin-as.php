@@ -2,8 +2,8 @@
 /**
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   0.1
- * @version 1.8
+ * @since   0.1.0
+ * @version 1.8.0
  * @licence GPL-2.0+
  * @link    https://github.com/JoryHogeveen/view-admin-as
  *

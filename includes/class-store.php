@@ -15,8 +15,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.6
- * @version 1.8
+ * @since   1.6.0
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Settings Extends class
  */
 final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
@@ -24,7 +24,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Store
 	 */
@@ -34,7 +34,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * The nonce.
 	 *
 	 * @since  1.3.4
-	 * @since  1.6    Moved to this class from main class.
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @var    string
 	 */
 	private $nonce = '';
@@ -52,14 +52,14 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * You can add custom view data with VAA_View_Admin_As_Store::set_data().
 	 *
 	 * @see    \VAA_View_Admin_As_Store::set_data()
-	 * @since  1.7
+	 * @since  1.7.0
 	 * @var    array {
 	 *     Default view data.
-	 *     @type  bool[]      $caps       Since 1.3    Array of available capabilities.
-	 *     @type  \WP_Role[]  $roles      Since 0.1    Array of available roles (WP_Role objects).
+	 *     @type  bool[]      $caps       Since 1.3.0  Array of available capabilities.
+	 *     @type  \WP_Role[]  $roles      Since 0.1.0  Array of available roles (WP_Role objects).
 	 *     @type  string[]    $rolenames  Since 1.6.4  Array of role names (used for role translations).
-	 *     @type  \WP_User[]  $users      Since 0.1    Array of available users (WP_User objects).
-	 *     @type  string[]    $languages  Since 1.8    Array of available locale/languages.
+	 *     @type  \WP_User[]  $users      Since 0.1.0  Array of available users (WP_User objects).
+	 *     @type  string[]    $languages  Since 1.8.0  Array of available locale/languages.
 	 * }
 	 */
 	private $data = array(
@@ -73,8 +73,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Current (initial) user object.
 	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
+	 * @since  0.1.0
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @var    \WP_User
 	 */
 	private $curUser;
@@ -83,7 +83,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * Current (initial) user session.
 	 *
 	 * @since  1.3.4
-	 * @since  1.6    Moved to this class from main class.
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @var    string
 	 */
 	private $curUserSession = '';
@@ -103,7 +103,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *
 	 * @since  1.6.3
 	 * @since  1.7.3  Not static anymore.
-	 * @since  1.7.6  Renamed from $isCurUserSuperAdmin
+	 * @since  1.7.6  Renamed from `$isCurUserSuperAdmin`.
 	 * @var    bool
 	 */
 	private $curUserHasFullAccess = false;
@@ -112,8 +112,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * Selected view data as stored in the user meta.
 	 * Format: array( VIEW_TYPE => VIEW_DATA ).
 	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
+	 * @since  0.1.0
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @var    array
 	 */
 	private $view = array();
@@ -122,8 +122,8 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * The selected user object (if a view is selected).
 	 * Can be the same as $curUser depending on the selected view.
 	 *
-	 * @since  0.1
-	 * @since  1.6    Moved to this class from main class.
+	 * @since  0.1.0
+	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @var    \WP_User
 	 */
 	private $selectedUser;
@@ -138,7 +138,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Populate the instance.
-	 * @since  1.6
+	 * @since  1.6.0
 	 */
 	protected function __construct() {
 		parent::__construct( 'view-admin-as' );
@@ -179,7 +179,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Does the current (original) user has full access to this plugin?
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @return  bool
 	 */
 	public function cur_user_has_full_access() {
@@ -189,7 +189,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Compare user to the current (original) user.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   \WP_User|int  $user  The user to compare.
 	 * @return  bool
 	 */
@@ -209,7 +209,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * This can prevent invalid checks after a view is applied.
 	 *
 	 * @see     \VAA_API::is_super_admin()
-	 * @deprecated
+	 * @deprecated  1.8.0
 	 * @todo    Remove in 1.9
 	 *
 	 * @since   1.6.3
@@ -259,7 +259,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get view data (meta).
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   string  $key  Key for array.
 	 * @return  mixed
 	 */
@@ -270,7 +270,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Get view type data
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   string  $type  Type key.
 	 * @param   string  $key   (optional) Type data key.
 	 * @return  mixed
@@ -315,7 +315,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			/**
 			 * Try to fetch role name from WP core. No security risk here.
 			 * Check for the wp_roles() function in WP 4.3+.
-			 * @since  1.8
+			 * @since  1.8.0
 			 */
 			if ( function_exists( 'wp_roles' ) ) {
 				$wp_roles = wp_roles();
@@ -350,6 +350,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get available languages.
+	 * @since   1.8.0
 	 * @param   string  $key  Locale key.
 	 * @return  string[]|string  Array of language names or a single language name.
 	 */
@@ -433,7 +434,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	/**
 	 * Set view type data.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   string  $type
 	 * @param   mixed   $val
 	 * @param   string  $key
@@ -497,7 +498,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Set the languages.
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   mixed   $val     Value.
 	 * @param   string  $key     (optional) Role name.
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
@@ -541,7 +542,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

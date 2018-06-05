@@ -15,9 +15,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.3    View type existed in core.
- * @since   1.8    Created this class.
- * @version 1.8
+ * @since   1.3.0  View type existed in core.
+ * @since   1.8.0  Created this class.
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
@@ -25,14 +25,14 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Caps
 	 */
 	private static $_instance = null;
 
 	/**
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $type = 'caps';
@@ -40,7 +40,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * The icon for this view type.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $icon = 'dashicons-forms';
@@ -48,7 +48,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Populate the instance.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -75,7 +75,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Apply the user view.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 */
 	public function do_view() {
@@ -90,7 +90,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Modify the current user object.
 	 *
-	 * @since  1.3
+	 * @since  1.3.0
 	 * @param  \WP_User  $user  The modified user object.
 	 */
 	public function modify_user( $user ) {
@@ -111,7 +111,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Change the VAA admin bar menu title.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @return  array
@@ -126,8 +126,8 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Validate data for this view type
 	 *
-	 * @since   1.7
-	 * @since   1.8    Moved from VAA_View_Admin_As_Controller
+	 * @since   1.7.0
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
@@ -159,7 +159,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * View update handler (Ajax probably), called from main handler.
 	 *
-	 * @since   1.8   Renamed from `ajax_handler`
+	 * @since   1.8.0   Renamed from `ajax_handler()`.
 	 * @access  public
 	 * @param   null    $null    Null.
 	 * @param   array   $data    The ajax data for this module.
@@ -213,8 +213,8 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Add the admin bar items.
 	 *
-	 * @since   1.5
-	 * @since   1.8    Moved from VAA_View_Admin_As_Admin_Bar.
+	 * @since   1.5.0
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Admin_Bar`.
 	 * @access  public
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item.
@@ -278,7 +278,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the beginning of the caps group.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -335,7 +335,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the before of the caps selection options.
 		 *
-		 * @since   1.7
+		 * @since   1.7.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -355,7 +355,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the before of the caps actions.
 		 *
-		 * @since   1.7
+		 * @since   1.7.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -370,7 +370,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the after of the caps actions.
 		 *
-		 * @since   1.7
+		 * @since   1.7.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -385,7 +385,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the end of the caps group.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -401,8 +401,8 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 * Store available capabilities.
 	 *
 	 * @since   1.4.1
-	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.8    Moved from VAA_View_Admin_As_Store.
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @access  public
 	 * @return  void
 	 */
@@ -421,7 +421,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			/**
 			 * Add compatibility for other cap managers.
 			 *
-			 * @since  1.5
+			 * @since  1.5.0
 			 * @see    \VAA_View_Admin_As_Compat->init()
 			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
 			 * @return array
@@ -454,7 +454,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Set the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   mixed   $val
 	 * @param   string  $key     (optional) The data key.
@@ -467,7 +467,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Get the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   string  $key  (optional) The data key.
 	 * @return  mixed
@@ -481,7 +481,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

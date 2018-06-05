@@ -2,8 +2,8 @@
 /**
  * Add role items.
  *
- * @since    1.7
- * @version  1.8
+ * @since    1.7.0
+ * @version  1.8.0
  *
  * @var  \VAA_View_Admin_As_Roles  $this
  * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.

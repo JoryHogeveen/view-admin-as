@@ -2,8 +2,8 @@
 /**
  * Add user items.
  *
- * @since    1.7
- * @version  1.8
+ * @since    1.7.0
+ * @version  1.8.0
  *
  * @var  \VAA_View_Admin_As_Users  $this
  * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.
@@ -41,7 +41,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		 * Add the user roles to the user title?
 		 * Only available if users are not grouped under their roles.
 		 *
-		 * @since  1.8
+		 * @since  1.8.0
 		 * @param  bool      $true  True by default.
 		 * @param  \WP_User  $user  The user object.
 		 * @return bool

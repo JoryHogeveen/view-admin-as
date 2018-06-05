@@ -16,15 +16,15 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @link    https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters
- * @since   1.8
- * @version 1.8
+ * @since   1.8.0
+ * @version 1.8.0
  */
 class VAA_View_Admin_As_Hooks
 {
 	/**
 	 * The array of actions registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @var     array  $actions  The actions registered with WordPress.
 	 */
@@ -33,7 +33,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * The array of filters registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @var     array  $filters  The filters registered with WordPress.
 	 */
@@ -42,7 +42,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Convert callable into an identifier.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @see     _wp_filter_build_unique_id()
 	 * @param   string    $hook      The name of the WordPress hook (that is, actions or filters).
@@ -61,7 +61,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Add a new action to the collection to be registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @see     add_action()
 	 * @param   string    $hook           The name of the WordPress action.
 	 * @param   callable  $callback       The callable.
@@ -76,7 +76,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Add a new filter to the collection to be registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @see     add_filter()
 	 * @param   string    $hook           The name of the WordPress filter.
 	 * @param   callable  $callback       The callable.
@@ -91,7 +91,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * A utility function that is used to register the hooks into a single collection.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @param   array[]   $hooks          The collection of hooks (that is, actions or filters).
 	 * @param   string    $hook           The name of the WordPress filter that is being registered.
@@ -120,7 +120,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Remove an action from the collection registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @see     remove_action()
 	 * @param   string    $hook      The name of the WordPress action.
 	 * @param   callable  $callback  The callable.
@@ -136,7 +136,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Remove a filter from the collection registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @see     remove_filter()
 	 * @param   string    $hook      The name of the WordPress filter.
 	 * @param   callable  $callback  The callable.
@@ -152,7 +152,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * A utility function that is used to remove registered hooks from a single collection.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @param   array[]   $hooks     The collection of hooks (that is, actions or filters).
 	 * @param   string    $hook      The name of the WordPress filter.
@@ -171,7 +171,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Remove all hooks from the collection registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string    $hook      The name of the WordPress action.
 	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
 	 */
@@ -183,7 +183,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Remove all actions from the collection registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @see     remove_all_actions()
 	 * @param   string    $hook      The name of the WordPress action.
 	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
@@ -196,7 +196,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Remove all filters from the collection registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @see     remove_all_filters()
 	 * @param   string    $hook      The name of the WordPress filter.
 	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
@@ -209,7 +209,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * A utility function that is used to remove all registered hooks from a single collection.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @param   array[]   $hooks     The collection of hooks (that is, actions or filters).
 	 * @param   string    $hook      The name of the WordPress filter.
@@ -228,7 +228,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Remove all plugin hooks from the collection registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string    $hook      (optional) The name of the WordPress action.
 	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
 	 * @param   string    $class     (optional) Only remove filters from a specific class.
@@ -241,7 +241,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Remove all plugin actions from the collection registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string    $hook      (optional) The name of the WordPress action.
 	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
 	 * @param   string    $class     (optional) Only remove filters from a specific class.
@@ -253,7 +253,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Remove all plugin filters from the collection registered with WordPress.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string    $hook      (optional) The name of the WordPress filter.
 	 * @param   int|bool  $priority  (optional) The priority at which the function would be fired. Default: false (all).
 	 * @param   string    $class     (optional) Only remove filters from a specific class.
@@ -270,7 +270,7 @@ class VAA_View_Admin_As_Hooks
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @param   array[]   $hooks     The collection of hooks (that is, actions or filters).
 	 * @param   string    $hook      The name of the WordPress filter.
@@ -330,7 +330,7 @@ class VAA_View_Admin_As_Hooks
 	 * Validates the priority value.
 	 * If it's passed as `null` it will attempt to find it.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   array[]   $hooks     The collection of hooks (that is, actions or filters).
 	 * @param   string    $hook      The name of the WordPress filter.
 	 * @param   callable  $callback  The callable.
@@ -350,7 +350,7 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Finds the priority of a hook if unknown.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   array[]   $hooks     The collection of hooks (that is, actions or filters).
 	 * @param   string    $hook      The name of the WordPress filter.
 	 * @param   callable  $callback  The callable.
@@ -374,7 +374,7 @@ class VAA_View_Admin_As_Hooks
 	 * Return all registered hooks data.
 	 * Can be used for debugging.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
 	 *                               Order: hook type >> hook name >> priority >> function id >> hook args.
 	 *                               In case of a string it will stand for the hook type.
@@ -403,7 +403,7 @@ class VAA_View_Admin_As_Hooks
 	 * Return all registered actions.
 	 * Can be used for debugging.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
 	 *                               Order: hook name >> priority >> function id >> hook args.
 	 *                               In case of a string it will stand for the hook name.
@@ -420,7 +420,7 @@ class VAA_View_Admin_As_Hooks
 	 * Return all registered filters.
 	 * Can be used for debugging.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string|array  $keys  The hook array keys to look for. Each key stands for a level deeper in the array.
 	 *                               Order: hook name >> priority >> function id >> hook args.
 	 *                               In case of a string it will stand for the hook name.
@@ -435,7 +435,7 @@ class VAA_View_Admin_As_Hooks
 
 	/**
 	 * Convert object types into object class names instead of full object data.
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   array  $hooks  The collection of hooks (that is, actions or filters).
 	 * @return  array
 	 */

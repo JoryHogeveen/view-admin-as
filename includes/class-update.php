@@ -15,7 +15,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.6
+ * @since   1.6.0
  * @version 1.7.4
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
@@ -24,7 +24,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Update
 	 */
@@ -33,7 +33,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	/**
 	 * Is this a new installation?
 	 *
-	 * @since  1.7
+	 * @since  1.7.0
 	 * @static
 	 * @var    bool
 	 */
@@ -42,8 +42,8 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	/**
 	 * Populate the instance.
 	 *
-	 * @since   1.6
-	 * @since   1.6.1  $vaa param.
+	 * @since   1.6.0
+	 * @since   1.6.1  `$vaa` param.
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -55,8 +55,8 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	/**
 	 * Check the correct DB version in the DB.
 	 *
-	 * @since   1.4
-	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.4.0
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @access  public
 	 * @return  void
 	 */
@@ -73,8 +73,8 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	/**
 	 * Update settings.
 	 *
-	 * @since   1.4
-	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.4.0
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @access  private
 	 * @return  void
 	 */
@@ -151,7 +151,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

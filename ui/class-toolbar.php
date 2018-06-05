@@ -21,8 +21,8 @@ if ( class_exists( 'WP_Admin_Bar' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.6
- * @version 1.8
+ * @since   1.6.0
+ * @version 1.8.0
  * @see     wp-includes/class-wp-admin-bar.php
  * @uses    \WP_Admin_Bar Extends class
  */
@@ -31,7 +31,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Toolbar
 	 */
@@ -40,7 +40,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * Is this toolbar being rendered?
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @static
 	 * @var    bool
 	 */
@@ -49,7 +49,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * View Admin As store.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @var    \VAA_View_Admin_As_Store
 	 */
 	private $vaa_store = null;
@@ -58,8 +58,8 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * Construct function.
 	 * Protected to make sure it isn't declared elsewhere.
 	 *
-	 * @since   1.6
-	 * @since   1.6.1  $vaa param
+	 * @since   1.6.0
+	 * @since   1.6.1  `$vaa` param.
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -73,7 +73,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * Init function that initializes this plugin after the main VAA class is loaded.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @see     'vaa_view_admin_as_init' action
 	 * @return  void
@@ -86,7 +86,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * Init function for the toolbar.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @since   1.6.2  Check for customizer preview.
 	 * @since   1.7.6  Add customizer support by only enabling it in the container, not the preview window.
 	 * @access  public
@@ -113,7 +113,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	/**
 	 * Render our toolbar using the render function from WP_Admin_bar.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @return  void
 	 */
@@ -131,7 +131,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 
 		/**
 		 * Add classes to the toolbar menu (front only).
-		 * @since   1.6
+		 * @since   1.6.0
 		 * @param   array  $array  Empty array.
 		 * @return  array
 		 */
@@ -148,7 +148,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

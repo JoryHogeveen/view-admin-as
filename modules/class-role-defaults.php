@@ -20,8 +20,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.4
- * @version 1.8
+ * @since   1.4.0
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
@@ -29,7 +29,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.5
+	 * @since  1.5.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Role_Defaults
 	 */
@@ -46,7 +46,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Option key.
 	 *
-	 * @since  1.4
+	 * @since  1.4.0
 	 * @var    string
 	 */
 	protected $optionKey = 'vaa_role_defaults';
@@ -54,7 +54,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Array of meta strings that influence the screen settings.
 	 *
-	 * @since  1.4
+	 * @since  1.4.0
 	 * @see    $meta_default
 	 * @var    bool[]  Meta key as array key.
 	 */
@@ -64,7 +64,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Array of default meta strings.
 	 * %% stands for a wildcard and can be anything.
 	 *
-	 * @since  1.4
+	 * @since  1.4.0
 	 * @since  1.5.2  Set both values and keys to fix problem with unsetting a key through the filter.
 	 * @var    bool[]  Meta key as array key.
 	 */
@@ -101,8 +101,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Construct function.
 	 * Protected to make sure it isn't declared elsewhere.
 	 *
-	 * @since   1.4
-	 * @since   1.6.1  $vaa param
+	 * @since   1.4.0
+	 * @since   1.6.1  `$vaa` param.
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -119,7 +119,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		/**
 		 * Add capabilities for this module.
 		 *
-		 * @since 1.6
+		 * @since  1.6.0
 		 */
 		$this->capabilities = array( 'view_admin_as_role_defaults' );
 		$this->add_filter( 'view_admin_as_add_capabilities', array( $this, 'add_capabilities' ) );
@@ -130,8 +130,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		/**
 		 * Checks if the management part of module should be enabled.
 		 *
-		 * @since  1.4    Validate option data.
-		 * @since  1.6    Also calls init().
+		 * @since  1.4.0  Validate option data.
+		 * @since  1.6.0  Also calls `init()`.
 		 */
 		$this->set_enable( (bool) $this->get_optionData( 'enable' ), false );
 
@@ -153,7 +153,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Init function for global functions (not user dependent).
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  private
 	 * @global  \wpdb  $wpdb
 	 * @return  void
@@ -176,7 +176,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		/**
 		 * Allow users to overwrite the default meta keys.
 		 *
-		 * @since   1.4
+		 * @since   1.4.0
 		 * @param   array  $meta  Default metadata.
 		 * @return  array  $meta
 		 */
@@ -212,7 +212,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * Print script in the admin header.
 		 * Also handles the lock_meta_boxes setting.
 		 *
-		 * @since  1.6
+		 * @since  1.6.0
 		 * @since  1.6.2  Move to footer (changed hook).
 		 */
 		$this->add_action( 'admin_print_footer_scripts', array( $this, 'admin_print_footer_scripts' ), 100 );
@@ -223,7 +223,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * init function to store data from the main class and enable functionality based on the current view.
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  public
 	 * @return  void
 	 */
@@ -250,7 +250,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Print scripts in the admin section.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 */
 	public function admin_print_footer_scripts() {
@@ -258,7 +258,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		/**
 		 * Setting: Lock meta box order and locations for all users who can't access role defaults.
 		 *
-		 * @since  1.6
+		 * @since  1.6.0
 		 * @since  1.6.2  Improved conditions + check if sortable is enqueued and active.
 		 */
 		if ( $this->get_optionData( 'lock_meta_boxes' )
@@ -287,7 +287,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Get the metadata for meta compare.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @return  bool[]  $this->meta  The meta keys as array keys.
 	 */
@@ -299,7 +299,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Set the metadata for meta compare.
 	 * Used to enforce only 1 level depth array of strings.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @param   array   $var  The new meta keys.
 	 * @return  void
@@ -347,7 +347,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  public
 	 * @param   null   $null  Null.
 	 * @param   array  $data  The ajax data for this module.
@@ -382,11 +382,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 */
 
 		$bool_options = array(
-			// @since  1.4  Apply defaults to a new users (on register)
+			// @since  1.4.0  Apply defaults to a new users (on register).
 			'apply_defaults_on_register',
-			// @since  1.5.1  Disable the screen options
+			// @since  1.5.1  Disable the screen options.
 			'disable_user_screen_options',
-			// @since  1.6  Lock the locations of meta boxes
+			// @since  1.6.0  Lock the locations of meta boxes.
 			'lock_meta_boxes',
 		);
 
@@ -414,7 +414,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * Bulk actions
 		 */
 
-		// @since  1.4  Apply defaults to users
+		// @since  1.4.0  Apply defaults to users.
 		if ( VAA_API::array_has( $data, 'apply_defaults_to_users', array( 'validation' => 'is_array' ) ) ) {
 			$errors = array();
 			foreach ( $data['apply_defaults_to_users'] as $key => $user_data ) {
@@ -439,18 +439,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
-		// @since  1.4  Apply defaults to users by role
+		// @since  1.4.0  Apply defaults to users by role.
 		if ( VAA_API::array_has( $data, 'apply_defaults_to_users_by_role', array( 'validation' => 'is_string' ) ) ) {
 			// @todo notify of errors in updates.
 			$success = $this->apply_defaults_to_users_by_role( strip_tags( $data['apply_defaults_to_users_by_role'] ) );
 		}
 
-		// @since  1.4  Clear defaults for a role
+		// @since  1.4.0  Clear defaults for a role.
 		if ( VAA_API::array_has( $data, 'clear_role_defaults', array( 'validation' => 'is_string' ) ) ) {
 			$success = $this->clear_role_defaults( strip_tags( $data['clear_role_defaults'] ) );
 		}
 
-		// @since  1.5  Export
+		// @since  1.5.0  Export.
 		if ( VAA_API::array_has( $data, 'export_role_defaults', array( 'validation' => 'is_string' ) ) ) {
 			$content = $this->export_role_defaults( strip_tags( $data['export_role_defaults'] ) );
 			if ( is_array( $content ) ) {
@@ -464,7 +464,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
-		// @since  1.5  Import
+		// @since  1.5.0  Import.
 		if ( VAA_API::array_has( $data, 'import_role_defaults', array( 'validation' => 'is_array' ) ) ) {
 			$success = false;
 			if ( ! empty( $data['import_role_defaults']['data'] ) ) {
@@ -479,7 +479,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
-		// @since  1.7  Copy
+		// @since  1.7.0  Copy.
 		if ( VAA_API::array_has( $data, 'copy_role_defaults', array( 'validation' => 'is_array' ) ) ) {
 			if ( isset( $data['copy_role_defaults']['from'] ) && isset( $data['copy_role_defaults']['to'] ) ) {
 				$method = ( ! empty( $data['copy_role_defaults']['method'] ) ) ? (string) $data['copy_role_defaults']['method'] : '';
@@ -504,7 +504,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Update user settings with the a role default.
 	 * When no role is provided this function only checks the first existing user role. If the user has multiple roles, the other roles are ignored.
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Role_Defaults::update_user_with_role_defaults_multisite_register()
 	 * @see     \VAA_View_Admin_As_Role_Defaults::apply_defaults_to_users_by_role()
@@ -547,7 +547,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * If true, it is an existing user and it will not get the role defaults.
 	 * If false, it is most likely a new user and it will get the role defaults.
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  public
 	 * @see     'add_user_to_blog' action
 	 * @link    https://developer.wordpress.org/reference/hooks/add_user_to_blog/
@@ -569,8 +569,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Apply default settings to all users of a role.
 	 *
-	 * @since   1.4
-	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
+	 * @since   1.4.0
+	 * @since   1.7.2  Renamed "all" wildcard to "__all__".
 	 * @access  private
 	 * @param   string|string[]  $role  Role name, an array of role names or just "__all__" for all roles.
 	 * @return  bool
@@ -606,7 +606,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Init function/action to load necessary data and register all used hooks.
 	 * IMPORTANT! This function should ONLY be used when a role view is selected!
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  private
 	 * @see     \VAA_View_Admin_As_Role_Defaults::vaa_init()
 	 * @return  void
@@ -646,8 +646,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
 	 *
-	 * @since   1.4
-	 * @since   1.5.3   Stop checking $single parameter.
+	 * @since   1.4.0
+	 * @since   1.5.3   Stop checking `$single` parameter.
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
@@ -664,7 +664,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	public function filter_get_user_metadata( $null, $object_id, $meta_key ) {
 		if ( true === $this->compare_metakey( $meta_key ) && (int) $object_id === (int) $this->store->get_curUser()->ID ) {
 			$new_meta = $this->get_role_defaults( $this->store->get_view( 'role' ), $meta_key );
-			// Do not check $single, this logic is in wp-includes/meta.php line 487.
+			// Do not check `$single`, this logic is in `wp-includes/meta.php` line 487.
 			return array( $new_meta );
 		}
 		return $null; // Go on as normal.
@@ -676,7 +676,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * IMPORTANT! This filter should ONLY be used when a role view is selected!
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
@@ -702,7 +702,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Get defaults of a role.
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @since   1.6.3  Multiple get methods (parameters are now optional).
 	 * @access  public
 	 *
@@ -729,7 +729,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Iterates over each role and sets the new values with an optional method.
 	 * By default it fully overwrites the previous values.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  private
 	 * @param   array   $new_defaults  New role defaults (requires a full array of roles with data).
 	 * @param   string  $method        (optional) Method to be used. (merge, append, default).
@@ -765,7 +765,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Update a role with new defaults.
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  private
 	 *
 	 * @param   string  $role        Role name.
@@ -785,7 +785,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Copy defaults from one role to another (or multiple).
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 *
 	 * @param   string        $from_role  The source role defaults.
@@ -825,8 +825,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Remove defaults of a role.
 	 *
-	 * @since   1.4
-	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
+	 * @since   1.4.0
+	 * @since   1.7.2  Renamed "all" wildcard to "__all__".
 	 * @access  public
 	 * @param   string|string[]  $role  Role name, an array of role names or just "__all__" for all roles.
 	 * @return  bool
@@ -860,8 +860,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * Export role defaults.
 	 * Note: Export always returns a full array by default (role as array key) even if you only export a single role.
 	 *
-	 * @since   1.5
-	 * @since   1.7.2  Renamed "all" wildcard to "__all__"
+	 * @since   1.5.0
+	 * @since   1.7.2  Renamed "all" wildcard to "__all__".
 	 * @access  public
 	 * @param   string  $role  (optional) Role name or "__all__" for all roles.
 	 * @return  mixed
@@ -882,8 +882,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Import role defaults.
 	 *
-	 * @since   1.5
-	 * @since   1.6.2  Add extra import methods
+	 * @since   1.5.0
+	 * @since   1.6.2  Add extra import methods.
 	 * @access  public
 	 * @param   array   $data    Data to import.
 	 * @param   string  $method  (optional) Import method.
@@ -942,7 +942,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.4
+	 * @since   1.4.0
 	 * @access  public
 	 * @param   string  $meta_key_compare  Meta key.
 	 * @return  bool
@@ -1017,7 +1017,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	/**
 	 * Add admin bar module setting items.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @see     'vaa_admin_bar_modules' action
 	 *
@@ -1059,9 +1059,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.4
-	 * @since   1.5.2   Changed hook to vaa_admin_bar_settings_after (previous: 'vaa_admin_bar_roles_before').
-	 * @since   1.6.1   Changed hook to vaa_admin_bar_menu
+	 * @since   1.4.0
+	 * @since   1.5.2   Changed hook to `vaa_admin_bar_settings_after` (previous: `vaa_admin_bar_roles_before`).
+	 * @since   1.6.1   Changed hook to `vaa_admin_bar_menu`.
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 *
@@ -1118,7 +1118,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			}
 		}
 
-		// @since  1.4  Enable apply defaults on register.
+		// @since  1.4.0  Enable apply defaults on register.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-register-enable',
 			'parent' => $root,
@@ -1161,7 +1161,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'class' => 'auto-height',
 			),
 		) );
-		// @since  1.6  Lock meta box order and locations for users who can't access this plugin.
+		// @since  1.6.0  Lock meta box order and locations for users who can't access this plugin.
 		$admin_bar->add_node( array(
 			'id'     => $root . '-setting-lock-meta-boxes',
 			'parent' => $root,
@@ -1302,7 +1302,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.7  Separated the tools from the main function.
+	 * @since   1.7.0  Separated the tools from the main function.
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Role_Defaults::admin_bar_menu()
 	 *
@@ -1367,7 +1367,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( $users ) {
 
 			/**
-			 * @since  1.4  Apply defaults to users
+			 * @since  1.4.0  Apply defaults to users.
 			 */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-bulk-users',
@@ -1431,11 +1431,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				),
 			) );
 
-			// $users already verified
+			// `$users` already verified.
 			if ( $roles ) {
 
 				/**
-				 * @since  1.4  Apply defaults to all users for a role
+				 * @since  1.4.0  Apply defaults to all users for a role.
 				 */
 				$admin_bar->add_group( array(
 					'id'     => $root . '-bulk-roles',
@@ -1498,7 +1498,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( $roles ) {
 
 			/**
-			 * @since  1.7  Copy actions.
+			 * @since  1.7.0  Copy actions.
 			 */
 			$role_copy_options = $role_select_options;
 			$role_copy_options['']['label'] = '- ' . __( 'Select role source', VIEW_ADMIN_AS_DOMAIN ) . ' -';
@@ -1615,7 +1615,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			) );
 
 			/**
-			 * @since  1.5  Export actions.
+			 * @since  1.5.0  Export actions.
 			 */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-export',
@@ -1680,7 +1680,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			) );
 
 			/**
-			 * @since  1.5  Import actions.
+			 * @since  1.5.0  Import actions.
 			 */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-import',
@@ -1802,7 +1802,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		} // End if().
 
 		/**
-		 *  @since  1.4  Clear actions
+		 *  @since  1.4.0  Clear actions
 		 */
 
 		/**
@@ -1894,7 +1894,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

@@ -15,8 +15,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.6
- * @version 1.8
+ * @since   1.6.0
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
@@ -24,7 +24,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Compat
 	 */
@@ -33,8 +33,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	/**
 	 * Populate the instance.
 	 *
-	 * @since   1.6
-	 * @since   1.6.1  $vaa param.
+	 * @since   1.6.0
+	 * @since   1.6.1  `$vaa` param.
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -46,8 +46,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	/**
 	 * Fix compatibility issues.
 	 *
-	 * @since   0.1
-	 * @since   1.6    Moved third_party_compatibility() to this class from main class.
+	 * @since   0.1.0
+	 * @since   1.6.0  Moved `third_party_compatibility()` from `VAA_View_Admin_As`.
 	 * @access  public
 	 * @return  void
 	 */
@@ -64,7 +64,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		 *  - Pods
 		 *  - Yoast SEO 5.8+
 		 *
-		 * @since  1.6
+		 * @since  1.6.0
 		 */
 		$this->add_filter( 'members_get_capabilities', array( $this, 'get_vaa_capabilities' ) );
 		$this->add_action( 'members_register_cap_groups', array( $this, 'action_members_register_cap_group' ) );
@@ -78,7 +78,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 
 		/**
 		 * Get all capabilities.
-		 * @since  1.5
+		 * @since  1.5.0
 		 */
 		$this->add_filter( 'view_admin_as_get_capabilities', array( $this, 'get_capabilities' ), 10, 2 );
 
@@ -116,7 +116,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	/**
 	 * Get's current capabilities and merges with capabilities from other plugins.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Compat::init()
 	 *
@@ -144,7 +144,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			$caps = $this->get_plugin_capabilities( $caps );
 		}
 
-		// @since  1.8  Make sure both keys and values are capabilities.
+		// @since  1.8.0  Make sure both keys and values are capabilities.
 		$all_caps = array();
 		foreach ( $caps as $cap_key => $cap ) {
 			if ( is_string( $cap ) && ! is_numeric( $cap ) ) {
@@ -160,8 +160,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	/**
 	 * Add our capabilities to an existing list of capabilities.
 	 *
-	 * @since   1.6
-	 * @since   1.7.3  Renamed from add_capabilities().
+	 * @since   1.6.0
+	 * @since   1.7.3  Renamed from `add_capabilities()`.
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Compat::init()
 	 *
@@ -341,7 +341,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		// @since  1.7.4  Yoast SEO 5.5+  Load integration on front end.
 		if ( ! is_admin() ) {
 			/**
-			 * @since  1.8  Yoast SEO - Check for API function.
+			 * @since  1.8.0  Yoast SEO - Check for API function.
 			 * @link   https://github.com/Yoast/wordpress-seo/pull/9365
 			 */
 			if ( function_exists( 'wpseo_get_capabilities' ) ) {
@@ -374,7 +374,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * Fix compatibility issues Pods Framework 2.0+.
 	 *
 	 * @since   1.0.1
-	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since   1.6.2  Check for all provided capabilities.
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Compat::init()
@@ -399,7 +399,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * @see  members_register_cap_group()
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Compat::init()
 	 */
@@ -568,7 +568,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

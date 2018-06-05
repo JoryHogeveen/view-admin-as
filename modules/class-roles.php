@@ -15,9 +15,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   0.1    View type existed in core.
- * @since   1.8    Created this class.
- * @version 1.8
+ * @since   0.1.0  View type existed in core.
+ * @since   1.8.0  Created this class.
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
@@ -25,14 +25,14 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Roles
 	 */
 	private static $_instance = null;
 
 	/**
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $type = 'role';
@@ -40,7 +40,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * The icon for this view type.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $icon = 'dashicons-groups';
@@ -48,7 +48,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Populate the instance.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -85,7 +85,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Apply the user view.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 */
 	public function do_view() {
@@ -100,7 +100,8 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Modify the current user object.
 	 *
-	 * @param  \WP_User  $user  The modified user object.
+	 * @since   1.8.0
+	 * @param   \WP_User  $user  The modified user object.
 	 */
 	public function modify_user( $user ) {
 
@@ -117,7 +118,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Change the VAA admin bar menu title.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @return  array
@@ -133,7 +134,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Get the view title.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   \WP_Role  $role
 	 * @return  string
 	 */
@@ -143,7 +144,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		/**
 		 * Change the display title for role nodes.
 		 *
-		 * @since  1.8
+		 * @since  1.8.0
 		 * @param  string    $title  Role name (translated).
 		 * @param  \WP_Role  $role   The role object.
 		 * @return string
@@ -156,8 +157,8 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Validate data for this view type
 	 *
-	 * @since   1.7
-	 * @since   1.8    Moved from VAA_View_Admin_As_Controller
+	 * @since   1.7.0
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
@@ -174,8 +175,8 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Add the admin bar items.
 	 *
-	 * @since   1.5
-	 * @since   1.8    Moved from VAA_View_Admin_As_Admin_Bar.
+	 * @since   1.5.0
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Admin_Bar`.
 	 * @access  public
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item.
@@ -221,7 +222,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the beginning of the roles group.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -236,7 +237,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the end of the roles group.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -251,10 +252,10 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Store available roles.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @since   1.5.2  Get role objects instead of arrays.
-	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.8    Moved from VAA_View_Admin_As_Store.
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @access  public
 	 * @global  \WP_Roles  $wp_roles
 	 * @return  void
@@ -309,7 +310,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Set the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   mixed   $val
 	 * @param   string  $key     (optional) The data key.
@@ -322,7 +323,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	/**
 	 * Get the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   string  $key  (optional) The data key.
 	 * @return  mixed
@@ -336,7 +337,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

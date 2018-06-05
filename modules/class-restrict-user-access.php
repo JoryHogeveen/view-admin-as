@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.8
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
@@ -37,7 +37,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 
 	/**
 	 * @since  1.6.4
-	 * @since  1.8    Renamed from $viewKey.
+	 * @since  1.8.0  Renamed from `$viewKey`.
 	 * @var    string
 	 */
 	protected $type = 'rua_level';
@@ -52,14 +52,14 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 
 	/**
 	 * @since  1.6.4
-	 * @since  1.8    Renamed from $selectedLevel.
+	 * @since  1.8.0  Renamed from `$selectedLevel`.
 	 * @var    int  WP_Post ID (RUA access level post type).
 	 */
 	protected $selected;
 
 	/**
 	 * @since  1.6.4
-	 * @since  1.8    Renamed from $selectedLevelCaps.
+	 * @since  1.8.0  Renamed from `$selectedLevelCaps`.
 	 * @var    array  The caps set for this level.
 	 */
 	protected $selectedCaps = array();
@@ -142,7 +142,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 
 	/**
 	 * Sets the type labels.
-	 * @since   1.8
+	 * @since   1.8.0
 	 */
 	public function set_labels() {
 		$this->levelPostType = get_post_type_object( $this->ruaTypeRestrict );
@@ -272,7 +272,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	/**
 	 * Validate data for this view type
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
 	 * @return  mixed
@@ -288,8 +288,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.6.4
-	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
-	 * @since   1.8    Renamed from vaa_admin_bar_view_titles().
+	 * @since   1.7.5  Renamed from `vaa_viewing_as_title()`.
+	 * @since   1.8.0  Renamed from `vaa_admin_bar_view_titles()`.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @return  array
@@ -478,7 +478,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * Store the available access levels.
 	 *
 	 * @since   1.6.4
-	 * @since   1.8    Renamed from store_levels().
+	 * @since   1.8.0  Renamed from `store_levels()`.
 	 * @access  private
 	 */
 	public function store_data() {

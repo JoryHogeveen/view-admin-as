@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.8
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
@@ -34,7 +34,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 	/**
 	 * @since  1.7.2
-	 * @since  1.8    Renamed from $viewKey.
+	 * @since  1.8.0  Renamed from `$viewKey`.
 	 * @var    string
 	 */
 	protected $type = 'groups';
@@ -51,7 +51,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 	/**
 	 * @since  1.7.2
-	 * @since  1.8    Renamed from $selectedGroup.
+	 * @since  1.8.0  Renamed from `$selectedGroup`.
 	 * @see    \Groups_Group >> groups/lib/core/class-groups-group.php
 	 * @var    \Groups_Group
 	 */
@@ -476,7 +476,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.7.2
-	 * @since   1.7.5  Renamed from vaa_viewing_as_title().
+	 * @since   1.7.5  Renamed from `vaa_viewing_as_title()`.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @return  array
@@ -596,7 +596,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	/**
 	 * Store the available groups.
 	 * @since   1.7.2
-	 * @since   1.8    Renamed from store_groups().
+	 * @since   1.8.0  Renamed from `store_groups()`.
 	 * @access  private
 	 */
 	public function store_data() {

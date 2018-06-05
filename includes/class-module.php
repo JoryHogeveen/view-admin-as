@@ -16,8 +16,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.5  (This was one class with VAA_View_Admin_As_Class_Base)
- * @version 1.8
+ * @since   1.5.0  (This was one class with VAA_View_Admin_As_Class_Base)
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
@@ -25,7 +25,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	/**
 	 * Option key.
 	 *
-	 * @since  1.5
+	 * @since  1.5.0
 	 * @var    string
 	 */
 	protected $optionKey = '';
@@ -33,7 +33,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	/**
 	 * Option data.
 	 *
-	 * @since  1.5
+	 * @since  1.5.0
 	 * @var    mixed
 	 */
 	protected $optionData = false;
@@ -41,7 +41,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	/**
 	 * Enable functionalities?
 	 *
-	 * @since  1.5
+	 * @since  1.5.0
 	 * @var    bool
 	 */
 	protected $enable = false;
@@ -49,7 +49,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	/**
 	 * Script localization data.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @var    array
 	 */
 	protected $scriptLocalization = array();
@@ -57,7 +57,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	/**
 	 * Is enabled?
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @return  bool
 	 */
@@ -70,7 +70,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.5.1
 	 * @since   1.6.2  Make database update optional.
-	 * @since   1.8    Make this method public.
+	 * @since   1.8.0  Make this method public.
 	 * @access  public
 	 * @param   bool  $bool       Enable or disable?
 	 * @param   bool  $update_db  Do database update? (default true).
@@ -91,7 +91,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 * Helper function for ajax return data.
 	 * Merges second param with data defaults.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 * @param   bool    $success  Success return.
 	 * @param   array   $data     Array of detailed info.
@@ -116,7 +116,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 * Helper function for ajax notice return data.
 	 * Merges second param with data defaults.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 * @param   bool    $success  Success return.
 	 * @param   array   $data     Array of detailed info.
@@ -132,7 +132,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 * Helper function for ajax popup return data.
 	 * Merges second param with data defaults.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 * @param   bool    $success  Success return.
 	 * @param   array   $data     Array of detailed info.
@@ -148,7 +148,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 * Simple data validation.
 	 * Meant to be overwritten by subclass.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 * @param   null   $null  Null.
 	 * @param   mixed  $data  The view data.

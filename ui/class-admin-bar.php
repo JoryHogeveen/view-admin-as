@@ -15,8 +15,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.5
- * @version 1.8
+ * @since   1.5.0
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
@@ -24,7 +24,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.5
+	 * @since  1.5.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Admin_Bar
 	 */
@@ -52,8 +52,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * Construct function.
 	 * Protected to make sure it isn't declared elsewhere.
 	 *
-	 * @since   1.5
-	 * @since   1.6.1  $vaa param
+	 * @since   1.5.0
+	 * @since   1.6.1  `$vaa` param.
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -69,7 +69,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	/**
 	 * init function to store data from the main class and enable functionality based on the current view.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @see     'vaa_view_admin_as_init' action
 	 * @return  void
@@ -184,7 +184,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * Filter what to show when a view is applied.
 		 * This filter is hooked after the initial parsing of view titles.
 		 *
-		 * @since  1.6
+		 * @since  1.6.0
 		 * @since  1.7.5  Renamed from `vaa_admin_bar_viewing_as_title`.
 		 * @param  string  $title   The current title.
 		 * @param  string  $view    The view data.
@@ -198,7 +198,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	/**
 	 * Add admin bar menu items.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @see     'admin_bar_menu' action
 	 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
@@ -240,7 +240,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		/**
 		 * Add items as first.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
@@ -274,7 +274,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		/**
 		 * Add items.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
@@ -301,7 +301,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * 31: Visitor view
 	 * 40: RUA & Groups view modules
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -353,7 +353,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		/**
 		 * Add items at the beginning of the info group.
 		 *
-		 * @since   1.6
+		 * @since   1.6.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
@@ -388,7 +388,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		/**
 		 * Add items at the end of the info group.
 		 *
-		 * @since   1.6
+		 * @since   1.6.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
@@ -402,7 +402,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	/**
 	 * Add admin bar menu settings items.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -426,7 +426,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		/**
 		 * Add items at the beginning of the settings group.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
@@ -441,7 +441,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		/**
 		 * Add items at the end of the settings group.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
@@ -454,7 +454,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	/**
 	 * Add admin bar menu view type items.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -660,7 +660,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * Add admin bar menu for view combinations.
 	 * Combine views node as last item in the default group.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @see     'vaa_admin_bar_menu' action
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -697,7 +697,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.5
+	 * @since   1.5.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class

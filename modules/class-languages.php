@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.5
- * @version 1.8
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
@@ -47,7 +47,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	/**
 	 * The icon for this view type.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $icon = 'dashicons-translation';
@@ -140,7 +140,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.7.5
-	 * @since   1.8    Renamed from vaa_admin_bar_view_titles().
+	 * @since   1.8.0  Renamed from `vaa_admin_bar_view_titles()`.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @return  array
@@ -156,7 +156,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	/**
 	 * Get the view title.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   string  $locale  The locale.
 	 * @return  string
 	 */
@@ -166,7 +166,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		/**
 		 * Change the display title for language nodes.
 		 *
-		 * @since  1.8
+		 * @since  1.8.0
 		 * @param  string  $title   Language (native).
 		 * @param  string  $locale  The locale.
 		 * @return string
@@ -246,7 +246,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	 * Store the available languages.
 	 *
 	 * @since   1.7.5
-	 * @since   1.8    Renamed from store_languages().
+	 * @since   1.8.0  Renamed from `store_languages()`.
 	 * @access  public
 	 */
 	public function store_data() {
@@ -320,7 +320,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	/**
 	 * Set the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   mixed   $val
 	 * @param   string  $key     (optional) The data key.
@@ -334,7 +334,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	 * Get a language by locale.
 	 *
 	 * @since   1.7.5
-	 * @since   1.8    Renamed from get_languages().
+	 * @since   1.8.0  Renamed from `get_languages()`.
 	 * @access  public
 	 * @param   string  $key  (optional) The language locale.
 	 * @return  mixed

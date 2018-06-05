@@ -20,9 +20,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   0.1    View type existed in core.
- * @since   1.8    Created this class.
- * @version 1.8
+ * @since   0.1.0  View type existed in core.
+ * @since   1.8.0  Created this class.
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
@@ -30,14 +30,14 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Users
 	 */
 	private static $_instance = null;
 
 	/**
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $type = 'user';
@@ -45,7 +45,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * The icon for this view type.
 	 *
-	 * @since  1.8
+	 * @since  1.8.0
 	 * @var    string
 	 */
 	protected $icon = 'dashicons-admin-users';
@@ -53,7 +53,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Provide ajax search instead of loading all users at once?
 	 *
-	 * @since  1.8  Ajax search UI not available yet.
+	 * @since  1.8.0
 	 * @var    bool
 	 */
 	protected $ajax_search = false;
@@ -61,7 +61,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Populate the instance.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -103,7 +103,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Apply the user view.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 */
 	public function do_view() {
@@ -131,7 +131,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Change the VAA admin bar menu title.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @return  array
@@ -161,7 +161,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Get the view title.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   \WP_User  $user
 	 * @return  string
 	 */
@@ -174,7 +174,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		/**
 		 * Change the display title for user nodes.
 		 *
-		 * @since  1.8
+		 * @since  1.8.0
 		 * @param  string    $title  User display name.
 		 * @param  \WP_User  $user   The user object.
 		 * @return string
@@ -187,7 +187,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * View update handler (Ajax probably), called from main handler.
 	 *
-	 * @since   1.8   Renamed from `ajax_handler`
+	 * @since   1.8.0  Renamed from `ajax_handler()`.
 	 * @access  public
 	 * @param   null    $null    Null.
 	 * @param   mixed   $data    The ajax data for this module.
@@ -210,8 +210,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Validate data for this view type
 	 *
-	 * @since   1.7
-	 * @since   1.8    Moved from VAA_View_Admin_As_Controller
+	 * @since   1.7.0
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
@@ -228,8 +228,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Add the admin bar items.
 	 *
-	 * @since   1.5
-	 * @since   1.8    Moved from VAA_View_Admin_As_Admin_Bar.
+	 * @since   1.5.0
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Admin_Bar`.
 	 * @access  public
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item.
@@ -279,7 +279,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the beginning of the users group.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -301,7 +301,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		/**
 		 * Add items at the end of the users group.
 		 *
-		 * @since   1.5
+		 * @since   1.5.0
 		 * @see     'admin_bar_menu' action
 		 * @link    https://codex.wordpress.org/Class_Reference/WP_Admin_Bar
 		 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
@@ -316,7 +316,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * User view type settings.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item.
@@ -327,7 +327,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * force_group_users setting.
 		 *
 		 * @since   1.5.2
-		 * @since   1.8    Moved to this class & enhance checks whether to show this setting or not.
+		 * @since   1.8.0  Moved to this class & enhance checks whether to show this setting or not.
 		 */
 		if ( ! $this->ajax_search &&
 		     VAA_API::is_view_type_enabled( 'role' ) &&
@@ -369,8 +369,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Group the users under their roles?
 	 *
-	 * @since   1.5  As a parameter in VAA_View_Admin_As_Admin_Bar.
-	 * @since   1.8  Moved from VAA_View_Admin_As_Admin_Bar and changed to a function.
+	 * @since   1.5.0  As a parameter in `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Admin_Bar` and changed to a separate method.
 	 * @access  public
 	 * @return  bool
 	 */
@@ -407,7 +407,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Check if the original user can access a user (view as).
 	 * Also checks the current store.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   int|\WP_User  $user
 	 * @return  \WP_User
@@ -432,7 +432,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Search users with AJAX.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 */
 	public function ajax_search_users() {
 		$args = VAA_API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as_search_users' );
@@ -491,7 +491,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Search users.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @param   array  $args  Function arguments.
 	 * @return  \WP_User[]
 	 */
@@ -508,10 +508,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.5.0
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since   1.6.2  Reduce user queries to 1 for non-network pages with custom query handling.
-	 * @since   1.8    Moved from VAA_View_Admin_As_Store.
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @access  public
 	 * @global  \wpdb  $wpdb
 	 * @param   array  $args  Function arguments.
@@ -523,7 +523,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$args = wp_parse_args( $args, array(
 			/**
 			 * Change the limit for querying users.
-			 * @since  1.8
+			 * @since  1.8.0
 			 * @param  int  $limit  Default: 100.
 			 * @return int
 			 */
@@ -563,7 +563,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		/**
 		 * Search for users.
-		 * @since  1.8
+		 * @since  1.8.0
 		 * @link https://developer.wordpress.org/reference/classes/wp_user_query/prepare_query/
 		 * @link https://developer.wordpress.org/reference/classes/wp_user_query/get_search_sql/
 		 */
@@ -687,14 +687,14 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 					'orderby' => 'display_name',
 					// @since  1.5.2  Exclude the current user.
 					'exclude' => array_merge( $superior_admins, array( $this->store->get_curUser()->ID ) ),
-					// @since  1.8  Limit the number of users to return.
+					// @since  1.8.0  Limit the number of users to return.
 					'number' => $limit,
 				);
 				// @since  1.5.2  Do not get regular admins for normal installs (WP 4.4+).
 				if ( ! is_multisite() && ! $is_superior_admin ) {
 					$user_args['role__not_in'] = 'administrator';
 				}
-				// @since  1.8  Search for users.
+				// @since  1.8.0  Search for users.
 				if ( ! empty( $args['search'] ) ) {
 					$user_args['search'] = $args['search'];
 					$user_args['search_columns'] = (array) $args['search_by'];
@@ -703,7 +703,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				$users = get_users( $user_args );
 			}
 
-			// @since  1.8  Switch to ajax search because of load time.
+			// @since  1.8.0  Switch to ajax search because of load time.
 			if ( $limit <= count( $users ) ) {
 				$this->ajax_search = true;
 				if ( ! VAA_API::is_ajax_request( 'view_admin_as_search_users' ) ) {
@@ -728,7 +728,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @internal
 	 *
 	 * @since   1.6.2
-	 * @since   1.8    Moved to this class from VAA_View_Admin_As_Store
+	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Store`.
 	 * @see     \WP_User::for_site() ( prev: \WP_User::_init_caps() ) >> wp-includes/class-wp-user.php
 	 * @see     get_metadata() >> `get_user_metadata` filter
 	 * @link    https://developer.wordpress.org/reference/functions/get_metadata/
@@ -763,7 +763,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
 	 * @todo Refactor to enable above checks?
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   \WP_User[]|\WP_User    $users
 	 * @param   null|int|\WP_User  $user_id
@@ -834,8 +834,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Sort users by role.
 	 * Only done if roles are stored (role type enabled and initialized before the user type).
 	 *
-	 * @since   1.1
-	 * @since   1.6    Moved to this class from main class.
+	 * @since   1.1.0
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since   1.7.1  User ID as array key.
 	 * @access  public
 	 *
@@ -867,9 +867,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Filter function to add view-as links on user rows in users.php.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @since   1.6.3   Check whether to place link + reset link for current user.
-	 * @since   1.8     Moved to this class from VAA_View_Admin_As_UI.
+	 * @since   1.8.0   Moved from `VAA_View_Admin_As_UI`.
 	 * @access  public
 	 * @param   array     $actions  The existing actions.
 	 * @param   \WP_User  $user     The user object.
@@ -916,7 +916,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Set the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   mixed   $val
 	 * @param   string  $key     (optional) The data key.
@@ -929,7 +929,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Get the view type data.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @param   string  $key  (optional) The data key.
 	 * @return  mixed
@@ -943,7 +943,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.8
+	 * @since   1.8.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

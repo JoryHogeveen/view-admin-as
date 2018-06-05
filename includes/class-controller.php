@@ -15,8 +15,8 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.7
- * @version 1.8
+ * @since   1.7.0
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
@@ -24,7 +24,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_Controller
 	 */
@@ -34,7 +34,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * Expiration time for view data.
 	 *
 	 * @since  1.3.4  (as $metaExpiration).
-	 * @since  1.6.2  Moved from main class.
+	 * @since  1.6.2  Moved from `VAA_View_Admin_As`.
 	 * @var    int
 	 */
 	private $viewExpiration = 86400; // one day: ( 24 * 60 * 60 ).
@@ -42,8 +42,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * VAA_View_Admin_As_Controller constructor.
 	 *
-	 * @since   1.6
-	 * @since   1.6.1  $vaa param.
+	 * @since   1.6.0
+	 * @since   1.6.1  `$vaa` param.
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -67,6 +67,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * @example  You can set it to 1 to always clear everything after login.
 		 * @example  0 will be overwritten!
 		 *
+		 * @since  1.6.2
 		 * @param  int  $viewExpiration  86400 (1 day in seconds).
 		 * @return int
 		 */
@@ -76,7 +77,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * Initializes after VAA is enabled.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @return  void
 	 */
@@ -85,8 +86,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		/**
 		 * Reset view to default if something goes wrong.
 		 *
-		 * @since    0.1
-		 * @since    1.2  Only check for key
+		 * @since    0.1.0
+		 * @since    1.2.0  Only check for key
 		 * @example  http://www.your.domain/wp-admin/?reset-view
 		 */
 		if ( VAA_API::is_request( 'reset-view', 'get' ) ) {
@@ -126,13 +127,13 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * AJAX listener.
 	 * Gets the AJAX input. If it is valid: pass it to the handler.
 	 *
-	 * @since   0.1
-	 * @since   1.3     Added caps handler.
-	 * @since   1.4     Added module handler.
-	 * @since   1.5     Validate a nonce.
-	 *                  Added global and user setting handler.
-	 * @since   1.6     Moved to this class from main class.
-	 * @since   1.6.2   Added visitor view handler + JSON view data.
+	 * @since   0.1.0
+	 * @since   1.3.0  Added caps handler.
+	 * @since   1.4.0  Added module handler.
+	 * @since   1.5.0  Validate a nonce.
+	 *                 Added global and user setting handler.
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since   1.6.2  Added visitor view handler + JSON view data.
 	 * @access  public
 	 * @return  void
 	 */
@@ -172,7 +173,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * AJAX handler.
 	 * Applies the data input.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   array  $data  Post data.
 	 * @return  array|bool
 	 */
@@ -194,7 +195,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * @see     `view_admin_as_update_view_{$key}`
 		 * @see     `view_admin_as_handle_ajax_{$key}`
 		 *
-		 * @since   1.7
+		 * @since   1.7.0
 		 * @param   null    $null    Null.
 		 * @param   mixed   $value   View data value.
 		 * @param   string  $key     View data key.
@@ -250,7 +251,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * Update regular view types.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   null    $null  Null.
 	 * @param   mixed   $data  The view data.
 	 * @param   string  $type  The view type.
@@ -276,7 +277,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * Check if the provided data is the same as the current view.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @since   1.7.2  Data options: `null` for active view & `false` for only/single view.
 	 * @param   mixed  $data  The view data to compare with.
 	 * @param   bool   $type  Only compare a single view type instead of all view data?
@@ -308,7 +309,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * Is it a view type?
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   string  $type  View type name to check
 	 * @return  bool
 	 */
@@ -319,7 +320,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * Get the available view type keys.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @access  public
 	 * @return  string[]
 	 */
@@ -337,7 +338,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * - Menu items require the href attribute (the node needs to be an <a> element).
 		 * @see \VAA_View_Admin_As_Form::do_view_title()
 		 *
-		 * @deprecated  1.8
+		 * @deprecated  1.8.0
 		 *
 		 * @since  1.6.2
 		 * @param  array  $array  Empty array.
@@ -364,9 +365,9 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * Get current view for the current session.
 	 *
 	 * @since   1.3.4
-	 * @since   1.5     Single mode.
-	 * @since   1.6     Moved to this class from main class.
-	 * @since   1.7     Private method. Use store.
+	 * @since   1.5.0   Single mode.
+	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.7.0   Private method. Use store.
 	 * @access  private
 	 * @return  array
 	 */
@@ -409,7 +410,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * Update view for the current session.
 	 *
 	 * @since   1.3.4
-	 * @since   1.6     Moved to this class from main class.
+	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @access  public
 	 *
 	 * @return  bool
@@ -438,7 +439,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * This function is also attached to the wp_login and wp_logout hook.
 	 *
 	 * @since   1.3.4
-	 * @since   1.6     Moved to this class from main class.
+	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -476,7 +477,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * This function is also attached to the wp_login hook.
 	 *
 	 * @since   1.3.4
-	 * @since   1.6     Moved to this class from main class.
+	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -518,7 +519,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * Reset all View Admin As metadata for this user.
 	 *
 	 * @since   1.3.4
-	 * @since   1.6     Moved to this class from main class.
+	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -552,7 +553,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * Remove all unsupported keys.
 	 *
-	 * @since   1.7
+	 * @since   1.7.0
 	 * @param   array  $data  Input data.
 	 * @return  array
 	 */
@@ -579,9 +580,9 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * Validate data before changing the view.
 	 *
-	 * @since   1.5
-	 * @since   1.6    Moved to this class from main class.
-	 * @since   1.7    Changed name to `validate_view_data` from `validate_view_as_data`
+	 * @since   1.5.0
+	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
+	 * @since   1.7.0  Changed name to `validate_view_data` from `validate_view_as_data`
 	 * @access  public
 	 *
 	 * @param   array  $data  Unvalidated data.
@@ -604,7 +605,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			 * Hook is required!
 			 *
 			 * @since  1.6.2
-			 * @since  1.7     Added third $key parameter
+			 * @since  1.7.0   Added third `$key` parameter
 			 * @param  null    $null   Ensures a validation filter is required.
 			 * @param  mixed   $value  Unvalidated view data.
 			 * @param  string  $key    The data key.
@@ -624,7 +625,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.

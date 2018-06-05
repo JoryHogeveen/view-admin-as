@@ -15,9 +15,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.6
- * @since   1.7  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
- * @version 1.8
+ * @since   1.6.0
+ * @since   1.7.0  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
+ * @version 1.8.0
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
@@ -25,7 +25,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	/**
 	 * The single instance of the class.
 	 *
-	 * @since  1.6
+	 * @since  1.6.0
 	 * @static
 	 * @var    \VAA_View_Admin_As_View
 	 */
@@ -42,8 +42,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	/**
 	 * VAA_View_Admin_As_View constructor.
 	 *
-	 * @since   1.6
-	 * @since   1.6.1  $vaa param.
+	 * @since   1.6.0
+	 * @since   1.6.1  `$vaa` param.
 	 * @access  protected
 	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
@@ -55,7 +55,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	/**
 	 * Initializes after VAA is enabled.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @return  void
 	 */
@@ -192,14 +192,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * Map the capabilities (map_meta_cap is used for compatibility with network admins).
 		 * Filter as last to check other plugin changes as well.
 		 *
-		 * @since  0.1
+		 * @since  0.1.0
 		 */
 		$this->add_filter( 'map_meta_cap', array( $this, 'filter_map_meta_cap' ), 999999999, 4 );
 
 		/**
 		 * Disable super admin status for the current user.
 		 * @since  1.7.3
-		 * @since  1.8    Check for multisite.
+		 * @since  1.8.0  Check for multisite.
 		 */
 		if ( is_multisite() &&
 		     ! is_network_admin() &&
@@ -228,7 +228,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * Allow other modules to hook after the initial changes to the current user.
 		 *
 		 * @since  1.6.3
-		 * @since  1.6.4     Changed name (was: `vaa_view_admin_as_modify_current_user`).
+		 * @since  1.6.4  Renamed from `vaa_view_admin_as_modify_current_user`.
 		 * @param  \WP_User  $user        The modified user object.
 		 */
 		do_action( 'vaa_view_admin_as_modify_user', $user );
@@ -329,9 +329,9 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * Change capabilities when the user has selected a view.
 	 * If the capability isn't in the chosen view, then make the value for this capability empty and add "do_not_allow".
 	 *
-	 * @since   0.1
-	 * @since   1.5     Changed function name to map_meta_cap (was change_caps).
-	 * @since   1.6     Moved to this class from main class.
+	 * @since   0.1.0
+	 * @since   1.5.0   Renamed from `change_caps()`.
+	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @since   1.6.2   Use logic from current_view_can().
 	 * @since   1.6.3   Prefix function name with `filter_`.
 	 * @since   1.7.2   Use the `user_has_cap` filter for compatibility enhancements.
@@ -449,7 +449,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * Similar function to current_user_can().
 	 *
 	 * @since   1.6.2
-	 * @since   1.8    Check for non-scalar types being passed as first parameter.
+	 * @since   1.8.0  Check for non-scalar types being passed as first parameter.
 	 * @access  public
 	 *
 	 * @param   string  $cap   The capability.
@@ -519,7 +519,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 *
 	 * Ensures only one instance of this class is loaded or can be loaded.
 	 *
-	 * @since   1.6
+	 * @since   1.6.0
 	 * @access  public
 	 * @static
 	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
