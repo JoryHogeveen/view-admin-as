@@ -242,7 +242,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.3
 	 * @access  public
-	 * @see     init_current_user_modifications()
+	 * @see     init_user_modifications()
 	 *
 	 * @see     'update_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/update_(meta_type)_metadata
@@ -285,7 +285,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.4
 	 * @access  public
-	 * @see     init_current_user_modifications()
+	 * @see     init_user_modifications()
 	 *
 	 * @see     'get_user_metadata' filter
 	 * @link    https://codex.wordpress.org/Plugin_API/Filter_Reference/get_(meta_type)_metadata
