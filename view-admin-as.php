@@ -20,7 +20,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
  * GitHub Plugin URI: https://github.com/JoryHogeveen/view-admin-as
  *
- * @copyright 2015-2017 Jory Hogeveen
+ * @copyright 2015-2018 Jory Hogeveen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
