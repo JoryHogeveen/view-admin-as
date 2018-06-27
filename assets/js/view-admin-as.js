@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1.0
- * @version 1.8.0
+ * @version 1.8.1
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -209,7 +209,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 			}
 			$this.hide();
-			$target.on( 'change', function() {
+			$target.on( 'change vaa-change', function() {
 
 				if ( checkbox && $target.is(':checked') ) {
 					if ( compare ) {
@@ -225,7 +225,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 				VAA_View_Admin_As.autoMaxHeight();
 
-			} ).trigger('change'); // Trigger on load.
+			} ).trigger('vaa-change'); // Trigger on load.
 		} );
 
 		// @since  1.7.0  Init mobile fixes.
