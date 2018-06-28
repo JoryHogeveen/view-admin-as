@@ -1,14 +1,11 @@
-## Expected Behavior
+---
+name: General issue
+about: Anything other than a bug or feature request.
 
+---
 
-## Actual Behavior
-
-
-## Steps to Reproduce the Problem
-
-  1.
-  1.
-  1.
+## Description
+A clear and concise description about the issue.
 
 ## Specifications
 
