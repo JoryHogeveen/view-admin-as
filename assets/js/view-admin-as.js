@@ -209,7 +209,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 			}
 			$this.hide();
-			$target.on( 'change vaa-change', function() {
+			$target.on( 'change.vaa', function() {
 
 				if ( checkbox && $target.is(':checked') ) {
 					if ( compare ) {
@@ -225,7 +225,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 				VAA_View_Admin_As.autoMaxHeight();
 
-			} ).trigger('vaa-change'); // Trigger on load.
+			} ).trigger('change.vaa'); // Trigger on load.
 		} );
 
 		// @since  1.7.0  Init mobile fixes.
