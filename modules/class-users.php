@@ -575,6 +575,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Disable some PHPMD checks for this method.
 	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
 	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
 	 * @todo Refactor to enable above checks?
 	 *
 	 * @since   1.5.0
