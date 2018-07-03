@@ -98,6 +98,14 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		if ( $this->is_enabled() ) {
 			$this->add_action( 'vaa_admin_bar_settings_after', array( $this, 'admin_bar_menu_settings' ), 10, 2 );
+
+			/**
+			 * Force AJAX search for users at all times.
+			 * @since   1.8.1
+			 * @param   bool  $_ajax_search  Default: `false`
+			 * @return  bool
+			 */
+			$this->_ajax_search = (bool) apply_filters( 'view_admin_as_user_ajax_search', $this->_ajax_search );
 		}
 
 		// Users can also be switched from the user list page.
