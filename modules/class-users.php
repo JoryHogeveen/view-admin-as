@@ -602,7 +602,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$string = trim( $string, '*' );
 
 		if ( $cols ) {
-			$cols = array_intersect( $cols, $user_columns );
+			$cols = array_intersect( (array) $cols, $user_columns );
 		}
 		if ( ! $cols ) {
 			$cols = array( 'user_login', 'user_url', 'user_email', 'user_nicename', 'display_name' );
@@ -670,7 +670,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			 */
 			'limit' => apply_filters( 'view_admin_as_user_query_limit', 100 ),
 			'search' => '',
-			'search_by' => '',
+			'search_by' => array(),
 		) );
 
 		$limit = (int) $args['limit'];
