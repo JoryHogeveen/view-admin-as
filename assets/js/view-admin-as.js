@@ -1088,6 +1088,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		function search_users_ajax( search ) {
 			clearTimeout( ajax_delay_timer );
+
+			var search_by = $( '.ab-vaa-search.search-users select', $root ).val();
+			if ( search_by ) {
+				search = {
+					'search': search,
+					'search_by': search_by
+				};
+			}
+
 			ajax_delay_timer = setTimeout( function() {
 
 				$search_results.html( '<div class="ab-item ab-empty-item">. . . </div>' );
