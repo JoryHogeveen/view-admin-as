@@ -589,6 +589,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	public function store_data( $args = array() ) {
 		global $wpdb;
 
+		if ( $this->ajax_search() && ! $this->is_ajax_search ) {
+			return;
+		}
+
 		$args = wp_parse_args( $args, array(
 			/**
 			 * Change the limit for querying users.
