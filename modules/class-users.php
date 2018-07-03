@@ -623,14 +623,13 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		foreach ( $cols as $col ) {
 			$col = 'users.' . $col;
-			if ( 'ID' === $col ) {
-				$searches[] = $col . ' = ' . esc_sql( $string );
-				// codingStandardsIgnoreLine >> $col is used.
-				//$searches[] = $wpdb->prepare( $col . ' = %s', $string );
+			if ( 'users.ID' === $col ) {
+				if ( ! is_numeric( $string ) ) {
+					$string = 0;
+				}
+				$searches[] = $col . ' = ' . absint( $string );
 			} else {
 				$searches[] = "{$col} LIKE '{$like}'";
-				// codingStandardsIgnoreLine >> $col is used.
-				//$searches[] = $wpdb->prepare( $col . ' LIKE %s', $like );
 			}
 		}
 
