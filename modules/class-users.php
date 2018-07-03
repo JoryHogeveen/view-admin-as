@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.0
+ * @version 1.8.1
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
@@ -52,11 +52,21 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 	/**
 	 * Provide ajax search instead of loading all users at once?
+	 * This parameter does not check user settings!
 	 *
+	 * @internal
 	 * @since  1.8.0
 	 * @var    bool
 	 */
-	protected $ajax_search = false;
+	protected $_ajax_search = false;
+
+	/**
+	 * Is the current request an AJAX request.
+	 *
+	 * @since  1.8.1
+	 * @var    bool
+	 */
+	protected $is_ajax_search = false;
 
 	/**
 	 * Populate the instance.
@@ -108,7 +118,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 */
 	public function do_view() {
 
-		if ( $this->selected && ( ! $this->is_enabled() || $this->ajax_search ) ) {
+		if ( $this->selected && ( ! $this->is_enabled() || $this->ajax_search() ) ) {
 			// Store the single selected user.
 			$this->validate_target_user( $this->selected );
 		}
@@ -324,12 +334,13 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	public function admin_bar_menu_settings( $admin_bar, $root ) {
 
 		/**
-		 * force_group_users setting.
+		 * `force_group_users` setting.
+		 * Only show if ajax search is not enabled and group_user_roles() isn't already auto-enabled.
 		 *
 		 * @since   1.5.2
 		 * @since   1.8.0  Moved to this class & enhance checks whether to show this setting or not.
 		 */
-		if ( ! $this->ajax_search &&
+		if ( ! $this->ajax_search() &&
 		     VAA_API::is_view_type_enabled( 'role' ) &&
 		     $this->store->get_roles() &&
 		     (
@@ -364,6 +375,41 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				)
 			);
 		}
+
+		/**
+		 * `force_ajax_users` setting.
+		 * Only hide setting if ajax search is disabled due to the amount of users.
+		 *
+		 * @since   1.8.1
+		 */
+		if ( ! $this->ajax_search( false ) ) {
+			$admin_bar->add_node(
+				array(
+					'id'     => $root . '-force-ajax-users',
+					'parent' => $root,
+					'title'  => VAA_View_Admin_As_Form::do_checkbox(
+						array(
+							'name'        => $root . '-force-ajax-users',
+							'value'       => $this->store->get_userSettings( 'force_ajax_users' ),
+							'compare'     => true,
+							'label'       => __( 'AJAX search users', VIEW_ADMIN_AS_DOMAIN ),
+							'description' => __( 'Enable AJAX search for users', VIEW_ADMIN_AS_DOMAIN ),
+							'help'        => true,
+							'auto_js' => array(
+								'setting' => 'user_setting',
+								'key'     => 'force_ajax_users',
+								'refresh' => true,
+							),
+							'auto_showhide' => true,
+						)
+					),
+					'href'   => false,
+					'meta'   => array(
+						'class'    => 'auto-height',
+					),
+				)
+			);
+		}
 	}
 
 	/**
@@ -380,7 +426,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$check = false;
 
-		if ( $this->ajax_search ) {
+		if ( $this->ajax_search() ) {
 			return $check;
 		}
 
@@ -401,6 +447,27 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		return $check;
+	}
+
+	/**
+	 * Check if ajax search should is enabled.
+	 * This will also check for the user setting `force_ajax_users`.
+	 *
+	 * @since   1.8.1
+	 * @param   bool  $check_user  Check user setting?
+	 * @return  bool
+	 */
+	public function ajax_search( $check_user = true ) {
+		if ( ! $check_user ) {
+			return $this->_ajax_search;
+		}
+
+		static $force;
+		if ( ! is_bool( $force ) ) {
+			$force = (bool) $this->store->get_userSettings( 'force_ajax_users' );
+		}
+
+		return ( $this->_ajax_search || $force );
 	}
 
 	/**
@@ -446,6 +513,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				'search' => $args,
 			);
 		}
+
+		$this->is_ajax_search = true;
 
 		$users = $this->search_users( $args );
 
@@ -705,8 +774,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 			// @since  1.8.0  Switch to ajax search because of load time.
 			if ( $limit <= count( $users ) ) {
-				$this->ajax_search = true;
-				if ( ! VAA_API::is_ajax_request( 'view_admin_as_search_users' ) ) {
+				$this->_ajax_search = true;
+				if ( ! $this->is_ajax_search ) {
 					return;
 				}
 			}

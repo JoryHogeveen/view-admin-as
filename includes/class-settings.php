@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.0
- * @version 1.8.0
+ * @version 1.8.1
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
@@ -208,6 +208,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 				'admin_menu_location' => 'top-secondary',
 				'disable_super_admin' => true,
 				'force_group_users'   => false,
+				'force_ajax_users'    => false,
 				'freeze_locale'       => false,
 				'hide_customizer'     => false,
 				'hide_front'          => false,
@@ -217,6 +218,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 				'admin_menu_location' => array( 'top-secondary', 'my-account' ),
 				'disable_super_admin' => array( true, false ),
 				'force_group_users'   => array( true, false ),
+				'force_ajax_users'    => array( true, false ),
 				'freeze_locale'       => array( true, false ),
 				'hide_customizer'     => array( true, false ),
 				'hide_front'          => array( true, false ),

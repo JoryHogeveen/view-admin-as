@@ -3,7 +3,7 @@
  * Add user actions.
  *
  * @since    1.8.0
- * @version  1.8.0
+ * @version  1.8.1
  *
  * @var  \VAA_View_Admin_As_Users  $this
  * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.
@@ -28,7 +28,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$title_submenu = false;
 	}
 
-	if ( $title_submenu || $this->ajax_search || $this->group_user_roles() ) {
+	if ( $title_submenu || $this->ajax_search() || $this->group_user_roles() ) {
 
 		$title = '';
 		if ( $this->group_user_roles() ) {
@@ -43,7 +43,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			) ),
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'ab-vaa-search search-users' . ( ( $this->ajax_search ) ? ' search-ajax' : '' ),
+				'class' => 'ab-vaa-search search-users' . ( ( $this->ajax_search() ) ? ' search-ajax' : '' ),
 				'html'  => '<ul id="vaa-searchuser-results" class="ab-sub-secondary vaa-auto-max-height ab-submenu ab-vaa-results"></ul>',
 			),
 		) );
