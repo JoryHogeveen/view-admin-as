@@ -578,6 +578,66 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
+	 * Get the search SQL for searching users.
+	 * Copied and modified from WP_User_Query.
+	 *
+	 * Disable some PHPMD checks for this method.
+	 * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+	 * @SuppressWarnings(PHPMD.NPathComplexity)
+	 * @todo Refactor to enable above checks?
+	 *
+	 * @since   1.8.1
+	 * @see     \WP_User_Query::get_search_sql()
+	 * @link    https://developer.wordpress.org/reference/classes/wp_user_query/get_search_sql/
+	 *
+	 * @global  wpdb    $wpdb    WordPress database abstraction object.
+	 * @param   string  $string  The string to search for.
+	 * @param   array   $cols    (optional) Set the columns to look in.
+	 * @return  string
+	 */
+	protected function get_search_sql( $string, $cols = array() ) {
+		global $wpdb;
+
+		$user_columns = array( 'ID', 'user_login', 'user_email', 'user_url', 'user_nicename', 'display_name' );
+		$string = trim( $string, '*' );
+
+		if ( $cols ) {
+			$cols = array_intersect( $cols, $user_columns );
+		}
+		if ( ! $cols ) {
+			$cols = array( 'user_login', 'user_url', 'user_email', 'user_nicename', 'display_name' );
+			if ( false !== strpos( $string, '@' ) ) {
+				$cols = array( 'user_email' );
+			}
+			elseif ( is_numeric( $string ) ) {
+				$cols = array( 'user_login', 'ID' );
+			}
+			/*elseif ( preg_match('|^https?://|', $string) && ! ( is_multisite() && wp_is_large_network( 'users' ) ) )
+				$cols = array( 'user_url' );*/
+		}
+
+		// @todo add filter?
+
+		$searches = array();
+		$like     = esc_sql( '%' . $wpdb->esc_like( $string ) . '%' );
+
+		foreach ( $cols as $col ) {
+			$col = 'users.' . $col;
+			if ( 'ID' === $col ) {
+				$searches[] = $col . ' = ' . esc_sql( $string );
+				// codingStandardsIgnoreLine >> $col is used.
+				//$searches[] = $wpdb->prepare( $col . ' = %s', $string );
+			} else {
+				$searches[] = "{$col} LIKE '{$like}'";
+				// codingStandardsIgnoreLine >> $col is used.
+				//$searches[] = $wpdb->prepare( $col . ' LIKE %s', $like );
+			}
+		}
+
+		return ' AND (' . implode( ' OR ', $searches ) . ')';
+	}
+
+	/**
 	 * Store available users.
 	 *
 	 * Disable some PHPMD checks for this method.
@@ -611,7 +671,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			 */
 			'limit' => apply_filters( 'view_admin_as_user_query_limit', 100 ),
 			'search' => '',
-			'search_by' => 'display_name', // @todo: display_name|user_login|user_email
+			'search_by' => '',
 		) );
 
 		$limit = (int) $args['limit'];
@@ -650,11 +710,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * @link https://developer.wordpress.org/reference/classes/wp_user_query/get_search_sql/
 		 */
 		if ( ! empty( $args['search'] ) ) {
-			if ( ! in_array( $args['search_by'], array( 'display_name', 'user_login', 'user_email' ), true ) ) {
-				$args['search_by'] = 'display_name';
-			}
-			$args['search'] = esc_sql( $args['search'] );
-			$user_query['where'] .= " AND users.{$args['search_by']} LIKE '%{$args['search']}%'";
+			$user_query['where'] .= $this->get_search_sql( $args['search'], $args['search_by'] );
 		}
 
 		if ( is_network_admin() ) {
