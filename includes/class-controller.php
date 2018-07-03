@@ -389,6 +389,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				} else {
 					wp_redirect( admin_url() );
 				}
+				die();
 			}
 
 			// Browse mode.
