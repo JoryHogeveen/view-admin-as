@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1.0
- * @version 1.8.0
+ * @version 1.8.1
  * @preserve
  */
 
@@ -257,6 +257,9 @@
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item label + select {margin-top: 0;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item {height: auto; line-height: normal;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item textarea {width: 100%; padding: 5px; margin-top: 5px; box-sizing: border-box; line-height: normal;}
+
+#wpadminbar #wp-admin-bar-vaa .ab-item input.vaa-wide,
+#wpadminbar #wp-admin-bar-vaa .ab-item select.vaa-wide {display: block; box-sizing: border-box; width: 100%; margin: 5px 0;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-item select + button.input-overlay,
 #wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {position: absolute; right: 10px; margin: 5px 0;}
