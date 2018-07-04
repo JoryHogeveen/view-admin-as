@@ -1065,7 +1065,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( role && false !== exists && exists.length ) {
 						exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
 					} else {
-						role = ( role ) ? ' &nbsp; <span class="user-role">(' + role + ')</span>' : '';
+						role = ( role ) ? ' &nbsp;<span class="user-role ab-italic">(' + role + ')</span>' : '';
 						$(this).clone()
 						       .appendTo( $search_results )
 						       .children('.ab-item')

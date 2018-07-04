@@ -226,7 +226,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			foreach ( $user->roles as $role ) {
 				$user_roles[] = $this->store->get_rolenames( $role );
 			}
-			return ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
+			return ' &nbsp;<span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
 		}
 
 		return '';
