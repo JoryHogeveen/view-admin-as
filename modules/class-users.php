@@ -203,6 +203,37 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
+	 * Get the roles HTML to add to the user view title.
+	 *
+	 * @since   1.8.1
+	 * @param   \WP_User  $user  The user object.
+	 * @return  string
+	 */
+	public function get_view_title_roles( $user ) {
+
+		/**
+		 * Add the user roles to the user title?
+		 *
+		 * @since  1.8.0
+		 * @param  bool      $true  True by default.
+		 * @param  \WP_User  $user  The user object.
+		 * @return bool
+		 */
+		if ( apply_filters( 'vaa_admin_bar_view_title_' . $this->type . '_show_roles', true, $user ) ) {
+
+			// Users displayed as normal.
+			$user_roles = array();
+			// Add the roles of this user in the name.
+			foreach ( $user->roles as $role ) {
+				$user_roles[] = $this->store->get_rolenames( $role );
+			}
+			return ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
+		}
+
+		return '';
+	}
+
+	/**
 	 * View update handler (Ajax probably), called from main handler.
 	 *
 	 * @since   1.8.0  Renamed from `ajax_handler()`.
@@ -538,17 +569,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$title = $this->get_view_title( $user );
 
 			$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
-
-			/**
-			 * Filter documented in /templates/adminbar-user-items.php
-			 */
-			if ( ! $this->store->get_view( 'role' ) && apply_filters( 'vaa_admin_bar_view_title_' . $this->type . '_show_roles', true, $user ) ) {
-				$selected_user_roles = array();
-				foreach ( (array) $user->roles as $role ) {
-					$selected_user_roles[] = $this->store->get_rolenames( $role );
-				}
-				$view_title .= ' <span class="user-role">(' . implode( ', ', $selected_user_roles ) . ')</span>';
-			}
+			$view_title .= $this->get_view_title_roles( $user );
 
 			$attr = array(
 				'href' => $href,

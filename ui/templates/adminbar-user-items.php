@@ -40,20 +40,10 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		/**
 		 * Add the user roles to the user title?
 		 * Only available if users are not grouped under their roles.
-		 *
-		 * @since  1.8.0
-		 * @param  bool      $true  True by default.
-		 * @param  \WP_User  $user  The user object.
-		 * @return bool
+		 * @see VAA_View_Admin_As_Users::get_view_title_roles()
 		 */
-		if ( ! $this->group_user_roles() && apply_filters( 'vaa_admin_bar_view_title_' . $this->type . '_show_roles', true, $user ) ) {
-			// Users displayed as normal.
-			$user_roles = array();
-			// Add the roles of this user in the name.
-			foreach ( $user->roles as $role ) {
-				$user_roles[] = $this->store->get_rolenames( $role );
-			}
-			$view_title = $view_title . ' &nbsp; <span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
+		if ( ! $this->group_user_roles() ) {
+			$view_title .= $this->get_view_title_roles( $user );
 		}
 
 		// Check if this user is the current view.
