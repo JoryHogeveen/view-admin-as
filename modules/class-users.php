@@ -796,6 +796,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			// @codingStandardsIgnoreLine >> $wpdb->prepare() not needed
 			$users_results = $wpdb->get_results( implode( ' ', $user_query ), OBJECT_K );
 
+			// @since  1.8.0  Switch to ajax search because of load time.
+			if ( $limit <= count( $users_results ) && ! $this->is_ajax_search ) {
+				$this->_ajax_search = true;
+				return;
+			}
+
 			if ( $users_results ) {
 
 				$users = array();
@@ -838,14 +844,6 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				}
 
 				$users = get_users( $user_args );
-			}
-
-			// @since  1.8.0  Switch to ajax search because of load time.
-			if ( $limit <= count( $users ) ) {
-				$this->_ajax_search = true;
-				if ( ! $this->is_ajax_search ) {
-					return;
-				}
 			}
 
 			// Sort users by role and filter them on available roles.
