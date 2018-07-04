@@ -52,11 +52,13 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 	/**
 	 * Provide ajax search instead of loading all users at once?
+	 * When searching using AJAX it will contain an array search parameters.
+	 *
 	 * This parameter does not check user settings!
 	 *
 	 * @internal
 	 * @since  1.8.0
-	 * @var    bool
+	 * @var    bool|array
 	 */
 	protected $_ajax_search = false;
 
@@ -231,6 +233,24 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		return '';
+	}
+
+	/**
+	 * Filter the user title returned when search_by is used with AJAX.
+	 *
+	 * @since   1.8.1
+	 * @param   string    $title  User display name.
+	 * @param   \WP_User  $user   The user object.
+	 * @return  string
+	 */
+	public function filter_get_view_title_ajax( $title, $user ) {
+		if ( ! empty( $this->_ajax_search['search_by'] ) ) {
+			$val = $user->get( $this->_ajax_search['search_by'] );
+			if ( $val ) {
+				$title = '<span class="vaa-highlight">' . $val . '</span>&nbsp; ' . $title;
+			}
+		}
+		return $title;
 	}
 
 	/**
@@ -498,7 +518,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 */
 	public function ajax_search( $check_user = true ) {
 		if ( ! $check_user ) {
-			return $this->_ajax_search;
+			return (bool) $this->_ajax_search;
 		}
 
 		static $force;
@@ -506,7 +526,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$force = (bool) $this->store->get_userSettings( 'force_ajax_users' );
 		}
 
-		return ( $this->_ajax_search || $force );
+		return (bool) ( $this->_ajax_search || $force );
 	}
 
 	/**
@@ -554,6 +574,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		$this->is_ajax_search = true;
+		$this->_ajax_search = $args;
 
 		$users = $this->search_users( $args );
 
@@ -561,6 +582,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			wp_send_json_error();
 			die();
 		}
+
+		add_filter( 'vaa_admin_bar_view_title_' . $this->type, array( $this, 'filter_get_view_title_ajax' ), 10, 2 );
 
 		$return = '';
 		foreach ( $users as $user ) {
