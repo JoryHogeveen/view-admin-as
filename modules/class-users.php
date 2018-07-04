@@ -165,14 +165,11 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$titles[ $type ] = $this->get_view_title( $user );
 
 			/**
-			 * Filter documented in /templates/adminbar-user-items.php
+			 * Add the roles for the selected user to the view title?
+			 * Only done when a role view isn't selected.
 			 */
-			if ( ! $this->store->get_view( 'role' ) && apply_filters( 'vaa_admin_bar_view_title_' . $this->type . '_show_roles', true, $user ) ) {
-				$user_roles = array();
-				foreach ( (array) $user->roles as $role ) {
-					$user_roles[] = $this->store->get_rolenames( $role );
-				}
-				$titles[ $type ] .= ' <span class="user-role">(' . implode( ', ', $user_roles ) . ')</span>';
+			if ( ! $this->store->get_view( 'role' ) ) {
+				$titles[ $type ] .= $this->get_view_title_roles( $user );
 			}
 		}
 		return $titles;
