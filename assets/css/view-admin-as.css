@@ -79,7 +79,9 @@
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item,
 #wpadminbar #wp-admin-bar-vaa .ab-italic > .ab-item * {font-style: italic !important;}
 
-#wpadminbar #wp-admin-bar-vaa code {font-family: Consolas, Monaco, monospace; background: rgba(0,0,0,0.1); padding: 1px 5px 2px; line-height: normal;}
+#wpadminbar #wp-admin-bar-vaa span.vaa-highlight,
+#wpadminbar #wp-admin-bar-vaa code {background: rgba(0,0,0,0.1); padding: 1px 5px 2px; line-height: normal;}
+#wpadminbar #wp-admin-bar-vaa code {font-family: Consolas, Monaco, monospace;}
 
 /* Semi transparent groups */
 #wpadminbar #wp-admin-bar-vaa .vaa-sub-transparent > * {opacity: 0.5; transition: opacity 0.2s;}
