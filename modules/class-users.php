@@ -1041,6 +1041,44 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
+	 * Get the action link for users.
+	 *
+	 * @since   1.8.1
+	 * @access  public
+	 * @param   int|\WP_User  $user_id
+	 * @param   string        $link     (optional)
+	 * @return  string
+	 */
+	public function get_vaa_action_link( $user_id, $link = '' ) {
+
+		if ( isset( $user_id->ID ) ) {
+			$user_id = $user_id->ID;
+		}
+
+		if ( ! $link ) {
+			if ( is_network_admin() ) {
+				$link = network_admin_url();
+			} else {
+				$link = admin_url();
+			}
+		}
+
+		$link = '';
+
+		if ( (int) $user_id === (int) $this->store->get_curUser()->ID ) {
+			// Add reset link if it is the current user and a view is selected.
+			if ( $this->store->get_view() ) {
+				$link = VAA_API::get_reset_link( $link );
+			}
+		}
+		elseif ( $this->validate_target_user( $user_id ) ) {
+			$link = VAA_API::get_vaa_action_link( array( $this->type => $user_id ), $this->store->get_nonce( true ), $link );
+		}
+
+		return $link;
+	}
+
+	/**
 	 * Filter function to add view-as links on user rows in users.php.
 	 *
 	 * @since   1.6.0
@@ -1053,25 +1091,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 */
 	public function filter_user_row_actions( $actions, $user ) {
 
-		if ( is_network_admin() ) {
-			$link = network_admin_url();
-		} else {
-			$link = admin_url();
-		}
-
-		if ( $user->ID === $this->store->get_curUser()->ID ) {
-			// Add reset link if it is the current user and a view is selected.
-			if ( $this->store->get_view() ) {
-				$link = VAA_API::get_reset_link( $link );
-			} else {
-				$link = false;
-			}
-		}
-		elseif ( $this->store->get_users( $user->ID ) || $this->filter_users_by_access( array( $user ) ) ) {
-			$link = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ), $link );
-		} else {
-			$link = false;
-		}
+		$link = $this->get_vaa_action_link( $user );
 
 		if ( $link ) {
 			$icon = 'dashicons-visibility';
@@ -1086,6 +1106,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$title = VAA_View_Admin_As_Form::do_icon( $icon, $icon_attr ) . ' ' . esc_html__( 'View as', VIEW_ADMIN_AS_DOMAIN );
 			$actions['vaa_view'] = '<a href="' . $link . '">' . $title . '</a>';
 		}
+
 		return $actions;
 	}
 
