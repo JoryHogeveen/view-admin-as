@@ -60,7 +60,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			'title'  => $view_title,
 			'href'   => $href,
 			'meta'   => array(
-				// Translators: %s stands for the user display name.
+				// Translators: %s stands for the user view title (display name by default).
 				'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
 				'class' => $class,
 			),
