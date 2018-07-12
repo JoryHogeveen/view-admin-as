@@ -218,7 +218,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * @param  \WP_User  $user  The user object.
 		 * @return bool
 		 */
-		if ( apply_filters( 'vaa_admin_bar_view_title_' . $this->type . '_show_roles', true, $user ) ) {
+		if ( apply_filters( 'vaa_admin_bar_view_title_user_show_roles', true, $user ) ) {
 
 			// Users displayed as normal.
 			$user_roles = array();
