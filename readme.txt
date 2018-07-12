@@ -1,11 +1,11 @@
 === View Admin As ===
 Contributors: keraweb
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=YGPLMLU7XQ9E8&lc=US&item_name=View%20Admin%20As&item_number=JWPP%2dVAA&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHostedGuest
+Donate link: https://www.keraweb.nl/donate.php?for=view-admin-as
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
 Tested up to: 4.9
 Requires PHP: 5.2.4
-Stable tag: 1.8
+Stable tag: 1.8.1
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -208,6 +208,17 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 12. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.8.1 =
+
+*	**Feature:** Support searching users by multiple user columns like email, url, etc. [#95](https://github.com/JoryHogeveen/view-admin-as/issues/95)
+*	**Feature:** User setting to force AJAX search for users. [#96](https://github.com/JoryHogeveen/view-admin-as/issues/96)
+*	**Feature:** New filter: `view_admin_as_user_ajax_search` to force AJAX search for user at all times.
+*	**Fix:** Prevent "form changed" popup which showed in various pages. [#93](https://github.com/JoryHogeveen/view-admin-as/issues/93)
+*	**Enhancement:** Improve Pods Framework compatibility when in a view.
+*	**Enhancement:** Improve getting view data on load.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/94)
 
 = 1.8 =
 

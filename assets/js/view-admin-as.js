@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1.0
- * @version 1.8.0
+ * @version 1.8.1
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -209,7 +209,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				}
 			}
 			$this.hide();
-			$target.on( 'change', function() {
+			$target.on( 'change.vaa', function() {
 
 				if ( checkbox && $target.is(':checked') ) {
 					if ( compare ) {
@@ -225,7 +225,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 				VAA_View_Admin_As.autoMaxHeight();
 
-			} ).trigger('change'); // Trigger on load.
+			} ).trigger('change.vaa'); // Trigger on load.
 		} );
 
 		// @since  1.7.0  Init mobile fixes.
@@ -1065,7 +1065,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( role && false !== exists && exists.length ) {
 						exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
 					} else {
-						role = ( role ) ? ' &nbsp; <span class="user-role">(' + role + ')</span>' : '';
+						role = ( role ) ? ' &nbsp;<span class="user-role ab-italic">(' + role + ')</span>' : '';
 						$(this).clone()
 						       .appendTo( $search_results )
 						       .children('.ab-item')
@@ -1088,6 +1088,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		function search_users_ajax( search ) {
 			clearTimeout( ajax_delay_timer );
+
+			var search_by = $( '.ab-vaa-search.search-users select', $root ).val();
+			if ( search_by ) {
+				search = {
+					'search': search,
+					'search_by': search_by
+				};
+			}
+
 			ajax_delay_timer = setTimeout( function() {
 
 				$search_results.html( '<div class="ab-item ab-empty-item">. . . </div>' );

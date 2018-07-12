@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.0
- * @version 1.8.0
+ * @version 1.8.1
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
@@ -375,31 +375,35 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 
 		$view_mode = $this->store->get_userSettings( 'view_mode' );
 
-		// Static actions.
-		$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as', 'get' );
-		if ( $request && 'browse' === $view_mode ) {
-			$this->store->set_view( $this->validate_view_data( $request ) );
-			$this->update_view();
-			// Trigger page refresh.
-			// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See VAA_API.
-			if ( is_network_admin() ) {
-				wp_redirect( network_admin_url() );
-			} else {
-				wp_redirect( admin_url() );
-			}
-		}
-
-		// Single mode.
-		$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as' );
-		if ( $request && 'single' === $view_mode ) {
-			return $this->validate_view_data( $request );
-		}
-
-		// Browse mode.
 		if ( 'browse' === $view_mode ) {
+
+			// Static actions.
+			$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as', 'get' );
+			if ( $request ) {
+				$this->store->set_view( $this->validate_view_data( $request ) );
+				$this->update_view();
+				// Trigger page refresh.
+				// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See VAA_API.
+				if ( is_network_admin() ) {
+					wp_redirect( network_admin_url() );
+				} else {
+					wp_redirect( admin_url() );
+				}
+				die();
+			}
+
+			// Browse mode.
 			$meta = $this->store->get_userMeta( 'views' );
 			if ( isset( $meta[ $this->store->get_curUserSession() ]['view'] ) ) {
 				return $this->validate_view_data( $meta[ $this->store->get_curUserSession() ]['view'] );
+			}
+
+		} elseif ( 'single' === $view_mode ) {
+
+			// Single mode.
+			$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as' );
+			if ( $request ) {
+				return $this->validate_view_data( $request );
 			}
 		}
 

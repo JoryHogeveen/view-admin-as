@@ -272,6 +272,7 @@ class VAA_View_Admin_As_Form
 	 *         Array of radio options data.
 	 *         @type  array {
 	 *             @type  string  $compare        (required)
+	 *             @type  string  $value          (optional) Alias for compare.
 	 *             @type  string  $label          (optional)
 	 *             @type  string  $description    (optional)
 	 *             @type  string  $help           (optional)
@@ -287,6 +288,11 @@ class VAA_View_Admin_As_Form
 		$html = '';
 
 		if ( ! empty( $args['values'] ) ) {
+
+			$args['values'] = self::parse_multi_values( $args['values'], array(
+				'label' => '', // No default label.
+			) );
+
 			foreach ( $args['values'] as $val ) {
 
 				$id = esc_attr( ( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] ) . '-' . $val['compare'] );
@@ -398,18 +404,16 @@ class VAA_View_Admin_As_Form
 
 			$html .= '<select ' . $attr . '>';
 
+			$args['values'] = self::parse_multi_values( $args['values'] );
+
 			foreach ( $args['values'] as $val ) {
 
-				if ( empty( $val['compare'] ) ) {
-					$val['compare'] = ( ! empty( $val['value'] ) ) ? $val['value'] : false;
-				}
-				$label = ( ! empty( $val['label'] ) ) ? $val['label'] : $val['compare'];
 				$selected = selected( $args['value'], $val['compare'], false );
 
 				$val['attr']['value'] = $val['compare'];
 				$attr = self::parse_to_html_attr( $val['attr'] );
 
-				$html .= '<option ' . $attr . ' ' . $selected . '>' . $label . '</option>';
+				$html .= '<option ' . $attr . ' ' . $selected . '>' . $val['label'] . '</option>';
 
 			}
 			$html .= '</select>';
@@ -741,6 +745,44 @@ class VAA_View_Admin_As_Form
 			$str = implode( ' ', $array );
 		}
 		return $str;
+	}
+
+	/**
+	 * Parse multi-value arrays for radio and select options.
+	 * Makes sure `compare`, `value` and `label` keys exists.
+	 *
+	 * @since   1.8.1
+	 * @static
+	 *
+	 * @param   array  $values    The values.
+	 * @param   array  $defaults  The default value keys.
+	 * @return  array[]
+	 */
+	public static function parse_multi_values( $values, $defaults = array() ) {
+		$defaults = array_merge( array(
+			'value' => false,
+		), $defaults );
+
+		foreach ( (array) $values as $key => $val ) {
+			if ( ! is_array( $val ) ) {
+				$val = array(
+					'value' => $key,
+					'label' => $val,
+				);
+			}
+
+			if ( empty( $val['compare'] ) ) {
+				$val['compare'] = ( ! empty( $val['value'] ) ) ? $val['value'] : $defaults['value'];
+			}
+
+			if ( empty( $val['label'] ) ) {
+				$val['label'] = ( isset( $defaults['label'] ) ) ? $defaults['label'] : $val['compare'];
+			}
+
+			$values[ $key ] = $val;
+		}
+
+		return $values;
 	}
 
 } // End class VAA_View_Admin_As_Form.
