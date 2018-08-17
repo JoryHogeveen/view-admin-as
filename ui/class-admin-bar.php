@@ -147,7 +147,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * 10:  group (Groups)
 		 * 10:  rua_level (Restrict User Access)
 		 * 80:  caps
-		 * 90:  locale
+		 * 90:  locale (Languages)
 		 * 999: role defaults (appends an icon)
 		 *
 		 * @since  1.7.5

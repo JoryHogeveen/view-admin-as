@@ -107,6 +107,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * Temporary modifications to the current user are set on priority 99.
 		 * This functionality has a separate action: `vaa_view_admin_as_modify_current_user`.
 		 *
+		 * @hooked
+		 * 2:   user
+		 * 5:   role
+		 * 8:   caps
+		 * 10:  locale (Languages)
+		 * 10:  group (Groups)
+		 * 10:  rua_level (Restrict User Access)
+		 *
 		 * @since  1.6.3
 		 * @param  array
 		 */
