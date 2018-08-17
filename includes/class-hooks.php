@@ -340,7 +340,7 @@ class VAA_View_Admin_As_Hooks
 	protected function _validate_priority( $hooks, $hook, $callback, $priority ) {
 		if ( ! is_numeric( $priority ) ) {
 			$priority = $this->_find_priority( $hooks, $hook, $callback );
-			if ( ! $priority ) {
+			if ( ! is_numeric( $priority ) ) {
 				return 10;
 			}
 		}
