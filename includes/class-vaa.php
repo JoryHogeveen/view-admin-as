@@ -356,7 +356,7 @@ final class VAA_View_Admin_As
 			include_once $file;
 		} else {
 			$this->add_error_notice( $class . '::' . __METHOD__, array(
-				'type' => 'notice-error',
+				'type'    => 'notice-error',
 				'message' => __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
 					// Translators: %s stands for the class name.
 					. ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $class ) . ')</code>',
@@ -425,7 +425,7 @@ final class VAA_View_Admin_As
 	private function load_ui() {
 
 		$includes = array(
-			'ui' => array(
+			'ui'        => array(
 				'file'  => 'ui/class-ui.php',
 				'class' => 'VAA_View_Admin_As_UI',
 			),
@@ -457,11 +457,11 @@ final class VAA_View_Admin_As
 	private function load_modules() {
 
 		$includes = array(
-			'role_switcher' => array(
+			'role_switcher'       => array(
 				'file'  => 'modules/class-roles.php',
 				'class' => 'VAA_View_Admin_As_Roles',
 			),
-			'user_switcher' => array(
+			'user_switcher'       => array(
 				'file'  => 'modules/class-users.php',
 				'class' => 'VAA_View_Admin_As_Users',
 			),
@@ -469,15 +469,15 @@ final class VAA_View_Admin_As
 				'file'  => 'modules/class-caps.php',
 				'class' => 'VAA_View_Admin_As_Caps',
 			),
-			'language_switcher' => array(
+			'language_switcher'   => array(
 				'file'  => 'modules/class-languages.php',
 				'class' => 'VAA_View_Admin_As_Languages',
 			),
-			'role_defaults' => array(
+			'role_defaults'       => array(
 				'file'  => 'modules/class-role-defaults.php',
 				'class' => 'VAA_View_Admin_As_Role_Defaults',
 			),
-			'role_manager' => array(
+			'role_manager'        => array(
 				'file'  => 'modules/class-role-manager.php',
 				'class' => 'VAA_View_Admin_As_Role_Manager',
 			),
@@ -681,7 +681,7 @@ final class VAA_View_Admin_As
 	 */
 	public function welcome_notice() {
 		$this->add_notice( 'vaa-welcome', array(
-			'type' => 'notice-success',
+			'type'    => 'notice-success',
 			'message' => sprintf(
 				// Translators: %s stands for `Dashboard` (link element).
 				__( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
@@ -720,6 +720,7 @@ final class VAA_View_Admin_As
 			'title' => __( 'Error', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $id,
 			'body'  => $notice['message'],
 		);
+
 		$report_link = add_query_arg( $report, 'https://github.com/JoryHogeveen/view-admin-as/issues/new' );
 
 		$notice['message'] = $notice['message']
@@ -749,7 +750,7 @@ final class VAA_View_Admin_As
 	public function add_notice( $id, $notice ) {
 		if ( ! empty( $notice['message'] ) ) {
 			$notice = array_merge( array(
-				'type' => '',
+				'type'    => '',
 				'prepend' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 			), $notice );
 
@@ -799,7 +800,7 @@ final class VAA_View_Admin_As
 		$min_wp_version = '4.1';
 		if ( version_compare( $wp_version, $min_wp_version, '<' ) ) {
 			$this->add_notice( 'wp-version', array(
-				'type' => 'notice-error',
+				'type'    => 'notice-error',
 				'message' => sprintf(
 			        // Translators: %1$s stands for "WordPress", %2$s stands for the version.
 					__( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ),

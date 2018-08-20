@@ -428,6 +428,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function filter_ure_capabilities_groups_tree( $groups ) {
 		$groups = (array) $groups;
+
 		$groups['view_admin_as'] = array(
 			'caption' => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 			'parent'  => 'custom',
@@ -449,7 +450,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function filter_ure_custom_capability_groups( $groups, $cap_id ) {
 		if ( in_array( $cap_id, $this->get_vaa_capabilities(), true ) ) {
-			$groups = (array) $groups;
+			$groups   = (array) $groups;
 			$groups[] = 'view_admin_as';
 		}
 		return $groups;
@@ -472,15 +473,15 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	public function filter_wauc_admin_bar_menu_add_nodes( $wauc_nodes, $all_nodes ) {
 
 		$admin_menu_location = $this->store->get_userSettings( 'admin_menu_location' );
-		$vaa_root = VAA_View_Admin_As_Admin_Bar::$root;
+		$vaa_root            = VAA_View_Admin_As_Admin_Bar::$root;
 
 		$check = array(
 			'depth' => 'main',
 		);
 		if ( 'my-account' === $admin_menu_location ) {
-			$check['depth'] = 'sub';
+			$check['depth']    = 'sub';
 			$check['location'] = 'right';
-			$check['parent'] = $admin_menu_location;
+			$check['parent']   = $admin_menu_location;
 		}
 
 		// Compat when this node is added twice.
@@ -490,9 +491,9 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 					if ( isset( $node['id'] ) && $vaa_root === $node['id'] ) {
 
 						$current = array(
-							'depth' => $depth,
+							'depth'    => $depth,
 							'location' => $location,
-							'parent' => $node['parent'],
+							'parent'   => $node['parent'],
 						);
 
 						foreach ( $check as $key => $val ) {

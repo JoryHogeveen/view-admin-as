@@ -700,7 +700,7 @@ final class VAA_API
 				$do_notice = ( defined( 'WP_DEBUG' ) && WP_DEBUG );
 			}
 			if ( ! is_string( $do_notice ) ) {
-				$callable = self::callable_to_string( $callable );
+				$callable  = self::callable_to_string( $callable );
 				$do_notice = sprintf(
 					// Translators: %s stands for the requested class, method or function.
 					__( '%s does not exist or is not callable.', VIEW_ADMIN_AS_DOMAIN ),

@@ -24,9 +24,9 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	$parent = $root . '-languages';
 
 	foreach ( $this->store->get_languages() as $locale => $language ) {
-		$href   = VAA_API::get_vaa_action_link( array( $this->type => $locale ) );
-		$class  = 'vaa-' . $this->type . '-item';
-		$title  = $this->get_view_title( $locale );
+		$href  = VAA_API::get_vaa_action_link( array( $this->type => $locale ) );
+		$class = 'vaa-' . $this->type . '-item';
+		$title = $this->get_view_title( $locale );
 
 		$view_title = ( $locale !== $title ) ? '<code>' . $locale . '</code> | ' . $language : $locale;
 
@@ -42,11 +42,11 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 		$admin_bar->add_node(
 			array(
-				'id' => $root . '-' . $this->type . '-' . $locale,
+				'id'     => $root . '-' . $this->type . '-' . $locale,
 				'parent' => $parent,
-				'title' => $view_title,
-				'href' => $href,
-				'meta' => array(
+				'title'  => $view_title,
+				'href'   => $href,
+				'meta'   => array(
 					// Translators: %s stands for the translated role name.
 					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
 					'class' => $class,

@@ -171,8 +171,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		}
 
 		$args = wp_parse_args( $args, array(
-			'default' => array(),
-			'allowed' => array(),
+			'default'      => array(),
+			'allowed'      => array(),
 			'default_user' => array(),
 			'allowed_user' => array(),
 		) );
@@ -188,13 +188,13 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData( array(
 				'db_version' => null,
-				'settings' => null,
+				'settings'   => null,
 			) );
 
 			$this->set_userMetaKey( 'vaa-view-admin-as' );
 			$this->set_userMeta( array(
 				'settings' => null,
-				'views' => null,
+				'views'    => null,
 			) );
 
 			$default = array(
@@ -528,6 +528,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		$value = wp_parse_args( $value, array(
 			'settings' => array(),
 		) );
+
 		$value['settings'] = $this->validate_settings( $value['settings'], 'user', true );
 
 		if ( ! isset( $this->allUserMeta[ $user_id ] ) ) {

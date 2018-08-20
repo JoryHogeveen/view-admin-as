@@ -38,12 +38,12 @@ if ( isset( $this ) &&
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_select(
 				array(
-					'name'        => $root . '-admin-menu-location',
-					'value'       => $this->store->get_userSettings( 'admin_menu_location' ),
-					'label'       => __( 'Location', VIEW_ADMIN_AS_DOMAIN ) . ': &nbsp; ',
-					'description' => __( 'Change the location of this menu node', VIEW_ADMIN_AS_DOMAIN ),
-					'help'        => true,
-					'values'      => array(
+					'name'          => $root . '-admin-menu-location',
+					'value'         => $this->store->get_userSettings( 'admin_menu_location' ),
+					'label'         => __( 'Location', VIEW_ADMIN_AS_DOMAIN ) . ': &nbsp; ',
+					'description'   => __( 'Change the location of this menu node', VIEW_ADMIN_AS_DOMAIN ),
+					'help'          => true,
+					'values'        => array(
 						array(
 							'compare' => 'top-secondary',
 							'label'   => __( 'Default', VIEW_ADMIN_AS_DOMAIN ),
@@ -53,12 +53,12 @@ if ( isset( $this ) &&
 							'label'   => __( 'My account', VIEW_ADMIN_AS_DOMAIN ),
 						),
 					),
-					'auto_js' => array(
+					'auto_showhide' => true,
+					'auto_js'       => array(
 						'setting' => 'user_setting',
 						'key'     => 'admin_menu_location',
 						'refresh' => true,
 					),
-					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -79,9 +79,9 @@ if ( isset( $this ) &&
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_radio(
 				array(
-					'name'   => $root . '-view-mode',
-					'value'  => $this->store->get_userSettings( 'view_mode' ),
-					'values' => array(
+					'name'          => $root . '-view-mode',
+					'value'         => $this->store->get_userSettings( 'view_mode' ),
+					'values'        => array(
 						array(
 							'compare'     => 'browse',
 							'label'       => __( 'Browse mode', VIEW_ADMIN_AS_DOMAIN ),
@@ -95,12 +95,12 @@ if ( isset( $this ) &&
 							'help'        => true,
 						),
 					),
-					'auto_js' => array(
+					'auto_showhide' => true,
+					'auto_js'       => array(
 						'setting' => 'user_setting',
 						'key'     => 'view_mode',
 						'refresh' => false,
 					),
-					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -125,18 +125,18 @@ if ( isset( $this ) &&
 				'parent' => $root,
 				'title'  => VAA_View_Admin_As_Form::do_checkbox(
 					array(
-						'name'        => $root . '-disable-super-admin',
-						'value'       => $this->store->get_userSettings( 'disable_super_admin' ),
-						'compare'     => true,
-						'label'       => __( 'Disable super admin', VIEW_ADMIN_AS_DOMAIN ),
-						'description' => __( 'Disable super admin status while switched to another view', VIEW_ADMIN_AS_DOMAIN ),
-						'help'        => true,
-						'auto_js' => array(
+						'name'          => $root . '-disable-super-admin',
+						'value'         => $this->store->get_userSettings( 'disable_super_admin' ),
+						'compare'       => true,
+						'label'         => __( 'Disable super admin', VIEW_ADMIN_AS_DOMAIN ),
+						'description'   => __( 'Disable super admin status while switched to another view', VIEW_ADMIN_AS_DOMAIN ),
+						'help'          => true,
+						'auto_showhide' => true,
+						'auto_js'       => array(
 							'setting' => 'user_setting',
 							'key'     => 'disable_super_admin',
 							'refresh' => ( $this->store->get_view() ) ? true : false,
 						),
-						'auto_showhide' => true,
 					)
 				),
 				'href'   => false,
@@ -158,18 +158,18 @@ if ( isset( $this ) &&
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_checkbox(
 				array(
-					'name'        => $root . '-hide-front',
-					'value'       => $this->store->get_userSettings( 'hide_front' ),
-					'compare'     => true,
-					'label'       => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN ),
-					'help'        => true,
-					'auto_js' => array(
+					'name'          => $root . '-hide-front',
+					'value'         => $this->store->get_userSettings( 'hide_front' ),
+					'compare'       => true,
+					'label'         => __( 'Hide on frontend', VIEW_ADMIN_AS_DOMAIN ),
+					'description'   => __( 'Hide on frontend when no view is selected and the admin bar is not shown', VIEW_ADMIN_AS_DOMAIN ),
+					'help'          => true,
+					'auto_showhide' => true,
+					'auto_js'       => array(
 						'setting' => 'user_setting',
 						'key'     => 'hide_front',
 						'refresh' => false,
 					),
-					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -190,18 +190,18 @@ if ( isset( $this ) &&
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_checkbox(
 				array(
-					'name'        => $root . '-hide-customizer',
-					'value'       => $this->store->get_userSettings( 'hide_customizer' ),
-					'compare'     => true,
-					'label'       => __( 'Hide on customizer', VIEW_ADMIN_AS_DOMAIN ),
-					'description' => __( 'Hide on customizer when no view is selected', VIEW_ADMIN_AS_DOMAIN ),
-					'help'        => true,
-					'auto_js' => array(
+					'name'          => $root . '-hide-customizer',
+					'value'         => $this->store->get_userSettings( 'hide_customizer' ),
+					'compare'       => true,
+					'label'         => __( 'Hide on customizer', VIEW_ADMIN_AS_DOMAIN ),
+					'description'   => __( 'Hide on customizer when no view is selected', VIEW_ADMIN_AS_DOMAIN ),
+					'help'          => true,
+					'auto_showhide' => true,
+					'auto_js'       => array(
 						'setting' => 'user_setting',
 						'key'     => 'hide_customizer',
 						'refresh' => VAA_API::is_customizer_admin(),
 					),
-					'auto_showhide' => true,
 				)
 			),
 			'href'   => false,
@@ -225,18 +225,18 @@ if ( isset( $this ) &&
 				'parent' => $root,
 				'title'  => VAA_View_Admin_As_Form::do_checkbox(
 					array(
-						'name'        => $root . '-freeze-locale',
-						'value'       => $this->store->get_userSettings( 'freeze_locale' ),
-						'compare'     => true,
-						'label'       => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
-						'description' => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN ),
-						'help'        => true,
-						'auto_js' => array(
+						'name'          => $root . '-freeze-locale',
+						'value'         => $this->store->get_userSettings( 'freeze_locale' ),
+						'compare'       => true,
+						'label'         => __( 'Freeze locale', VIEW_ADMIN_AS_DOMAIN ),
+						'description'   => __( 'Force your own locale setting to the current view', VIEW_ADMIN_AS_DOMAIN ),
+						'help'          => true,
+						'auto_showhide' => true,
+						'auto_js'       => array(
 							'setting' => 'user_setting',
 							'key'     => 'freeze_locale',
 							'refresh' => ( $this->store->get_view( 'user' ) ) ? true : false,
 						),
-						'auto_showhide' => true,
 					)
 				),
 				'href'   => false,

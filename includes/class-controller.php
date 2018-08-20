@@ -178,7 +178,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @return  array|bool
 	 */
 	private function ajax_handler( $data ) {
-		$success = false;
+		$success    = false;
 		$view_types = array();
 
 		// Stop selecting the same view!
@@ -266,7 +266,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( $success && 'visitor' === $type && VAA_API::is_admin() ) {
 			$success = array(
 				'success' => true,
-				'data' => array(
+				'data'    => array(
 					'redirect' => esc_url( home_url() ),
 				),
 			);
@@ -328,7 +328,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		static $view_types;
 		if ( ! is_null( $view_types ) ) return $view_types;
 
-		$view_types = array_keys( (array) view_admin_as()->get_view_types() );
+		$view_types   = array_keys( (array) view_admin_as()->get_view_types() );
 		$view_types[] = 'visitor';
 
 		/**
@@ -429,7 +429,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			}
 			// Add the new view metadata and expiration date.
 			$meta[ $this->store->get_curUserSession() ] = array(
-				'view' => $data,
+				'view'   => $data,
 				'expire' => ( time() + (int) $this->viewExpiration ),
 			);
 			// Update metadata (returns: true on success, false on failure).

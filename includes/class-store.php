@@ -167,7 +167,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		$this->set_curUserSession( (string) wp_get_session_token() );
 
 		$this->curUserHasFullAccess = VAA_API::user_has_full_access( $this->get_curUser() );
-		$this->curUserData = get_object_vars( $this->get_curUser() );
+		$this->curUserData          = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
 		$this->store_optionData( VAA_View_Admin_As::is_network_active() );
@@ -533,7 +533,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_nonce( $val ) {
-		$this->nonce = (string) $val;
+		$this->nonce        = (string) $val;
 		$this->nonce_parsed = wp_create_nonce( (string) $val );
 	}
 

@@ -357,7 +357,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 				),
 				'href'   => menu_page_url( $this->ruaScreen, false ),
 				'meta'   => array(
-					'class'  => 'auto-height',
+					'class' => 'auto-height',
 				),
 			) );
 
@@ -421,15 +421,15 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 				$parent = $root . '-' . $this->type . '-' . (int) $level->post_parent;
 			}
 			$admin_bar->add_node( array(
-				'id'        => $root . '-' . $this->type . '-' . $view_value,
-				'parent'    => $parent,
-				'title'     => $title,
-				'href'      => $href,
-				'meta'      => array(
+				'id'     => $root . '-' . $this->type . '-' . $view_value,
+				'parent' => $parent,
+				'title'  => $title,
+				'href'   => $href,
+				'meta'   => array(
 					// Translators: %s stands for the view type name.
-					'title'     => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
-					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
-					'class'     => $class,
+					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
+					           . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
+					'class' => $class,
 				),
 			) );
 		} // End foreach().

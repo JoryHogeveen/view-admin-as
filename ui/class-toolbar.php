@@ -120,8 +120,8 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	public function vaa_toolbar_render() {
 
 		$this->add_group( array(
-			'id'     => 'top-secondary',
-			'meta'   => array(
+			'id'   => 'top-secondary',
+			'meta' => array(
 				'class' => 'ab-top-secondary',
 			),
 		) );
