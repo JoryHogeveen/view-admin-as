@@ -24,7 +24,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	$parent = $root . '-languages';
 
 	foreach ( $this->store->get_languages() as $locale => $language ) {
-		$href   = VAA_API::get_vaa_action_link( array( $this->type => $locale ), $this->store->get_nonce( true ) );
+		$href   = VAA_API::get_vaa_action_link( array( $this->type => $locale ) );
 		$class  = 'vaa-' . $this->type . '-item';
 		$title  = $this->get_view_title( $locale );
 

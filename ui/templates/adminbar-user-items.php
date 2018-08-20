@@ -31,7 +31,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	foreach ( $this->store->get_users() as $user ) {
 		// Reset parent for each loop due to groupUserRoles.
 		$item_parent = $parent;
-		$href   = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ) );
+		$href   = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ) );
 		$class  = 'vaa-' . $this->type . '-item';
 		$title  = $this->get_view_title( $user );
 

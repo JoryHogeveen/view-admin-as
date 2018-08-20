@@ -327,26 +327,33 @@ final class VAA_API
 	 * Generate a VAA action link.
 	 *
 	 * @since   1.7.0
+	 * @since   1.8.2  Switched $nonce and $url parameters order.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
 	 * @param   array   $data   View type data.
-	 * @param   string  $nonce  The nonce.
 	 * @param   string  $url    (optional) A URL. Of not passed it will generate a link from the current URL.
+	 * @param   string  $nonce  (optional) Use a different nonce. Pass `false` to omit nonce.
 	 * @return  string
 	 */
-	public static function get_vaa_action_link( $data, $nonce, $url = null ) {
+	public static function get_vaa_action_link( $data, $url = null, $nonce = null ) {
 
 		$params = array(
 			'action'        => 'view_admin_as',
 			'view_admin_as' => $data, // wp_json_encode( array( $type, $data ) ),
-			'_vaa_nonce'    => (string) $nonce,
 		);
+
+		if ( null === $nonce ) {
+			$nonce = view_admin_as()->store()->get_nonce( true );
+		}
+		if ( $nonce ) {
+			$params['_vaa_nonce'] = (string) $nonce;
+		}
 
 		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
 		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
-		if ( empty( $url ) ) {
+		if ( null === $url ) {
 			if ( is_admin() ) {
 				$url = is_network_admin() ? network_admin_url() : admin_url();
 			} else {

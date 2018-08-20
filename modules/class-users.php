@@ -584,7 +584,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$return = '';
 		foreach ( $users as $user ) {
-			$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ) );
+			$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ) );
 			$class = 'vaa-' . $this->type . '-item';
 			$title = $this->get_view_title( $user );
 
@@ -1046,33 +1046,24 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.8.1
 	 * @access  public
 	 * @param   int|\WP_User  $user_id
-	 * @param   string        $link     (optional)
+	 * @param   string        $url      (optional)
 	 * @return  string
 	 */
-	public function get_vaa_action_link( $user_id, $link = '' ) {
+	public function get_vaa_action_link( $user_id, $url = null ) {
+		$link = '';
 
 		if ( isset( $user_id->ID ) ) {
 			$user_id = $user_id->ID;
 		}
 
-		if ( ! $link ) {
-			if ( is_network_admin() ) {
-				$link = network_admin_url();
-			} else {
-				$link = admin_url();
-			}
-		}
-
-		$link = '';
-
 		if ( (int) $user_id === (int) $this->store->get_curUser()->ID ) {
 			// Add reset link if it is the current user and a view is selected.
 			if ( $this->store->get_view() ) {
-				$link = VAA_API::get_reset_link( $link );
+				$link = VAA_API::get_reset_link( $url );
 			}
 		}
 		elseif ( $this->validate_target_user( $user_id ) ) {
-			$link = VAA_API::get_vaa_action_link( array( $this->type => $user_id ), $this->store->get_nonce( true ), $link );
+			$link = VAA_API::get_vaa_action_link( array( $this->type => $user_id ), $url );
 		}
 
 		return $link;

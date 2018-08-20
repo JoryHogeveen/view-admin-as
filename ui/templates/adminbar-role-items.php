@@ -25,7 +25,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	}
 
 	foreach ( $this->store->get_roles() as $role_key => $role ) {
-		$href   = VAA_API::get_vaa_action_link( array( $this->type => $role_key ), $this->store->get_nonce( true ) );
+		$href   = VAA_API::get_vaa_action_link( array( $this->type => $role_key ) );
 		$class  = 'vaa-' . $this->type . '-item';
 		$title  = $this->get_view_title( $role );
 
