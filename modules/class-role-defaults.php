@@ -712,16 +712,12 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	public function get_role_defaults( $role = null, $meta_key = null ) {
 		$defaults = $this->get_optionData( 'roles' );
-		if ( $role && $meta_key && isset( $defaults[ $role ][ $meta_key ] ) ) {
-			return $defaults[ $role ][ $meta_key ];
-		}
-		elseif ( $role && null === $meta_key && isset( $defaults[ $role ] ) ) {
-			return $defaults[ $role ];
-		}
-		elseif ( null === $role && null === $meta_key ) {
+		if ( null === $role ) {
 			return $defaults;
+		} elseif ( isset( $defaults[ $role ] ) ) {
+			return VAA_API::get_array_data( $defaults[ $role ], $meta_key );
 		}
-		return false;
+		return null;
 	}
 
 	/**
