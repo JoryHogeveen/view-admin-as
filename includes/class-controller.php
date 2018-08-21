@@ -385,9 +385,9 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				// Trigger page refresh.
 				// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See VAA_API.
 				if ( is_network_admin() ) {
-					wp_safe_redirect( network_admin_url() );
+					wp_safe_redirect( network_admin_url(), 302, VIEW_ADMIN_AS_DOMAIN );
 				} else {
-					wp_safe_redirect( admin_url() );
+					wp_safe_redirect( admin_url(), 302, VIEW_ADMIN_AS_DOMAIN );
 				}
 				die();
 			}
