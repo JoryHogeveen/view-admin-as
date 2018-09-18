@@ -748,8 +748,8 @@ final class VAA_View_Admin_As
 	 * @since   1.5.1
 	 * @access  public
 	 *
-	 * @param   string  $id
-	 * @param   array   $notice {
+	 * @param   string        $id
+	 * @param   array|string  $notice {
 	 *     Required array.
 	 *     @type  string  $message  The notice message.
 	 *     @type  string  $type     (optional) The WP notice type class(es).
@@ -759,7 +759,14 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
-		if ( ! empty( $notice['message'] ) ) {
+		if ( ! empty( $notice ) ) {
+
+			if ( ! is_array( $notice ) ) {
+				$notice = array(
+					'message' => $notice,
+				);
+			}
+
 			$defaults = array(
 				'type'    => '',
 				'prepend' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
@@ -770,6 +777,7 @@ final class VAA_View_Admin_As
 			if ( $notice['prepend'] ) {
 				$notice['message'] = '<strong>' . $notice['prepend'] . ':</strong> ' . $notice['message'];
 			}
+
 			$this->notices[ $id ] = array(
 				'type'    => $notice['type'],
 				'message' => $notice['message'],
