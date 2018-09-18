@@ -312,22 +312,25 @@ final class VAA_View_Admin_As
 	 *                 capability (of not the edit_users will return false).
 	 * @since   1.5.3  Enable on network pages for superior admins.
 	 * @since   1.6.3  Created this function.
+	 * @since   1.8.2  Refactor (simplify) + remove check for user session.
 	 * @access  public
 	 *
 	 * @return  bool
 	 */
 	public function validate_user() {
-		$valid = false;
 
-		if ( ( VAA_API::is_super_admin()
-		       || ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) ) )
-		     && ( ! is_network_admin() || VAA_API::is_superior_admin( $this->store->get_curUser()->ID ) )
-		     && $this->store->get_curUserSession()
-		) {
-			$valid = true;
+		if ( is_network_admin() ) {
+			$valid = VAA_API::is_superior_admin( $this->store->get_curUser()->ID );
+		} else {
+			$valid = (
+				VAA_API::is_super_admin()
+				|| ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) )
+			);
 		}
 
-		return $valid;
+		//@todo Removed check for a session: Maybe add a debug notice?
+
+		return (bool) $valid;
 	}
 
 	/**
