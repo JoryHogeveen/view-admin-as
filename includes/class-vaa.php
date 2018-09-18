@@ -287,7 +287,7 @@ final class VAA_View_Admin_As
 	 */
 	public function set_enabled() {
 		$this->enable = $this->validate_user();
-		return $this->enable;
+		return $this->is_enabled();
 	}
 
 	/**
