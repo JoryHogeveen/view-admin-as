@@ -358,12 +358,15 @@ final class VAA_View_Admin_As
 		if ( empty( $class ) || ! class_exists( $class, false ) ) {
 			include_once $file;
 		} else {
-			$this->add_error_notice( $class . '::' . __METHOD__, array(
-				'type'    => 'notice-error',
-				'message' => __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
-					// Translators: %s stands for the class name.
-					. ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $class ) . ')</code>',
-			) );
+			$this->add_error_notice(
+				$class . '::' . __METHOD__,
+				array(
+					'type'    => 'notice-error',
+					'message' => __( 'Plugin not fully loaded because of a conflict with an other plugin or theme', VIEW_ADMIN_AS_DOMAIN )
+						// Translators: %s stands for the class name.
+						. ' <code>(' . sprintf( __( 'Class %s already exists', VIEW_ADMIN_AS_DOMAIN ), $class ) . ')</code>',
+				)
+			);
 			return false;
 		}
 
@@ -632,8 +635,9 @@ final class VAA_View_Admin_As
 	 * @return  bool  Successfully registered?
 	 */
 	public function register_view_type( $data ) {
-		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
-		     ! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Type
+		if (
+			! empty( $data['id'] ) && is_string( $data['id'] ) &&
+			! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Type
 		) {
 			$this->view_types[ $data['id'] ] = $data['instance'];
 			return true;
@@ -667,8 +671,9 @@ final class VAA_View_Admin_As
 	 * @return  bool  Successfully registered?
 	 */
 	public function register_module( $data ) {
-		if ( ! empty( $data['id'] ) && is_string( $data['id'] ) &&
-		     ! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Module
+		if (
+			! empty( $data['id'] ) && is_string( $data['id'] ) &&
+			! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Module
 		) {
 			$this->modules[ $data['id'] ] = $data['instance'];
 			return true;
@@ -683,15 +688,18 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 */
 	public function welcome_notice() {
-		$this->add_notice( 'vaa-welcome', array(
-			'type'    => 'notice-success',
-			'message' => sprintf(
-				// Translators: %s stands for `Dashboard` (link element).
-				__( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
-				'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
-			),
-			'prepend' => __( 'Thank you for installing View Admin As!', VIEW_ADMIN_AS_DOMAIN ),
-		) );
+		$this->add_notice(
+			'vaa-welcome',
+			array(
+				'type'    => 'notice-success',
+				'message' => sprintf(
+					// Translators: %s stands for `Dashboard` (link element).
+					__( 'For the best experience you can start from the %s since not all views are allowed to access all admin pages.', VIEW_ADMIN_AS_DOMAIN ),
+					'<a class="button button-primary" href="' . admin_url() . '">' . __( 'Dashboard' ) . '</a>'
+				),
+				'prepend' => __( 'Thank you for installing View Admin As!', VIEW_ADMIN_AS_DOMAIN ),
+			)
+		);
 	}
 
 	/**
@@ -752,10 +760,12 @@ final class VAA_View_Admin_As
 	 */
 	public function add_notice( $id, $notice ) {
 		if ( ! empty( $notice['message'] ) ) {
-			$notice = array_merge( array(
+			$defaults = array(
 				'type'    => '',
 				'prepend' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
-			), $notice );
+			);
+
+			$notice = array_merge( $defaults, $notice );
 
 			if ( $notice['prepend'] ) {
 				$notice['message'] = '<strong>' . $notice['prepend'] . ':</strong> ' . $notice['message'];
@@ -802,15 +812,18 @@ final class VAA_View_Admin_As
 		// Validate WP.
 		$min_wp_version = '4.1';
 		if ( version_compare( $wp_version, $min_wp_version, '<' ) ) {
-			$this->add_notice( 'wp-version', array(
-				'type'    => 'notice-error',
-				'message' => sprintf(
-			        // Translators: %1$s stands for "WordPress", %2$s stands for the version.
-					__( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ),
-					'WordPress',
-					$min_wp_version
-			    ),
-			) );
+			$this->add_notice(
+				'wp-version',
+				array(
+					'type'    => 'notice-error',
+					'message' => sprintf(
+				        // Translators: %1$s stands for "WordPress", %2$s stands for the version.
+						__( 'Plugin deactivated, %1$s version %2$s or higher is required', VIEW_ADMIN_AS_DOMAIN ),
+						'WordPress',
+						$min_wp_version
+				    ),
+				)
+			);
 			$valid = false;
 		}
 
