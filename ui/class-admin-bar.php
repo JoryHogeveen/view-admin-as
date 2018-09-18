@@ -129,7 +129,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 */
 	private function get_admin_bar_menu_title() {
 		if ( ! $this->store->get_view() ) {
-			return __( 'View as', VIEW_ADMIN_AS_DOMAIN );
+			return __( 'View As', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		$titles = array();
