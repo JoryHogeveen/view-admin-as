@@ -1030,7 +1030,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Search users.
 		$root.on( 'keyup', '.ab-vaa-search.search-users input', function() {
-			$search_results.empty();
+
 			var $this = $(this),
 				search = $this.val();
 			if ( 1 <= search.trim().length ) {
@@ -1047,6 +1047,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				} else {
 					search_users( search );
 				}
+			} else {
+				VAA_View_Admin_As.search_users_ajax( null, $search_results );
 			}
 		} );
 
