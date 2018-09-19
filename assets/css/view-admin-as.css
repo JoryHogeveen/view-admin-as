@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1.0
- * @version 1.8.1
+ * @version 1.8.2
  * @preserve
  */
 
@@ -288,8 +288,9 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper:last-of-type {margin-bottom: 6px;}
 
 /* Multipleselect */
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 6px 0; padding: 0; border: solid transparent; border-width: 0 10px;}
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-empty-item {height: auto; overflow: hidden; margin: 0; padding: 5px 10px; background-color: #fff;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {max-height: 400px; min-width: 250px; overflow: hidden; overflow-y: auto; margin: 6px 10px; padding: 0; background-color: #fff;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect:empty {height: 0; margin: 0; padding: 0;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-empty-item {height: auto; overflow: hidden; margin: 0; padding: 5px 10px;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-empty-item .ab-item {color: #333;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect.vaa-small {max-height: 100px;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .remove:before {color: #333;}
