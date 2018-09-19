@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1.0
- * @version 1.8.1
+ * @version 1.8.2
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -420,13 +420,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		$overlay.fadeIn('fast');
 
 		// Remove overlay.
-		$( '.remove', $overlay ).click( function() {
+		$overlay.find( '.remove' ).click( function() {
 			VAA_View_Admin_As.overlay( false );
 		} );
 
 		// Remove overlay on click outside of container.
 		$document.on( 'mouseup.vaa_overlay', function( e ) {
-			$( '.vaa-popup', $overlay ).each( function() {
+			$overlay.find( '.vaa-popup' ).each( function() {
 				if ( ! $(this).is( e.target ) && 0 === $(this).has( e.target ).length ) {
 					VAA_View_Admin_As.overlay( false );
 					return false;
@@ -1050,9 +1050,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Search users.
 		$root.on( 'keyup', '.ab-vaa-search.search-users input', function() {
-
 			var $this = $(this),
 				search = $this.val();
+
 			if ( 1 <= search.trim().length ) {
 				if ( search_ajax ) {
 					search = {
@@ -1090,7 +1090,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 							exists = $(this);
 						}
 					} );
-					var role = $(this).parents('.vaa-role-item').find('> .ab-item > .vaa-view-data');
+					var role = $(this).parents('.vaa-role-item').find( '> .ab-item > .vaa-view-data' );
 					role = ( role ) ? role.text() : '';
 					if ( role && false !== exists && exists.length ) {
 						exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
