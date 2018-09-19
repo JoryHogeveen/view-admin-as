@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.4.0
- * @version 1.8.0
+ * @version 1.8.2
  * @uses    \VAA_View_Admin_As_Module Extends class
  */
 final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
@@ -147,6 +147,8 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( ! is_network_admin() && $this->current_user_can( 'view_admin_as_role_defaults' ) ) {
 			$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 			$this->add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
+			// @since  1.8.2  Filter ajax search return.
+			$this->add_filter( 'view_admin_as_ajax_search_users_return_' . $this->moduleKey, array( $this, 'ajax_search_users_return' ), 10, 4 );
 		}
 	}
 
@@ -498,6 +500,45 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		}
 
 		return $success;
+	}
+
+	/**
+	 * Filters the ajax return content for role defaults.
+	 *
+	 * @since  1.8.2
+	 *
+	 * @param  string                    $return
+	 * @param  \WP_User[]                $users
+	 * @return string
+	 */
+	public function ajax_search_users_return( $return, $users ) {
+		$content = '';
+
+		foreach ( $users as $user ) {
+
+			foreach ( $user->roles as $role ) {
+				$role_data = $this->store->get_roles( $role );
+				if ( $role_data instanceof WP_Role ) {
+					$role_name = $this->store->get_rolenames( $role );
+
+					$content .=
+						'<div class="ab-item vaa-item">'
+						. VAA_View_Admin_As_Form::do_checkbox( array(
+							'name'           => 'role-defaults-bulk-users-select[]',
+							'id'             => 'ajax-role-defaults-bulk-users-select-' . $user->ID,
+							'checkbox_value' => $user->ID . '|' . $role,
+							'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
+						) )
+						. '</div>';
+				}
+			}
+		}
+
+		if ( $content ) {
+			$return = '<div class="ab-item ab-empty-item">' . $content . '</div>';
+		}
+
+		return $return;
 	}
 
 	/**
