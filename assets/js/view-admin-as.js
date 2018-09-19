@@ -1092,13 +1092,22 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *
 		 * @since  1.8.0
 		 * @since  1.8.2  Refactored for general use.
-		 * @param  {object}  search             The search parameters.
 		 * @param  {object}  results_container  The results container element.
 		 * @return {void} Nothing.
 		 */
 		VAA_View_Admin_As.search_users_ajax = function( search, results_container ) {
 			clearTimeout( ajax_delay_timer );
 			var $results_container;
+
+			// Reset.
+			if ( ! search ) {
+				$results_container = $( results_container );
+				$results_container.empty();
+				if ( $results_container.hasClass( 'vaa-resizable' ) ) {
+					$results_container.trigger('vaa-resizable');
+				}
+				return;
+			}
 
 			ajax_delay_timer = setTimeout( function() {
 				$results_container = $( results_container );
