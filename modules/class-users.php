@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.1
+ * @version 1.8.2
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
@@ -116,7 +116,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		if ( VAA_API::is_ajax_request( 'view_admin_as_search_users' ) ) {
-			$this->ajax_search_users();
+			// @since  1.8.2  Use pre-init hook to allow modules to filter ajax return.
+			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'ajax_search_users' ) );
 		}
 	}
 
