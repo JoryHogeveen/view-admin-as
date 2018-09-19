@@ -241,14 +241,34 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.7.4  Auto resizable.
+		// @since  1.8.2  Enhance height calc + provide trigger for content changes
 		$( '.vaa-resizable', $vaa ).each( function() {
 			var $this = $(this),
-				height = $this.css( 'max-height' );
-			$this.css( {
-				'max-height': 'none',
-				'height': height,
-				'resize': 'vertical'
-			} );
+				maxHeightPx = $this.css( 'max-height' ),
+				maxHeight = parseInt( maxHeightPx.replace( 'px', '' ), 10 ),
+				empty = false,
+				height;
+
+			// Check for empty containers.
+			$this.find( '.ab-empty-item:empty' ).remove();
+
+			$this.on( 'vaa-resizable', function() {
+				empty  = $this.is( ':empty' );
+				height = $this.height();
+				$this.css( {
+					'max-height': '',
+					'height': '',
+					'resize': ''
+				} );
+				if ( maxHeight && ( ! height || height >= maxHeight ) ) {
+					height = ( empty ) ? '' : ( maxHeightPx ) ? maxHeightPx : '';
+					$this.css( {
+						'max-height': 'none',
+						'height': height,
+						'resize': 'vertical'
+					} );
+				}
+			} ).trigger('vaa-resizable'); // Trigger on load.
 		} );
 
 		// Process reset.
