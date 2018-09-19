@@ -1092,7 +1092,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 *
 		 * @since  1.8.0
 		 * @since  1.8.2  Refactored for general use.
-		 * @param  {object}  results_container  The results container element.
+		 * @param  {object}           search             The search parameters. Pass empty value to reset results container.
+		 * @param  {object|function}  results_container  The results container element. Can also be a callback.
 		 * @return {void} Nothing.
 		 */
 		VAA_View_Admin_As.search_users_ajax = function( search, results_container ) {
@@ -1132,6 +1133,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				$.post( VAA_View_Admin_As.ajaxurl, post_data, function( response ) {
 					clearInterval( loading_interval );
 					clearTimeout( ajax_delay_timer );
+
+					// Run optional callback.
+					if ( 'function' === typeof results_container ) {
+						results_container( response );
+						return;
+					}
 
 					if ( response.hasOwnProperty( 'success' ) && response.success ) {
 						$results_container.html( response.data );
