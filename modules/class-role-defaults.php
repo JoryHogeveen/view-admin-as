@@ -1308,6 +1308,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 */
 	private function admin_bar_menu_bulk_actions( $admin_bar, $root ) {
 
+		$roles               = $this->store->get_roles();
 		$role_check_content  = array();
 		$role_select_options = array(
 			''        => array(
@@ -1334,38 +1335,41 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				. '</div>';
 		}
 
+		$user_ajax           = false;
 		$users_check_content = array();
-		foreach ( $this->store->get_users() as $user ) {
-			foreach ( $user->roles as $role ) {
-				$role_data = $this->store->get_roles( $role );
-				if ( $role_data instanceof WP_Role ) {
-					$role_name = $this->store->get_rolenames( $role );
 
-					$users_check_content[] =
-						'<div class="ab-item vaa-item">'
-						. VAA_View_Admin_As_Form::do_checkbox( array(
-							'name'           => 'role-defaults-bulk-users-select[]',
-							'id'             => $root . '-bulk-users-select-' . $user->ID,
-							'checkbox_value' => $user->ID . '|' . $role,
-							'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
-						) )
-						. '</div>';
+		/** @var \VAA_View_Admin_As_Users $user_view_type */
+		$user_view_type = view_admin_as()->get_view_types( 'user' );
+		if ( $user_view_type instanceof VAA_View_Admin_As_Users ) {
+			$user_ajax = $user_view_type->ajax_search();
+
+			foreach ( $this->store->get_users() as $user ) {
+				foreach ( $user->roles as $role ) {
+					$role_data = $this->store->get_roles( $role );
+					if ( $role_data instanceof WP_Role ) {
+						$role_name = $this->store->get_rolenames( $role );
+
+						$users_check_content[] =
+							'<div class="ab-item vaa-item">'
+							. VAA_View_Admin_As_Form::do_checkbox( array(
+								'name'           => 'role-defaults-bulk-users-select[]',
+								'id'             => $root . '-bulk-users-select-' . $user->ID,
+								'checkbox_value' => $user->ID . '|' . $role,
+								'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
+							) )
+							. '</div>';
+					}
 				}
 			}
 		}
 
 		$role_defaults = $this->get_role_defaults();
-		$users         = $this->store->get_users();
-		$roles         = $this->store->get_roles();
 
 		/**
-		 * Apply defaults actions
+		 * @since  1.4.0  Apply defaults to users.
 		 */
-		if ( $users ) {
+		if ( $users_check_content || $user_ajax ) {
 
-			/**
-			 * @since  1.4.0  Apply defaults to users.
-			 */
 			$admin_bar->add_group( array(
 				'id'     => $root . '-bulk-users',
 				'parent' => $root,
@@ -1384,18 +1388,33 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'tabindex' => '0',
 				),
 			) );
-			$admin_bar->add_node( array(
-				'id'     => $root . '-bulk-users-filter',
-				'parent' => $root . '-bulk-users',
-				'title'  => VAA_View_Admin_As_Form::do_input( array(
-					'name'        => $root . '-bulk-users-filter',
-					'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username' ) ) . ')',
-				) ),
-				'href'   => false,
-				'meta'   => array(
-					'class' => 'ab-vaa-filter',
-				),
-			) );
+			if ( $user_ajax ) {
+				$admin_bar->add_node( array(
+					'id'     => $root . '-bulk-users-search',
+					'parent' => $root . '-bulk-users',
+					'title'  => VAA_View_Admin_As_Form::do_input( array(
+						'name'        => $root . '-bulk-users-search',
+						'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ),
+					) ),
+					'href'   => false,
+					'meta'   => array(
+						'class' => 'ab-vaa-search search-users search-ajax',
+					),
+				) );
+			} else {
+				$admin_bar->add_node( array(
+					'id'     => $root . '-bulk-users-filter',
+					'parent' => $root . '-bulk-users',
+					'title'  => VAA_View_Admin_As_Form::do_input( array(
+						'name'        => $root . '-bulk-users-filter',
+						'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN ) . ' (' . strtolower( __( 'Username' ) ) . ')',
+					) ),
+					'href'   => false,
+					'meta'   => array(
+						'class' => 'ab-vaa-filter',
+					),
+				) );
+			}
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-select',
 				'parent' => $root . '-bulk-users',
