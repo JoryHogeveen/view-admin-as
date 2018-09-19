@@ -1684,24 +1684,46 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.4.0  Filter users.
-		$root.on( 'keyup', root + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
-			e.preventDefault();
-			if ( 1 <= $(this).val().length ) {
-				var input_text = $(this).val();
-				$( root_prefix + '-bulk-users-select .ab-item.vaa-item' ).each( function() {
-					var name = $('.user-name', this).text();
-					if ( -1 < name.toLowerCase().indexOf( input_text.toLowerCase() ) ) {
+		if ( $root.find( root + '-bulk-users-filter' ).length ) {
+			$root.on( 'keyup', root + '-bulk-users-filter input#' + prefix + '-bulk-users-filter', function( e ) {
+				e.preventDefault();
+				var $items = $( root_prefix + '-bulk-users-select .ab-item.vaa-item' );
+				if ( 1 <= $(this).val().length ) {
+					var input_text = $(this).val();
+					$items.each( function() {
+						var name = $('.user-name', this).text();
+						if ( -1 < name.toLowerCase().indexOf( input_text.toLowerCase() ) ) {
+							$(this).show();
+						} else {
+							$(this).hide();
+						}
+					} );
+				} else {
+					$items.each( function() {
 						$(this).show();
-					} else {
-						$(this).hide();
-					}
-				} );
-			} else {
-				$( root_prefix + '-bulk-users-select .ab-item.vaa-item' ).each( function() {
-					$(this).show();
-				} );
-			}
-		} );
+					} );
+				}
+			} );
+		}
+
+		// @since  1.8.2  Search users.
+		if ( $root.find( root + '-bulk-users-search' ).length ) {
+			var $search_results = $root.find( root + '-bulk-users-select' );
+			$root.on( 'keyup', root + '-bulk-users-search input#' + prefix + '-bulk-users-search', function() {
+				var $this = $(this),
+					search = $this.val();
+
+				if ( 1 <= search.trim().length ) {
+					search = {
+						'search': search,
+						'return': 'role_defaults'
+					};
+					VAA_View_Admin_As.search_users_ajax( search, $search_results );
+				} else {
+					VAA_View_Admin_As.search_users_ajax( null, $search_results );
+				}
+			} );
+		}
 	};
 
 	/**
