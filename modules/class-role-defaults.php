@@ -1427,66 +1427,65 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'class' => 'vaa-button-container',
 				),
 			) );
+		} // End if().
 
-			// `$users` already verified.
-			if ( $roles ) {
+		/**
+		 * @since  1.4.0  Apply defaults to all users for a role.
+		 */
+		if ( $roles ) {
 
-				/**
-				 * @since  1.4.0  Apply defaults to all users for a role.
-				 */
-				$admin_bar->add_group( array(
-					'id'     => $root . '-bulk-roles',
-					'parent' => $root,
-					'meta'   => array(
-						'class' => 'ab-sub-secondary vaa-toggle-group',
-					),
-				) );
-				$admin_bar->add_node( array(
-					'id'     => $root . '-bulk-roles-title',
-					'parent' => $root . '-bulk-roles',
-					'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-groups' )
-								. __( 'Apply defaults to users by role', VIEW_ADMIN_AS_DOMAIN ),
-					'href'   => false,
-					'meta'   => array(
-						'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
-						'tabindex' => '0',
-					),
-				) );
-				$admin_bar->add_node( array(
-					'id'     => $root . '-bulk-roles-select',
-					'parent' => $root . '-bulk-roles',
-					'title'  => VAA_View_Admin_As_Form::do_select( array(
-						'name'   => $root . '-bulk-roles-select',
-						'values' => $role_select_options,
-					) ),
-					'href'   => false,
-					'meta'   => array(
-						'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
-					),
-				) );
-				$admin_bar->add_node( array(
-					'id'     => $root . '-bulk-roles-apply',
-					'parent' => $root . '-bulk-roles',
-					'title'  => VAA_View_Admin_As_Form::do_button( array(
-						'name'    => $root . '-bulk-roles-apply',
-						'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-						'class'   => 'button-primary',
-						'auto_js' => array(
-							'setting' => $this->moduleKey,
-							'key'     => 'apply_defaults_to_users_by_role',
-							'refresh' => false,
-							'value'   => array(
-								'element' => '#wp-admin-bar-' . $root . '-bulk-roles-select select#' . $root . '-bulk-roles-select',
-								'parser'  => '', // Default.
-							),
+			$admin_bar->add_group( array(
+				'id'     => $root . '-bulk-roles',
+				'parent' => $root,
+				'meta'   => array(
+					'class' => 'ab-sub-secondary vaa-toggle-group',
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-bulk-roles-title',
+				'parent' => $root . '-bulk-roles',
+				'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-groups' )
+							. __( 'Apply defaults to users by role', VIEW_ADMIN_AS_DOMAIN ),
+				'href'   => false,
+				'meta'   => array(
+					'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
+					'tabindex' => '0',
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-bulk-roles-select',
+				'parent' => $root . '-bulk-roles',
+				'title'  => VAA_View_Admin_As_Form::do_select( array(
+					'name'   => $root . '-bulk-roles-select',
+					'values' => $role_select_options,
+				) ),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'ab-vaa-select select-role', // vaa-column-one-half vaa-column-last .
+				),
+			) );
+			$admin_bar->add_node( array(
+				'id'     => $root . '-bulk-roles-apply',
+				'parent' => $root . '-bulk-roles',
+				'title'  => VAA_View_Admin_As_Form::do_button( array(
+					'name'    => $root . '-bulk-roles-apply',
+					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+					'class'   => 'button-primary',
+					'auto_js' => array(
+						'setting' => $this->moduleKey,
+						'key'     => 'apply_defaults_to_users_by_role',
+						'refresh' => false,
+						'value'   => array(
+							'element' => '#wp-admin-bar-' . $root . '-bulk-roles-select select#' . $root . '-bulk-roles-select',
+							'parser'  => '', // Default.
 						),
-					) ),
-					'href'   => false,
-					'meta'   => array(
-						'class' => 'vaa-button-container',
 					),
-				) );
-			} // End if().
+				) ),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'vaa-button-container',
+				),
+			) );
 		} // End if().
 
 		/**
