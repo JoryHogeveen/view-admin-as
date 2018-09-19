@@ -570,6 +570,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			);
 		}
 
+		$return_type = ( isset( $args['return'] ) ) ? $args['return'] : 'objects';
+
 		$this->is_ajax_search = true;
 		$this->_ajax_search = $args;
 
@@ -580,26 +582,34 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			die();
 		}
 
-		add_filter( 'vaa_admin_bar_view_title_' . $this->type, array( $this, 'filter_get_view_title_ajax' ), 10, 2 );
+		switch ( $return_type ) {
+			case 'objects':
+				$return = $users;
+				break;
 
-		$return = '';
-		foreach ( $users as $user ) {
-			$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ) );
-			$class = 'vaa-' . $this->type . '-item';
-			$title = $this->get_view_title( $user );
+			case 'links':
+				add_filter( 'vaa_admin_bar_view_title_' . $this->type, array( $this, 'filter_get_view_title_ajax' ), 10, 2 );
+				$return = '';
 
-			$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
-			$view_title .= $this->get_view_title_roles( $user );
+				foreach ( $users as $user ) {
+					$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ) );
+					$class = 'vaa-' . $this->type . '-item';
+					$title = $this->get_view_title( $user );
 
-			$attr = array(
-				'href' => $href,
-				'class' => 'ab-item',
-				// Translators: %s stands for the user display name.
-				'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
-			);
+					$view_title  = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
+					$view_title .= $this->get_view_title_roles( $user );
 
-			$item = '<a ' . VAA_View_Admin_As_Form::parse_to_html_attr( $attr ) . '>' . $view_title . '</a>';
-			$return .= '<li class="' . $class . '">' . $item . '</a>';
+					$attr = array(
+						'href'  => $href,
+						'class' => 'ab-item',
+						// Translators: %s stands for the user display name.
+						'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
+					);
+
+					$item    = '<a ' . VAA_View_Admin_As_Form::parse_to_html_attr( $attr ) . '>' . $view_title . '</a>';
+					$return .= '<li class="' . $class . '">' . $item . '</a>';
+				}
+				break;
 		}
 
 		wp_send_json_success( $return );
