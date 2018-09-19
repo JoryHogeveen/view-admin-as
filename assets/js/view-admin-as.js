@@ -1035,7 +1035,15 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				search = $this.val();
 			if ( 1 <= search.trim().length ) {
 				if ( search_ajax ) {
-					search_users_ajax( search );
+					search = {
+						'search': search,
+						'return': 'links'
+					};
+					var search_by = $root.find( '.ab-vaa-search.search-users select' ).val();
+					if ( search_by ) {
+						search[ 'search_by' ] = search_by;
+					}
+					VAA_View_Admin_As.search_users_ajax( search, $search_results );
 				} else {
 					search_users( search );
 				}
@@ -1083,25 +1091,20 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 * Search users with AJAX.
 		 *
 		 * @since  1.8.0
-		 * @param  {string}  search  The search value.
+		 * @since  1.8.2  Refactored for general use.
+		 * @param  {object}  search             The search parameters.
+		 * @param  {object}  results_container  The results container element.
 		 * @return {void} Nothing.
 		 */
-		function search_users_ajax( search ) {
+		VAA_View_Admin_As.search_users_ajax = function( search, results_container ) {
 			clearTimeout( ajax_delay_timer );
-
-			var search_by = $( '.ab-vaa-search.search-users select', $root ).val();
-			if ( search_by ) {
-				search = {
-					'search': search,
-					'search_by': search_by
-				};
-			}
+			var $results_container;
 
 			ajax_delay_timer = setTimeout( function() {
+				$results_container = $( results_container );
+				$results_container.html( '<div class="ab-item ab-empty-item">. . . </div>' );
 
-				$search_results.html( '<div class="ab-item ab-empty-item">. . . </div>' );
-
-				var $loading = $( '.ab-item', $search_results ),
+				var $loading = $( '.ab-item', $results_container ),
 					loading = '. . . ',
 					loading_interval = setInterval( function() {
 						if ( 20 < loading.length ) {
@@ -1120,13 +1123,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				$.post( VAA_View_Admin_As.ajaxurl, post_data, function( response ) {
 					clearInterval( loading_interval );
 					clearTimeout( ajax_delay_timer );
+
 					if ( response.hasOwnProperty( 'success' ) && response.success ) {
-						$search_results.html( response.data );
+						$results_container.html( response.data );
 						VAA_View_Admin_As.reinit_combine_views();
 					} else {
-						$search_results.html( no_results );
+						$results_container.html( no_results );
 					}
-					VAA_View_Admin_As.autoMaxHeight();
+					if ( $results_container.hasClass( 'vaa-resizable' ) ) {
+						$results_container.trigger('vaa-resizable');
+					}
+					if ( $results_container.hasClass( 'vaa-auto-max-height' ) ) {
+						VAA_View_Admin_As.autoMaxHeight();
+					}
 				} );
 
 			}, 500 );
