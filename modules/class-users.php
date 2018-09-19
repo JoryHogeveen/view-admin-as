@@ -573,9 +573,24 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$return_type = ( isset( $args['return'] ) ) ? $args['return'] : 'objects';
 
 		$this->is_ajax_search = true;
-		$this->_ajax_search = $args;
+		$this->_ajax_search   = $args;
 
 		$users = $this->search_users( $args );
+
+		/**
+		 * Filter the return JSON data for ajax search users by return type.
+		 * @since  1.8.2
+		 * @param  string      $return  Empty string.
+		 * @param  \WP_User[]  $users   The found users.
+		 * @param  self        $this    The view type class.
+		 * @param  array       $args    The passed arguments.
+		 * @return mixed
+		 */
+		$return = apply_filters( 'view_admin_as_ajax_search_users_return_' . $return_type, null, $users, $this, $args );
+		if ( null !== $return ) {
+			wp_send_json_success( $return );
+			die();
+		}
 
 		if ( ! $users ) {
 			wp_send_json_error();
