@@ -1037,40 +1037,39 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		var root = VAA_View_Admin_As.root + '-users',
 			root_prefix = VAA_View_Admin_As.prefix + root,
 			$root = $( root_prefix ),
+			ajax_delay_timer,
 			$search_node = $( root_prefix + ' .ab-vaa-search.search-users' );
 
-		if ( ! $search_node.length ) {
-			return;
-		}
+		if ( $search_node.length ) {
 
-		var search_ajax = $search_node.hasClass('search-ajax'),
-			ajax_delay_timer,
-			$search_results  = $search_node.find( '.ab-vaa-results' ),
-			no_results = '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>';
+			var search_ajax = $search_node.hasClass('search-ajax'),
+				$search_results  = $search_node.find( '.ab-vaa-results' ),
+				no_results = '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>';
 
-		// Search users.
-		$root.on( 'keyup', '.ab-vaa-search.search-users input', function() {
-			var $this = $(this),
-				search = $this.val();
+			// Search users.
+			$root.on( 'keyup', '.ab-vaa-search.search-users input', function() {
+				var $this = $(this),
+					search = $this.val();
 
-			if ( 1 <= search.trim().length ) {
-				if ( search_ajax ) {
-					search = {
-						'search': search,
-						'return': 'links'
-					};
-					var search_by = $root.find( '.ab-vaa-search.search-users select' ).val();
-					if ( search_by ) {
-						search[ 'search_by' ] = search_by;
+				if ( 1 <= search.trim().length ) {
+					if ( search_ajax ) {
+						search = {
+							'search': search,
+							'return': 'links'
+						};
+						var search_by = $root.find( '.ab-vaa-search.search-users select' ).val();
+						if ( search_by ) {
+							search[ 'search_by' ] = search_by;
+						}
+						VAA_View_Admin_As.search_users_ajax( search, $search_results );
+					} else {
+						search_users( search );
 					}
-					VAA_View_Admin_As.search_users_ajax( search, $search_results );
 				} else {
-					search_users( search );
+					VAA_View_Admin_As.search_users_ajax( null, $search_results );
 				}
-			} else {
-				VAA_View_Admin_As.search_users_ajax( null, $search_results );
-			}
-		} );
+			} );
+		}
 
 		/**
 		 * Search users from the DOM.

@@ -108,6 +108,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			 * @return  bool
 			 */
 			$this->_ajax_search = (bool) apply_filters( 'view_admin_as_user_ajax_search', $this->_ajax_search );
+		} else {
+			// In case other modules want to search users (AJAX only).
+			$this->_ajax_search = true;
 		}
 
 		// Users can also be switched from the user list page.
