@@ -311,7 +311,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			'parent' => $root . '-manager',
 			'title'  => VAA_View_Admin_As_Form::do_button( array(
 				'name'    => 'apply-caps-view',
-				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
+				'label'   => __( 'Apply view', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
 			) )
 			. VAA_View_Admin_As_Form::do_button( array(
