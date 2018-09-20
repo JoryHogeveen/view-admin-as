@@ -1729,9 +1729,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		}
 
 		// @since  1.8.2  Search users.
-		if ( $root.find( root + '-bulk-users-search' ).length ) {
+		var $search = $root.find( root + '-bulk-users-search' );
+		if ( $search.length ) {
 			var $search_results = $root.find( root + '-bulk-users-select' );
-			$root.on( 'keyup', root + '-bulk-users-search input#' + prefix + '-bulk-users-search', function() {
+			$search.on( 'keyup', 'input#' + prefix + '-bulk-users-search', function() {
 				var $this = $(this),
 					search = $this.val();
 
@@ -1740,6 +1741,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						'search': search,
 						'return': 'role_defaults'
 					};
+					var search_by = $search.find( 'select#' + prefix + '-bulk-users-search-by' ).val();
+					if ( search_by ) {
+						search[ 'search_by' ] = search_by;
+					}
 					VAA_View_Admin_As.search_users_ajax( search, $search_results );
 				} else {
 					VAA_View_Admin_As.search_users_ajax( null, $search_results );

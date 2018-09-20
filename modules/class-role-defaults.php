@@ -1433,9 +1433,22 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$admin_bar->add_node( array(
 					'id'     => $root . '-bulk-users-search',
 					'parent' => $root . '-bulk-users',
-					'title'  => VAA_View_Admin_As_Form::do_input( array(
+					'title'  => VAA_View_Admin_As_Form::do_select( array(
+						'name'   => $root . '-bulk-users-search-by',
+						'values' => array(
+							''             => ' - ' . __( 'Search by', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
+							'ID'           => 'ID',
+							'user_login'   => __( 'Username', VIEW_ADMIN_AS_DOMAIN ),
+							'user_email'   => __( 'Email', VIEW_ADMIN_AS_DOMAIN ),
+							'user_url'     => __( 'Website', VIEW_ADMIN_AS_DOMAIN ),
+							'display_name' => __( 'Display name', VIEW_ADMIN_AS_DOMAIN ),
+							//'user_nicename'
+						),
+						'class'  => 'vaa-wide',
+					) ) . VAA_View_Admin_As_Form::do_input( array(
 						'name'        => $root . '-bulk-users-search',
 						'placeholder' => esc_attr__( 'Search', VIEW_ADMIN_AS_DOMAIN ),
+						'class'       => 'vaa-wide',
 					) ),
 					'href'   => false,
 					'meta'   => array(
