@@ -645,6 +645,24 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
+	 * Get the selectbox values for search users by.
+	 *
+	 * @since   1.8.2
+	 * @return  array
+	 */
+	public function search_users_by_select_values() {
+		return array(
+			''             => ' - ' . __( 'Search by', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
+			'ID'           => 'ID',
+			'user_login'   => __( 'Username', VIEW_ADMIN_AS_DOMAIN ),
+			'user_email'   => __( 'Email', VIEW_ADMIN_AS_DOMAIN ),
+			'user_url'     => __( 'Website', VIEW_ADMIN_AS_DOMAIN ),
+			'display_name' => __( 'Display name', VIEW_ADMIN_AS_DOMAIN ),
+			//'user_nicename'
+		);
+	}
+
+	/**
 	 * Get the search SQL for searching users.
 	 * Copied and modified from WP_User_Query.
 	 *

@@ -1435,15 +1435,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'parent' => $root . '-bulk-users',
 					'title'  => VAA_View_Admin_As_Form::do_select( array(
 						'name'   => $root . '-bulk-users-search-by',
-						'values' => array(
-							''             => ' - ' . __( 'Search by', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
-							'ID'           => 'ID',
-							'user_login'   => __( 'Username', VIEW_ADMIN_AS_DOMAIN ),
-							'user_email'   => __( 'Email', VIEW_ADMIN_AS_DOMAIN ),
-							'user_url'     => __( 'Website', VIEW_ADMIN_AS_DOMAIN ),
-							'display_name' => __( 'Display name', VIEW_ADMIN_AS_DOMAIN ),
-							//'user_nicename'
-						),
+						'values' => $user_view_type->search_users_by_select_values(),
 						'class'  => 'vaa-wide',
 					) ) . VAA_View_Admin_As_Form::do_input( array(
 						'name'        => $root . '-bulk-users-search',
