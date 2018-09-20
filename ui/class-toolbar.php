@@ -98,9 +98,10 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 			return;
 		}
 
-		if ( ( is_customize_preview() && ! $this->vaa_store->get_userSettings( 'hide_customizer' ) ) ||
-		     ( ! is_admin() && ! $this->vaa_store->get_userSettings( 'hide_front' ) ) ||
-		     $this->vaa_store->get_view()
+		if (
+			( is_customize_preview() && ! $this->vaa_store->get_userSettings( 'hide_customizer' ) )
+			|| ( ! is_admin() && ! $this->vaa_store->get_userSettings( 'hide_front' ) )
+			|| $this->vaa_store->get_view()
 		) {
 
 			self::$showing = true;

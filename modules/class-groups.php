@@ -273,9 +273,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * @return  bool|object
 	 */
 	public function groups_user_is_member( $result, $user_id, $group_id ) {
-		if ( (int) $user_id === (int) $this->store->get_curUser()->ID
-		     && $this->selected
-		     && (int) $group_id === (int) $this->selected->group->group_id
+		if (
+			(int) $user_id === (int) $this->store->get_curUser()->ID
+			&& $this->selected
+			&& (int) $group_id === (int) $this->selected->group->group_id
 		) {
 			$result = $this->selected->group;
 		}
@@ -310,9 +311,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			return $result;
 		}
 
-		if ( $this->selected &&
-		     is_callable( array( $this->selected, 'can' ) ) &&
-		     ! $this->selected->can( $cap )
+		if (
+			$this->selected
+			&& is_callable( array( $this->selected, 'can' ) )
+			&& ! $this->selected->can( $cap )
 		) {
 			$result = false;
 		} else {

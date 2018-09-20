@@ -189,7 +189,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		if ( $done ) return;
 
 		$main_root = $root;
-		$root = $main_root . '-locale';
+		$root      = $main_root . '-locale';
 
 		$admin_bar->add_group( array(
 			'id'     => $root,
@@ -211,7 +211,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		) );
 
 		$admin_bar->add_group( array(
-			'id' => $root . '-languages',
+			'id'     => $root . '-languages',
 			'parent' => $root . '-title',
 			'meta'   => array(
 				'class' => 'vaa-auto-max-height',
@@ -257,7 +257,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 			return;
 		}
 
-		$existing = (array) $this->store->get_optionData( $this->optionKey );
+		$existing  = (array) $this->store->get_optionData( $this->optionKey );
 		$languages = $existing;
 
 		if ( array_diff_key( array_flip( $installed ), $existing ) ) {

@@ -1556,7 +1556,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'parent' => $root,
 			'title'  => VAA_View_Admin_As_Form::do_input( array(
 				'name'        => $root . '-new-cap',
-				'placeholder' => esc_attr__( 'Add new capability', VIEW_ADMIN_AS_DOMAIN ),
+				'placeholder' => esc_attr__( 'Add new custom capability', VIEW_ADMIN_AS_DOMAIN ),
 			) ) . VAA_View_Admin_As_Form::do_button( array(
 				'name'  => $root . '-add-cap',
 				'label' => __( 'Add', VIEW_ADMIN_AS_DOMAIN ),

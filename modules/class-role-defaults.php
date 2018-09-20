@@ -263,9 +263,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.6.0
 		 * @since  1.6.2  Improved conditions + check if sortable is enqueued and active.
 		 */
-		if ( $this->get_optionData( 'lock_meta_boxes' )
-		     && ! $this->current_user_can( 'view_admin_as_role_defaults' )
-		     && wp_script_is( 'jquery-ui-sortable', 'enqueued' )
+		if (
+			$this->get_optionData( 'lock_meta_boxes' )
+			&& ! $this->current_user_can( 'view_admin_as_role_defaults' )
+			&& wp_script_is( 'jquery-ui-sortable', 'enqueued' )
 		) {
 			?>
 			<script type="text/javascript">

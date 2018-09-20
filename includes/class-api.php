@@ -164,10 +164,10 @@ final class VAA_API
 		 * @param  array
 		 * @return int[] Requires a returned array of user ID's
 		 */
-		$superior_admins = array_unique( array_map( 'absint', array_filter(
-			(array) apply_filters( 'view_admin_as_superior_admins', array() ),
-			'is_numeric'  // Only allow numeric values (user id's)
-		) ) );
+		$superior_admins = (array) apply_filters( 'view_admin_as_superior_admins', array() );
+
+		// Only allow unique  numeric values (user id's).
+		$superior_admins = array_unique( array_map( 'absint', array_filter( $superior_admins, 'is_numeric' ) ) );
 
 		return $superior_admins;
 	}
@@ -735,7 +735,7 @@ final class VAA_API
 		if ( is_array( $callable ) ) {
 			if ( is_object( $callable[0] ) ) {
 				$callable[0] = get_class( $callable[0] );
-				$callable = implode( '->', $callable );
+				$callable    = implode( '->', $callable );
 			} else {
 				$callable = implode( '::', $callable );
 			}

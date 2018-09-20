@@ -221,6 +221,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		foreach ( $data as $key => $value ) {
 			if ( $this->is_view_type( $key ) ) {
 				$view_types[] = $key;
+
 				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
 			} else {
 				$success = apply_filters( 'view_admin_as_handle_ajax_' . $key, null, $value, $key );

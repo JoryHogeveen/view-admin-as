@@ -254,8 +254,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * @return  array
 	 */
 	public function get_user_metadata( $null, $user_id, $meta_key ) {
-		if ( (int) $user_id === (int) $this->store->get_selectedUser()->ID
-		     && $this->get_levels( $this->selected )
+		if (
+			(int) $user_id === (int) $this->store->get_selectedUser()->ID
+			&& $this->get_levels( $this->selected )
 		) {
 			// @todo Check for future API updates in RUA plugin
 			if ( $this->ruaMetaPrefix . 'level' === $meta_key ) {

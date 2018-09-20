@@ -320,8 +320,9 @@ class VAA_View_Admin_As_Form
 				$label_attr = array();
 				$desc_attr  = array();
 				// Custom validation required.
-				if ( ( ! empty( $val['auto_showhide'] ) ) ||
-					 ( ! isset( $val['auto_showhide'] ) && ! empty( $args['auto_showhide'] ) )
+				if (
+					( ! empty( $val['auto_showhide'] ) )
+					|| ( ! isset( $val['auto_showhide'] ) && ! empty( $args['auto_showhide'] ) )
 				) {
 					self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 				}
@@ -444,9 +445,10 @@ class VAA_View_Admin_As_Form
 	public static function do_icon( $icon, $attr = array(), $content = '' ) {
 		$class = 'ab-icon';
 
-		if ( false === strpos( $icon, '/' ) &&
-			 0 !== strpos( $icon, 'data:' ) &&
-			 0 !== strpos( $icon, 'http' )
+		if (
+			false === strpos( $icon, '/' )
+			&& 0 !== strpos( $icon, 'data:' )
+			&& 0 !== strpos( $icon, 'http' )
 		) {
 			// It's an icon class.
 			$class .= ' dashicons ' . $icon;
@@ -517,7 +519,7 @@ class VAA_View_Admin_As_Form
 		} elseif ( ! is_string( $text ) ) {
 			return '';
 		}
-		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
+		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '' );
 
 		$attr = self::parse_to_html_attr( $attr );
 		return '<' . $elem . ' ' . $attr . '>' . $text . '</' . $elem . '>';
@@ -629,6 +631,7 @@ class VAA_View_Admin_As_Form
 					$value = array( 'values' => $args['auto_js']['values'] );
 				}
 				$values = array( $args['auto_js']['key'] => $value );
+
 				$args['auto_js']['values'] = $values;
 			}
 			unset( $args['auto_js']['key'] );

@@ -447,7 +447,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 			$this->$method( $val, $key, $append );
 			return;
 		}
-		$current = ( isset( $this->data[ $type ] ) ) ? $this->data[ $type ] : array();
+		$current             = ( isset( $this->data[ $type ] ) ) ? $this->data[ $type ] : array();
 		$this->data[ $type ] = (array) VAA_API::set_array_data( $current, $val, $key, $append );
 	}
 

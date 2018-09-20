@@ -542,7 +542,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			}
 			foreach ( $nodes as $key => $node ) {
 				// Check if node ID starts with `vaa-` and node parent starts with `vaa`.
-				if ( 0 === strpos( $node->id , $slug . '-' ) && 0 === strpos( $node->parent , $slug ) ) {
+				if ( 0 === strpos( $node->id, $slug . '-' ) && 0 === strpos( $node->parent, $slug ) ) {
 					unset( $all_nodes['right'][ $location ][ $key ] );
 				}
 			}

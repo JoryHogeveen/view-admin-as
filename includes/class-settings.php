@@ -242,8 +242,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 					__METHOD__,
 					sprintf(
 						// Translators: %1$s stands for an option key and %2$s stands for a class name.
-						__( 'The setting key %1$s is reserved for class %2$s', VIEW_ADMIN_AS_DOMAIN ),
-						$id, 'VAA_View_Admin_As_Store'
+						esc_html__( 'The setting key %1$s is reserved for class %2$s', VIEW_ADMIN_AS_DOMAIN ),
+						esc_html( $id ),
+						'VAA_View_Admin_As_Store'
 					),
 					''
 				);
@@ -419,10 +420,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$current = $defaults;
 		}
 
-		$settings = apply_filters(
-			'view_admin_as_update_' . $type . '_settings' . $this->_filter_postfix,
-			$settings, $current, $defaults, $allowed
-		);
+		$filter   = 'view_admin_as_update_' . $type . '_settings' . $this->_filter_postfix;
+		$settings = apply_filters( $filter, $settings, $current, $defaults, $allowed );
 
 		$settings = $this->validate_settings( $settings, $type, false );
 
@@ -533,6 +532,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 
 		if ( ! isset( $this->allUserMeta[ $user_id ] ) ) {
 			$column_id = 0;
+
 			$this->allUserMeta[ $user_id ] = array( $column_id => $value );
 		}
 
