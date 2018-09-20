@@ -36,7 +36,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		}
 		if ( $this->ajax_search() ) {
 			$title .= VAA_View_Admin_As_Form::do_select( array(
-				'name'   => $root . '-searchusers-by',
+				'name'   => $root . '-search-by',
 				'values' => array(
 					''             => ' - ' . __( 'Search by', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
 					'ID'           => 'ID',
@@ -50,13 +50,13 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			) );
 		}
 		$title .= VAA_View_Admin_As_Form::do_input( array(
-			'name'        => $root . '-searchusers',
+			'name'        => $root . '-search',
 			'placeholder' => __( 'Search', VIEW_ADMIN_AS_DOMAIN ),
 			'class'       => 'vaa-wide',
 		) );
 
 		$admin_bar->add_node( array(
-			'id'     => $root . '-searchusers',
+			'id'     => $root . '-search',
 			'parent' => $root,
 			'title'  => $title,
 			'href'   => false,
