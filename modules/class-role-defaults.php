@@ -325,9 +325,10 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( is_array( $metas ) ) {
 			foreach ( $metas as $meta_key => $meta_value ) {
 				// Remove forbidden or invalid meta keys.
-				if ( in_array( $meta_key, $this->meta_forbidden, true )
-				     || strpos( $meta_key, ' ' ) !== false
-				     || ! is_string( $meta_key )
+				if (
+					in_array( $meta_key, $this->meta_forbidden, true )
+					|| strpos( $meta_key, ' ' ) !== false
+					|| ! is_string( $meta_key )
 				) {
 					unset( $metas[ $meta_key ] );
 					continue;

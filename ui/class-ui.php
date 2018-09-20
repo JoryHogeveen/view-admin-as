@@ -369,7 +369,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ); ?>
 			<ul>
 			<?php foreach ( $options as $option ) { ?>
-				<li><a href="<?php echo esc_attr( $option['url'] ); ?>"><?php echo $option['text']; ?></a></li>
+				<li><a href="<?php echo esc_attr( $option['url'] ); ?>"><?php echo esc_html( $option['text'] ); ?></a></li>
 			<?php } ?>
 			</ul>
 		</div>
