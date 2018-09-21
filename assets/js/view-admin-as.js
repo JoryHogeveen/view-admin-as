@@ -1142,11 +1142,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		VAA_View_Admin_As.search_users_ajax = function( search, results_container ) {
 			clearTimeout( ajax_delay_timer );
-			var $results_container;
+			var $results_container = $( results_container );;
 
 			// Reset.
 			if ( ! search ) {
-				$results_container = $( results_container );
 				$results_container.empty();
 				if ( $results_container.hasClass( 'vaa-resizable' ) ) {
 					$results_container.trigger('vaa-resizable');
@@ -1155,7 +1154,6 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 
 			ajax_delay_timer = setTimeout( function() {
-				$results_container = $( results_container );
 				$results_container.html( '<div class="ab-item ab-empty-item">. . . </div>' );
 
 				var $loading = $( '.ab-item', $results_container ),

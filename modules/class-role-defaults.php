@@ -430,7 +430,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					$errors[ $key ] = ! (bool) $this->update_user_with_role_defaults( intval( $user_data[0] ), $user_data[1] );
 				} else {
 					$errors[ $key ] = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN )
-									  . ': <code>' . implode( '|', $user_data ) . ' (user_id|role)</code>';
+					                  . ': <code>' . implode( '|', $user_data ) . ' (user_id|role)</code>';
 				}
 			}
 			$success = true;
