@@ -692,10 +692,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			html += '<p>' + String( data.text ) + '</p>';
 		}
 		// List items.
-		if ( data.hasOwnProperty( 'list' ) ) {
+		if ( data.hasOwnProperty( 'list' ) && 'object' === typeof data.list ) {
 			html +=  '<ul>';
-			data.list.forEach( function( item ) {
-				html +=  '<li>' + String( item ) + '</li>';
+			$.each( data.list, function ( key, value ) {
+				html +=  '<li>' + String( value ) + '</li>';
 			} );
 			html +=  '</ul>';
 		}
