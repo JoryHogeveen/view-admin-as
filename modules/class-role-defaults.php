@@ -426,15 +426,18 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$user_data      = explode( '|', $user_data );
 				$errors[ $key ] = false;
 				if ( is_numeric( $user_data[0] ) && VAA_API::array_has( $user_data, 1, array( 'validation' => 'is_string' ) ) ) {
-					// Flip return boolean
-					$errors[ $key ] = ! (bool) $this->update_user_with_role_defaults( intval( $user_data[0] ), $user_data[1] );
+					$success = $this->update_user_with_role_defaults( intval( $user_data[0] ), $user_data[1] );
+					if ( is_string( $success ) ) {
+						// Add error notice.
+						$errors[ $key ] = $success;
+					}
 				} else {
 					$errors[ $key ] = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN )
 					                  . ': <code>' . implode( '|', $user_data ) . ' (user_id|role)</code>';
 				}
 			}
 			$success = true;
-			$errors  = array_filter( $errors );
+			$errors  = array_unique( array_filter( $errors ) );
 			if ( ! empty( $errors ) ) {
 				$success = $this->ajax_data_popup( false, array(
 					'text' => esc_attr__( 'There were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
@@ -548,6 +551,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * When no role is provided this function only checks the first existing user role. If the user has multiple roles, the other roles are ignored.
 	 *
 	 * @since   1.4.0
+	 * @since   1.8.2  Return error when user or role is not found.
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Role_Defaults::update_user_with_role_defaults_multisite_register()
 	 * @see     \VAA_View_Admin_As_Role_Defaults::apply_defaults_to_users_by_role()
@@ -559,7 +563,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @param   int     $user_id  The user ID.
 	 * @param   string  $role     (optional) The user role name.
 	 * @param   int     $blog_id  (optional) The blog ID.
-	 * @return  bool
+	 * @return  bool|string
 	 */
 	public function update_user_with_role_defaults( $user_id, $role = null, $blog_id = null ) {
 		$success = true;
@@ -580,7 +584,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					// Do not return update_user_meta results since it's highly possible to be false (values are often the same).
 					// @todo check other way of validation
 				}
+			} else {
+				$success = esc_html__( 'No data found for role', VIEW_ADMIN_AS_DOMAIN ) . ': ' . $role;
 			}
+		} else {
+			$success = esc_html( 'User not found', VIEW_ADMIN_AS_DOMAIN );
 		}
 		return $success;
 	}
@@ -598,7 +606,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @param   int     $user_id  The user ID.
 	 * @param   string  $role     The user role name.
 	 * @param   int     $blog_id  The blog ID.
-	 * @return  bool
+	 * @return  bool|string
 	 */
 	public function update_user_with_role_defaults_multisite_register( $user_id, $role, $blog_id ) {
 		$user_blogs = get_blogs_of_user( $user_id );
@@ -635,7 +643,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				$users = get_users( array( 'role' => $role ) );
 				if ( ! empty( $users ) ) {
 					foreach ( $users as $user ) {
-						$success = $this->update_user_with_role_defaults( $user->ID, $role );
+						$this->update_user_with_role_defaults( $user->ID, $role );
 						// @todo notify of errors in updates.
 					}
 				}
