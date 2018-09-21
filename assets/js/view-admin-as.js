@@ -1142,7 +1142,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		VAA_View_Admin_As.search_users_ajax = function( search, results_container ) {
 			clearTimeout( ajax_delay_timer );
-			var $results_container = $( results_container );;
+			var $results_container = $( results_container );
 
 			// Reset.
 			if ( ! search ) {
