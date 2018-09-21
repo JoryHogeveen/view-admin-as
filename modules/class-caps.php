@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.3.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.0
+ * @version 1.8.2
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type

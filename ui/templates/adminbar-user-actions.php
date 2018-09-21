@@ -3,7 +3,7 @@
  * Add user actions.
  *
  * @since    1.8.0
- * @version  1.8.1
+ * @version  1.8.2
  *
  * @var  \VAA_View_Admin_As_Users  $this
  * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.

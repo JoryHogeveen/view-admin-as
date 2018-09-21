@@ -1410,6 +1410,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 		/**
 		 * @since  1.4.0  Apply defaults to users.
+		 * @since  1.8.2  AJAX search compatibility.
 		 */
 		if ( $users_check_content || $user_ajax ) {
 

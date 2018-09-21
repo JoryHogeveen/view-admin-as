@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @link    https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters
  * @since   1.8.0
- * @version 1.8.0
+ * @version 1.8.2
  */
 class VAA_View_Admin_As_Hooks
 {

@@ -1750,7 +1750,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			} );
 		}
 
-		// @since  1.8.2  Search users.
+		// @since  1.8.2  AJAX search users.
 		var $search = $root.find( root + '-bulk-users-search' );
 		if ( $search.length ) {
 			var $search_results = $root.find( root + '-bulk-users-select' );

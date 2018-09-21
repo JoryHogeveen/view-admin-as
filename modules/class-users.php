@@ -848,6 +848,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			 * @since  1.6.2  Exclude in SQL format.
 			 */
 			$exclude = array_merge( $superior_admins, array( $this->store->get_curUser()->ID ) );
+			// Only allow unique numeric values (user id's).
 			$exclude = implode( ',', array_unique( array_map( 'absint', $exclude ) ) );
 
 			$user_query['where'] .= " AND users.ID NOT IN ({$exclude})";
