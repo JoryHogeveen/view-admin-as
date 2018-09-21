@@ -56,11 +56,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * This parameter does not check user settings!
 	 *
-	 * @internal
 	 * @since  1.8.0
 	 * @var    bool|array
 	 */
-	protected $_ajax_search = false;
+	protected $ajax_search = false;
 
 	/**
 	 * Is the current request an AJAX request.
@@ -104,13 +103,13 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			/**
 			 * Force AJAX search for users at all times.
 			 * @since   1.8.1
-			 * @param   bool  $_ajax_search  Default: `false`
+			 * @param   bool  $ajax_search  Default: `false`
 			 * @return  bool
 			 */
-			$this->_ajax_search = (bool) apply_filters( 'view_admin_as_user_ajax_search', $this->_ajax_search );
+			$this->ajax_search = (bool) apply_filters( 'view_admin_as_user_ajax_search', $this->ajax_search );
 		} else {
 			// In case other modules want to search users (AJAX only).
-			$this->_ajax_search = true;
+			$this->ajax_search = true;
 		}
 
 		// Users can also be switched from the user list page.
@@ -246,8 +245,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @return  string
 	 */
 	public function filter_get_view_title_ajax( $title, $user ) {
-		if ( ! empty( $this->_ajax_search['search_by'] ) ) {
-			$val = $user->get( $this->_ajax_search['search_by'] );
+		if ( ! empty( $this->ajax_search['search_by'] ) ) {
+			$val = $user->get( $this->ajax_search['search_by'] );
 			if ( $val ) {
 				$title = '<span class="vaa-highlight">' . $val . '</span>&nbsp; ' . $title;
 			}
@@ -522,7 +521,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 */
 	public function ajax_search( $check_user = true ) {
 		if ( ! $check_user ) {
-			return (bool) $this->_ajax_search;
+			return (bool) $this->ajax_search;
 		}
 
 		static $force;
@@ -530,7 +529,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$force = (bool) $this->store->get_userSettings( 'force_ajax_users' );
 		}
 
-		return (bool) ( $this->_ajax_search || $force );
+		return (bool) ( $this->ajax_search || $force );
 	}
 
 	/**
@@ -580,7 +579,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$return_type = ( isset( $args['return'] ) ) ? $args['return'] : 'objects';
 
 		$this->is_ajax_search = true;
-		$this->_ajax_search   = $args;
+		$this->ajax_search    = $args;
 
 		$users = $this->search_users( $args );
 
@@ -885,7 +884,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 			// @since  1.8.0  Switch to ajax search because of load time.
 			if ( $limit <= count( $users_results ) && ! $this->is_ajax_search ) {
-				$this->_ajax_search = true;
+				$this->ajax_search = true;
 				return;
 			}
 
