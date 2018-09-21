@@ -244,27 +244,50 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// @since  1.8.2  Enhance height calc + provide trigger for content changes
 		$( '.vaa-resizable', $vaa ).each( function() {
 			var $this = $(this),
-				maxHeightPx = $this.css( 'max-height' ),
-				maxHeight = parseInt( maxHeightPx.replace( 'px', '' ), 10 ),
-				empty = false,
-				height;
+				maxHeight = parseInt( $this.css( 'max-heights' ), 10 ),
+				height, innerHeight, newHeight;
 
 			// Check for empty containers.
 			$this.find( '.ab-empty-item:empty' ).remove();
 
 			$this.on( 'vaa-resizable', function() {
-				empty  = $this.is( ':empty' );
-				height = $this.height();
+				if ( $this.is( ':empty' ) ) {
+					$this.css( {
+						'max-height': '',
+						'height': '',
+						'resize': ''
+					} );
+					return;
+				}
+				newHeight = maxHeight;
+				height    = $this.height();
 				$this.css( {
 					'max-height': '',
 					'height': '',
 					'resize': ''
 				} );
-				if ( maxHeight && ( ! height || height >= maxHeight ) ) {
-					height = ( empty ) ? '' : ( maxHeightPx ) ? maxHeightPx : '';
+				if ( height ) {
+					$this.css( { 'max-height': 'none' } );
+					innerHeight = $this.height();
+					$this.css( { 'max-height': '' } );
+					if ( innerHeight < maxHeight ) {
+						// New content height is reduces below max height.
+						newHeight = innerHeight;
+					} else if ( height >= maxHeight ) {
+						// Box was resized and new content is still higher than the max height.
+						if ( innerHeight < height ) {
+							// The new content is lower than the current resized height.
+							newHeight = innerHeight;
+						} else {
+							// Content is above current height, keep it as is.
+							newHeight = height;
+						}
+					}
+				}
+				if ( newHeight && ( ! height || newHeight >= maxHeight ) ) {
 					$this.css( {
 						'max-height': 'none',
-						'height': height,
+						'height': ( newHeight ) ? newHeight + 'px' : '',
 						'resize': 'vertical'
 					} );
 				}
