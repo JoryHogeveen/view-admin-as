@@ -420,6 +420,16 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$current = $defaults;
 		}
 
+		/**
+		 * Filter the settings before they are validated.
+		 *
+		 * @since  1.8.0
+		 * @param  array  $settings  New settings.
+		 * @param  array  $current   Current settings.
+		 * @param  array  $defaults  Default settings.
+		 * @param  array  $allowed   Allowed settings.
+		 * @return array
+		 */
 		$filter   = 'view_admin_as_update_' . $type . '_settings' . $this->_filter_postfix;
 		$settings = apply_filters( $filter, $settings, $current, $defaults, $allowed );
 
