@@ -3,7 +3,7 @@
  * Add role items.
  *
  * @since    1.8.0
- * @version  1.8.0
+ * @version  1.8.2
  *
  * @var  \VAA_View_Admin_As_Languages  $this
  * @var  \WP_Admin_Bar                 $admin_bar  The toolbar object.
@@ -28,7 +28,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$class = 'vaa-' . $this->type . '-item';
 		$title = $this->get_view_title( $locale );
 
-		$view_title = ( $locale !== $title ) ? '<code>' . $locale . '</code> | ' . $language : $locale;
+		$view_title = ( $locale !== $title ) ? $language . ' <code>' . $locale . '</code>' : $locale;
 
 		$view_title = VAA_View_Admin_As_Form::do_view_title( $view_title, $this, $locale );
 
