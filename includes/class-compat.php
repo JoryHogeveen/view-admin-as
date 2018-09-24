@@ -211,16 +211,15 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 
 		/**
 		 * Other WordPress capabilities.
-		 * @since  1.7.4
+		 * @since  1.7.4  WordPress 4.9 capabilities.
 		 */
-		$caps = array_merge( array(
-			// @since  4.9
-			'activate_plugin',
-			'deactivate_plugin',
-			'deactivate_plugins',
-			'install_languages',
-			'update_languages',
-		), $caps );
+		if ( VAA_API::validate_wp_version( '4.9' ) ) {
+			$caps['activate_plugin']    = 'activate_plugin';
+			$caps['deactivate_plugin']  = 'deactivate_plugin';
+			$caps['deactivate_plugins'] = 'deactivate_plugins';
+			$caps['install_languages']  = 'install_languages';
+			$caps['update_languages']   = 'update_languages';
+		}
 
 		/**
 		 * Network capabilities.
@@ -339,7 +338,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		// @since  1.7.4  Yoast SEO 5.5+  Load integration on front end.
 		if ( ! is_admin() ) {
 			/**
-			 * @since  1.8.0  Yoast SEO - Check for API function.
+			 * @since  1.8.0  Yoast SEO 8.3+ - Check for API function.
 			 * @link   https://github.com/Yoast/wordpress-seo/pull/9365
 			 */
 			if ( function_exists( 'wpseo_get_capabilities' ) ) {
@@ -406,7 +405,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			return;
 		}
 		// Register the vaa group.
-		members_register_cap_group( 'view_admin_as',
+		members_register_cap_group(
+			'view_admin_as',
 			array(
 				'label'      => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 				'caps'       => $this->get_vaa_capabilities(),
