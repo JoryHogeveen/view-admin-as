@@ -39,12 +39,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 ( function( $ ) {
 
 	VAA_View_Admin_As.prefix = '#wpadminbar #wp-admin-bar-vaa ';
-	VAA_View_Admin_As.root = '#wp-admin-bar-vaa';
+	VAA_View_Admin_As.root   = '#wp-admin-bar-vaa';
 
 	var $document = $( document ),
-		$window = $( window ),
-		$body = $('body'),
-		$vaa = $( VAA_View_Admin_As.prefix ); // Validated in load().
+		$window   = $( window ),
+		$body     = $('body'),
+		$vaa      = $( VAA_View_Admin_As.prefix ); // Validated in load().
 
 	VAA_View_Admin_As.maxHeightListenerElements = null;
 	VAA_View_Admin_As._mobile = false;
@@ -169,7 +169,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
          */
 		$( '[vaa-showhide]', $vaa ).each( function() {
 			var $this = $(this),
-				args = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-showhide') ),
+				args  = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-showhide') ),
 				delay = 200;
 			if ( 'object' !== typeof args ) {
 				args = { 0: { target: args, delay: delay } };
@@ -243,7 +243,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// @since  1.7.4  Auto resizable.
 		// @since  1.8.2  Enhance height calc + provide trigger for content changes
 		$( '.vaa-resizable', $vaa ).each( function() {
-			var $this = $(this),
+			var $this     = $(this),
 				maxHeight = parseInt( $this.css( 'max-heights' ), 10 ),
 				height, innerHeight, newHeight;
 
@@ -508,7 +508,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 			$.post( VAA_View_Admin_As.ajaxurl, post_data, function( response ) {
 				var success = ( response.hasOwnProperty( 'success' ) && true === response.success ),
-					data = {},
+					data    = {},
 					display = false;
 
 				// Maybe show debug info in console.
@@ -630,8 +630,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.item_notice = function( parent, notice, type, timeout ) {
-		var root = '.vaa-notice',
-			html = notice + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
+		var root     = '.vaa-notice',
+			html     = notice + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
 			$element = $( parent );
 
 		type    = ( 'undefined' === typeof type ) ? 'notice' : type;
@@ -713,9 +713,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		/*
 		 * Overlay handlers.
 		 */
-		var root = '#vaa-overlay',
-			$overlay = $( root ),
-			$popup = $( root + ' .vaa-popup' ),
+		var root           = '#vaa-overlay',
+			$overlay       = $( root ),
+			$popup         = $( root + ' .vaa-popup' ),
 			$popup_content = $( root + ' .vaa-popup-content' );
 
 		var textarea = $( 'textarea', $popup_content );
@@ -749,7 +749,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 * @return {void} Nothing.
 	 */
 	VAA_View_Admin_As.download = function( data ) {
-		var content = '',
+		var content  = '',
 			filename = '';
 		if ( 'string' === typeof data ) {
 			content = data;
@@ -794,7 +794,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		$( VAA_View_Admin_As.root + ' [vaa-auto-js]' ).each( function() {
 			var $this = $(this),
-				data = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-auto-js') );
+				data  = VAA_View_Admin_As.maybe_json_decode( $this.attr('vaa-auto-js') );
 			if ( 'object' !== typeof data ) {
 				return;
 			}
@@ -840,10 +840,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			if ( 'object' !== typeof data ) {
 				return;
 			}
-			var $elem    = $( elem ),
-				setting  = ( data.hasOwnProperty( 'setting' ) ) ? String( data.setting ) : null,
-				confirm  = ( data.hasOwnProperty( 'confirm' ) ) ? Boolean( data.confirm ) : false,
-				refresh  = ( data.hasOwnProperty( 'refresh' ) ) ? Boolean( data.refresh ) : false;
+			var $elem   = $( elem ),
+				setting = ( data.hasOwnProperty( 'setting' ) ) ? String( data.setting ) : null,
+				confirm = ( data.hasOwnProperty( 'confirm' ) ) ? Boolean( data.confirm ) : false,
+				refresh = ( data.hasOwnProperty( 'refresh' ) ) ? Boolean( data.refresh ) : false;
 
 			// Callback overwrite.
 			if ( data.hasOwnProperty('callback') ) {
@@ -900,7 +900,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return null;
 			}
 			var stop = false,
-				val = null;
+				val  = null;
 			if ( data.hasOwnProperty( 'values' ) ) {
 				val = {};
 				$.each( data.values, function( val_key, auto_js ) {
@@ -914,7 +914,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					if ( null !== val_val ) {
 						val[ val_key ] = val_val;
 					} else if ( auto_js.required ) {
-						val = null;
+						val  = null;
 						stop = true;
 						return false;
 					}
@@ -1015,9 +1015,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				data = {};
 			}
 			var $elem = $( elem ),
-				val = null,
-				attr = ( data.hasOwnProperty( 'attr' ) ) ? String( data.attr ) : false,
-				json = ( data.hasOwnProperty( 'json' ) ) ? Boolean( data.json ) : false,
+				val   = null,
+				attr  = ( data.hasOwnProperty( 'attr' ) ) ? String( data.attr ) : false,
+				json  = ( data.hasOwnProperty( 'json' ) ) ? Boolean( data.json ) : false,
 				value = ( attr ) ? $elem.attr( attr ) : $elem.val();
 
 			if ( 'checkbox' === $elem.attr( 'type' ) ) {
@@ -1057,21 +1057,21 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	**/
 	VAA_View_Admin_As.init_users = function() {
 
-		var root = VAA_View_Admin_As.root + '-users',
-			root_prefix = VAA_View_Admin_As.prefix + root,
-			$root = $( root_prefix ),
-			ajax_delay_timer,
-			$search_node = $( root_prefix + ' .ab-vaa-search.search-users' );
+		var root         = VAA_View_Admin_As.root + '-users',
+			root_prefix  = VAA_View_Admin_As.prefix + root,
+			$root        = $( root_prefix ),
+			$search_node = $( root_prefix + ' .ab-vaa-search.search-users' ),
+			ajax_delay_timer;
 
 		if ( $search_node.length ) {
 
-			var search_ajax = $search_node.hasClass('search-ajax'),
+			var search_ajax      = $search_node.hasClass('search-ajax'),
 				$search_results  = $search_node.find( '.ab-vaa-results' ),
-				no_results = '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>';
+				no_results       = '<div class="ab-item ab-empty-item vaa-not-found">' + VAA_View_Admin_As.__no_users_found + '</div>';
 
 			// Search users.
 			$root.on( 'keyup', '.ab-vaa-search.search-users input', function() {
-				var $this = $(this),
+				var $this  = $(this),
 					search = $this.val();
 
 				if ( 1 <= search.trim().length ) {
@@ -1106,7 +1106,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			$search_results.empty();
 			$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
 				var $this = $(this),
-					name = $this.find( '.ab-item' ).text();
+					name  = $this.find( '.ab-item' ).text();
 				if ( -1 < name.toLowerCase().indexOf( search.toLowerCase() ) ) {
 					var exists = false;
 					$search_results.find( '.vaa-user-item .ab-item' ).each(function() {
@@ -1158,8 +1158,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			ajax_delay_timer = setTimeout( function() {
 				$results_container.html( '<div class="ab-item ab-empty-item">. . . </div>' );
 
-				var $loading = $( '.ab-item', $results_container ),
-					loading = '. . . ',
+				var $loading         = $( '.ab-item', $results_container ),
+					loading          = '. . . ',
 					loading_interval = setInterval( function() {
 						if ( 20 < loading.length ) {
 							loading = '. . . ';
@@ -1212,9 +1212,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	**/
 	VAA_View_Admin_As.init_caps = function() {
 
-		var root = VAA_View_Admin_As.root + '-caps',
+		var root        = VAA_View_Admin_As.root + '-caps',
 			root_prefix = VAA_View_Admin_As.prefix + root,
-			$root = $( root_prefix );
+			$root       = $( root_prefix );
 
 		VAA_View_Admin_As.caps_filter_settings = {
 			selectedRole : 'default',
@@ -1225,12 +1225,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Filter capability handler.
 		VAA_View_Admin_As.filter_capabilities = function() {
-			var reverse = ( true === VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse ),
-				isDefault = ( 'default' === VAA_View_Admin_As.caps_filter_settings.selectedRole ),
+			var reverse      = ( true === VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse ),
+				isDefault    = ( 'default' === VAA_View_Admin_As.caps_filter_settings.selectedRole ),
 				filterString = VAA_View_Admin_As.caps_filter_settings.filterString;
 
 			$( root_prefix + '-select-options .vaa-cap-item' ).each( function() {
-				var $this = $(this),
+				var $this  = $(this),
 					exists = ( $( 'input', this ).attr('value') in VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps ),
 					name;
 
@@ -1362,7 +1362,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	/**
 	 * Combine views tool.
 	 * @since  1.8.0
-	 * @return {null}  Nothing.
+	 * @return {void}  Nothing.
 	 */
 	VAA_View_Admin_As.init_combine_views = function() {
 
@@ -1370,12 +1370,12 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			prefix               = 'vaa-combine-views',
 			root_prefix          = VAA_View_Admin_As.prefix + root,
 			$root                = $( root_prefix ),
+			is_active            = false,
 			combine_types        = $.extend( [], VAA_View_Admin_As.view_types ),
 			combine_selectors    = [],
 			selection            = {},
 			$selection_container = root_prefix + ' #' + prefix + '-selection',
-			$combine_items,
-			is_active = false;
+			$combine_items;
 
 		if ( ! $root.length ) {
 			return;
@@ -1452,24 +1452,24 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			// Late selection init needed for frontend.
 			var $elements = $( elements );
 			$elements.each( function () {
-				var $this = $( this ),
-					$parent = $this.parent(),
-					val = null,
-					text = $this.text(),
+				var $this    = $( this ),
+					$parent  = $this.parent(),
+					val      = null,
+					text     = $this.text(),
 					$data_el = $this.find('.vaa-view-data'),
-					type_label,
+					label,
 					attr;
 				if ( $parent.find('.vaa-combine-item').length ) {
 					// Already exists.
 					return true;
 				}
 				if ( $data_el.length ) {
-					val = $data_el.attr('vaa-view-value');
-					text = $data_el.text();
-					type_label = $data_el.attr('vaa-view-type-label');
+					val   = $data_el.attr('vaa-view-value');
+					text  = $data_el.text();
+					label = $data_el.attr('vaa-view-type-label');
 				}
 				if ( 'caps' === type ) {
-					val = '';
+					val  = '';
 					text = $( VAA_View_Admin_As.root + '-caps-title > .ab-item' ).text();
 				}
 				attr = [
@@ -1480,8 +1480,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 					'vaa-view-text="' + text + '"',
 					'style="display:none;"'
 				];
-				if ( type_label ) {
-					attr.push( 'vaa-view-type-label="' + type_label + '"' );
+				if ( label ) {
+					attr.push( 'vaa-view-type-label="' + label + '"' );
 				}
 				$parent.prepend( '<input ' + attr.join(' ') + '>' );
 			} );
@@ -1542,8 +1542,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
  		 */
 		function deactivate_combine_type( types, update ) {
 			if ( 'object' !== typeof types ) {
-				type = types;
-				types = {};
+				type          = types;
+				types         = {};
 				types[ type ] = 0;
 			}
 			for ( var type in types ) {
@@ -1563,7 +1563,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			// Remove view types that are deselected.
 			$( root_prefix + ' .vaa-combine-selection' ).each( function() {
 				var $this = $(this),
-					type = $this.attr('vaa-view-type');
+					type  = $this.attr('vaa-view-type');
 				if ( ! selection.hasOwnProperty( type ) ) {
 					$this.slideUp( 'fast', function() { $( this ).remove() } );
 				}
@@ -1571,9 +1571,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 			// Append or update view types selection.
 			$.each( selection, function( type, data ) {
-				var text = data.el.attr('vaa-view-text') + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
+				var text      = data.el.attr('vaa-view-text') + '<span class="remove ab-icon dashicons dashicons-dismiss"></span>',
 					$existing = $( root_prefix + ' .vaa-combine-selection-' + type ),
-					label = data.el.attr( 'vaa-view-type-label' );
+					label     = data.el.attr( 'vaa-view-type-label' );
 				if ( label ) {
 					text = '<span class="ab-bold">' + label + ':</span> ' + text;
 				}
@@ -1623,7 +1623,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			var $this = $( this ),
-				type = $this.attr('vaa-view-type');
+				type  = $this.attr('vaa-view-type');
 			if ( this.checked ) {
 				parse_combine_type( $this, type );
 			} else {
@@ -1704,10 +1704,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 	 */
 	VAA_View_Admin_As.init_module_role_defaults = function() {
 
-		var root = VAA_View_Admin_As.root + '-role-defaults',
-			prefix = 'vaa-role-defaults',
+		var root        = VAA_View_Admin_As.root + '-role-defaults',
+			prefix      = 'vaa-role-defaults',
 			root_prefix = VAA_View_Admin_As.prefix + root,
-			$root = $( root_prefix );
+			$root       = $( root_prefix );
 
 		if ( ! $root.length ) {
 			return;
@@ -1719,9 +1719,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			var val = $( root_prefix + '-meta-add input#' + prefix + '-meta-new' ).val();
-			var item = $( root_prefix + '-meta-add #' + prefix + '-meta-template' ).html().toString();
-			val = val.replace( / /g, '_' );
+			var val  = $( root_prefix + '-meta-add input#' + prefix + '-meta-new' ).val(),
+				item = $( root_prefix + '-meta-add #' + prefix + '-meta-template' ).html().toString();
+			val  = val.replace( / /g, '_' );
 			item = item.replace( /vaa_new_item/g, val );
 			if ( $( root_prefix + '-meta-select input[value="' + val + '"]' ).length ) {
 				VAA_View_Admin_As.item_notice( $(this).parent(), VAA_View_Admin_As.__key_already_exists, 'error', 2000 );
@@ -1758,7 +1758,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		if ( $search.length ) {
 			var $search_results = $root.find( root + '-bulk-users-select' );
 			$search.on( 'keyup', 'input#' + prefix + '-bulk-users-search', function() {
-				var $this = $(this),
+				var $this  = $(this),
 					search = $this.val();
 
 				if ( 1 <= search.trim().length ) {
@@ -1788,10 +1788,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		/**
 		 * Capability functions.
 		 */
-		var root = VAA_View_Admin_As.root + '-caps-manager-role-manager',
-			prefix = 'vaa-caps-manager-role-manager',
+		var root        = VAA_View_Admin_As.root + '-caps-manager-role-manager',
+			prefix      = 'vaa-caps-manager-role-manager',
 			root_prefix = VAA_View_Admin_As.prefix + root,
-			$root = $( root_prefix );
+			$root       = $( root_prefix );
 
 		if ( ! $root.length ) {
 			return;
@@ -1799,17 +1799,17 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// @since  1.7.0  Update capabilities when selecting a role.
 		$root.on( 'change', 'select#' + prefix + '-edit-role', function() {
-			var $this = $(this),
-				role  = $this.val(),
-				caps  = {},
+			var $this          = $(this),
+				role           = $this.val(),
+				caps           = {},
 				$selected_role = $( root_prefix + ' select#' + prefix + '-edit-role option[value="' + role + '"]' );
 			if ( $selected_role.attr('data-caps') ) {
 				caps = JSON.parse( $selected_role.attr('data-caps') );
 			}
 
 			// Reset role filters.
-			VAA_View_Admin_As.caps_filter_settings.selectedRole = 'default';
-			VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps = {};
+			VAA_View_Admin_As.caps_filter_settings.selectedRole        = 'default';
+			VAA_View_Admin_As.caps_filter_settings.selectedRoleCaps    = {};
 			VAA_View_Admin_As.caps_filter_settings.selectedRoleReverse = false;
 			VAA_View_Admin_As.filter_capabilities();
 
@@ -1822,13 +1822,13 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			var role = $( root_prefix + ' select#' + prefix + '-edit-role' ).val(),
+			var role    = $( root_prefix + ' select#' + prefix + '-edit-role' ).val(),
 				refresh = ( VAA_View_Admin_As.view.hasOwnProperty( 'role' ) && role === VAA_View_Admin_As.view.role );
 			if ( ! role ) {
 				return false;
 			}
 			if ( '__new__' === role ) {
-				role = $( root_prefix + ' input#' + prefix + '-new-role' ).val();
+				role    = $( root_prefix + ' input#' + prefix + '-new-role' ).val();
 				refresh = true;
 			}
 			var data = {
@@ -1845,10 +1845,10 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 				return;
 			}
 			e.preventDefault();
-			var existing = VAA_View_Admin_As.get_selected_capabilities();
-			var val = $( root_prefix + '-new-cap input#' + prefix + '-new-cap' ).val();
-			var item = $( root_prefix + '-new-cap #' + prefix + '-cap-template' ).html().toString();
-			val = val.replace( / /g, '_' );
+			var existing = VAA_View_Admin_As.get_selected_capabilities(),
+				val      = $( root_prefix + '-new-cap input#' + prefix + '-new-cap' ).val(),
+				item     = $( root_prefix + '-new-cap #' + prefix + '-cap-template' ).html().toString();
+			val  = val.replace( / /g, '_' );
 			item = item.replace( /vaa_new_item/g, val );
 			if ( 'undefined' !== typeof existing[ val ] ) {
 				VAA_View_Admin_As.item_notice( $(this).parent(), VAA_View_Admin_As.__key_already_exists, 'error', 2000 );
