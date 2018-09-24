@@ -1103,22 +1103,24 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 * @return {void} Nothing.
 		 */
 		function search_users( search ) {
+			$search_results.empty();
 			$( VAA_View_Admin_As.prefix + '.vaa-user-item' ).each( function() {
-				var name = $( '.ab-item', this ).text();
+				var $this = $(this),
+					name = $this.find( '.ab-item' ).text();
 				if ( -1 < name.toLowerCase().indexOf( search.toLowerCase() ) ) {
 					var exists = false;
-					$( '.vaa-user-item .ab-item', $search_results ).each(function() {
+					$search_results.find( '.vaa-user-item .ab-item' ).each(function() {
 						if ( -1 < $(this).text().indexOf( name ) ) {
 							exists = $(this);
 						}
 					} );
-					var role = $(this).parents('.vaa-role-item').find( '> .ab-item > .vaa-view-data' );
+					var role = $this.parents('.vaa-role-item').find( '> .ab-item > .vaa-view-data' );
 					role = ( role ) ? role.text() : '';
 					if ( role && false !== exists && exists.length ) {
 						exists.find('.user-role').text( exists.find('.user-role').text().replace( ')', ', ' + role + ')' ) );
 					} else {
 						role = ( role ) ? ' &nbsp;<span class="user-role ab-italic">(' + role + ')</span>' : '';
-						$(this).clone()
+						$this.clone()
 						       .appendTo( $search_results )
 						       .children('.ab-item')
 						       .append( role );
