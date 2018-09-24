@@ -562,6 +562,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Search users with AJAX.
 	 *
 	 * @since   1.8.0
+	 * @since   1.8.2  Different return types.
 	 */
 	public function ajax_search_users() {
 		$args = VAA_API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as_search_users' );
@@ -604,6 +605,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		switch ( $return_type ) {
+			default:
 			case 'objects':
 				$return = $users;
 				break;
