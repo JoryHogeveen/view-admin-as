@@ -28,7 +28,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		$class = 'vaa-' . $this->type . '-item';
 		$title = $this->get_view_title( $locale );
 
-		$view_title = ( $locale !== $title ) ? $language . ' <code>' . $locale . '</code>' : $locale;
+		$view_title = ( $locale !== $title ) ? $language . ' &nbsp;<code>' . $locale . '</code>' : $locale;
 
 		$view_title = VAA_View_Admin_As_Form::do_view_title( $view_title, $this, $locale );
 
