@@ -599,7 +599,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		if ( ! $users ) {
-			wp_send_json_error();
+			wp_send_json_error( __( 'No users found.', VIEW_ADMIN_AS_DOMAIN ) );
 			die();
 		}
 
