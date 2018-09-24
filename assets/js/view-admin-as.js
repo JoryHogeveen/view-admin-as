@@ -1189,6 +1189,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						VAA_View_Admin_As.reinit_combine_views();
 					} else {
 						$results_container.html( no_results );
+						if ( response.hasOwnProperty( 'data' ) && 'string' === typeof response.data ) {
+							$results_container.children().first().html( response.data );
+						}
 					}
 					if ( $results_container.hasClass( 'vaa-resizable' ) ) {
 						$results_container.trigger('vaa-resizable');
