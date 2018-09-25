@@ -104,11 +104,11 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 		}
 		$data = wp_parse_args( $data, array(
 			'display' => 'notice',
-			'type' => $type,
+			'type'    => $type,
 		) );
 		return array(
 			'success' => (bool) $success,
-			'data' => $data,
+			'data'    => $data,
 		);
 	}
 

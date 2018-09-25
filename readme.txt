@@ -5,7 +5,7 @@ Tags: admin, view, roles, users, switch, user switching, role switching, capabil
 Requires at least: 4.1
 Tested up to: 4.9
 Requires PHP: 5.2.4
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -44,6 +44,8 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Import/Export role defaults, can also download (and upload) setting files
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
+[Click here for Role Defaults documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Defaults)
+
 = Module: Role manager (role editor) =
 
 *Note: Changes made with the Role Manager are permanent!*
@@ -55,6 +57,8 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Import/Export roles, can also download (and upload) setting files
 *	Update role capabilities from current view
 *	Automatically migrate users to another role after deleting a role
+
+[Click here for Role Manager documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Manager)
 
 = Compatibility & Integrations =
 
@@ -152,15 +156,9 @@ And if even that doesn't work just add "?reset-view" in the address bar and you'
 
 Example: http://www.your.domain/wp-admin/?reset-view
 
-= 4. What data is stored for role defaults and how can I change this? =
-Please see the `view_admin_as_role_defaults_meta` filter at [Wiki: Filters](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters#view_admin_as_role_defaults_meta)!
-
-The meta manager (since 1.6.3) provides a UI to edit the meta keys.
-Please follow these guidelines:
-
-* `%%` stands for a wildcard which could be anything.
-* Avoid special characters. Spaces, quotes etc. are forbidden.
-* Default meta keys cannot be removed, only disabled.
+= 4. How do the Role Defaults and Role Manager modules work? =
+* [Click here for Role Defaults documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Defaults)
+* [Click here for Role Manager documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Manager)
 
 = 5. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins?
@@ -209,6 +207,17 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
+= 1.8.2 =
+
+*	**Enhancement/Fix:** Support AJAX search in the Role Defaults module. [#100](https://github.com/JoryHogeveen/view-admin-as/issues/100)
+*	**Enhancement:** Add support for `X-Redirect-By` header since WordPress 5.0. [#42313](https://core.trac.wordpress.org/ticket/42313)
+*	**Enhancement:** Improve uninstall script.
+*	**Enhancement:** Use latest WPCS v1.1 update and fix code standard notices.
+*	**UI:** Change the default top level node text to "View As" (same as Facebook uses).
+*	**Updated:** Screenshots
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/98)
+
 = 1.8.1 =
 
 *	**Feature:** Support searching users by multiple user columns like email, url, etc. [#95](https://github.com/JoryHogeveen/view-admin-as/issues/95)
@@ -238,111 +247,6 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 *	**Updated/Added:** Screenshots.
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/78)
-
-= 1.7.6.1 =
-
-*	**Compatibility:** Improve customizer compatibility. [#88](https://github.com/JoryHogeveen/view-admin-as/issues/88)
-*	**Compatibility/Fix:** Frontend error with Yoast SEO. [Yoast SEO #9285](https://github.com/Yoast/wordpress-seo/pull/9285)
-
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/90)
-
-= 1.7.6 =
-
-*	**Feature:** Role manager: Option to migrate users to another role after deleting a role. [#86](https://github.com/JoryHogeveen/view-admin-as/issues/86)
-*	**Enhancement:** Enhance user full access validation for single installations. Not only check for super admin but also the capabilities `edit_users` and `delete_plugins`.
-*	**Enhancement:** Add customizer support and a new setting to disable this. [#26](https://github.com/JoryHogeveen/view-admin-as/issues/26)
-*	**Enhancement:** Compatibility with `$_SERVER['ORIG_REQUEST_URI']` for removable query args on front end. [#87](https://github.com/JoryHogeveen/view-admin-as/issues/87)
-*	**UI:** Support SVG and file icons + Base64 encoded strings.
-
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/85)
-
-= 1.7.5 =
-
-*	**Feature:** Language switcher. [#81](https://github.com/JoryHogeveen/view-admin-as/issues/81)
-*	**Enhancement:** Store options network wide instead of per blog/site if network/multisite is enabled.
-*	**Enhancement:** Action links (no-JS) on frontend.
-*	**Enhancement:** Add filter `view_admin_as_freeze_locale` to overwrite user setting.
-*	**Fix:** JavaScript init on frontend.
-*	**UI:** Various minor enhancements.
-
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/82)
-
-= 1.7.4 =
-
-*	**Feature:** Role defaults / Role manager: download export data as file + import from file. [#73](https://github.com/JoryHogeveen/view-admin-as/issues/73)
-*	**Enhancement:** Refresh page instead of redirect to home when switching to a site visitor on the frontend. [#76](https://github.com/JoryHogeveen/view-admin-as/issues/76)
-*	**Enhancement:** Role Manager: Refresh the page if a role is updated while active in the current view.
-*	**Enhancement:** jQuery selector performance.
-*	**Compatibility:** [WP 4.9 capabilities](https://make.wordpress.org/core/2017/10/15/improvements-for-roles-and-capabilities-in-4-9/).
-*	**Compatibility:** WP Admin UI Customize admin bar editor. [#40](https://github.com/JoryHogeveen/view-admin-as/issues/40) & [WAUC/#1](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/1) & [WAUC/#2](https://github.com/gqevu6bsiz/WP-Admin-UI-Customize-test/pull/2)
-*	**Compatibility:** Fix issue with Restrict User Access. [RUA/#15](https://github.com/intoxstudio/restrict-user-access/issues/15)
-*	**Compatibility:** Fetch all capabilities from Yoast SEO (5.5+).
-*	**Compatibility:** Must-use plugin loader scripts.
-*	**UI:** The almighty View Admin As loader icon.
-*	**UI:** Full opacity when semi-transparent group nodes are opened.
-*	**UI:** Admin page links for Groups and Restrict User Access modules.
-*	**UI:** Resizable checkbox wrappers.
-
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/75)
-
-= 1.7.3 =
-
-*	**Feature:** Role Manager: Import/Export roles. [#51](https://github.com/JoryHogeveen/view-admin-as/issues/51) & [PR #62](https://github.com/JoryHogeveen/view-admin-as/pull/62)
-*	**Feature/Enhancement:** Option to disable super admin status when a view is active and modifies the current user. [#53](https://github.com/JoryHogeveen/view-admin-as/issues/53) & [PR #61](https://github.com/JoryHogeveen/view-admin-as/pull/61)
-*	**Enhancement:** Role Manager: Show custom capabilities that are not yet stored but used in an active caps view. [#70](https://github.com/JoryHogeveen/view-admin-as/issues/70)
-*	**Enhancement:** Prevent duplicate names when fetching capabilities from WP objects.
-*	**Enhancement:** Allow this plugin to be installed as a must-use plugin. [#71](https://github.com/JoryHogeveen/view-admin-as/issues/71)
-	*	More info: [Docs: Install as a must-use plugin](https://github.com/JoryHogeveen/view-admin-as#install-as-a-must-use-plugin) & [WP codex: mu-plugins](https://codex.wordpress.org/Must_Use_Plugins)
-*	**Enhancement:** Role Defaults: Enhance meta key comparison.
-*	**UI:** Option tooltips. [#67](https://github.com/JoryHogeveen/view-admin-as/issues/67)
-*	**UI:** Enhance full popup caps view.
-*	**Refactoring:** Fix base class name.
-
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/68)
-
-= 1.7.2 =
-
-*	**Feature:** Integration with the "Groups" plugin. Introduces a new view type `groups` when this plugin is activated. [#11](https://github.com/JoryHogeveen/view-admin-as/issues/11)
-*	**Fix:** auto max height didn't work on frontend. [#55](https://github.com/JoryHogeveen/view-admin-as/issues/55)
-*	**Fix:** Role Manager used `boolval()` which is only available in PHP 5.5+. [#63](https://github.com/JoryHogeveen/view-admin-as/issues/63)
-*	**Fix:** `view_admin_as_superior_admins` filter was not working for single installations. [#65](https://github.com/JoryHogeveen/view-admin-as/issues/65)
-*	**Compatibility:** Allow other plugins to overwrite our `user_has_cap` filter by setting it's priority as first (large negative number). [#56](https://github.com/JoryHogeveen/view-admin-as/issues/56). Thanks to [@pbiron](https://github.com/pbiron) for the report.
-*	**Compatibility:** Run the `user_has_cap` filter in your `map_meta_cap` filter. [#56](https://github.com/JoryHogeveen/view-admin-as/issues/56)
-*	**Compatibility:** Add new network capabilities (WP 4.8) to the list. [#64](https://github.com/JoryHogeveen/view-admin-as/issues/64)
-*	**Enhancement:** Automatic JS handling for simple and more advanced options. [#60](https://github.com/JoryHogeveen/view-admin-as/issues/60)
-*	**Enhancement:** Role defaults: Rename `all` wildcard to `__all__` to prevent a possible conflict with custom roles.
-*	**Enhancement:** Role defaults: Add recording indicator icon to the top level node when a role view is active.
-*	**Refactoring:** Move form logic to separate class and extend it (admin bar)
-
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/54) & [Groups integration PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/59)
-
-= 1.7.1 =
-
-*	**Feature:** Module Role Manager: Rename roles. [#47](https://github.com/JoryHogeveen/view-admin-as/issues/47)
-*	**Enhancement:** Improve fetching available capabilities for a super admin. It now also checks for registered custom post type and taxonomy capabilities and more other plugins.
-*	**Compatibility:** Also use the `user_has_cap` filter besides `map_meta_cap` to further improve capability and role view compatibility.
-*	**UI:** Add submenu scrollbar when there are too much users under a role. [#49](https://github.com/JoryHogeveen/view-admin-as/issues/49)
-*	**UI:** Module Role Manager: Show original role name for reference.
-*	**Accessibility:** Fix tabindex for some nodes that have form elements.
-*	**Updated:** Screenshots.
-
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/48)
-
-= 1.7 =
-
-*	**Feature:** New module Role manager. Add, edit and/or remove roles and grant or deny them capabilities. [#43](https://github.com/JoryHogeveen/view-admin-as/issues/43)
-*	**Feature:** Module Role Defaults: Added the option to copy defaults from one role to another (or multiple). [#44](https://github.com/JoryHogeveen/view-admin-as/issues/44)
-*	**Enhancement/UI:** Enable and Improve responsive styles/a11y. [#16](https://github.com/JoryHogeveen/view-admin-as/issues/16)
-*	**Enhancement/UI:** Improved the autoHeight calculation (submenu and popup).
-*	**Enhancement:** View combinations now working in code (No UI). [#18](https://github.com/JoryHogeveen/view-admin-as/issues/18)
-*	**Enhancement:** Major code refactoring for better standards en easier development.
-*	**Maintenance:** Validated compatibility with "Restrict User Access" (RUA) plugin v0.14. [#31](https://github.com/JoryHogeveen/view-admin-as/issues/31)
-*	**Compatibility:** Tested with WordPress 4.8 (alpha) and requires WordPress 4.1 or higher (was 3.5).
-*	**Fix:** Fixed all major [CodeClimate](https://codeclimate.com/github/JoryHogeveen/view-admin-as) issues. All green now!
-*	**Updated:** [Wiki (documentation)](https://github.com/JoryHogeveen/view-admin-as/wiki).
-*	**Updated/Added:** Screenshots & Banners.
-
-Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/42)
 
 = Older versions =
 

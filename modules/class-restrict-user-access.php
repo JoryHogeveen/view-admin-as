@@ -254,8 +254,9 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * @return  array
 	 */
 	public function get_user_metadata( $null, $user_id, $meta_key ) {
-		if ( (int) $user_id === (int) $this->store->get_selectedUser()->ID
-		     && $this->get_levels( $this->selected )
+		if (
+			(int) $user_id === (int) $this->store->get_selectedUser()->ID
+			&& $this->get_levels( $this->selected )
 		) {
 			// @todo Check for future API updates in RUA plugin
 			if ( $this->ruaMetaPrefix . 'level' === $meta_key ) {
@@ -357,7 +358,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 				),
 				'href'   => menu_page_url( $this->ruaScreen, false ),
 				'meta'   => array(
-					'class'  => 'auto-height',
+					'class' => 'auto-height',
 				),
 			) );
 
@@ -395,7 +396,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			if ( $role ) {
 				$view_data['role'] = $role;
 			}
-			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
+			$href  = VAA_API::get_vaa_action_link( $view_data );
 			$class = 'vaa-' . $this->type . '-item';
 			$title = VAA_View_Admin_As_Form::do_view_title( $level->post_title, $this, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
 			// Check if this level is the current view.
@@ -421,15 +422,15 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 				$parent = $root . '-' . $this->type . '-' . (int) $level->post_parent;
 			}
 			$admin_bar->add_node( array(
-				'id'        => $root . '-' . $this->type . '-' . $view_value,
-				'parent'    => $parent,
-				'title'     => $title,
-				'href'      => $href,
-				'meta'      => array(
+				'id'     => $root . '-' . $this->type . '-' . $view_value,
+				'parent' => $parent,
+				'title'  => $title,
+				'href'   => $href,
+				'meta'   => array(
 					// Translators: %s stands for the view type name.
-					'title'     => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
-					               . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
-					'class'     => $class,
+					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $level->post_title )
+					           . ( ( $role ) ? ' (' . $this->store->get_rolenames( $role_obj->name ) . ')' : '' ),
+					'class' => $class,
 				),
 			) );
 		} // End foreach().

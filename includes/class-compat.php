@@ -211,16 +211,15 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 
 		/**
 		 * Other WordPress capabilities.
-		 * @since  1.7.4
+		 * @since  1.7.4  WordPress 4.9 capabilities.
 		 */
-		$caps = array_merge( array(
-			// @since  4.9
-			'activate_plugin',
-			'deactivate_plugin',
-			'deactivate_plugins',
-			'install_languages',
-			'update_languages',
-		), $caps );
+		if ( VAA_API::validate_wp_version( '4.9' ) ) {
+			$caps['activate_plugin']    = 'activate_plugin';
+			$caps['deactivate_plugin']  = 'deactivate_plugin';
+			$caps['deactivate_plugins'] = 'deactivate_plugins';
+			$caps['install_languages']  = 'install_languages';
+			$caps['update_languages']   = 'update_languages';
+		}
 
 		/**
 		 * Network capabilities.
@@ -339,7 +338,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		// @since  1.7.4  Yoast SEO 5.5+  Load integration on front end.
 		if ( ! is_admin() ) {
 			/**
-			 * @since  1.8.0  Yoast SEO - Check for API function.
+			 * @since  1.8.0  Yoast SEO 8.3+ - Check for API function.
 			 * @link   https://github.com/Yoast/wordpress-seo/pull/9365
 			 */
 			if ( function_exists( 'wpseo_get_capabilities' ) ) {
@@ -406,7 +405,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			return;
 		}
 		// Register the vaa group.
-		members_register_cap_group( 'view_admin_as',
+		members_register_cap_group(
+			'view_admin_as',
 			array(
 				'label'      => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 				'caps'       => $this->get_vaa_capabilities(),
@@ -428,6 +428,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function filter_ure_capabilities_groups_tree( $groups ) {
 		$groups = (array) $groups;
+
 		$groups['view_admin_as'] = array(
 			'caption' => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 			'parent'  => 'custom',
@@ -449,7 +450,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function filter_ure_custom_capability_groups( $groups, $cap_id ) {
 		if ( in_array( $cap_id, $this->get_vaa_capabilities(), true ) ) {
-			$groups = (array) $groups;
+			$groups   = (array) $groups;
 			$groups[] = 'view_admin_as';
 		}
 		return $groups;
@@ -472,15 +473,15 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	public function filter_wauc_admin_bar_menu_add_nodes( $wauc_nodes, $all_nodes ) {
 
 		$admin_menu_location = $this->store->get_userSettings( 'admin_menu_location' );
-		$vaa_root = VAA_View_Admin_As_Admin_Bar::$root;
+		$vaa_root            = VAA_View_Admin_As_Admin_Bar::$root;
 
 		$check = array(
 			'depth' => 'main',
 		);
 		if ( 'my-account' === $admin_menu_location ) {
-			$check['depth'] = 'sub';
+			$check['depth']    = 'sub';
 			$check['location'] = 'right';
-			$check['parent'] = $admin_menu_location;
+			$check['parent']   = $admin_menu_location;
 		}
 
 		// Compat when this node is added twice.
@@ -490,9 +491,9 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 					if ( isset( $node['id'] ) && $vaa_root === $node['id'] ) {
 
 						$current = array(
-							'depth' => $depth,
+							'depth'    => $depth,
 							'location' => $location,
-							'parent' => $node['parent'],
+							'parent'   => $node['parent'],
 						);
 
 						foreach ( $check as $key => $val ) {
@@ -541,7 +542,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			}
 			foreach ( $nodes as $key => $node ) {
 				// Check if node ID starts with `vaa-` and node parent starts with `vaa`.
-				if ( 0 === strpos( $node->id , $slug . '-' ) && 0 === strpos( $node->parent , $slug ) ) {
+				if ( 0 === strpos( $node->id, $slug . '-' ) && 0 === strpos( $node->parent, $slug ) ) {
 					unset( $all_nodes['right'][ $location ][ $key ] );
 				}
 			}

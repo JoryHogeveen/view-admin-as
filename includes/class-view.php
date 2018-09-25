@@ -107,6 +107,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * Temporary modifications to the current user are set on priority 99.
 		 * This functionality has a separate action: `vaa_view_admin_as_modify_current_user`.
 		 *
+		 * @hooked
+		 * 2:   user
+		 * 5:   role
+		 * 8:   caps
+		 * 10:  locale (Languages)
+		 * 10:  group (Groups)
+		 * 10:  rua_level (Restrict User Access)
+		 *
 		 * @since  1.6.3
 		 * @param  array
 		 */
@@ -154,13 +162,13 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * Prevent some meta updates for the current user while in modification to the current user are active.
 		 * @since  1.6.3
 		 */
-		$this->add_filter( 'update_user_metadata' , array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
+		$this->add_filter( 'update_user_metadata', array( $this, 'filter_prevent_update_user_metadata' ), 999999999, 3 );
 
 		/**
 		 * Get capabilities and user level from current user view object instead of database.
 		 * @since  1.6.4
 		 */
-		$this->add_filter( 'get_user_metadata' , array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
+		$this->add_filter( 'get_user_metadata', array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
 		// `user_has_cap` priority.
 		$priority = -999999999;
@@ -201,10 +209,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * @since  1.7.3
 		 * @since  1.8.0  Check for multisite.
 		 */
-		if ( is_multisite() &&
-		     ! is_network_admin() &&
-		     is_super_admin( $this->store->get_selectedUser()->ID ) &&
-		     $this->store->get_userSettings( 'disable_super_admin' )
+		if (
+			is_multisite()
+			&& ! is_network_admin()
+			&& is_super_admin( $this->store->get_selectedUser()->ID )
+			&& $this->store->get_userSettings( 'disable_super_admin' )
 		) {
 			$this->disable_super_admin();
 		}
@@ -475,10 +484,11 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 
 		$cap = (string) $cap;
 
-		if ( is_array( $caps ) &&
-		     ! empty( $caps[ $cap ] ) &&
-		     'do_not_allow' !== $cap &&
-		     'do_not_allow' !== $caps[ $cap ]
+		if (
+			is_array( $caps )
+			&& ! empty( $caps[ $cap ] )
+			&& 'do_not_allow' !== $cap
+			&& 'do_not_allow' !== $caps[ $cap ]
 		) {
 			return true;
 		}

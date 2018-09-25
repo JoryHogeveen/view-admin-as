@@ -7,7 +7,7 @@
  * @author Jory Hogeveen <info@keraweb.nl>
  * @package view-admin-as
  * @since   1.3.4
- * @version 1.7.0
+ * @version 1.8.2
  */
 
 //if uninstall not called from WordPress exit
@@ -33,6 +33,7 @@ if ( is_multisite() ) {
 		vaa_uninstall( 'site' );
 	}
 }
+
 function vaa_uninstall( $blog_id = false ) {
 
 	// Delete all View Admin As options
@@ -57,16 +58,14 @@ function vaa_uninstall( $blog_id = false ) {
 		}
 
 		// Delete all View Admin As user metadata
-		$user_meta_keys = array( 'vaa-view-admin-as' );
-		// Older (not used anymore) keys
-		$user_meta_keys[] = 'view-admin-as';
+		$user_meta_keys = array(
+			'vaa-view-admin-as',
+			// Older (not used anymore) keys
+			'view-admin-as',
+		);
 
-		global $wpdb;
 		foreach ( $user_meta_keys as $user_meta_key ) {
-			$wpdb->delete(
-				$wpdb->usermeta,
-				array( 'meta_key' => $user_meta_key )
-			);
+			delete_metadata( 'user', null, $user_meta_key, '', true );
 		}
 	}
 }

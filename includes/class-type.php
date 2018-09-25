@@ -422,7 +422,9 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		$this->settings = VAA_API::set_array_data( $this->settings, $val, $key, $append );
 
 		$view_types = (array) $this->store->get_settings( 'view_types' );
+
 		$view_types[ $this->type ] = $this->get_settings();
+
 		$settings = array(
 			'view_types' => $view_types,
 		);

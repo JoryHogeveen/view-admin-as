@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5.0
- * @version 1.8.0
+ * @version 1.8.2
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
@@ -129,7 +129,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 */
 	private function get_admin_bar_menu_title() {
 		if ( ! $this->store->get_view() ) {
-			return __( 'Default view (Off)', VIEW_ADMIN_AS_DOMAIN );
+			return __( 'View As', VIEW_ADMIN_AS_DOMAIN );
 		}
 
 		$titles = array();
@@ -147,7 +147,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * 10:  group (Groups)
 		 * 10:  rua_level (Restrict User Access)
 		 * 80:  caps
-		 * 90:  locale
+		 * 90:  locale (Languages)
 		 * 999: role defaults (appends an icon)
 		 *
 		 * @since  1.7.5
@@ -165,8 +165,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 				// Translators: Context is a list of view types. Not the verb.
 				$title = __( 'View', VIEW_ADMIN_AS_DOMAIN ) . ': ' . implode( ', ', $titles );
 			} else {
-				$type = key( $titles );
-				$name = reset( $titles );
+				$type  = key( $titles );
+				$name  = reset( $titles );
 				$title = __( 'Viewing as', VIEW_ADMIN_AS_DOMAIN );
 				if ( $type ) {
 					$title .= ' ' . $type;
@@ -208,11 +208,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 */
 	public function admin_bar_menu( $admin_bar, $root = '' ) {
 
-		$icon = 'dashicons-hidden';
+		$icon    = 'dashicons-hidden';
 		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
 
 		if ( $this->store->get_view() ) {
-			$icon = 'dashicons-visibility';
+			$icon     = 'dashicons-visibility';
 			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
 		}
 
@@ -502,11 +502,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		foreach ( $view_types as $type ) {
 
 			$view_type_node = array(
-				'name'        => $root . '-' . $type->get_type(),
-				'value'       => $type->is_enabled(),
-				'compare'     => true,
-				'label'       => $type->get_label(),
-				'auto_js' => array(
+				'name'          => $root . '-' . $type->get_type(),
+				'value'         => $type->is_enabled(),
+				'compare'       => true,
+				'label'         => $type->get_label(),
+				'auto_showhide' => true,
+				'auto_js'       => array(
 					'setting' => 'setting',
 					'key'     => 'view_types',
 					'values'  => array(
@@ -518,12 +519,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 					),
 					'refresh' => true,
 				),
-				'auto_showhide' => true,
 			);
 
 			if ( $type->get_description() ) {
 				$view_type_node['description'] = $type->get_description();
-				$view_type_node['help'] = true;
+				$view_type_node['help']        = true;
 			}
 
 			$view_type_nodes[ $type->get_priority() ][] = array(
@@ -623,7 +623,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		if ( $done ) return;
 
 		$main_root = self::$root;
-		$class = 'vaa-visitor-item vaa-has-icon';
+		$class     = 'vaa-visitor-item vaa-has-icon';
 
 		if ( empty( $root ) || $root === $main_root ) {
 
@@ -635,7 +635,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 				),
 			) );
 
-			$root = $main_root . '-visitor';
+			$root   = $main_root . '-visitor';
 			$class .= ' ab-vaa-title';
 		} else {
 			$class .= ' vaa-menupop';

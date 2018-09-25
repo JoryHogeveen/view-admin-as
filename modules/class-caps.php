@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.3.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.0
+ * @version 1.8.2
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
@@ -183,7 +183,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 				// The user was in his default view, notify the user.
 				$success = array(
 					'success' => false,
-					'data' => array(
+					'data'    => array(
 						'type' => 'message',
 						'text' => esc_html__( 'These are your default capabilities!', VIEW_ADMIN_AS_DOMAIN ),
 					),
@@ -197,7 +197,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			if ( VAA_API::array_equal( $this->selected, $new_caps ) ) {
 				$success = array(
 					'success' => false,
-					'data' => array(
+					'data'    => array(
 						'type' => 'message',
 						'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
 					),
@@ -247,7 +247,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		$title_submenu = (bool) apply_filters( 'vaa_admin_bar_caps_do_title_submenu', true );
 
 		$main_root = $root;
-		$root = $main_root . '-caps';
+		$root      = $main_root . '-caps';
 
 		$admin_bar->add_group( array(
 			'id'     => $root,
@@ -289,7 +289,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 
 		if ( $title_submenu ) {
 			$admin_bar->add_group( array(
-				'id' => $root . '-manager',
+				'id'     => $root . '-manager',
 				'parent' => $root . '-title',
 			) );
 		} else {
@@ -310,9 +310,9 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			'id'     => $root . '-applycaps',
 			'parent' => $root . '-manager',
 			'title'  => VAA_View_Admin_As_Form::do_button( array(
-				'name'    => 'apply-caps-view',
-				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
-				'class'   => 'button-primary',
+				'name'  => 'apply-caps-view',
+				'label' => __( 'Apply view', VIEW_ADMIN_AS_DOMAIN ),
+				'class' => 'button-primary',
 			) )
 			. VAA_View_Admin_As_Form::do_button( array(
 				'name'    => 'close-caps-popup',

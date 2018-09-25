@@ -273,9 +273,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * @return  bool|object
 	 */
 	public function groups_user_is_member( $result, $user_id, $group_id ) {
-		if ( (int) $user_id === (int) $this->store->get_curUser()->ID
-		     && $this->selected
-		     && (int) $group_id === (int) $this->selected->group->group_id
+		if (
+			(int) $user_id === (int) $this->store->get_curUser()->ID
+			&& $this->selected
+			&& (int) $group_id === (int) $this->selected->group->group_id
 		) {
 			$result = $this->selected->group;
 		}
@@ -310,9 +311,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			return $result;
 		}
 
-		if ( $this->selected &&
-		     is_callable( array( $this->selected, 'can' ) ) &&
-		     ! $this->selected->can( $cap )
+		if (
+			$this->selected
+			&& is_callable( array( $this->selected, 'can' ) )
+			&& ! $this->selected->can( $cap )
 		) {
 			$result = false;
 		} else {
@@ -363,6 +365,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		}
 
 		$post_access = Groups_Post_Access::get_read_group_ids( $post_id );
+
 		$result = true;
 		if ( ! empty( $post_access ) && ! in_array( $this->selected->group_id, $post_access, true ) ) {
 			$result = false;
@@ -429,14 +432,14 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * @return  string
 	 */
 	public function shortcode_member( $atts, $content, $reverse = false ) {
-		$output = '';
-		$shortcode = ( $reverse ) ? 'groups_non_member' : 'groups_member';
-		$options = shortcode_atts( array( 'group' => '' ), $atts ); //, $shortcode
+		$output       = '';
+		$shortcode    = ( $reverse ) ? 'groups_non_member' : 'groups_member';
+		$options      = shortcode_atts( array( 'group' => '' ), $atts ); //, $shortcode
 		$show_content = false;
 		if ( null !== $content ) {
 			$groups = explode( ',', $options['group'] );
 			foreach ( $groups as $group ) {
-				$group = trim( $group );
+				$group          = trim( $group );
 				$selected_group = $this->selected;
 				$current_group  = Groups_Group::read( $group );
 				if ( ! $current_group ) {
@@ -532,7 +535,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			),
 			'href'   => menu_page_url( $this->groupsScreen, false ),
 			'meta'   => array(
-				'class'  => 'auto-height',
+				'class' => 'auto-height',
 			),
 		) );
 
@@ -550,14 +553,14 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		foreach ( $this->get_groups() as $group_key => $group ) {
 			$view_value = $group->group_id;
 			$view_data  = array( $this->type => $view_value );
-			$href  = VAA_API::get_vaa_action_link( $view_data, $this->store->get_nonce( true ) );
-			$class = 'vaa-' . $this->type . '-item';
-			$title = VAA_View_Admin_As_Form::do_view_title( $group->name, $this, $view_value );
+			$href       = VAA_API::get_vaa_action_link( $view_data );
+			$class      = 'vaa-' . $this->type . '-item';
+			$title      = VAA_View_Admin_As_Form::do_view_title( $group->name, $this, $view_value );
 			// Check if this group is the current view.
 			if ( $this->store->get_view( $this->type ) ) {
 				if ( (int) $this->store->get_view( $this->type ) === (int) $group->group_id ) {
 					$class .= ' current';
-					$href = false;
+					$href   = false;
 				} else {
 					$selected = $this->get_groups( $this->store->get_view( $this->type ) );
 					if ( (int) $selected->parent_id === (int) $group->group_id ) {

@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.0
- * @version 1.8.1
+ * @version 1.8.2
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
@@ -178,7 +178,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @return  array|bool
 	 */
 	private function ajax_handler( $data ) {
-		$success = false;
+		$success    = false;
 		$view_types = array();
 
 		// Stop selecting the same view!
@@ -221,6 +221,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		foreach ( $data as $key => $value ) {
 			if ( $this->is_view_type( $key ) ) {
 				$view_types[] = $key;
+
 				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
 			} else {
 				$success = apply_filters( 'view_admin_as_handle_ajax_' . $key, null, $value, $key );
@@ -266,7 +267,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( $success && 'visitor' === $type && VAA_API::is_admin() ) {
 			$success = array(
 				'success' => true,
-				'data' => array(
+				'data'    => array(
 					'redirect' => esc_url( home_url() ),
 				),
 			);
@@ -328,7 +329,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		static $view_types;
 		if ( ! is_null( $view_types ) ) return $view_types;
 
-		$view_types = array_keys( (array) view_admin_as()->get_view_types() );
+		$view_types   = array_keys( (array) view_admin_as()->get_view_types() );
 		$view_types[] = 'visitor';
 
 		/**
@@ -385,9 +386,9 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				// Trigger page refresh.
 				// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See VAA_API.
 				if ( is_network_admin() ) {
-					wp_redirect( network_admin_url() );
+					wp_safe_redirect( network_admin_url(), 302, VIEW_ADMIN_AS_DOMAIN );
 				} else {
-					wp_redirect( admin_url() );
+					wp_safe_redirect( admin_url(), 302, VIEW_ADMIN_AS_DOMAIN );
 				}
 				die();
 			}
@@ -429,7 +430,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			}
 			// Add the new view metadata and expiration date.
 			$meta[ $this->store->get_curUserSession() ] = array(
-				'view' => $data,
+				'view'   => $data,
 				'expire' => ( time() + (int) $this->viewExpiration ),
 			);
 			// Update metadata (returns: true on success, false on failure).

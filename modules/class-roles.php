@@ -199,7 +199,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		}
 
 		$main_root = $root;
-		$root = $main_root . '-roles';
+		$root      = $main_root . '-roles';
 
 		$admin_bar->add_group( array(
 			'id'     => $root,

@@ -81,7 +81,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	public function action_wp_meta() {
 		if ( ! VAA_API::is_toolbar_showing() && $this->store->get_view() ) {
 			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
-			$url = VAA_API::get_reset_link();
+			$url  = VAA_API::get_reset_link();
 			echo '<li id="vaa_reset_view"><a href="' . esc_url( $url ) . '">' . esc_html( $link ) . '</a></li>';
 		}
 	}
@@ -107,6 +107,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 			);
 			foreach ( $this->get_links() as $id => $link ) {
 				$title = VAA_View_Admin_As_Form::do_icon( $link['icon'], $icon_attr ) . ' ' . esc_html( $link['title'] );
+
 				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . $title . '</a>';
 			}
 		}
@@ -126,59 +127,59 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		}
 
 		$this->links = array(
-			'support' => array(
-				'title' => __( 'Support', VIEW_ADMIN_AS_DOMAIN ),
+			'support'   => array(
+				'title'       => __( 'Support', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Need support?', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-sos',
-				'url'   => 'https://wordpress.org/support/plugin/view-admin-as/',
+				'icon'        => 'dashicons-sos',
+				'url'         => 'https://wordpress.org/support/plugin/view-admin-as/',
 			),
-			'slack' => array(
-				'title' => __( 'Slack', VIEW_ADMIN_AS_DOMAIN ),
+			'slack'     => array(
+				'title'       => __( 'Slack', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Quick help via Slack', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-format-chat',
-				'url'   => 'https://keraweb.slack.com/messages/plugin-vaa/',
+				'icon'        => 'dashicons-format-chat',
+				'url'         => 'https://keraweb.slack.com/messages/plugin-vaa/',
 			),
-			'review' => array(
-				'title' => __( 'Review', VIEW_ADMIN_AS_DOMAIN ),
+			'review'    => array(
+				'title'       => __( 'Review', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Give 5 stars on WordPress.org!', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-star-filled',
-				'url'   => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
+				'icon'        => 'dashicons-star-filled',
+				'url'         => 'https://wordpress.org/support/plugin/view-admin-as/reviews/',
 			),
 			'translate' => array(
-				'title' => __( 'Translate', VIEW_ADMIN_AS_DOMAIN ),
+				'title'       => __( 'Translate', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Help translating this plugin!', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-translation',
-				'url'   => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
+				'icon'        => 'dashicons-translation',
+				'url'         => 'https://translate.wordpress.org/projects/wp-plugins/view-admin-as',
 			),
-			'issue' => array(
-				'title' => __( 'Report issue', VIEW_ADMIN_AS_DOMAIN ),
+			'issue'     => array(
+				'title'       => __( 'Report issue', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Have ideas or a bug report?', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-lightbulb',
-				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/issues',
+				'icon'        => 'dashicons-lightbulb',
+				'url'         => 'https://github.com/JoryHogeveen/view-admin-as/issues',
 			),
-			'docs' => array(
-				'title' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'docs'      => array(
+				'title'       => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-book-alt',
-				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
+				'icon'        => 'dashicons-book-alt',
+				'url'         => 'https://github.com/JoryHogeveen/view-admin-as/wiki',
 			),
-			'github' => array(
-				'title' => __( 'GitHub', VIEW_ADMIN_AS_DOMAIN ),
+			'github'    => array(
+				'title'       => __( 'GitHub', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Follow development on GitHub', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-editor-code',
-				'url'   => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
+				'icon'        => 'dashicons-editor-code',
+				'url'         => 'https://github.com/JoryHogeveen/view-admin-as/tree/dev',
 			),
-			'donate' => array(
-				'title' => __( 'Donate', VIEW_ADMIN_AS_DOMAIN ),
+			'donate'    => array(
+				'title'       => __( 'Donate', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Buy me a coffee!', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-smiley',
-				'url'   => 'https://www.keraweb.nl/donate.php?for=view-admin-as',
+				'icon'        => 'dashicons-smiley',
+				'url'         => 'https://www.keraweb.nl/donate.php?for=view-admin-as',
 			),
-			'plugins' => array(
-				'title' => __( 'Plugins', VIEW_ADMIN_AS_DOMAIN ),
+			'plugins'   => array(
+				'title'       => __( 'Plugins', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Check out my other plugins', VIEW_ADMIN_AS_DOMAIN ),
-				'icon'  => 'dashicons-admin-plugins',
-				'url'   => 'https://profiles.wordpress.org/keraweb/#content-plugins',
+				'icon'        => 'dashicons-admin-plugins',
+				'url'         => 'https://profiles.wordpress.org/keraweb/#content-plugins',
 			),
 		);
 
@@ -281,16 +282,16 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 			(array) apply_filters( 'view_admin_as_script_localization', array() ),
 			array(
 				// Data.
-				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
-				'siteurl'       => get_site_url(),
-				'settings'      => $this->store->get_settings(),
-				'settings_user' => $this->store->get_userSettings(),
-				'view'          => $this->store->get_view(),
-				'view_types'    => $this->vaa->controller()->get_view_types(),
+				'ajaxurl'              => admin_url( 'admin-ajax.php' ),
+				'siteurl'              => get_site_url(),
+				'settings'             => $this->store->get_settings(),
+				'settings_user'        => $this->store->get_userSettings(),
+				'view'                 => $this->store->get_view(),
+				'view_types'           => $this->vaa->controller()->get_view_types(),
 				// Other.
-				'_loader_icon' => VIEW_ADMIN_AS_URL . 'assets/img/loader.gif',
-				'_debug'       => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
-				'_vaa_nonce'   => $this->store->get_nonce( true ),
+				'_loader_icon'         => VIEW_ADMIN_AS_URL . 'assets/img/loader.gif',
+				'_debug'               => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
+				'_vaa_nonce'           => $this->store->get_nonce( true ),
 				// i18n.
 				'__no_users_found'     => esc_html__( 'No users found.', VIEW_ADMIN_AS_DOMAIN ),
 				'__key_already_exists' => esc_html__( 'Key already exists.', VIEW_ADMIN_AS_DOMAIN ),
@@ -329,23 +330,23 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		if ( is_network_admin() ) {
 			$options[] = array(
 				'text' => __( 'Go to network dashboard', VIEW_ADMIN_AS_DOMAIN ),
-				'url' => network_admin_url(),
+				'url'  => network_admin_url(),
 			);
 		} else {
 			$options[] = array(
 				'text' => __( 'Go to dashboard', VIEW_ADMIN_AS_DOMAIN ),
-				'url' => admin_url(),
+				'url'  => admin_url(),
 			);
 			$options[] = array(
 				'text' => __( 'Go to homepage', VIEW_ADMIN_AS_DOMAIN ),
-				'url' => get_bloginfo( 'url' ),
+				'url'  => get_bloginfo( 'url' ),
 			);
 		}
 
 		// Reset url.
 		$options[] = array(
 			'text' => __( 'Reset the view', VIEW_ADMIN_AS_DOMAIN ),
-			'url' => VAA_API::get_reset_link(),
+			'url'  => VAA_API::get_reset_link(),
 		);
 
 		/**
@@ -368,7 +369,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 			<?php esc_html_e( 'The view you have selected is not permitted to access this page, please choose one of the options below.', VIEW_ADMIN_AS_DOMAIN ); ?>
 			<ul>
 			<?php foreach ( $options as $option ) { ?>
-				<li><a href="<?php echo $option['url']; ?>"><?php echo $option['text']; ?></a></li>
+				<li><a href="<?php echo esc_attr( $option['url'] ); ?>"><?php echo esc_html( $option['text'] ); ?></a></li>
 			<?php } ?>
 			</ul>
 		</div>

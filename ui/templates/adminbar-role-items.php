@@ -25,9 +25,9 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	}
 
 	foreach ( $this->store->get_roles() as $role_key => $role ) {
-		$href   = VAA_API::get_vaa_action_link( array( $this->type => $role_key ), $this->store->get_nonce( true ) );
-		$class  = 'vaa-' . $this->type . '-item';
-		$title  = $this->get_view_title( $role );
+		$href  = VAA_API::get_vaa_action_link( array( $this->type => $role_key ) );
+		$class = 'vaa-' . $this->type . '-item';
+		$title = $this->get_view_title( $role );
 
 		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $role_key );
 
@@ -67,11 +67,11 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 		$admin_bar->add_node(
 			array(
-				'id' => $root . '-' . $this->type . '-' . $role_key,
+				'id'     => $root . '-' . $this->type . '-' . $role_key,
 				'parent' => $parent,
-				'title' => $view_title,
-				'href' => $href,
-				'meta' => array(
+				'title'  => $view_title,
+				'href'   => $href,
+				'meta'   => array(
 					// Translators: %s stands for the translated role name.
 					'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
 					'class' => $class,

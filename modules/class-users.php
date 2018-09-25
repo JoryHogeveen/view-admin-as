@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.1
+ * @version 1.8.2
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
@@ -56,11 +56,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * This parameter does not check user settings!
 	 *
-	 * @internal
 	 * @since  1.8.0
 	 * @var    bool|array
 	 */
-	protected $_ajax_search = false;
+	protected $ajax_search = false;
 
 	/**
 	 * Is the current request an AJAX request.
@@ -104,10 +103,13 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			/**
 			 * Force AJAX search for users at all times.
 			 * @since   1.8.1
-			 * @param   bool  $_ajax_search  Default: `false`
+			 * @param   bool  $ajax_search  Default: `false`
 			 * @return  bool
 			 */
-			$this->_ajax_search = (bool) apply_filters( 'view_admin_as_user_ajax_search', $this->_ajax_search );
+			$this->ajax_search = (bool) apply_filters( 'view_admin_as_user_ajax_search', $this->ajax_search );
+		} else {
+			// In case other modules want to search users (AJAX only).
+			$this->ajax_search = true;
 		}
 
 		// Users can also be switched from the user list page.
@@ -116,7 +118,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		if ( VAA_API::is_ajax_request( 'view_admin_as_search_users' ) ) {
-			$this->ajax_search_users();
+			// @since  1.8.2  Use pre-init hook to allow modules to filter ajax return.
+			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'ajax_search_users' ) );
 		}
 	}
 
@@ -162,6 +165,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 			$type = $this->label_singular;
 			$user = $this->store->get_selectedUser();
+
 			$titles[ $type ] = $this->get_view_title( $user );
 
 			/**
@@ -241,8 +245,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @return  string
 	 */
 	public function filter_get_view_title_ajax( $title, $user ) {
-		if ( ! empty( $this->_ajax_search['search_by'] ) ) {
-			$val = $user->get( $this->_ajax_search['search_by'] );
+		if ( ! empty( $this->ajax_search['search_by'] ) ) {
+			$val = $user->get( $this->ajax_search['search_by'] );
 			if ( $val ) {
 				$title = '<span class="vaa-highlight">' . $val . '</span>&nbsp; ' . $title;
 			}
@@ -308,8 +312,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			return;
 		}
 
-		$main_root = $root;
-		$root = $main_root . '-users';
+		$main_root     = $root;
+		$root          = $main_root . '-users';
 		$title_submenu = false;
 
 		$admin_bar->add_group( array(
@@ -332,7 +336,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		if ( ! $this->group_user_roles() && 15 < count( $this->get_data() ) ) {
 			$admin_bar->add_group( array(
-				'id' => $root . '-all',
+				'id'     => $root . '-all',
 				'parent' => $root . '-title',
 				'meta'   => array(
 					'class' => 'vaa-auto-max-height',
@@ -396,13 +400,14 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * @since   1.5.2
 		 * @since   1.8.0  Moved to this class & enhance checks whether to show this setting or not.
 		 */
-		if ( ! $this->ajax_search() &&
-		     VAA_API::is_view_type_enabled( 'role' ) &&
-		     $this->store->get_roles() &&
-		     (
-		         ! $this->group_user_roles() ||
-		         15 >= ( count( (array) $this->get_data() ) + count( (array) $this->store->get_roles() ) )
-		     )
+		if (
+			! $this->ajax_search()
+			&& VAA_API::is_view_type_enabled( 'role' )
+			&& $this->store->get_roles()
+			&& (
+				! $this->group_user_roles()
+				|| 15 >= ( count( (array) $this->get_data() ) + count( (array) $this->store->get_roles() ) )
+			)
 		) {
 			$admin_bar->add_node(
 				array(
@@ -410,23 +415,23 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 					'parent' => $root,
 					'title'  => VAA_View_Admin_As_Form::do_checkbox(
 						array(
-							'name'        => $root . '-force-group-users',
-							'value'       => $this->store->get_userSettings( 'force_group_users' ),
-							'compare'     => true,
-							'label'       => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
-							'description' => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
-							'help'        => true,
-							'auto_js' => array(
+							'name'          => $root . '-force-group-users',
+							'value'         => $this->store->get_userSettings( 'force_group_users' ),
+							'compare'       => true,
+							'label'         => __( 'Group users', VIEW_ADMIN_AS_DOMAIN ),
+							'description'   => __( 'Group users under their assigned roles', VIEW_ADMIN_AS_DOMAIN ),
+							'help'          => true,
+							'auto_showhide' => true,
+							'auto_js'       => array(
 								'setting' => 'user_setting',
 								'key'     => 'force_group_users',
 								'refresh' => true,
 							),
-							'auto_showhide' => true,
 						)
 					),
 					'href'   => false,
 					'meta'   => array(
-						'class'    => 'auto-height',
+						'class' => 'auto-height',
 					),
 				)
 			);
@@ -445,23 +450,23 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 					'parent' => $root,
 					'title'  => VAA_View_Admin_As_Form::do_checkbox(
 						array(
-							'name'        => $root . '-force-ajax-users',
-							'value'       => $this->store->get_userSettings( 'force_ajax_users' ),
-							'compare'     => true,
-							'label'       => __( 'AJAX search users', VIEW_ADMIN_AS_DOMAIN ),
-							'description' => __( 'Enable AJAX search for users', VIEW_ADMIN_AS_DOMAIN ),
-							'help'        => true,
-							'auto_js' => array(
+							'name'          => $root . '-force-ajax-users',
+							'value'         => $this->store->get_userSettings( 'force_ajax_users' ),
+							'compare'       => true,
+							'label'         => __( 'AJAX search users', VIEW_ADMIN_AS_DOMAIN ),
+							'description'   => __( 'Enable AJAX search for users', VIEW_ADMIN_AS_DOMAIN ),
+							'help'          => true,
+							'auto_showhide' => true,
+							'auto_js'       => array(
 								'setting' => 'user_setting',
 								'key'     => 'force_ajax_users',
 								'refresh' => true,
 							),
-							'auto_showhide' => true,
 						)
 					),
 					'href'   => false,
 					'meta'   => array(
-						'class'    => 'auto-height',
+						'class' => 'auto-height',
 					),
 				)
 			);
@@ -496,8 +501,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		// If the amount of items (roles and users combined) is more than 15 users, group them under their roles.
 		// There are no roles to group users on network pages.
-		if ( ! is_network_admin() &&
-		     ( $force || 15 < ( count( (array) $this->get_data() ) + count( (array) $roles ) ) )
+		if (
+			! is_network_admin()
+			&& ( $force || 15 < ( count( (array) $this->get_data() ) + count( (array) $roles ) ) )
 		) {
 			$check = true;
 		}
@@ -515,7 +521,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 */
 	public function ajax_search( $check_user = true ) {
 		if ( ! $check_user ) {
-			return (bool) $this->_ajax_search;
+			return (bool) $this->ajax_search;
 		}
 
 		static $force;
@@ -523,7 +529,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$force = (bool) $this->store->get_userSettings( 'force_ajax_users' );
 		}
 
-		return (bool) ( $this->_ajax_search || $force );
+		return (bool) ( $this->ajax_search || $force );
 	}
 
 	/**
@@ -556,6 +562,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Search users with AJAX.
 	 *
 	 * @since   1.8.0
+	 * @since   1.8.2  Different return types.
 	 */
 	public function ajax_search_users() {
 		$args = VAA_API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as_search_users' );
@@ -570,36 +577,62 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			);
 		}
 
+		$return_type = ( isset( $args['return'] ) ) ? $args['return'] : 'objects';
+
 		$this->is_ajax_search = true;
-		$this->_ajax_search = $args;
+		$this->ajax_search    = $args;
 
 		$users = $this->search_users( $args );
 
-		if ( ! $users ) {
-			wp_send_json_error();
+		/**
+		 * Filter the return JSON data for ajax search users by return type.
+		 * @since  1.8.2
+		 * @param  string      $return  Empty string.
+		 * @param  \WP_User[]  $users   The found users.
+		 * @param  self        $this    The view type class.
+		 * @param  array       $args    The passed arguments.
+		 * @return mixed
+		 */
+		$return = apply_filters( 'view_admin_as_ajax_search_users_return_' . $return_type, null, $users, $this, $args );
+		if ( null !== $return ) {
+			wp_send_json_success( $return );
 			die();
 		}
 
-		add_filter( 'vaa_admin_bar_view_title_' . $this->type, array( $this, 'filter_get_view_title_ajax' ), 10, 2 );
+		if ( ! $users ) {
+			wp_send_json_error( __( 'No users found.', VIEW_ADMIN_AS_DOMAIN ) );
+			die();
+		}
 
-		$return = '';
-		foreach ( $users as $user ) {
-			$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ), $this->store->get_nonce( true ) );
-			$class = 'vaa-' . $this->type . '-item';
-			$title = $this->get_view_title( $user );
+		switch ( $return_type ) {
+			default:
+			case 'objects':
+				$return = $users;
+				break;
 
-			$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
-			$view_title .= $this->get_view_title_roles( $user );
+			case 'links':
+				add_filter( 'vaa_admin_bar_view_title_' . $this->type, array( $this, 'filter_get_view_title_ajax' ), 10, 2 );
+				$return = '';
 
-			$attr = array(
-				'href' => $href,
-				'class' => 'ab-item',
-				// Translators: %s stands for the user display name.
-				'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
-			);
+				foreach ( $users as $user ) {
+					$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ) );
+					$class = 'vaa-' . $this->type . '-item';
+					$title = $this->get_view_title( $user );
 
-			$item = '<a ' . VAA_View_Admin_As_Form::parse_to_html_attr( $attr ) . '>' . $view_title . '</a>';
-			$return .= '<li class="' . $class . '">' . $item . '</a>';
+					$view_title  = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
+					$view_title .= $this->get_view_title_roles( $user );
+
+					$attr = array(
+						'href'  => $href,
+						'class' => 'ab-item',
+						// Translators: %s stands for the user display name.
+						'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
+					);
+
+					$item    = '<a ' . VAA_View_Admin_As_Form::parse_to_html_attr( $attr ) . '>' . $view_title . '</a>';
+					$return .= '<li class="' . $class . '">' . $item . '</a>';
+				}
+				break;
 		}
 
 		wp_send_json_success( $return );
@@ -616,6 +649,24 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	public function search_users( $args = array() ) {
 		$this->store_data( $args );
 		return $this->get_data();
+	}
+
+	/**
+	 * Get the selectbox values for search users by.
+	 *
+	 * @since   1.8.2
+	 * @return  array
+	 */
+	public function search_users_by_select_values() {
+		return array(
+			''             => ' - ' . __( 'Search by', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
+			'ID'           => 'ID',
+			'user_login'   => __( 'Username', VIEW_ADMIN_AS_DOMAIN ),
+			'user_email'   => __( 'Email', VIEW_ADMIN_AS_DOMAIN ),
+			'user_url'     => __( 'Website', VIEW_ADMIN_AS_DOMAIN ),
+			'display_name' => __( 'Display name', VIEW_ADMIN_AS_DOMAIN ),
+			//'user_nicename'
+		);
 	}
 
 	/**
@@ -640,7 +691,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		global $wpdb;
 
 		$user_columns = array( 'ID', 'user_login', 'user_email', 'user_url', 'user_nicename', 'display_name' );
-		$string = trim( $string, '*' );
+		$string       = trim( $string, '*' );
 
 		if ( $cols ) {
 			$cols = array_intersect( (array) $cols, $user_columns );
@@ -709,8 +760,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			 * @param  int  $limit  Default: 100.
 			 * @return int
 			 */
-			'limit' => apply_filters( 'view_admin_as_user_query_limit', 100 ),
-			'search' => '',
+			'limit'     => apply_filters( 'view_admin_as_user_query_limit', 100 ),
+			'search'    => '',
 			'search_by' => array(),
 		) );
 
@@ -735,12 +786,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * @todo   Check options https://github.com/JoryHogeveen/view-admin-as/issues/24.
 		 */
 		$user_query = array(
-			'select'    => "SELECT users.*, usermeta.meta_value AS roles",
-			'from'      => "FROM {$wpdb->users} users",
-			'join'      => "INNER JOIN {$wpdb->usermeta} usermeta ON ( users.ID = usermeta.user_id )",
-			'where'     => "WHERE ( usermeta.meta_key = '{$wpdb->get_blog_prefix()}capabilities' )",
-			'order_by'  => "ORDER BY users.display_name ASC",
-			'limit'     => 'LIMIT ' . $limit,
+			'select'   => "SELECT users.*, usermeta.meta_value AS roles",
+			'from'     => "FROM {$wpdb->users} users",
+			'join'     => "INNER JOIN {$wpdb->usermeta} usermeta ON ( users.ID = usermeta.user_id )",
+			'where'    => "WHERE ( usermeta.meta_key = '{$wpdb->get_blog_prefix()}capabilities' )",
+			'order_by' => "ORDER BY users.display_name ASC",
+			'limit'    => 'LIMIT ' . $limit,
 		);
 
 		/**
@@ -798,13 +849,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			 * @since  1.5.2  Exclude the current user.
 			 * @since  1.6.2  Exclude in SQL format.
 			 */
-			$exclude = implode( ',',
-				array_unique(
-				    array_map( 'absint',
-						array_merge( $superior_admins, array( $this->store->get_curUser()->ID ) )
-				    )
-				)
-			);
+			$exclude = array_merge( $superior_admins, array( $this->store->get_curUser()->ID ) );
+			// Only allow unique numeric values (user id's).
+			$exclude = implode( ',', array_unique( array_map( 'absint', $exclude ) ) );
+
 			$user_query['where'] .= " AND users.ID NOT IN ({$exclude})";
 
 			/**
@@ -829,7 +877,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				// Pre WP 4.4 - Remove empty usernames since these return true before WP 4.4.
 				$super_admins = array_filter( $super_admins );
 
-				$exclude_siblings = "'" . implode( "','", $super_admins ) . "'";
+				$exclude_siblings     = "'" . implode( "','", $super_admins ) . "'";
 				$user_query['where'] .= " AND users.user_login NOT IN ({$exclude_siblings})";
 			}
 
@@ -839,7 +887,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 			// @since  1.8.0  Switch to ajax search because of load time.
 			if ( $limit <= count( $users_results ) && ! $this->is_ajax_search ) {
-				$this->_ajax_search = true;
+				$this->ajax_search = true;
 				return;
 			}
 
@@ -853,7 +901,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 				// Turn query results into WP_User objects.
 				foreach ( $users_results as $user ) {
-					$user->roles = maybe_unserialize( $user->roles );
+					$user->roles        = maybe_unserialize( $user->roles );
 					$users[ $user->ID ] = new WP_User( $user );
 				}
 
@@ -872,7 +920,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 					// @since  1.5.2  Exclude the current user.
 					'exclude' => array_merge( $superior_admins, array( $this->store->get_curUser()->ID ) ),
 					// @since  1.8.0  Limit the number of users to return.
-					'number' => $limit,
+					'number'  => $limit,
 				);
 				// @since  1.5.2  Do not get regular admins for normal installs (WP 4.4+).
 				if ( ! is_multisite() && ! $is_superior_admin ) {
@@ -880,7 +928,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				}
 				// @since  1.8.0  Search for users.
 				if ( ! empty( $args['search'] ) ) {
-					$user_args['search'] = $args['search'];
+					$user_args['search']         = $args['search'];
 					$user_args['search_columns'] = (array) $args['search_by'];
 				}
 
@@ -968,7 +1016,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				if ( ! $user instanceof WP_User ) {
 					continue;
 				}
-				$user_key = $user->ID;
+				$user_key           = $user->ID;
 				$users[ $user_key ] = $user;
 			}
 
@@ -1046,33 +1094,24 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.8.1
 	 * @access  public
 	 * @param   int|\WP_User  $user_id
-	 * @param   string        $link     (optional)
+	 * @param   string        $url      (optional)
 	 * @return  string
 	 */
-	public function get_vaa_action_link( $user_id, $link = '' ) {
+	public function get_vaa_action_link( $user_id, $url = null ) {
+		$link = '';
 
 		if ( isset( $user_id->ID ) ) {
 			$user_id = $user_id->ID;
 		}
 
-		if ( ! $link ) {
-			if ( is_network_admin() ) {
-				$link = network_admin_url();
-			} else {
-				$link = admin_url();
-			}
-		}
-
-		$link = '';
-
 		if ( (int) $user_id === (int) $this->store->get_curUser()->ID ) {
 			// Add reset link if it is the current user and a view is selected.
 			if ( $this->store->get_view() ) {
-				$link = VAA_API::get_reset_link( $link );
+				$link = VAA_API::get_reset_link( $url );
 			}
 		}
 		elseif ( $this->validate_target_user( $user_id ) ) {
-			$link = VAA_API::get_vaa_action_link( array( $this->type => $user_id ), $this->store->get_nonce( true ), $link );
+			$link = VAA_API::get_vaa_action_link( array( $this->type => $user_id ), $url );
 		}
 
 		return $link;
@@ -1094,7 +1133,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$link = $this->get_vaa_action_link( $user );
 
 		if ( $link ) {
-			$icon = 'dashicons-visibility';
+			$icon      = 'dashicons-visibility';
 			$icon_attr = array(
 				'style' => array(
 					'font-size: inherit;',
@@ -1103,7 +1142,9 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 					'vertical-align: text-top;',
 				),
 			);
+
 			$title = VAA_View_Admin_As_Form::do_icon( $icon, $icon_attr ) . ' ' . esc_html__( 'View as', VIEW_ADMIN_AS_DOMAIN );
+
 			$actions['vaa_view'] = '<a href="' . $link . '">' . $title . '</a>';
 		}
 

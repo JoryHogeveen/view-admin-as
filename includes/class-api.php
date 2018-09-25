@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @version 1.8.0
+ * @version 1.8.2
  */
 final class VAA_API
 {
@@ -164,10 +164,10 @@ final class VAA_API
 		 * @param  array
 		 * @return int[] Requires a returned array of user ID's
 		 */
-		$superior_admins = array_unique( array_map( 'absint', array_filter(
-			(array) apply_filters( 'view_admin_as_superior_admins', array() ),
-			'is_numeric'  // Only allow numeric values (user id's)
-		) ) );
+		$superior_admins = (array) apply_filters( 'view_admin_as_superior_admins', array() );
+
+		// Only allow unique  numeric values (user id's).
+		$superior_admins = array_unique( array_map( 'absint', array_filter( $superior_admins, 'is_numeric' ) ) );
 
 		return $superior_admins;
 	}
@@ -327,26 +327,33 @@ final class VAA_API
 	 * Generate a VAA action link.
 	 *
 	 * @since   1.7.0
+	 * @since   1.8.2  Switched $nonce and $url parameters order.
 	 * @access  public
 	 * @static
 	 * @api
 	 *
 	 * @param   array   $data   View type data.
-	 * @param   string  $nonce  The nonce.
 	 * @param   string  $url    (optional) A URL. Of not passed it will generate a link from the current URL.
+	 * @param   string  $nonce  (optional) Use a different nonce. Pass `false` to omit nonce.
 	 * @return  string
 	 */
-	public static function get_vaa_action_link( $data, $nonce, $url = null ) {
+	public static function get_vaa_action_link( $data, $url = null, $nonce = null ) {
 
 		$params = array(
 			'action'        => 'view_admin_as',
 			'view_admin_as' => $data, // wp_json_encode( array( $type, $data ) ),
-			'_vaa_nonce'    => (string) $nonce,
 		);
+
+		if ( null === $nonce ) {
+			$nonce = view_admin_as()->store()->get_nonce( true );
+		}
+		if ( $nonce ) {
+			$params['_vaa_nonce'] = (string) $nonce;
+		}
 
 		// @todo fix WP referrer/nonce checks and allow switching on any page without ajax.
 		// @see https://codex.wordpress.org/Function_Reference/check_admin_referer
-		if ( empty( $url ) ) {
+		if ( null === $url ) {
 			if ( is_admin() ) {
 				$url = is_network_admin() ? network_admin_url() : admin_url();
 			} else {
@@ -693,7 +700,7 @@ final class VAA_API
 				$do_notice = ( defined( 'WP_DEBUG' ) && WP_DEBUG );
 			}
 			if ( ! is_string( $do_notice ) ) {
-				$callable = self::callable_to_string( $callable );
+				$callable  = self::callable_to_string( $callable );
 				$do_notice = sprintf(
 					// Translators: %s stands for the requested class, method or function.
 					__( '%s does not exist or is not callable.', VIEW_ADMIN_AS_DOMAIN ),
@@ -728,7 +735,7 @@ final class VAA_API
 		if ( is_array( $callable ) ) {
 			if ( is_object( $callable[0] ) ) {
 				$callable[0] = get_class( $callable[0] );
-				$callable = implode( '->', $callable );
+				$callable    = implode( '->', $callable );
 			} else {
 				$callable = implode( '::', $callable );
 			}

@@ -3,7 +3,7 @@
  * Add user actions.
  *
  * @since    1.8.0
- * @version  1.8.1
+ * @version  1.8.2
  *
  * @var  \VAA_View_Admin_As_Users  $this
  * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.
@@ -36,27 +36,19 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		}
 		if ( $this->ajax_search() ) {
 			$title .= VAA_View_Admin_As_Form::do_select( array(
-				'name'   => $root . '-searchusers-by',
-				'values' => array(
-					''             => ' - ' . __( 'Search by', VIEW_ADMIN_AS_DOMAIN ) . ' - ',
-					'ID'           => 'ID',
-					'user_login'   => __( 'Username', VIEW_ADMIN_AS_DOMAIN ),
-					'user_email'   => __( 'Email', VIEW_ADMIN_AS_DOMAIN ),
-					'user_url'     => __( 'Website', VIEW_ADMIN_AS_DOMAIN ),
-					'display_name' => __( 'Display name', VIEW_ADMIN_AS_DOMAIN ),
-					//'user_nicename'
-				),
+				'name'   => $root . '-search-by',
+				'values' => $this->search_users_by_select_values(),
 				'class'  => 'vaa-wide',
 			) );
 		}
 		$title .= VAA_View_Admin_As_Form::do_input( array(
-			'name'        => $root . '-searchusers',
+			'name'        => $root . '-search',
 			'placeholder' => __( 'Search', VIEW_ADMIN_AS_DOMAIN ),
 			'class'       => 'vaa-wide',
 		) );
 
 		$admin_bar->add_node( array(
-			'id'     => $root . '-searchusers',
+			'id'     => $root . '-search',
 			'parent' => $root,
 			'title'  => $title,
 			'href'   => false,

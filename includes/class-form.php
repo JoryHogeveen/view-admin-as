@@ -38,16 +38,18 @@ class VAA_View_Admin_As_Form
 	 * @return  string
 	 */
 	public static function do_view_title( $title, $type, $value, $attr = array(), $elem = 'span' ) {
-		$attr = (array) $attr;
+		$attr  = (array) $attr;
 		$class = ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '';
+
 		$attr['class'] = 'vaa-view-data' . $class;
 		if ( $type instanceof VAA_View_Admin_As_Type ) {
-			$attr['vaa-view-type'] = $type->get_type();
+			$attr['vaa-view-type']       = $type->get_type();
 			$attr['vaa-view-type-label'] = $type->get_label_singular();
 		} else {
 			$attr['vaa-view-type'] = $type;
 		}
 		$attr['vaa-view-value'] = $value;
+
 		$attr = self::parse_to_html_attr( $attr );
 		return '<' . $elem . ' ' . $attr . '>' . $title . '</' . $elem . '>';
 	}
@@ -70,7 +72,7 @@ class VAA_View_Admin_As_Form
 			if ( is_callable( array( 'VAA_View_Admin_As_Form', $key ) ) ) {
 				$return[] = self::$method( $value );
 			} elseif ( is_callable( array( 'VAA_View_Admin_As_Form', 'do_' . $key ) ) ) {
-				$method = 'do_' . $key;
+				$method   = 'do_' . $key;
 				$return[] = self::$method( $value );
 			}
 		}
@@ -99,14 +101,14 @@ class VAA_View_Admin_As_Form
 	 * @return  string
 	 */
 	public static function do_button( $args ) {
-		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
-		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
-		$elem = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
+		$id    = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
+		$name  = str_replace( '-', '_', esc_attr( $args['name'] ) );
+		$elem  = ( ! empty( $args['element'] ) ) ? $args['element'] : 'button';
 		$label = ( ! empty( $args['label'] ) ) ? $args['label'] : '';
 		$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
 
-		$args['attr']['id'] = $id;
-		$args['attr']['name'] = $name;
+		$args['attr']['id']    = $id;
+		$args['attr']['name']  = $name;
 		$args['attr']['class'] = 'button' . $class;
 		if ( isset( $args['value'] ) ) {
 			if ( is_bool( $args['value'] ) ) {
@@ -155,25 +157,25 @@ class VAA_View_Admin_As_Form
 	public static function do_input( $args ) {
 		$html = '';
 
-		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
-		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
-		$default = ( ! empty( $args['default'] ) ) ? $args['default'] : '';
+		$id          = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
+		$name        = str_replace( '-', '_', esc_attr( $args['name'] ) );
+		$default     = ( ! empty( $args['default'] ) ) ? $args['default'] : '';
 		$placeholder = ( ! empty( $args['placeholder'] ) ) ? $args['placeholder'] : '';
-		$class = ( ! empty( $args['class'] ) ) ? $args['class'] : '';
+		$class       = ( ! empty( $args['class'] ) ) ? $args['class'] : '';
 
-		$args['attr']['type'] = ( ! empty( $args['type'] ) ) ? $args['type'] : 'text';
-		$args['attr']['id'] = $id;
-		$args['attr']['name'] = $name;
+		$args['attr']['type']        = ( ! empty( $args['type'] ) ) ? $args['type'] : 'text';
+		$args['attr']['id']          = $id;
+		$args['attr']['name']        = $name;
 		$args['attr']['placeholder'] = $placeholder;
-		$args['attr']['value'] = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
-		$args['attr']['class'] = $class;
+		$args['attr']['value']       = ( ! empty( $args['value'] ) ) ? $args['value'] : $default;
+		$args['attr']['class']       = $class;
 
 		$attr = $args['attr'];
 		$attr = self::enable_auto_js( $attr, $args );
 		$attr = self::parse_to_html_attr( $attr );
 
 		$label_attr = array();
-		$desc_attr = array();
+		$desc_attr  = array();
 		self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
 		$html .= self::do_help( $args, array(), array(), $label_attr );
@@ -213,7 +215,7 @@ class VAA_View_Admin_As_Form
 	public static function do_checkbox( $args ) {
 		$html = '';
 
-		$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
+		$id   = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
 		$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 
 		if ( empty( $args['value'] ) ) {
@@ -223,11 +225,11 @@ class VAA_View_Admin_As_Form
 			$args['compare'] = 1;
 		}
 		$checked = checked( $args['value'], $args['compare'], false );
-		$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
+		$class   = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
 
-		$args['attr']['type'] = 'checkbox';
-		$args['attr']['id'] = $id;
-		$args['attr']['name'] = $name;
+		$args['attr']['type']  = 'checkbox';
+		$args['attr']['id']    = $id;
+		$args['attr']['name']  = $name;
 		$args['attr']['value'] = ( ! empty( $args['checkbox_value'] ) ) ? $args['checkbox_value'] : '1';
 		$args['attr']['class'] = 'checkbox' . $class;
 
@@ -236,7 +238,7 @@ class VAA_View_Admin_As_Form
 		$attr = self::parse_to_html_attr( $attr );
 
 		$label_attr = array();
-		$desc_attr = array();
+		$desc_attr  = array();
 		self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
 		$html .= self::do_help( $args, array(), array(), $label_attr );
@@ -295,19 +297,19 @@ class VAA_View_Admin_As_Form
 
 			foreach ( $args['values'] as $val ) {
 
-				$id = esc_attr( ( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] ) . '-' . $val['compare'] );
+				$id   = esc_attr( ( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] ) . '-' . $val['compare'] );
 				$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 
 				if ( empty( $args['value'] ) ) {
 					$args['value'] = null;
 				}
 				$checked = checked( $args['value'], $val['compare'], false );
-				$class = ( ! empty( $val['class'] ) ) ? ' ' . $val['class'] : '';
-				$class .= ' ' . esc_attr( $args['name'] );
+				$class   = ( ! empty( $val['class'] ) ) ? ' ' . $val['class'] : '';
+				$class  .= ' ' . esc_attr( $args['name'] );
 
-				$val['attr']['type'] = 'radio';
-				$val['attr']['id'] = $id;
-				$val['attr']['name'] = $name;
+				$val['attr']['type']  = 'radio';
+				$val['attr']['id']    = $id;
+				$val['attr']['name']  = $name;
 				$val['attr']['value'] = $val['compare'];
 				$val['attr']['class'] = 'radio' . $class;
 
@@ -316,10 +318,11 @@ class VAA_View_Admin_As_Form
 				$attr = self::parse_to_html_attr( $attr );
 
 				$label_attr = array();
-				$desc_attr = array();
+				$desc_attr  = array();
 				// Custom validation required.
-				if ( ( ! empty( $val['auto_showhide'] ) ) ||
-					 ( ! isset( $val['auto_showhide'] ) && ! empty( $args['auto_showhide'] ) )
+				if (
+					( ! empty( $val['auto_showhide'] ) )
+					|| ( ! isset( $val['auto_showhide'] ) && ! empty( $args['auto_showhide'] ) )
 				) {
 					self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr );
 				}
@@ -378,11 +381,11 @@ class VAA_View_Admin_As_Form
 		$html = '';
 
 		if ( ! empty( $args['values'] ) ) {
-			$id = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
+			$id   = esc_attr( ( ! empty( $args['id'] ) ) ? $args['id'] : $args['name'] );
 			$name = str_replace( '-', '_', esc_attr( $args['name'] ) );
 
 			$label_attr = array();
-			$desc_attr = array();
+			$desc_attr  = array();
 			self::enable_auto_showhide( $id . '-desc', $label_attr, $desc_attr, $args );
 
 			$html .= self::do_help( $args, array(), array(), $label_attr );
@@ -394,8 +397,8 @@ class VAA_View_Admin_As_Form
 
 			$class = ( ! empty( $args['class'] ) ) ? ' ' . $args['class'] : '';
 
-			$args['attr']['id'] = $id;
-			$args['attr']['name'] = $name;
+			$args['attr']['id']    = $id;
+			$args['attr']['name']  = $name;
 			$args['attr']['class'] = 'selectbox' . $class;
 
 			$attr = $args['attr'];
@@ -411,8 +414,8 @@ class VAA_View_Admin_As_Form
 				$selected = selected( $args['value'], $val['compare'], false );
 
 				$val['attr']['value'] = $val['compare'];
-				$attr = self::parse_to_html_attr( $val['attr'] );
 
+				$attr  = self::parse_to_html_attr( $val['attr'] );
 				$html .= '<option ' . $attr . ' ' . $selected . '>' . $val['label'] . '</option>';
 
 			}
@@ -442,16 +445,17 @@ class VAA_View_Admin_As_Form
 	public static function do_icon( $icon, $attr = array(), $content = '' ) {
 		$class = 'ab-icon';
 
-		if ( false === strpos( $icon, '/' ) &&
-			 0 !== strpos( $icon, 'data:' ) &&
-			 0 !== strpos( $icon, 'http' )
+		if (
+			false === strpos( $icon, '/' )
+			&& 0 !== strpos( $icon, 'data:' )
+			&& 0 !== strpos( $icon, 'http' )
 		) {
 			// It's an icon class.
 			$class .= ' dashicons ' . $icon;
 		} else {
 			// It's a Base64 encoded string or file URL.
 			$class .= ' vaa-icon-image';
-			$attr = self::merge_attr( $attr, array(
+			$attr   = self::merge_attr( $attr, array(
 				'style' => array( 'background-image: url("' . $icon . '") !important' ),
 			) );
 		}
@@ -459,8 +463,9 @@ class VAA_View_Admin_As_Form
 		if ( ! empty( $attr['class'] ) ) {
 			$class .= ' ' . (string) $attr['class'];
 		}
-		$attr['class'] = $class;
+		$attr['class']       = $class;
 		$attr['aria-hidden'] = 'true';
+
 		$attr = self::parse_to_html_attr( $attr );
 		return '<span ' . $attr . '>' . $content . '</span>';
 	}
@@ -486,6 +491,7 @@ class VAA_View_Admin_As_Form
 			$label = $label['label'];
 		}
 		$attr['for'] = $for;
+
 		$attr = self::parse_to_html_attr( $attr );
 		return '<label ' . $attr . '>' . $label . '</label>';
 	}
@@ -513,7 +519,8 @@ class VAA_View_Admin_As_Form
 		} elseif ( ! is_string( $text ) ) {
 			return '';
 		}
-		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '');
+		$attr['class'] = 'ab-item description' . ( ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '' );
+
 		$attr = self::parse_to_html_attr( $attr );
 		return '<' . $elem . ' ' . $attr . '>' . $text . '</' . $elem . '>';
 	}
@@ -551,7 +558,7 @@ class VAA_View_Admin_As_Form
 			if ( ! isset( $showhide_attr['vaa-showhide'] ) ) {
 				return '';
 			}
-			$help_attr['class'] .= ' ab-vaa-showhide';
+			$help_attr['class']       .= ' ab-vaa-showhide';
 			$help_attr['vaa-showhide'] = $showhide_attr['vaa-showhide'];
 			unset( $showhide_attr['vaa-showhide'] );
 		}
@@ -562,6 +569,7 @@ class VAA_View_Admin_As_Form
 				'class' => 'ab-item ab-sub-wrapper vaa-tooltip',
 			), $tooltip_attr );
 			$tooltip_attr = self::parse_to_html_attr( $tooltip_attr );
+
 			$text = '<span ' . $tooltip_attr . '>' . $text . '</span>';
 		} else {
 			$text = '';
@@ -623,6 +631,7 @@ class VAA_View_Admin_As_Form
 					$value = array( 'values' => $args['auto_js']['values'] );
 				}
 				$values = array( $args['auto_js']['key'] => $value );
+
 				$args['auto_js']['values'] = $values;
 			}
 			unset( $args['auto_js']['key'] );

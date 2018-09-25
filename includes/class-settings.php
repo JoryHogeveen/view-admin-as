@@ -171,8 +171,8 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		}
 
 		$args = wp_parse_args( $args, array(
-			'default' => array(),
-			'allowed' => array(),
+			'default'      => array(),
+			'allowed'      => array(),
 			'default_user' => array(),
 			'allowed_user' => array(),
 		) );
@@ -188,13 +188,13 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData( array(
 				'db_version' => null,
-				'settings' => null,
+				'settings'   => null,
 			) );
 
 			$this->set_userMetaKey( 'vaa-view-admin-as' );
 			$this->set_userMeta( array(
 				'settings' => null,
-				'views' => null,
+				'views'    => null,
 			) );
 
 			$default = array(
@@ -242,8 +242,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 					__METHOD__,
 					sprintf(
 						// Translators: %1$s stands for an option key and %2$s stands for a class name.
-						__( 'The setting key %1$s is reserved for class %2$s', VIEW_ADMIN_AS_DOMAIN ),
-						$id, 'VAA_View_Admin_As_Store'
+						esc_html__( 'The setting key %1$s is reserved for class %2$s', VIEW_ADMIN_AS_DOMAIN ),
+						esc_html( $id ),
+						'VAA_View_Admin_As_Store'
 					),
 					''
 				);
@@ -419,10 +420,18 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			$current = $defaults;
 		}
 
-		$settings = apply_filters(
-			'view_admin_as_update_' . $type . '_settings' . $this->_filter_postfix,
-			$settings, $current, $defaults, $allowed
-		);
+		/**
+		 * Filter the settings before they are validated.
+		 *
+		 * @since  1.8.0
+		 * @param  array  $settings  New settings.
+		 * @param  array  $current   Current settings.
+		 * @param  array  $defaults  Default settings.
+		 * @param  array  $allowed   Allowed settings.
+		 * @return array
+		 */
+		$filter   = 'view_admin_as_update_' . $type . '_settings' . $this->_filter_postfix;
+		$settings = apply_filters( $filter, $settings, $current, $defaults, $allowed );
 
 		$settings = $this->validate_settings( $settings, $type, false );
 
@@ -528,10 +537,12 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		$value = wp_parse_args( $value, array(
 			'settings' => array(),
 		) );
+
 		$value['settings'] = $this->validate_settings( $value['settings'], 'user', true );
 
 		if ( ! isset( $this->allUserMeta[ $user_id ] ) ) {
 			$column_id = 0;
+
 			$this->allUserMeta[ $user_id ] = array( $column_id => $value );
 		}
 
