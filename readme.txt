@@ -44,6 +44,8 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Import/Export role defaults, can also download (and upload) setting files
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
+[Click here for Role Defaults documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Defaults)
+
 = Module: Role manager (role editor) =
 
 *Note: Changes made with the Role Manager are permanent!*
@@ -55,6 +57,8 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Import/Export roles, can also download (and upload) setting files
 *	Update role capabilities from current view
 *	Automatically migrate users to another role after deleting a role
+
+[Click here for Role Manager documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Manager)
 
 = Compatibility & Integrations =
 
@@ -152,15 +156,9 @@ And if even that doesn't work just add "?reset-view" in the address bar and you'
 
 Example: http://www.your.domain/wp-admin/?reset-view
 
-= 4. What data is stored for role defaults and how can I change this? =
-Please see the `view_admin_as_role_defaults_meta` filter at [Wiki: Filters](https://github.com/JoryHogeveen/view-admin-as/wiki/Filters#view_admin_as_role_defaults_meta)!
-
-The meta manager (since 1.6.3) provides a UI to edit the meta keys.
-Please follow these guidelines:
-
-* `%%` stands for a wildcard which could be anything.
-* Avoid special characters. Spaces, quotes etc. are forbidden.
-* Default meta keys cannot be removed, only disabled.
+= 4. How do the Role Defaults and Role Manager modules work? =
+* [Click here for Role Defaults documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Defaults)
+* [Click here for Role Manager documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Manager)
 
 = 5. I can't find a user! =
 Could it be that this user is an equal user to your's? Example: you are both Admins?
