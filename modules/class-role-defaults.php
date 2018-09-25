@@ -517,27 +517,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 * @return string
 	 */
 	public function ajax_search_users_return( $return, $users ) {
-		$content = '';
-
-		foreach ( $users as $user ) {
-
-			foreach ( $user->roles as $role ) {
-				$role_data = $this->store->get_roles( $role );
-				if ( $role_data instanceof WP_Role ) {
-					$role_name = $this->store->get_rolenames( $role );
-
-					$content .=
-						'<div class="ab-item vaa-item">'
-						. VAA_View_Admin_As_Form::do_checkbox( array(
-							'name'           => 'role-defaults-bulk-users-select[]',
-							'id'             => 'ajax-role-defaults-bulk-users-select-' . $user->ID,
-							'checkbox_value' => $user->ID . '|' . $role,
-							'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
-						) )
-						. '</div>';
-				}
-			}
-		}
+		$content = $this->get_users_bulk_checkbox_html( $users, 'vaa-ajax' );
 
 		if ( $content ) {
 			$return = '<div class="ab-item ab-empty-item">' . $content . '</div>';
@@ -1386,32 +1366,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				. '</div>';
 		}
 
-		$user_ajax           = false;
-		$users_check_content = array();
+		$user_ajax          = false;
+		$user_check_content = '';
 
 		/** @var \VAA_View_Admin_As_Users $user_view_type */
 		$user_view_type = view_admin_as()->get_view_types( 'user' );
 		if ( $user_view_type instanceof VAA_View_Admin_As_Users ) {
-			$user_ajax = $user_view_type->ajax_search();
-
-			foreach ( $this->store->get_users() as $user ) {
-				foreach ( $user->roles as $role ) {
-					$role_data = $this->store->get_roles( $role );
-					if ( $role_data instanceof WP_Role ) {
-						$role_name = $this->store->get_rolenames( $role );
-
-						$users_check_content[] =
-							'<div class="ab-item vaa-item">'
-							. VAA_View_Admin_As_Form::do_checkbox( array(
-								'name'           => 'role-defaults-bulk-users-select[]',
-								'id'             => $root . '-bulk-users-select-' . $user->ID,
-								'checkbox_value' => $user->ID . '|' . $role,
-								'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
-							) )
-							. '</div>';
-					}
-				}
-			}
+			$user_ajax          = $user_view_type->ajax_search();
+			$user_check_content = $this->get_users_bulk_checkbox_html( $this->store->get_users(), $root );
 		}
 
 		$role_defaults = $this->get_role_defaults();
@@ -1420,7 +1382,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 * @since  1.4.0  Apply defaults to users.
 		 * @since  1.8.2  AJAX search compatibility.
 		 */
-		if ( $users_check_content || $user_ajax ) {
+		if ( $user_check_content || $user_ajax ) {
 
 			$admin_bar->add_group( array(
 				'id'     => $root . '-bulk-users',
@@ -1475,7 +1437,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-bulk-users-select',
 				'parent' => $root . '-bulk-users',
-				'title'  => implode( '', $users_check_content ),
+				'title'  => $user_check_content,
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'ab-vaa-multipleselect vaa-small vaa-resizable',
@@ -1960,6 +1922,47 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			),
 		) );
 
+	}
+
+	/**
+	 * Get the multi-checkbox HTML for bulk apply defaults to users.
+	 *
+	 * @since   1.8.2
+	 *
+	 * @param   \WP_User[]  $users
+	 * @param   string      $root
+	 * @return  string
+	 */
+	protected function get_users_bulk_checkbox_html( $users, $root = '' ) {
+		if ( ! $users ) {
+			return '';
+		}
+		if ( ! $root ) {
+			$root = VAA_View_Admin_As_Admin_Bar::$root;
+		}
+		$content = '';
+
+		foreach ( $users as $user ) {
+
+			foreach ( $user->roles as $role ) {
+				$role_data = $this->store->get_roles( $role );
+				if ( $role_data instanceof WP_Role ) {
+					$role_name = $this->store->get_rolenames( $role );
+
+					$content .=
+						'<div class="ab-item vaa-item">'
+						. VAA_View_Admin_As_Form::do_checkbox( array(
+							'name'           => 'role-defaults-bulk-users-select[]',
+							'id'             => $root . '-role-defaults-bulk-users-select-' . $user->ID,
+							'checkbox_value' => $user->ID . '|' . $role,
+							'label'          => '<span class="user-name">' . $user->display_name . '</span> &nbsp; <span class="user-role">(' . $role_name . ')</span>',
+						) )
+						. '</div>';
+				}
+			}
+		}
+
+		return $content;
 	}
 
 	/**
