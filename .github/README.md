@@ -17,11 +17,12 @@ View the WordPress admin as a different role or visitor, switch between users, t
 ## Description
 **The ultimate User switcher and Role manager**
 
-This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin without the need to login with a user that has this role!
+This plugin will add a menu item to your admin bar where you can change your view in the WordPress admin.  
+Switch to other users without the need to login as that user or even switch roles and temporarily change your own capabilities.
 
-If you've selected a user, you can also change this user's preferences; like screen settings on various admin pages. You can also switch to a role or temporarily change your own capabilities.
+When you're viewing as a different user, you can also change this user's preferences; like screen settings on various admin pages.
 
-With the "Role defaults" module you can set default screen settings for roles and apply them on users through various bulk actions.
+With the "Role defaults" module you can set default screen settings and metabox locations for roles and apply them to users through various bulk actions.
 
 It also features a "Role manager" module to add, edit or remove roles and grant or deny them capabilities.
 
@@ -48,6 +49,8 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Import/Export role defaults, can also download (and upload) setting files
 *	Disable the "screen settings" option and/or lock the meta boxes for all users that don't have access to this plugin
 
+[Click here for Role Defaults documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Defaults)
+
 ### Module: Role manager (role editor)
 
 *Note: Changes made with the Role Manager are permanent!*
@@ -59,6 +62,8 @@ It also features a "Role manager" module to add, edit or remove roles and grant 
 *	Import/Export roles, can also download (and upload) setting files
 *	Update role capabilities from current view
 *	Automatically migrate users to another role after deleting a role
+
+[Click here for Role Manager documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Manager)
 
 ## Compatibility & Integrations
 
