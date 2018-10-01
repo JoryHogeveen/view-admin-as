@@ -244,7 +244,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		// @since  1.8.2  Enhance height calc + provide trigger for content changes
 		$( '.vaa-resizable', $vaa ).each( function() {
 			var $this     = $(this),
-				maxHeight = parseInt( $this.css( 'max-heights' ), 10 ),
+				maxHeight = parseInt( $this.css( 'max-height' ), 10 ),
 				height, innerHeight, newHeight;
 
 			// Check for empty containers.
