@@ -221,6 +221,30 @@ final class VAA_API
 	}
 
 	/**
+	 * Set the current view.
+	 *
+	 * @see  \VAA_View_Admin_As_Controller::update()
+	 * @see  \VAA_View_Admin_As_Controller::update_view()
+	 *
+	 * @since   1.8.3
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array  $view  The view.
+	 * @return  bool
+	 */
+	public static function update_view( $view ) {
+		$controller = view_admin_as()->controller();
+		if ( $controller ) {
+			$view    = array_intersect_key( $view, array_flip( $controller->get_view_types() ) );
+			$success = $controller->update( $view );
+			return ( true === $success );
+		}
+		return false;
+	}
+
+	/**
 	 * Is the current user modified?
 	 *
 	 * @see  \VAA_View_Admin_As_View::current_view_can()
