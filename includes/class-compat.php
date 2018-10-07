@@ -212,6 +212,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		/**
 		 * Other WordPress capabilities.
 		 * @since  1.7.4  WordPress 4.9 capabilities.
+		 * @since  1.8.3  WordPress 4.9.6 privacy capabilities.
 		 */
 		if ( VAA_API::validate_wp_version( '4.9' ) ) {
 			$caps['activate_plugin']    = 'activate_plugin';
@@ -219,6 +220,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			$caps['deactivate_plugins'] = 'deactivate_plugins';
 			$caps['install_languages']  = 'install_languages';
 			$caps['update_languages']   = 'update_languages';
+		}
+		if ( VAA_API::validate_wp_version( '4.9.6' ) ) {
+			$caps['erase_others_personal_data']  = 'erase_others_personal_data';
+			$caps['export_others_personal_data'] = 'export_others_personal_data';
+			$caps['manage_privacy_options']      = 'manage_privacy_options';
 		}
 
 		/**
