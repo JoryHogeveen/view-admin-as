@@ -418,11 +418,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.3   Make this public.
 	 * @access  public
 	 *
 	 * @return  bool
 	 */
-	private function update_view() {
+	public function update_view() {
 		$data = $this->validate_view_data( $this->store->get_view() );
 		if ( $data ) {
 			$meta = $this->store->get_userMeta( 'views' );
@@ -456,8 +457,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function reset_view( $user_login = null, $user = null ) {
 
-			// Function is not triggered by the wp_login action hook.
 		if ( null === $user ) {
+			// Function is not triggered by the wp_login action hook.
 			$user = $this->store->get_curUser();
 		}
 		if ( ! empty( $user->ID ) ) {
@@ -494,8 +495,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function cleanup_views( $user_login = null, $user = null ) {
 
-			// Function is not triggered by the wp_login action hook.
 		if ( null === $user ) {
+			// Function is not triggered by the wp_login action hook.
 			$user = $this->store->get_curUser();
 		}
 		if ( ! empty( $user->ID ) ) {
@@ -536,8 +537,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function reset_all_views( $user_login = null, $user = null ) {
 
-			// Function is not triggered by the wp_login action hook.
 		if ( null === $user ) {
+			// Function is not triggered by the wp_login action hook.
 			$user = $this->store->get_curUser();
 		}
 		if ( ! empty( $user->ID ) ) {
