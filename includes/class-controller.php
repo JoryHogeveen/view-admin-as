@@ -194,7 +194,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		$view_types = array();
 
 		/**
-		 * Ajax return filters.
+		 * Update data return filters.
 		 *
 		 * @see     `view_admin_as_update_view_{$key}`
 		 * @see     `view_admin_as_handle_ajax_{$key}`
@@ -204,21 +204,21 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * @param   mixed   $value   View data value.
 		 * @param   string  $key     View data key.
 		 * @return  bool|array {
-		 *     In case of array. Uses wp_json_return() structure.
+		 *     In case of array. Uses wp_json_return() when AJAX is used.
 		 *     @type  bool   $success  Send JSON success or error?
 		 *     @type  array  $data {
 		 *         Optional extra data to send with the JSON return.
 		 *         In case of a view the page normally refreshes.
 		 *         @type  string  $redirect  (URL) Redirect the user? (Only works on success).
-		 *         @type  string  $display   Options: notice   A notice type in the admin bar
-		 *                                            popup    A popup/overlay with content
-		 *         @type  string  $type      Options: success  Ureka! (green)      - Default when $success is true
-		 *                                            error    Send an error (red) - Default when $success is false
-		 *                                            message  Just a message (blue)
-		 *                                            warning  Send a warning (orange)
-		 *         @type  string  $text      The text to show
-		 *         @type  array   $list      Show multiple messages (Popup only)
-		 *         @type  string  $textarea  Textarea content (Popup only)
+		 *         @type  string  $display   Options: `notice`   A notice type in the admin bar.
+		 *                                            `popup`    A popup/overlay with content.
+		 *         @type  string  $type      Options: `success`  Ureka! (green)      - Default when $success is true.
+		 *                                            `error`    Send an error (red) - Default when $success is false.
+		 *                                            `message`  Just a message (blue).
+		 *                                            `warning`  Send a warning (orange).
+		 *         @type  string  $text      The text to show.
+		 *         @type  array   $list      Show multiple messages (Popup only).
+		 *         @type  string  $textarea  Textarea content (Popup only).
 		 *     }
 		 * }
 		 */
