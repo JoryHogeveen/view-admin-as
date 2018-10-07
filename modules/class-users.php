@@ -967,7 +967,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		global $wpdb;
 		if ( $wpdb->get_blog_prefix() . 'capabilities' === $meta_key && array_key_exists( $user_id, $this->get_data() ) ) {
 
-			$roles = $this->get_data( $user_id )->roles;
+			$user = $this->get_data( $user_id );
+			if ( ! $user ) {
+				return $null;
+			}
+
+			$roles = $user->roles;
 			if ( is_string( $roles ) ) {
 				// It is still raw DB data, unserialize it.
 				$roles = maybe_unserialize( $roles );
