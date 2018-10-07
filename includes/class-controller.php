@@ -161,7 +161,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 
 		$success = false;
 		if ( ! empty( $data ) ) {
-			$success = $this->ajax_handler( $data );
+			$success = $this->update( $data );
 		}
 
 		if ( true === $success ) {
@@ -172,22 +172,24 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			die();
 		}
 
-		wp_send_json_error( array(
-			'type' => 'error',
-			'text' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN ),
-		) );
+		wp_send_json_error(
+			array(
+				'type' => 'error',
+				'text' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN ),
+			)
+		);
 		die();
 	}
 
 	/**
-	 * AJAX handler.
-	 * Applies the data input.
+	 * Applies the data input to update views and settings.
 	 *
 	 * @since   1.7.0
+	 * @since   1.8.3  Renamed from `ajax_handler` + make this public.
 	 * @param   array  $data  Post data.
 	 * @return  array|bool
 	 */
-	private function ajax_handler( $data ) {
+	public function update( $data ) {
 		$success    = false;
 		$view_types = array();
 
@@ -226,6 +228,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 
 				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
 			} else {
+				// @todo Rename this to something non-ajax.
 				$success = apply_filters( 'view_admin_as_handle_ajax_' . $key, null, $value, $key );
 			}
 			if ( true !== $success ) {
