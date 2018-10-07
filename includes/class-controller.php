@@ -149,6 +149,16 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 
 		$data = $this->validate_data_keys( $data );
 
+		// Stop selecting the same view!
+		if ( $this->is_current_view( $data ) ) {
+			wp_send_json_error(
+				array(
+					'type' => 'message',
+					'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
+				)
+			);
+		}
+
 		$success = false;
 		if ( ! empty( $data ) ) {
 			$success = $this->ajax_handler( $data );
@@ -180,14 +190,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	private function ajax_handler( $data ) {
 		$success    = false;
 		$view_types = array();
-
-		// Stop selecting the same view!
-		if ( $this->is_current_view( $data ) ) {
-			wp_send_json_error( array(
-				'type' => 'message',
-				'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
-			) );
-		}
 
 		/**
 		 * Ajax return filters.
