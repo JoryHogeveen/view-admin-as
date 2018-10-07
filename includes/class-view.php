@@ -174,7 +174,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		$priority = -999999999;
 		if ( $this->store->get_view( 'caps' ) ) {
 			// Overwrite everything when the capability view is active.
-			remove_all_filters( 'user_has_cap' );
 			$priority = 999999999;
 		}
 		/**
