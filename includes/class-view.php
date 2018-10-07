@@ -170,21 +170,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 */
 		$this->add_filter( 'get_user_metadata', array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
-		// `user_has_cap` priority.
-		$priority = -999999999;
-		if ( $this->store->get_view( 'caps' ) ) {
-			// Overwrite everything when the capability view is active.
-			$priority = 999999999;
-		}
 		/**
 		 * The priority value of the VAA `user_has_cap` filter.
 		 * Runs as first by default.
 		 *
 		 * @since   1.7.2
-		 * @param   int  $priority
+		 * @param   int  $priority  Default: -999999999.
 		 * @return  int
 		 */
-		$priority = (int) apply_filters( 'view_admin_as_user_has_cap_priority', $priority );
+		$priority = (int) apply_filters( 'view_admin_as_user_has_cap_priority', -999999999 );
 
 		/**
 		 * Change the capabilities.
