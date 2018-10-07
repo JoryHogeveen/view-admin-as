@@ -341,7 +341,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @since   0.1.0
 	 * @since   1.5.0   Renamed from `change_caps()`.
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
-	 * @since   1.6.2   Use logic from current_view_can().
+	 * @since   1.6.2   Use logic from `self::current_view_can()`.
 	 * @since   1.6.3   Prefix function name with `filter_`.
 	 * @since   1.7.2   Use the `user_has_cap` filter for compatibility enhancements.
 	 * @access  public

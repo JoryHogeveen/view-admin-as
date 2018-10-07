@@ -444,8 +444,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Compat::init()
 	 * @see     \URE_Capabilities_Groups_Manager::get_cap_groups()
-	 * @param   array   $groups  Current capability groups
-	 * @param   string  $cap_id  Capability identifier
+	 * @param   array   $groups  Current capability groups.
+	 * @param   string  $cap_id  Capability identifier.
 	 * @return  array
 	 */
 	public function filter_ure_custom_capability_groups( $groups, $cap_id ) {

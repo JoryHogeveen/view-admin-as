@@ -40,8 +40,9 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			// Used to align items properly when some roles don't have users.
 			$class .= ' vaa-menupop';
 			// Check if the current view is a user with this role.
-			if ( $this->store->get_view( 'user' ) &&
-			     in_array( $role_key, $this->store->get_selectedUser()->roles, true )
+			if (
+				$this->store->get_view( 'user' )
+				&& in_array( $role_key, $this->store->get_selectedUser()->roles, true )
 			) {
 				$class .= ' current-parent';
 			}

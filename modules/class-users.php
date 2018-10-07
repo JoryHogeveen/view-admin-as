@@ -103,7 +103,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			/**
 			 * Force AJAX search for users at all times.
 			 * @since   1.8.1
-			 * @param   bool  $ajax_search  Default: `false`
+			 * @param   bool  $ajax_search  Default: `false`.
 			 * @return  bool
 			 */
 			$this->ajax_search = (bool) apply_filters( 'view_admin_as_user_ajax_search', $this->ajax_search );
@@ -278,13 +278,13 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Validate data for this view type
+	 * Validate data for this view type.
 	 *
 	 * @since   1.7.0
 	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
 	 * @access  public
-	 * @param   null   $null  Default return (invalid)
-	 * @param   mixed  $data  The view data
+	 * @param   null   $null  Default return (invalid).
+	 * @param   mixed  $data  The view data.
 	 * @return  mixed
 	 */
 	public function validate_view_data( $null, $data = null ) {
@@ -989,8 +989,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.8.0
 	 * @access  public
-	 * @param   \WP_User[]|\WP_User    $users
-	 * @param   null|int|\WP_User  $user_id
+	 * @param   \WP_User[]|\WP_User  $users
+	 * @param   int|\WP_User         (optional) $user_id
 	 * @return  array
 	 */
 	public function filter_users_by_access( $users, $user_id = null ) {
@@ -1032,7 +1032,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				 * @see    is_super_admin() >> wp-includes/capabilities.php
 				 * @link   https://developer.wordpress.org/reference/functions/is_super_admin/
 				 */
-				if ( // Remove super admins for multisites.
+				if (
+					// Remove super admins for multisites.
 					( is_multisite() && in_array( $user->user_login, (array) $super_admins, true ) ) ||
 					// Remove regular admins for normal installs.
 					( ! is_multisite() && $user->has_cap( 'administrator' ) ) ||
@@ -1063,7 +1064,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.7.1  User ID as array key.
 	 * @access  public
 	 *
-	 * @see     store_users()
+	 * @see     VAA_View_Admin_As_Users::store_data()
 	 *
 	 * @param   \WP_User[]  $users  Array of user objects (WP_User).
 	 * @return  \WP_User[]  $users
