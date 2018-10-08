@@ -221,6 +221,26 @@ final class VAA_API
 	}
 
 	/**
+	 * Is the current user modified?
+	 *
+	 * @see  \VAA_View_Admin_As_View::current_view_can()
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_user_modified() {
+		$view = view_admin_as()->view();
+		if ( $view ) {
+			return $view->is_user_modified();
+		}
+		return false;
+	}
+
+	/**
 	 * Set the current view.
 	 *
 	 * @see  \VAA_View_Admin_As_Controller::update()
@@ -240,26 +260,6 @@ final class VAA_API
 			$view    = array_intersect_key( $view, array_flip( $controller->get_view_types() ) );
 			$success = $controller->update( $view );
 			return ( true === $success );
-		}
-		return false;
-	}
-
-	/**
-	 * Is the current user modified?
-	 *
-	 * @see  \VAA_View_Admin_As_View::current_view_can()
-	 *
-	 * @since   1.7.2
-	 * @access  public
-	 * @static
-	 * @api
-	 *
-	 * @return  bool
-	 */
-	public static function is_user_modified() {
-		$view = view_admin_as()->view();
-		if ( $view ) {
-			return $view->is_user_modified();
 		}
 		return false;
 	}
