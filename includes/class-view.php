@@ -374,6 +374,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 			);
 		}
 
+		/**
+		 * Everyone is allowed to exist.
+		 * @since  1.8.3
+		 * @see    \WP_User::has_cap()
+		 * @link   https://wordpress.org/support/topic/compatibility-with-view-admin-as-2/
+		 */
+		$filter_caps['exist'] = true;
+
 		foreach ( (array) $caps as $actual_cap ) {
 			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {
 				// Regular users. Assuming this capability never exists..
