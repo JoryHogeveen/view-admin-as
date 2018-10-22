@@ -258,7 +258,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	}
 
 	/**
-	 * Get view data (meta).
+	 * Get view data.
 	 * @since   1.7.0
 	 * @param   string  $key  Key for array.
 	 * @return  mixed
@@ -269,7 +269,6 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * Get view type data
-	 *
 	 * @since   1.7.0
 	 * @param   string  $type  Type key.
 	 * @param   string  $key   (optional) Type data key.
