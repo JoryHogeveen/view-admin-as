@@ -186,11 +186,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	public function get_wordpress_capabilities( $caps = array() ) {
 
 		// @since  1.7.1  Store available capabilities existing in roles.
-		foreach ( $this->store->get_roles() as $key => $role ) {
+		foreach ( $this->store->get_roles() as $role ) {
 			if ( is_array( $role->capabilities ) ) {
-				foreach ( $role->capabilities as $cap => $grant ) {
-					$caps[ (string) $cap ] = $cap;
-				}
+				$role_caps = array_keys( $role->capabilities );
+				$caps      = array_merge( array_combine( $role_caps, $role_caps ), $caps );
 			}
 		}
 
