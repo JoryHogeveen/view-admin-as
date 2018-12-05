@@ -123,7 +123,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * Get the toolbar title for the main VAA node.
 	 *
 	 * @since   1.7.2
-	 * @since   1.8.3  Make this public.
+	 * @since   1.8.3  Made public.
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Admin_Bar::admin_bar_menu()
 	 * @return  string

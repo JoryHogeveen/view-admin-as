@@ -185,7 +185,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * Applies the data input to update views and settings.
 	 *
 	 * @since   1.7.0
-	 * @since   1.8.3  Renamed from `ajax_handler` + make this public.
+	 * @since   1.8.3  Renamed from `ajax_handler` + made public.
 	 * @param   array  $data  Post data.
 	 * @return  array|bool
 	 */
@@ -424,7 +424,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
-	 * @since   1.8.3   Make this public.
+	 * @since   1.8.3   Made public.
 	 * @access  public
 	 *
 	 * @return  bool
