@@ -192,6 +192,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	public function update( $data ) {
 		$success    = false;
 		$view_types = array();
+		$data       = $this->validate_data_keys( $data );
 
 		/**
 		 * Update data return filters.
@@ -228,7 +229,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 
 				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
 			} else {
-				// @todo Rename this to something non-ajax.
+				// @todo 1.9 Rename this to `view_admin_as_update_{$key}`
 				$success = apply_filters( 'view_admin_as_handle_ajax_' . $key, null, $value, $key );
 			}
 			if ( true !== $success ) {
