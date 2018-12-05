@@ -1248,7 +1248,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-meta-docs',
 			'parent' => $root . '-meta',
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-info' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-book-alt' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Defaults#what-data-is-stored-for-role-defaults-and-how-can-this-be-changed',
 			'meta'   => array(
 				'class'  => 'auto-height vaa-has-icon',
