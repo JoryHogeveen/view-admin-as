@@ -149,9 +149,19 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 
 		$data = $this->validate_data_keys( $data );
 
+		// Stop selecting the same view!
+		if ( $this->is_current_view( $data ) ) {
+			wp_send_json_error(
+				array(
+					'type' => 'message',
+					'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
+				)
+			);
+		}
+
 		$success = false;
 		if ( ! empty( $data ) ) {
-			$success = $this->ajax_handler( $data );
+			$success = $this->update( $data );
 		}
 
 		if ( true === $success ) {
@@ -162,35 +172,30 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			die();
 		}
 
-		wp_send_json_error( array(
-			'type' => 'error',
-			'text' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN ),
-		) );
+		wp_send_json_error(
+			array(
+				'type' => 'error',
+				'text' => esc_html__( 'Something went wrong, please try again.', VIEW_ADMIN_AS_DOMAIN ),
+			)
+		);
 		die();
 	}
 
 	/**
-	 * AJAX handler.
-	 * Applies the data input.
+	 * Applies the data input to update views and settings.
 	 *
 	 * @since   1.7.0
+	 * @since   1.8.3  Renamed from `ajax_handler` + made public.
 	 * @param   array  $data  Post data.
 	 * @return  array|bool
 	 */
-	private function ajax_handler( $data ) {
+	public function update( $data ) {
 		$success    = false;
 		$view_types = array();
-
-		// Stop selecting the same view!
-		if ( $this->is_current_view( $data ) ) {
-			wp_send_json_error( array(
-				'type' => 'message',
-				'text' => esc_html__( 'This view is already selected!', VIEW_ADMIN_AS_DOMAIN ),
-			) );
-		}
+		$data       = $this->validate_data_keys( $data );
 
 		/**
-		 * Ajax return filters.
+		 * Update data return filters.
 		 *
 		 * @see     `view_admin_as_update_view_{$key}`
 		 * @see     `view_admin_as_handle_ajax_{$key}`
@@ -200,21 +205,21 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * @param   mixed   $value   View data value.
 		 * @param   string  $key     View data key.
 		 * @return  bool|array {
-		 *     In case of array. Uses wp_json_return() structure.
+		 *     In case of array. Uses wp_json_return() when AJAX is used.
 		 *     @type  bool   $success  Send JSON success or error?
 		 *     @type  array  $data {
 		 *         Optional extra data to send with the JSON return.
 		 *         In case of a view the page normally refreshes.
 		 *         @type  string  $redirect  (URL) Redirect the user? (Only works on success).
-		 *         @type  string  $display   Options: notice   A notice type in the admin bar
-		 *                                            popup    A popup/overlay with content
-		 *         @type  string  $type      Options: success  Ureka! (green)      - Default when $success is true
-		 *                                            error    Send an error (red) - Default when $success is false
-		 *                                            message  Just a message (blue)
-		 *                                            warning  Send a warning (orange)
-		 *         @type  string  $text      The text to show
-		 *         @type  array   $list      Show multiple messages (Popup only)
-		 *         @type  string  $textarea  Textarea content (Popup only)
+		 *         @type  string  $display   Options: `notice`   A notice type in the admin bar.
+		 *                                            `popup`    A popup/overlay with content.
+		 *         @type  string  $type      Options: `success`  Ureka! (green)      - Default when $success is true.
+		 *                                            `error`    Send an error (red) - Default when $success is false.
+		 *                                            `message`  Just a message (blue).
+		 *                                            `warning`  Send a warning (orange).
+		 *         @type  string  $text      The text to show.
+		 *         @type  array   $list      Show multiple messages (Popup only).
+		 *         @type  string  $textarea  Textarea content (Popup only).
 		 *     }
 		 * }
 		 */
@@ -224,6 +229,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 
 				$success = apply_filters( 'view_admin_as_update_view_' . $key, null, $value, $key );
 			} else {
+				// @todo 1.9 Rename this to `view_admin_as_update_{$key}`
 				$success = apply_filters( 'view_admin_as_handle_ajax_' . $key, null, $value, $key );
 			}
 			if ( true !== $success ) {
@@ -353,10 +359,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				_deprecated_hook( 'view_admin_as_view_types', 1.8, 'view_admin_as()->register_view_type()' );
 			}
 
-			$view_types = array_unique( array_merge(
-				array_filter( $dep_view_types, 'is_string' ),
-				$view_types
-			) );
+			$view_types = array_unique(
+				array_merge(
+					array_filter( $dep_view_types, 'is_string' ),
+					$view_types
+				)
+			);
 		}
 
 		return $view_types;
@@ -416,11 +424,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.3   Made public.
 	 * @access  public
 	 *
 	 * @return  bool
 	 */
-	private function update_view() {
+	public function update_view() {
 		$data = $this->validate_view_data( $this->store->get_view() );
 		if ( $data ) {
 			$meta = $this->store->get_userMeta( 'views' );
@@ -454,8 +463,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function reset_view( $user_login = null, $user = null ) {
 
-		// function is not triggered by the wp_login action hook.
 		if ( null === $user ) {
+			// Function is not triggered by the wp_login action hook.
 			$user = $this->store->get_curUser();
 		}
 		if ( ! empty( $user->ID ) ) {
@@ -492,8 +501,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function cleanup_views( $user_login = null, $user = null ) {
 
-		// function is not triggered by the wp_login action hook.
 		if ( null === $user ) {
+			// Function is not triggered by the wp_login action hook.
 			$user = $this->store->get_curUser();
 		}
 		if ( ! empty( $user->ID ) ) {
@@ -534,8 +543,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function reset_all_views( $user_login = null, $user = null ) {
 
-		// function is not triggered by the wp_login action hook.
 		if ( null === $user ) {
+			// Function is not triggered by the wp_login action hook.
 			$user = $this->store->get_curUser();
 		}
 		if ( ! empty( $user->ID ) ) {
@@ -568,14 +577,16 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			return array();
 		}
 
-		$allowed_keys = array_unique( array_merge(
-			// View types.
-			$this->get_view_types(),
-			// Module keys.
-			array_keys( $this->vaa->get_modules() ),
-			// VAA core keys.
-			array( 'setting', 'user_setting', 'reset' )
-		) );
+		$allowed_keys = array_unique(
+			array_merge(
+				// View types.
+				$this->get_view_types(),
+				// Module keys.
+				array_keys( $this->vaa->get_modules() ),
+				// VAA core keys.
+				array( 'setting', 'user_setting', 'reset' )
+			)
+		);
 
 		$data = array_intersect_key( $data, array_flip( $allowed_keys ) );
 

@@ -82,9 +82,20 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 
 		if ( parent::do_view() ) {
 
+			$this->add_filter( 'view_admin_as_user_has_cap_priority', array( $this, 'filter_user_has_cap_priority' ) );
 			$this->add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 2, 2 );
 			$this->init_user_modifications();
 		}
+	}
+
+	/**
+	 * Make sure to run `user_has_cap` view filter as last if this view is active.
+	 *
+	 * @since   1.8.3
+	 * @return  int
+	 */
+	public function filter_user_has_cap_priority() {
+		return 999999999;
 	}
 
 	/**

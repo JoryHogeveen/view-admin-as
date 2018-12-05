@@ -186,11 +186,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	public function get_wordpress_capabilities( $caps = array() ) {
 
 		// @since  1.7.1  Store available capabilities existing in roles.
-		foreach ( $this->store->get_roles() as $key => $role ) {
+		foreach ( $this->store->get_roles() as $role ) {
 			if ( is_array( $role->capabilities ) ) {
-				foreach ( $role->capabilities as $cap => $grant ) {
-					$caps[ (string) $cap ] = $cap;
-				}
+				$role_caps = array_keys( $role->capabilities );
+				$caps      = array_merge( array_combine( $role_caps, $role_caps ), $caps );
 			}
 		}
 
@@ -212,6 +211,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		/**
 		 * Other WordPress capabilities.
 		 * @since  1.7.4  WordPress 4.9 capabilities.
+		 * @since  1.8.3  WordPress 4.9.6 privacy capabilities.
 		 */
 		if ( VAA_API::validate_wp_version( '4.9' ) ) {
 			$caps['activate_plugin']    = 'activate_plugin';
@@ -219,6 +219,11 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			$caps['deactivate_plugins'] = 'deactivate_plugins';
 			$caps['install_languages']  = 'install_languages';
 			$caps['update_languages']   = 'update_languages';
+		}
+		if ( VAA_API::validate_wp_version( '4.9.6' ) ) {
+			$caps['erase_others_personal_data']  = 'erase_others_personal_data';
+			$caps['export_others_personal_data'] = 'export_others_personal_data';
+			$caps['manage_privacy_options']      = 'manage_privacy_options';
 		}
 
 		/**
@@ -444,8 +449,8 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Compat::init()
 	 * @see     \URE_Capabilities_Groups_Manager::get_cap_groups()
-	 * @param   array   $groups  Current capability groups
-	 * @param   string  $cap_id  Capability identifier
+	 * @param   array   $groups  Current capability groups.
+	 * @param   string  $cap_id  Capability identifier.
 	 * @return  array
 	 */
 	public function filter_ure_custom_capability_groups( $groups, $cap_id ) {

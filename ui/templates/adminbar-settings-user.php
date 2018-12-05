@@ -21,10 +21,11 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-if ( isset( $this ) &&
-	 isset( $this->store ) &&
-	 isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar &&
-	 isset( $root )
+if (
+	isset( $this )
+	&& isset( $this->store )
+	&& isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar
+	&& isset( $root )
 ) {
 
 	/**

@@ -110,7 +110,7 @@ final class VAA_View_Admin_As
 	private $view_types = array();
 
 	/**
-	 * Class registry
+	 * Class registry.
 	 *
 	 * @since  1.8.0
 	 * @var    array
@@ -251,7 +251,7 @@ final class VAA_View_Admin_As
 				$this->welcome_notice();
 			}
 
-			// Fix some compatibility issues, more to come!
+			// Third party compatibility.
 			VAA_View_Admin_As_Compat::get_instance( $this )->init();
 
 			/**

@@ -188,8 +188,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			//$this->selected     = $this->store->get_view( $this->type );
 			$this->selectedCaps = $this->get_level_caps( $this->selected, true );
 
-			$this->vaa->view()->init_user_modifications();
 			$this->add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
+			$this->init_user_modifications();
 
 			$this->add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 

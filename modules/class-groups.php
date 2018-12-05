@@ -138,8 +138,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 			$this->reset_groups_user();
 
-			$this->vaa->view()->init_user_modifications();
 			$this->add_action( 'vaa_view_admin_as_modify_user', array( $this, 'modify_user' ), 10, 2 );
+			$this->init_user_modifications();
 
 			$this->add_filter( 'groups_post_access_user_can_read_post', array( $this, 'groups_post_access_user_can_read_post' ), 99, 3 );
 

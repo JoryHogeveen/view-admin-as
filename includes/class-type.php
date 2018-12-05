@@ -258,11 +258,11 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * View update handler (Ajax probably), called from main handler.
 	 *
-	 * @since   1.8.0   Renamed from `ajax_handler()`
+	 * @since   1.8.0   Renamed from `ajax_handler()`.
 	 * @access  public
-	 * @param   null    $null    Null.
-	 * @param   array   $data    The ajax data for this module.
-	 * @param   string  $type    The view type.
+	 * @param   null    $null  Null.
+	 * @param   array   $data  The ajax data for this module.
+	 * @param   string  $type  The view type.
 	 * @return  bool
 	 */
 	public function update_view( $null, $data, $type = null ) {

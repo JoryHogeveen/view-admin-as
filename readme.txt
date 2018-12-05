@@ -3,9 +3,9 @@ Contributors: keraweb
 Donate link: https://www.keraweb.nl/donate.php?for=view-admin-as
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
-Tested up to: 4.9
+Tested up to: 5.0
 Requires PHP: 5.2.4
-Stable tag: 1.8.2
+Stable tag: 1.8.3
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 
@@ -207,6 +207,14 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 12. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.8.3 =
+
+*	**Compatibility:** Users always have the exists capability. [Go to issue](https://wordpress.org/support/topic/compatibility-with-view-admin-as-2/)
+*	**Compatibility:** WordPress 4.9.6 privacy capabilities.
+*	**API:** Added several API methods & enhancements.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/102)
 
 = 1.8.2 =
 

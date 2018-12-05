@@ -170,22 +170,15 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 */
 		$this->add_filter( 'get_user_metadata', array( $this, 'filter_overrule_get_user_metadata' ), 999999999, 3 );
 
-		// `user_has_cap` priority.
-		$priority = -999999999;
-		if ( $this->store->get_view( 'caps' ) ) {
-			// Overwrite everything when the capability view is active.
-			remove_all_filters( 'user_has_cap' );
-			$priority = 999999999;
-		}
 		/**
 		 * The priority value of the VAA `user_has_cap` filter.
 		 * Runs as first by default.
 		 *
 		 * @since   1.7.2
-		 * @param   int  $priority
+		 * @param   int  $priority  Default: -999999999.
 		 * @return  int
 		 */
-		$priority = (int) apply_filters( 'view_admin_as_user_has_cap_priority', $priority );
+		$priority = (int) apply_filters( 'view_admin_as_user_has_cap_priority', -999999999 );
 
 		/**
 		 * Change the capabilities.
@@ -341,7 +334,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @since   0.1.0
 	 * @since   1.5.0   Renamed from `change_caps()`.
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
-	 * @since   1.6.2   Use logic from current_view_can().
+	 * @since   1.6.2   Use logic from `self::current_view_can()`.
 	 * @since   1.6.3   Prefix function name with `filter_`.
 	 * @since   1.7.2   Use the `user_has_cap` filter for compatibility enhancements.
 	 * @access  public
@@ -380,6 +373,14 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 				$this->store->get_selectedUser()
 			);
 		}
+
+		/**
+		 * Everyone is allowed to exist.
+		 * @since  1.8.3
+		 * @see    \WP_User::has_cap()
+		 * @link   https://wordpress.org/support/topic/compatibility-with-view-admin-as-2/
+		 */
+		$filter_caps['exist'] = true;
 
 		foreach ( (array) $caps as $actual_cap ) {
 			if ( ! $this->current_view_can( $actual_cap, $filter_caps ) ) {

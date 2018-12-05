@@ -51,7 +51,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	);
 	// View filter
 	if ( $this->store->get_view() ) {
-		$data_caps = wp_json_encode( $this->store->get_selectedCaps() );
+		$data_caps             = wp_json_encode( $this->store->get_selectedCaps() );
 		$role_select_options[] = array(
 			'compare' => 'vaa',
 			'label'   => '= ' . __( 'Current view', VIEW_ADMIN_AS_DOMAIN ),
@@ -70,7 +70,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	}
 	// Role filters
 	foreach ( $this->store->get_roles() as $role_key => $role ) {
-		$data_caps = wp_json_encode( $role->capabilities );
+		$data_caps             = wp_json_encode( $role->capabilities );
 		$role_select_options[] = array(
 			'compare' => esc_attr( $role_key ),
 			'label'   => '= ' . $this->store->get_rolenames( $role_key ),
