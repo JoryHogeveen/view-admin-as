@@ -771,6 +771,17 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 		$root = $root . '-role-manager';
 
+		$admin_bar->add_node( array(
+			'id'     => $root . '-docs',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-book-alt' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Manager',
+			'meta'   => array(
+				'class'  => 'auto-height vaa-has-icon',
+				'target' => '_blank',
+			),
+		) );
+
 		$view_type = view_admin_as()->get_view_types( 'caps' );
 		if ( $view_type instanceof VAA_View_Admin_As_Caps ) {
 			$view_type_label = $view_type->get_label();

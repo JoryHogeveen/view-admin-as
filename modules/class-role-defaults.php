@@ -1111,6 +1111,17 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 
 		$root = $root . '-role-defaults';
 
+		$admin_bar->add_node( array(
+			'id'     => $root . '-docs',
+			'parent' => $root,
+			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-book-alt' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Defaults',
+			'meta'   => array(
+				'class'  => 'auto-height vaa-has-icon',
+				'target' => '_blank',
+			),
+		) );
+
 		// This module requires the role view type to enable all it's features.
 		if ( ! VAA_API::is_view_type_enabled( 'role' ) ) {
 			$view_type = view_admin_as()->get_view_types( 'role' );
@@ -1238,7 +1249,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			'id'     => $root . '-meta-docs',
 			'parent' => $root . '-meta',
 			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-info' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
-			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/FAQ#4-what-data-is-stored-for-role-defaults-and-how-can-i-change-this',
+			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Defaults#what-data-is-stored-for-role-defaults-and-how-can-this-be-changed',
 			'meta'   => array(
 				'class'  => 'auto-height vaa-has-icon',
 				'target' => '_blank',
