@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1.0
- * @version 1.8.3
+ * @version 1.8.4
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -1826,12 +1826,19 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 			}
 			e.preventDefault();
 			var role    = $( root_prefix + ' select#' + prefix + '-edit-role' ).val(),
-				refresh = ( VAA_View_Admin_As.view.hasOwnProperty( 'role' ) && role === VAA_View_Admin_As.view.role );
+				refresh = false;
 			if ( ! role ) {
 				return false;
 			}
+			// @todo Enhance refresh check.
 			if ( '__new__' === role ) {
 				role    = $( root_prefix + ' input#' + prefix + '-new-role' ).val();
+				refresh = true;
+			} else if ( VAA_View_Admin_As.view.hasOwnProperty( 'role' ) && role === VAA_View_Admin_As.view.role ) {
+				// This role is the current view.
+				refresh = true;
+			} else if ( -1 < $.inArray( role, $vaa.find( '> .ab-item .user-role' ).data( 'role' ) ) ) {
+				// Current view (probably user) has this role.
 				refresh = true;
 			}
 			var data = {
