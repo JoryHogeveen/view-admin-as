@@ -154,7 +154,7 @@ final class VAA_View_Admin_As
 		}
 
 		// Returns false on conflict.
-		if ( ! $this->validate_versions() ) {
+		if ( ! $this->validate_environment() ) {
 			return;
 		}
 
@@ -812,7 +812,7 @@ final class VAA_View_Admin_As
 	 * @global  string  $wp_version  WordPress version.
 	 * @return  bool
 	 */
-	private function validate_versions() {
+	private function validate_environment() {
 		global $wp_version;
 		// Start positive!
 		$valid = true;
