@@ -143,7 +143,7 @@ final class VAA_API
 	}
 
 	/**
-	 * Get the superior admin ID's (filter since 1.5.2)
+	 * Get the superior admin ID's (filter since 1.5.2).
 	 *
 	 * @since   1.5.3
 	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
@@ -151,7 +151,7 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @return array
+	 * @return int[]
 	 */
 	public static function get_superior_admins() {
 		static $superior_admins;
@@ -182,7 +182,7 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $type  View type. Will return `null` if this view type is not active.
+	 * @param   string  $type  (optional) A view type. Will return `null` if this view type is not active.
 	 * @return  mixed
 	 */
 	public static function get_current_view( $type = null ) {
@@ -420,7 +420,7 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $url  (optional) Use a defined url create the reset link.
+	 * @param   string  $url  (optional) Supply the URL to create the reset link.
 	 * @param   bool    $all  (optional) Reset all views link?
 	 * @return  string
 	 */
@@ -441,7 +441,7 @@ final class VAA_API
 	 * @static
 	 * @api
 	 *
-	 * @param   string  $url  (optional) Use a defined url to remove the reset link.
+	 * @param   string  $url  (optional) Supply the URL to remove the reset link.
 	 * @return  string
 	 */
 	public static function remove_reset_link( $url = '' ) {

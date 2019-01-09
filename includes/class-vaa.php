@@ -803,7 +803,7 @@ final class VAA_View_Admin_As
 	}
 
 	/**
-	 * Validate plugin activate.
+	 * Validate plugin activation and load.
 	 * Checks for valid resources.
 	 *
 	 * @since   1.5.1
