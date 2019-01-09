@@ -228,9 +228,11 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$user_roles = array();
 			// Add the roles of this user in the name.
 			foreach ( $user->roles as $role ) {
-				$user_roles[] = $this->store->get_rolenames( $role );
+				$user_roles[ $role ] = $this->store->get_rolenames( $role );
 			}
-			return ' &nbsp;<span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
+			$data_roles = esc_attr( wp_json_encode( array_keys( $user_roles ) ) );
+			$user_roles = implode( ', ', $user_roles );
+			return ' &nbsp;<span class="user-role ab-italic" data-role="' . $data_roles . '">(' . $user_roles . ')</span>';
 		}
 
 		return '';
