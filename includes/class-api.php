@@ -219,7 +219,28 @@ final class VAA_API
 	}
 
 	/**
-	 * Similar function to current_user_can().
+	 * Is the current user modified?
+	 * Returns true if the currently active user's capabilities or roles are changed by the selected view.
+	 *
+	 * @see  \VAA_View_Admin_As_View::current_view_can()
+	 *
+	 * @since   1.7.2
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function is_user_modified() {
+		$view = view_admin_as()->view();
+		if ( $view ) {
+			return $view->is_user_modified();
+		}
+		return false;
+	}
+
+	/**
+	 * Similar function to current_user_can() but applies to the currently active view.
 	 *
 	 * @see  \VAA_View_Admin_As_View::current_view_can()
 	 *
@@ -237,26 +258,6 @@ final class VAA_API
 		$view = view_admin_as()->view();
 		if ( $view ) {
 			return $view->current_view_can( $cap, $caps );
-		}
-		return false;
-	}
-
-	/**
-	 * Is the current user modified?
-	 *
-	 * @see  \VAA_View_Admin_As_View::current_view_can()
-	 *
-	 * @since   1.7.2
-	 * @access  public
-	 * @static
-	 * @api
-	 *
-	 * @return  bool
-	 */
-	public static function is_user_modified() {
-		$view = view_admin_as()->view();
-		if ( $view ) {
-			return $view->is_user_modified();
 		}
 		return false;
 	}
