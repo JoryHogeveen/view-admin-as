@@ -520,6 +520,9 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 						if ( data.hasOwnProperty( 'display' ) ) {
 							display = data.display;
 						}
+						if ( data.hasOwnProperty( 'refresh' ) ) {
+							refresh = data.refresh;
+						}
 					}
 				}
 
