@@ -425,7 +425,7 @@ final class VAA_API
 	 * @param   bool    $all  (optional) Reset all views link?
 	 * @return  string
 	 */
-	public static function get_reset_link( $url = null, $all = false ) {
+	public static function get_reset_link( $url = '', $all = false ) {
 		$params = 'reset-view';
 		if ( $all ) {
 			$params = 'reset-all-views';
