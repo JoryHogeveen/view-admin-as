@@ -679,6 +679,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4.0
 	 * @since   1.5.3   Stop checking `$single` parameter.
+	 * @since   1.8.4   Only return overwrite if found.
 	 * @access  public
 	 * @see     \VAA_View_Admin_As_Role_Defaults::init_store_role_defaults()
 	 *
@@ -695,8 +696,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	public function filter_get_user_metadata( $null, $object_id, $meta_key ) {
 		if ( true === $this->compare_metakey( $meta_key ) && (int) $object_id === (int) $this->store->get_curUser()->ID ) {
 			$new_meta = $this->get_role_defaults( $this->store->get_view( 'role' ), $meta_key );
-			// Do not check `$single`, this logic is in `wp-includes/meta.php` line 487.
-			return array( $new_meta );
+			// @todo Maybe define default values?
+			if ( null !== $new_meta ) {
+				// Do not check `$single`, this logic is in `wp-includes/meta.php` line 487.
+				return array( $new_meta );
+			}
 		}
 		return $null; // Go on as normal.
 	}
