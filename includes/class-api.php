@@ -194,6 +194,21 @@ final class VAA_API
 	}
 
 	/**
+	 * Is the current user in an active view.
+	 *
+	 * @since   1.8.4
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param  string  $type  (optional) Check for a single view type.
+	 * @return bool
+	 */
+	public static function is_view_active( $type = null ) {
+		return (bool) self::get_current_view( $type );
+	}
+
+	/**
 	 * Check if the provided data is the same as the current view.
 	 *
 	 * @see  \VAA_View_Admin_As_Controller::is_current_view()
