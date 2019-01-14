@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.8.3
+ * @version 1.8.4
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type

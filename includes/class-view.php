@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.0
  * @since   1.7.0  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
- * @version 1.8.3
+ * @version 1.8.4
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
