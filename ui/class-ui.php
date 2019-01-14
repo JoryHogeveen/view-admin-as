@@ -79,7 +79,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @access  public
 	 */
 	public function action_wp_meta() {
-		if ( ! VAA_API::is_toolbar_showing() && $this->store->get_view() ) {
+		if ( ! VAA_API::is_toolbar_showing() && VAA_API::is_view_active() ) {
 			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
 			$url  = VAA_API::get_reset_link();
 			echo '<li id="vaa_reset_view"><a href="' . esc_url( $url ) . '">' . esc_html( $link ) . '</a></li>';
@@ -321,7 +321,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	public function filter_wp_die_handler( $callback ) {
 
 		// Only do something if a view is selected.
-		if ( ! $this->store->get_view() ) {
+		if ( ! VAA_API::is_view_active() ) {
 			return $callback;
 		}
 

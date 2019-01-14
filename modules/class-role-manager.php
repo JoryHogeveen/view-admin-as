@@ -877,7 +877,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		 * @since  1.7.0  Apply current view capabilities to role.
 		 */
 		$icon = 'dashicons-hidden';
-		if ( $this->store->get_view() ) {
+		if ( VAA_API::is_view_active() ) {
 			$icon = 'dashicons-visibility';
 		}
 		$admin_bar->add_group( array(
@@ -1496,7 +1496,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		) );
 
 		$caps = $this->store->get_curUser()->allcaps;
-		if ( $this->store->get_view() ) {
+		if ( VAA_API::is_view_active() ) {
 			$caps = $this->store->get_selectedCaps();
 		}
 		$role_select_options = array(

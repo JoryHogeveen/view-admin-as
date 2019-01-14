@@ -194,7 +194,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			$this->add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
 			// Administrators can see all restricted content in RUA.
-			if ( $this->store->get_view() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
+			if ( VAA_API::is_view_active() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
 				// Not a view with administrator capability == no global access.
 				$this->add_filter( 'rua/user/global-access', '__return_false' );
 			}

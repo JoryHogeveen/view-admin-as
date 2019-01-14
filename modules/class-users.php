@@ -1114,7 +1114,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		if ( (int) $user_id === (int) $this->store->get_curUser()->ID ) {
 			// Add reset link if it is the current user and a view is selected.
-			if ( $this->store->get_view() ) {
+			if ( VAA_API::is_view_active() ) {
 				$link = VAA_API::get_reset_link( $url );
 			}
 		}

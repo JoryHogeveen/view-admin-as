@@ -212,7 +212,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$icon    = 'dashicons-hidden';
 		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
 
-		if ( $this->store->get_view() ) {
+		if ( VAA_API::is_view_active() ) {
 			$icon     = 'dashicons-visibility';
 			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
 		}
@@ -251,7 +251,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		do_action( 'vaa_admin_bar_menu_before', $admin_bar, self::$root, self::$root );
 
 		// Add reset button.
-		if ( $this->store->get_view() ) {
+		if ( VAA_API::is_view_active() ) {
 			$name = 'reset-view';
 			if ( 'single' === $this->store->get_userSettings( 'view_mode' ) ) {
 				$name = 'reload';

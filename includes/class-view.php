@@ -60,7 +60,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	public function init() {
-		if ( $this->store->get_view() ) {
+		if ( VAA_API::is_view_active() ) {
 			$this->do_view();
 		}
 	}
