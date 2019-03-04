@@ -253,7 +253,9 @@
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-file   .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item input,
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {display: inline-block; background: #fff; color: #555; margin: 5px 0; padding: 3px; border: 0; line-height: normal; height: auto; width: 100%; box-sizing: border-box;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item select,
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {display: inline-block; margin: 5px 0; padding: 3px; border: 0; line-height: normal; height: auto; width: 100%; box-sizing: border-box;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item select,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {padding: 2px 3px;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item label + input,
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item label + select {margin-top: 0;}
