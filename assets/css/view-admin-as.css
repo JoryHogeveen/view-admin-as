@@ -353,6 +353,13 @@
 #vaa_toolbar #wpadminbar #wp-admin-bar-vaa:hover > .ab-item .ab-label {display: inline-block;}
 
 /**
+ * Dark mode
+ */
+body.dark-mode #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {background-color: #32373c;}
+body.dark-mode #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-empty-item .ab-item {color: #fff;}
+body.dark-mode #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .remove:before {color: #fff;}
+
+/**
  * Responsive
  */
 @media screen and (min-width: 783px) {
