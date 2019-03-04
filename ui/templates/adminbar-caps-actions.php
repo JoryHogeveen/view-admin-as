@@ -50,7 +50,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		),
 	);
 	// View filter
-	if ( $this->store->get_view() ) {
+	if ( VAA_API::is_view_active() ) {
 		$data_caps             = wp_json_encode( $this->store->get_selectedCaps() );
 		$role_select_options[] = array(
 			'compare' => 'vaa',
