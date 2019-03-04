@@ -5,7 +5,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.1.0
- * @version 1.8.2
+ * @version 1.8.4
  * @preserve
  */
 
@@ -156,7 +156,8 @@
 	vertical-align: text-bottom;
 	padding: 0;
 }
-#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before {display: none;}
+#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item::before, /* WP < 5.2 */
+#wpadminbar #wp-admin-bar-vaa .vaa-has-icon > .ab-item .wp-admin-bar-arrow {display: none;} /* WP 5.2+ */
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.menupop > .ab-item {padding-left: 10px; padding-right: 10px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon {font-size: 18px; line-height: 20px; margin: 0 5px 0 -1px;}
 #wpadminbar #wp-admin-bar-vaa .vaa-has-icon.ab-vaa-title > .ab-item > .ab-icon.vaa-icon-image {width: 18px; height: 18px;}
