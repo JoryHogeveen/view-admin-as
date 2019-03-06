@@ -358,6 +358,14 @@
 /**
  * Dark mode
  */
+body.dark-mode .vaa-loader-icon {background-image: url('../img/loader-dark.gif');}
+body.dark-mode #vaa-overlay {background: rgba(0,0,0,0.75);}
+body.dark-mode #vaa-overlay .vaa-popup {
+	background: #23282d;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.15), 0 0 1px 3px #000;
+}
+body.dark-mode #vaa-overlay .vaa-popup > .remove {background: #000;}
+body.dark-mode #wpadminbar .vaa-notice {background: #000;}
 body.dark-mode #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect {background-color: #32373c;}
 body.dark-mode #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .ab-empty-item .ab-item {color: #fff;}
 body.dark-mode #wpadminbar #wp-admin-bar-vaa .ab-vaa-multipleselect .remove:before {color: #fff;}

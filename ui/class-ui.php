@@ -291,7 +291,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 				'view'                 => $this->store->get_view(),
 				'view_types'           => $this->vaa->controller()->get_view_types(),
 				// Other.
-				'_loader_icon'         => VIEW_ADMIN_AS_URL . 'assets/img/loader.gif',
+				//'_loader_icon'         => VIEW_ADMIN_AS_URL . 'assets/img/loader.gif',
 				'_debug'               => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
 				'_vaa_nonce'           => $this->store->get_nonce( true ),
 				// i18n.

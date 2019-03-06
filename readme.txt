@@ -212,6 +212,7 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 *	**Enhancement:** Role Manager: Reload when in a user view and the user's role has been modified. [#105](https://github.com/JoryHogeveen/view-admin-as/issues/105)
 *	**Compatibility:** WordPress 5.2 admin bar arrow icon update. [WP Core #37513](https://core.trac.wordpress.org/ticket/37513)
+*	**Compatibility:** [Dark Mode](https://nl.wordpress.org/plugins/dark-mode/) ([Github](https://github.com/danieltj27/Dark-Mode))
 *	**Fix:** Role Defaults: Only return screen setting overwrite if found. [#104](https://github.com/JoryHogeveen/view-admin-as/issues/104) 
 *	**API:** Added API method `is_view_active()`
 
