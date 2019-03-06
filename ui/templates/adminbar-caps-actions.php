@@ -3,7 +3,7 @@
  * Add caps actions.
  *
  * @since    1.7.0
- * @version  1.7.4
+ * @version  1.8.4
  *
  * @var  \VAA_View_Admin_As_Caps  $this
  * @var  \WP_Admin_Bar            $admin_bar  The toolbar object.
