@@ -30,7 +30,7 @@
 	border: 2px solid #666;
 	position: relative;
 }
-#vaa-overlay .vaa-popup > .remove {position: absolute; right: -10px; top: -10px; background: #FFF; width: 20px; height: 20px; cursor: pointer;}
+#vaa-overlay .vaa-popup > .remove {position: absolute; right: -10px; top: -10px; background: #FFF; width: 20px; height: 20px; cursor: pointer; border-radius: 100%;}
 #vaa-overlay .vaa-popup .vaa-popup-content {overflow: hidden; overflow-y: auto;}
 #vaa-overlay .vaa-popup .vaa-popup-content ul li {margin-left: 20px; list-style: disc outside;}
 #vaa-overlay .vaa-popup .vaa-popup-content .button .icon {line-height: inherit; height: auto; width: auto;}
