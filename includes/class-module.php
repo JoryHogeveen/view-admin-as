@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5.0  (This was one class with VAA_View_Admin_As_Class_Base)
- * @version 1.8.0
+ * @version 1.8.4
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
@@ -102,13 +102,13 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 		if ( ! is_string( $type ) ) {
 			$type = ( $success ) ? 'success' : 'error';
 		}
-		$data = wp_parse_args( $data, array(
+		$defaults = array(
 			'display' => 'notice',
 			'type'    => $type,
-		) );
+		);
 		return array(
 			'success' => (bool) $success,
-			'data'    => $data,
+			'data'    => array_merge( $defaults, $data ),
 		);
 	}
 

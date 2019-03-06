@@ -363,16 +363,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 */
 		do_action( 'vaa_admin_bar_info_before', $admin_bar, $root, self::$root );
 
+		/** @var VAA_View_Admin_As_UI $vaa_ui */
+		$vaa_ui = $this->vaa->get_ui( 'ui' );
+
 		// Add the general admin links.
-		if ( VAA_API::exists_callable( array( $this->vaa->get_ui( 'ui' ), 'get_links' ), true ) ) {
-			$info_links = $this->vaa->get_ui( 'ui' )->get_links();
+		if ( VAA_API::exists_callable( array( $vaa_ui, 'get_links' ), true ) ) {
 
 			$admin_bar->add_group( array(
 				'id'     => $root . '-links',
 				'parent' => $root,
 			) );
 
-			foreach ( $info_links as $id => $link ) {
+			foreach ( $vaa_ui->get_links() as $id => $link ) {
 				$admin_bar->add_node( array(
 					'parent' => $root . '-links',
 					'id'     => $root . '-' . $id,

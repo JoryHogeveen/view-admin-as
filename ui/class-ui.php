@@ -197,12 +197,14 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @return  array         Updated list of removable query arguments.
 	 */
 	public function filter_removable_query_args( $args ) {
-		return array_merge( $args, array(
+		$vaa_args = array(
 			'reset-view',
 			'reset-all-views',
 			'view_admin_as',
 			'_vaa_nonce',
-		) );
+		);
+
+		return array_merge( $args, $vaa_args );
 	}
 
 	/**

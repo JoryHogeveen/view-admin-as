@@ -352,7 +352,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		if ( ! is_string( $role ) || ! is_array( $capabilities ) ) {
 			return array(
 				'success' => false,
-				'data'    => __( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ),
+				'data'    => esc_html__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ),
 			);
 		}
 
@@ -388,7 +388,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			// Very unlikely that this will happen but still..
 			return array(
 				'success' => false,
-				'data'    => __( 'Role already exists', VIEW_ADMIN_AS_DOMAIN ),
+				'data'    => esc_html__( 'Role already exists', VIEW_ADMIN_AS_DOMAIN ),
 			);
 		}
 		return true;
