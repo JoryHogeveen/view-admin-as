@@ -1945,7 +1945,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		if ( ! VAA_View_Admin_As.maxHeightListenerElements ) {
 			return null;
 		}
-		timeout = 100;
+		var timeout = 100;
 		setTimeout( function() {
 			// @link  http://stackoverflow.com/questions/11193453/find-the-vertical-position-of-scrollbar-without-jquery
 			var scroll_top = ( 'undefined' !== typeof window.pageYOffset ) ? window.pageYOffset : ( document.documentElement || document.body.parentNode || document.body ).scrollTop;
