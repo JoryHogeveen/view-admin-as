@@ -768,9 +768,7 @@ final class VAA_API
 					'<code>' . $callable . '</code>'
 				);
 			}
-			view_admin_as()->add_error_notice( $callable, array(
-				'message' => $do_notice,
-			) );
+			view_admin_as()->add_error_notice( $callable, $do_notice );
 		}
 		return (boolean) $pass;
 	}

@@ -707,10 +707,11 @@ final class VAA_View_Admin_As
 	 * Automatically generated a bug report link at the end of the notice.
 	 *
 	 * @since   1.7.2
+	 * @since   1.8.4  Allow string type for second parameter. Sets all other parameters to default.
 	 * @access  public
 	 *
-	 * @param   string  $id
-	 * @param   array   $notice {
+	 * @param   string        $id
+	 * @param   array|string  $notice {
 	 *     Required array.
 	 *     @type  string  $message  The notice message.
 	 *     @type  string  $type     (optional) The WP notice type class(es).
@@ -720,6 +721,13 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function add_error_notice( $id, $notice ) {
+
+		if ( ! is_array( $notice ) ) {
+			$notice = array(
+				'message' => $notice,
+			);
+		}
+
 		if ( empty( $notice['message'] ) ) {
 			return;
 		}
@@ -759,30 +767,32 @@ final class VAA_View_Admin_As
 	 * @return  void
 	 */
 	public function add_notice( $id, $notice ) {
-		if ( ! empty( $notice ) ) {
 
-			if ( ! is_array( $notice ) ) {
-				$notice = array(
-					'message' => $notice,
-				);
-			}
-
-			$defaults = array(
-				'type'    => '',
-				'prepend' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
-			);
-
-			$notice = array_merge( $defaults, $notice );
-
-			if ( $notice['prepend'] ) {
-				$notice['message'] = '<strong>' . $notice['prepend'] . ':</strong> ' . $notice['message'];
-			}
-
-			$this->notices[ $id ] = array(
-				'type'    => $notice['type'],
-				'message' => $notice['message'],
+		if ( ! is_array( $notice ) ) {
+			$notice = array(
+				'message' => $notice,
 			);
 		}
+
+		if ( empty( $notice['message'] ) ) {
+			return;
+		}
+
+		$defaults = array(
+			'type'    => '',
+			'prepend' => __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
+		);
+
+		$notice = array_merge( $defaults, $notice );
+
+		if ( $notice['prepend'] ) {
+			$notice['message'] = '<strong>' . $notice['prepend'] . ':</strong> ' . $notice['message'];
+		}
+
+		$this->notices[ $id ] = array(
+			'type'    => $notice['type'],
+			'message' => $notice['message'],
+		);
 	}
 
 	/**
