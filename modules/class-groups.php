@@ -210,9 +210,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 		} catch ( Exception $e ) {
 
-			$this->vaa->add_error_notice( __METHOD__, array(
-			    'message' => $e->getMessage(),
-			) );
+			$this->vaa->add_error_notice( __METHOD__, $e->getMessage() );
 
 		} // End try().
 	}

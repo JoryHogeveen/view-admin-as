@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.3
+ * @version 1.8.4
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
@@ -228,9 +228,11 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$user_roles = array();
 			// Add the roles of this user in the name.
 			foreach ( $user->roles as $role ) {
-				$user_roles[] = $this->store->get_rolenames( $role );
+				$user_roles[ $role ] = $this->store->get_rolenames( $role );
 			}
-			return ' &nbsp;<span class="user-role ab-italic">(' . implode( ', ', $user_roles ) . ')</span>';
+			$data_roles = esc_attr( wp_json_encode( array_keys( $user_roles ) ) );
+			$user_roles = implode( ', ', $user_roles );
+			return ' &nbsp;<span class="user-role ab-italic" data-role="' . $data_roles . '">(' . $user_roles . ')</span>';
 		}
 
 		return '';
@@ -1112,7 +1114,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		if ( (int) $user_id === (int) $this->store->get_curUser()->ID ) {
 			// Add reset link if it is the current user and a view is selected.
-			if ( $this->store->get_view() ) {
+			if ( VAA_API::is_view_active() ) {
 				$link = VAA_API::get_reset_link( $url );
 			}
 		}

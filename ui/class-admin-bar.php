@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5.0
- * @version 1.8.3
+ * @version 1.8.4
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
@@ -212,7 +212,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$icon    = 'dashicons-hidden';
 		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
 
-		if ( $this->store->get_view() ) {
+		if ( VAA_API::is_view_active() ) {
 			$icon     = 'dashicons-visibility';
 			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
 		}
@@ -251,7 +251,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		do_action( 'vaa_admin_bar_menu_before', $admin_bar, self::$root, self::$root );
 
 		// Add reset button.
-		if ( $this->store->get_view() ) {
+		if ( VAA_API::is_view_active() ) {
 			$name = 'reset-view';
 			if ( 'single' === $this->store->get_userSettings( 'view_mode' ) ) {
 				$name = 'reload';
@@ -363,16 +363,18 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 */
 		do_action( 'vaa_admin_bar_info_before', $admin_bar, $root, self::$root );
 
+		/** @var VAA_View_Admin_As_UI $vaa_ui */
+		$vaa_ui = $this->vaa->get_ui( 'ui' );
+
 		// Add the general admin links.
-		if ( VAA_API::exists_callable( array( $this->vaa->get_ui( 'ui' ), 'get_links' ), true ) ) {
-			$info_links = $this->vaa->get_ui( 'ui' )->get_links();
+		if ( VAA_API::exists_callable( array( $vaa_ui, 'get_links' ), true ) ) {
 
 			$admin_bar->add_group( array(
 				'id'     => $root . '-links',
 				'parent' => $root,
 			) );
 
-			foreach ( $info_links as $id => $link ) {
+			foreach ( $vaa_ui->get_links() as $id => $link ) {
 				$admin_bar->add_node( array(
 					'parent' => $root . '-links',
 					'id'     => $root . '-' . $id,

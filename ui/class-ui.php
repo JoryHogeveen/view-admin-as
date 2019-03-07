@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.0
  * @since   1.7.0  Renamed from `VAA_View_Admin_As_Admin`.
- * @version 1.8.1
+ * @version 1.8.4
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
@@ -79,7 +79,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @access  public
 	 */
 	public function action_wp_meta() {
-		if ( ! VAA_API::is_toolbar_showing() && $this->store->get_view() ) {
+		if ( ! VAA_API::is_toolbar_showing() && VAA_API::is_view_active() ) {
 			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
 			$url  = VAA_API::get_reset_link();
 			echo '<li id="vaa_reset_view"><a href="' . esc_url( $url ) . '">' . esc_html( $link ) . '</a></li>';
@@ -197,12 +197,14 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @return  array         Updated list of removable query arguments.
 	 */
 	public function filter_removable_query_args( $args ) {
-		return array_merge( $args, array(
+		$vaa_args = array(
 			'reset-view',
 			'reset-all-views',
 			'view_admin_as',
 			'_vaa_nonce',
-		) );
+		);
+
+		return array_merge( $args, $vaa_args );
 	}
 
 	/**
@@ -289,7 +291,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 				'view'                 => $this->store->get_view(),
 				'view_types'           => $this->vaa->controller()->get_view_types(),
 				// Other.
-				'_loader_icon'         => VIEW_ADMIN_AS_URL . 'assets/img/loader.gif',
+				//'_loader_icon'         => VIEW_ADMIN_AS_URL . 'assets/img/loader.gif',
 				'_debug'               => ( defined( 'WP_DEBUG' ) ) ? (bool) WP_DEBUG : false,
 				'_vaa_nonce'           => $this->store->get_nonce( true ),
 				// i18n.
@@ -321,7 +323,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	public function filter_wp_die_handler( $callback ) {
 
 		// Only do something if a view is selected.
-		if ( ! $this->store->get_view() ) {
+		if ( ! VAA_API::is_view_active() ) {
 			return $callback;
 		}
 

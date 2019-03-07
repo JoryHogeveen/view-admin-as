@@ -3,7 +3,7 @@
  * Add caps actions.
  *
  * @since    1.7.0
- * @version  1.7.4
+ * @version  1.8.4
  *
  * @var  \VAA_View_Admin_As_Caps  $this
  * @var  \WP_Admin_Bar            $admin_bar  The toolbar object.
@@ -50,7 +50,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		),
 	);
 	// View filter
-	if ( $this->store->get_view() ) {
+	if ( VAA_API::is_view_active() ) {
 		$data_caps             = wp_json_encode( $this->store->get_selectedCaps() );
 		$role_select_options[] = array(
 			'compare' => 'vaa',
