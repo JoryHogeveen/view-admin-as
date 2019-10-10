@@ -61,7 +61,7 @@
  * General
  */
 #wpadminbar #wp-admin-bar-vaa ul li,
-#wpadminbar #wp-admin-bar-vaa .ab-item {clear: both; z-index: auto;}
+#wpadminbar #wp-admin-bar-vaa .ab-item {clear: both; z-index: auto; line-height: 26px;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-sub-wrapper .ab-item > span {line-height: 26px;}
 #wpadminbar #wp-admin-bar-vaa .ab-item > span.remove {font-size: 16px; line-height: 16px; top: 1px;}
