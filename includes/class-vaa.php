@@ -531,7 +531,14 @@ final class VAA_View_Admin_As
 
 		load_plugin_textdomain( VIEW_ADMIN_AS_DOMAIN );
 
+		if ( VAA_API::validate_wp_version( '5.2' ) ) {
+			// Roles are now translated in all cases.
+			return;
+		}
+
 		/**
+		 * Before WP 5.2:
+		 *
 		 * Frontend translation of roles is not working by default (Darn you WordPress!).
 		 * Needs to be in init action to work.
 		 * @see  https://core.trac.wordpress.org/ticket/37539
@@ -627,6 +634,7 @@ final class VAA_View_Admin_As
 	 * Register view types.
 	 *
 	 * @since   1.8.0
+	 * @access  public
 	 * @param   array  $data {
 	 *     Required. An array of module info.
 	 *     @type  string                  $id        The view type name, choose wisely since this is used for validation.
@@ -663,6 +671,7 @@ final class VAA_View_Admin_As
 	 * Register extra modules.
 	 *
 	 * @since   1.6.1
+	 * @access  public
 	 * @param   array  $data {
 	 *     Required. An array of module info.
 	 *     @type  string                    $id        The module name, choose wisely since this is used for validation.
