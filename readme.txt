@@ -3,7 +3,7 @@ Contributors: keraweb
 Donate link: https://www.keraweb.nl/donate.php?for=view-admin-as
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
-Tested up to: 5.1
+Tested up to: 5.3
 Requires PHP: 5.2.4
 Stable tag: 1.8.4
 
@@ -207,6 +207,8 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 12. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.8.5 =
 
 = 1.8.4 =
 
