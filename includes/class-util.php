@@ -36,9 +36,11 @@ abstract class VAA_Util
 	 * @return  mixed
 	 */
 	public static function get_array_data( $array, $key = null, $require_all = false ) {
+		$return = $array;
 		if ( null !== $key ) {
+			$return = null;
 			if ( ! is_array( $array ) ) {
-				return null;
+				return $return; // Key's not available in non-arrays.
 			}
 			// @since  1.7.5  Search for multiple keys.
 			if ( is_array( $key ) ) {
@@ -49,16 +51,13 @@ abstract class VAA_Util
 					}
 				}
 				if ( $require_all && array_diff_key( array_flip( $key ), $return ) ) {
-					return null;
+					$return = null; // Not all keys found.
 				}
-				return $return;
+			} elseif ( isset( $array[ $key ] ) ) {
+				$return = $array[ $key ]; // Key found.
 			}
-			if ( isset( $array[ $key ] ) ) {
-				return $array[ $key ];
-			}
-			return null; // return null if key is not found
 		}
-		return $array;
+		return $return;
 	}
 
 	/**
