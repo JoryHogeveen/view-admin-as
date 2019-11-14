@@ -89,7 +89,7 @@ abstract class VAA_Util
 			// Notify user if in debug mode
 			_doing_it_wrong(
 				__METHOD__,
-				'View Admin As: Key <code>' . (string) $key . '</code> does not exist',
+				'View Admin As: Key <code>' . esc_html( (string) $key ) . '</code> does not exist',
 				null
 			);
 
