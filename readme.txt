@@ -215,6 +215,8 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 *	**Enhancement:** JS performance.
 *	**Enhancement:** Enhance AJAX checks.
 
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/107)
+
 = 1.8.4 =
 
 *	**Enhancement:** Role Manager: Reload when in a user view and the user's role has been modified. [#105](https://github.com/JoryHogeveen/view-admin-as/issues/105)
