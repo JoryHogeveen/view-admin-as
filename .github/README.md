@@ -5,7 +5,7 @@ View the WordPress admin as a different role or visitor, switch between users, t
 [![WordPress Plugin WP tested version](https://img.shields.io/wordpress/v/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
 [![WordPress Plugin downloads](https://img.shields.io/wordpress/plugin/dt/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
 [![WordPress Plugin rating](https://img.shields.io/wordpress/plugin/r/view-admin-as.svg?style=flat)](https://wordpress.org/plugins/view-admin-as/)
-[![Travis](https://secure.travis-ci.org/JoryHogeveen/view-admin-as.png?branch=master)](http://travis-ci.org/JoryHogeveen/view-admin-as)
+[![Travis](https://travis-ci.com/JoryHogeveen/view-admin-as.svg?branch=master)](http://travis-ci.com/JoryHogeveen/view-admin-as)
 [![Code Climate](https://codeclimate.com/github/JoryHogeveen/view-admin-as/badges/gpa.svg)](https://codeclimate.com/github/JoryHogeveen/view-admin-as)  
 [![License](https://img.shields.io/badge/license-GPL--2.0%2B-blue.svg)](https://github.com/JoryHogeveen/view-admin-as/blob/master/license.txt)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.keraweb.nl/donate.php?for=view-admin-as)
