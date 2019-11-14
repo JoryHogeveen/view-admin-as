@@ -210,6 +210,11 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 = 1.8.5 =
 
+*	**Compatibility:** CSS compatibility for WP 5.3
+*	**Compatibility:** Roles are now translated in all cases since WP 5.2.
+*	**Enhancement:** JS performance.
+*	**Enhancement:** Enhance AJAX checks.
+
 = 1.8.4 =
 
 *	**Enhancement:** Role Manager: Reload when in a user view and the user's role has been modified. [#105](https://github.com/JoryHogeveen/view-admin-as/issues/105)
