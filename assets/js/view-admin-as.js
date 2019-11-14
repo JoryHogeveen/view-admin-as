@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1.0
- * @version 1.8.4
+ * @version 1.8.5
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -119,7 +119,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_auto_js();
 
 		// Toggle content with title.
-		$( '.ab-vaa-toggle', $vaa ).each( function() {
+		$vaa.find( '.ab-vaa-toggle' ).each( function() {
 			var $this   = $( this ),
 				$toggle = $this.parent().children().not( '.ab-vaa-toggle' );
 			if ( ! $this.hasClass('active') ) {
@@ -168,7 +168,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 * @since  1.6.3  Toggle items on hover.
 		 * @since  1.7.3  Allow multiple targets + add delay option.
          */
-		$( '[vaa-showhide]', $vaa ).each( function() {
+		$vaa.find( '[vaa-showhide]' ).each( function() {
 			var $this = $( this ),
 				args  = VAA_View_Admin_As.maybe_json_decode( $this.attr( 'vaa-showhide' ) ),
 				delay = 200;
@@ -197,7 +197,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} );
 
 		// @since  1.7.0  Conditional items.
-		$( '[vaa-condition-target]', $vaa ).each( function() {
+		$vaa.find( '[vaa-condition-target]' ).each( function() {
 			var $this    = $( this ),
 				$target  = $( $this.attr( 'vaa-condition-target' ) ),
 				checkbox = ( 'checkbox' === $target.attr( 'type' ) ),
@@ -243,7 +243,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// @since  1.7.4  Auto resizable.
 		// @since  1.8.2  Enhance height calc + provide trigger for content changes
-		$( '.vaa-resizable', $vaa ).each( function() {
+		$vaa.find( '.vaa-resizable' ).each( function() {
 			var $this     = $( this ),
 				maxHeight = parseInt( $this.css( 'max-height' ), 10 ),
 				height, innerHeight, newHeight;
@@ -441,7 +441,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		} else if ( html.length ) {
 			$overlay.html( html );
 		}
-		$overlay.fadeIn('fast');
+		$overlay.fadeIn( 'fast' );
 
 		// Remove overlay.
 		$overlay.find( '.remove' ).click( function() {
@@ -649,7 +649,7 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 
 		// Remove it after # seconds.
 		if ( timeout ) {
-			setTimeout( function(){ $( root, $element ).slideUp( 'fast', function() { $( this ).remove(); } ); }, timeout );
+			setTimeout( function(){ $element.find( root ).slideUp( 'fast', function() { $( this ).remove(); } ); }, timeout );
 		}
 	};
 
@@ -722,8 +722,8 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		 */
 		var root           = '#vaa-overlay',
 			$overlay       = $( root ),
-			$popup         = $( root + ' .vaa-popup' ),
-			$popup_content = $( root + ' .vaa-popup-content' );
+			$popup         = $overlay.find( '.vaa-popup' ),
+			$popup_content = $popup.find( '.vaa-popup-content' );
 
 		var textarea = $( 'textarea', $popup_content );
 		if ( textarea.length ) {
