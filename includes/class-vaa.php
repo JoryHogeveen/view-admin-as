@@ -116,6 +116,7 @@ final class VAA_View_Admin_As
 	 * @var    array
 	 */
 	private $classes = array(
+		'VAA_Util'                     => 'includes/class-util.php',
 		'VAA_API'                      => 'includes/class-api.php',
 		'VAA_View_Admin_As_Base'       => 'includes/class-base.php',
 		'VAA_View_Admin_As_Hooks'      => 'includes/class-hooks.php',
