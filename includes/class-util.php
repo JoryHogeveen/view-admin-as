@@ -1,6 +1,6 @@
 <?php
 /**
- * View Admin As - Class API
+ * View Admin As - Class Utility
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
