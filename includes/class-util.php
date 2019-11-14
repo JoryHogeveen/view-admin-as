@@ -193,8 +193,8 @@ abstract class VAA_Util
 	 * @param   string  $key
 	 * @param   array   $args {
 	 *     Optional array of match arguments.
-	 *     @type  mixed         $compare     A value to compare against (NOTE: strict comparison!).
-	 *     @type  string|array  $validation  A variable function check, example: 'is_int' or 'MyClass::check'.
+	 *     @type  mixed     $compare     A value to compare against (NOTE: strict comparison!).
+	 *     @type  callable  $validation  A variable function check, example: 'is_int' or 'MyClass::check'.
 	 * }
 	 * @return bool
 	 */
@@ -208,15 +208,10 @@ abstract class VAA_Util
 			return ( $args['compare'] === $value );
 		}
 		if ( ! empty( $args['validation'] ) ) {
-			$validation = $args['validation'];
 			// Don't accept unavailable validation methods.
-			if ( ! is_callable( $validation ) ) {
-				return false;
+			if ( is_callable( $args['validation'] ) ) {
+				return (bool) call_user_func( $args['validation'], $value );
 			}
-			if ( is_array( $validation ) ) {
-				return (bool) call_user_func( $validation, $value );
-			}
-			return (bool) $validation( $value );
 		}
 		return false;
 	}
