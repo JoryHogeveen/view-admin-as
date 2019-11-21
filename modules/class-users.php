@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.4
+ * @version 1.8.x
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
@@ -441,38 +441,36 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		/**
 		 * `force_ajax_users` setting.
-		 * Only hide setting if ajax search is disabled due to the amount of users.
 		 *
 		 * @since   1.8.1
+		 * @since   1.8.x  Always show this setting to optionally prevent query.
 		 */
-		if ( ! $this->ajax_search( false ) ) {
-			$admin_bar->add_node(
-				array(
-					'id'     => $root . '-force-ajax-users',
-					'parent' => $root,
-					'title'  => VAA_View_Admin_As_Form::do_checkbox(
-						array(
-							'name'          => $root . '-force-ajax-users',
-							'value'         => $this->store->get_userSettings( 'force_ajax_users' ),
-							'compare'       => true,
-							'label'         => __( 'AJAX search users', VIEW_ADMIN_AS_DOMAIN ),
-							'description'   => __( 'Enable AJAX search for users', VIEW_ADMIN_AS_DOMAIN ),
-							'help'          => true,
-							'auto_showhide' => true,
-							'auto_js'       => array(
-								'setting' => 'user_setting',
-								'key'     => 'force_ajax_users',
-								'refresh' => true,
-							),
-						)
-					),
-					'href'   => false,
-					'meta'   => array(
-						'class' => 'auto-height',
-					),
-				)
-			);
-		}
+		$admin_bar->add_node(
+			array(
+				'id'     => $root . '-force-ajax-users',
+				'parent' => $root,
+				'title'  => VAA_View_Admin_As_Form::do_checkbox(
+					array(
+						'name'          => $root . '-force-ajax-users',
+						'value'         => $this->store->get_userSettings( 'force_ajax_users' ),
+						'compare'       => true,
+						'label'         => __( 'AJAX search users', VIEW_ADMIN_AS_DOMAIN ),
+						'description'   => __( 'Force AJAX search for users', VIEW_ADMIN_AS_DOMAIN ),
+						'help'          => true,
+						'auto_showhide' => true,
+						'auto_js'       => array(
+							'setting' => 'user_setting',
+							'key'     => 'force_ajax_users',
+							'refresh' => true,
+						),
+					)
+				),
+				'href'   => false,
+				'meta'   => array(
+					'class' => 'auto-height',
+				),
+			)
+		);
 	}
 
 	/**
