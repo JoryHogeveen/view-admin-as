@@ -209,7 +209,7 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
-= 1.8.6 
+= 1.8.6 =
 
 *	**Compatibility:** WordPress 5.4 `apply_shortcodes()` function. [#111](https://github.com/JoryHogeveen/view-admin-as/issues/111)
 *	**Compatibility:** Add Google Site Kit capabilities. [#110](https://github.com/JoryHogeveen/view-admin-as/issues/110)
