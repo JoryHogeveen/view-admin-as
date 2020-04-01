@@ -8,6 +8,9 @@
  * @package View_Admin_As
  */
 
+view_admin_as()->include_file( VIEW_ADMIN_AS_DIR . 'includes/class-util.php', 'VAA_Util' );
+view_admin_as()->include_file( VIEW_ADMIN_AS_DIR . 'includes/class-api.php', 'VAA_API' );
+
 class VAA_API_UnitTest extends WP_UnitTestCase {
 
 	/**
