@@ -372,6 +372,23 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			}
 		}
 
+		// @since  1.8.6  Google Site Kit.
+		if ( defined( 'GOOGLESITEKIT_VERSION' ) ) {
+			// @todo https://github.com/JoryHogeveen/view-admin-as/issues/110
+			$caps = array_merge(
+				array(
+					'googlesitekit_authenticate',
+					'googlesitekit_setup',
+					'googlesitekit_view_posts_insights',
+					'googlesitekit_view_dashboard',
+					'googlesitekit_view_module_details',
+					'googlesitekit_manage_options',
+					'googlesitekit_publish_posts',
+				),
+				$caps
+			);
+		}
+
 		// Members.
 		if ( function_exists( 'members_get_plugin_capabilities' ) ) {
 			$caps = array_merge( (array) members_get_plugin_capabilities(), $caps );
