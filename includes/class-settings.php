@@ -534,11 +534,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		}
 
 		// Validate settings.
-		$value = wp_parse_args( $value, array(
-			'settings' => array(),
-		) );
-
-		$value['settings'] = $this->validate_settings( $value['settings'], 'user', true );
+		if ( isset( $value['settings'] ) ) {
+			$value['settings'] = $this->validate_settings( $value['settings'], 'user', true );
+		}
 
 		if ( ! isset( $this->allUserMeta[ $user_id ] ) ) {
 			$column_id = 0;
