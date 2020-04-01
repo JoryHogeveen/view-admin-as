@@ -3,9 +3,9 @@ Contributors: keraweb
 Donate link: https://www.keraweb.nl/donate.php?for=view-admin-as
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
-Tested up to: 5.3
+Tested up to: 5.4
 Requires PHP: 5.2.4
-Stable tag: 1.8.5
+Stable tag: 1.8.6
 
 View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.
 

@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.x
+ * @version 1.8.6
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
@@ -443,7 +443,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * `force_ajax_users` setting.
 		 *
 		 * @since   1.8.1
-		 * @since   1.8.x  Always show this setting to optionally prevent query.
+		 * @since   1.8.6  Always show this setting to optionally prevent query.
 		 */
 		$admin_bar->add_node(
 			array(

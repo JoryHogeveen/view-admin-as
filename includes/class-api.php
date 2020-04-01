@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @version 1.8.5
+ * @version 1.8.6
  * @uses    \VAA_Util Extends class
  */
 final class VAA_API extends VAA_Util
