@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.0
- * @version 1.8.1
+ * @version 1.8.6
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
@@ -170,12 +170,15 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 			return null;
 		}
 
-		$args = wp_parse_args( $args, array(
-			'default'      => array(),
-			'allowed'      => array(),
-			'default_user' => array(),
-			'allowed_user' => array(),
-		) );
+		$args = wp_parse_args(
+			$args,
+			array(
+				'default'      => array(),
+				'allowed'      => array(),
+				'default_user' => array(),
+				'allowed_user' => array(),
+			)
+		);
 
 		$default = $args['default'];
 		$allowed = $args['allowed'];
@@ -186,16 +189,20 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) ) {
 
 			$this->set_optionKey( 'vaa_view_admin_as' );
-			$this->set_optionData( array(
-				'db_version' => null,
-				'settings'   => null,
-			) );
+			$this->set_optionData(
+				array(
+					'db_version' => null,
+					'settings'   => null,
+				)
+			);
 
 			$this->set_userMetaKey( 'vaa-view-admin-as' );
-			$this->set_userMeta( array(
-				'settings' => null,
-				'views'    => null,
-			) );
+			$this->set_userMeta(
+				array(
+					'settings' => null,
+					'views'    => null,
+				)
+			);
 
 			$default = array(
 				'view_types' => array(),
@@ -534,11 +541,9 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		}
 
 		// Validate settings.
-		$value = wp_parse_args( $value, array(
-			'settings' => array(),
-		) );
-
-		$value['settings'] = $this->validate_settings( $value['settings'], 'user', true );
+		if ( isset( $value['settings'] ) ) {
+			$value['settings'] = $this->validate_settings( $value['settings'], 'user', true );
+		}
 
 		if ( ! isset( $this->allUserMeta[ $user_id ] ) ) {
 			$column_id = 0;

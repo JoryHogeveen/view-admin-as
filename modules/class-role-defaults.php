@@ -439,10 +439,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			$success = true;
 			$errors  = array_unique( array_filter( $errors ) );
 			if ( ! empty( $errors ) ) {
-				$success = $this->ajax_data_popup( false, array(
-					'text' => esc_attr__( 'There were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
-					'list' => $errors,
-				), 'error' );
+				$success = $this->ajax_data_popup(
+					false,
+					array(
+						'text' => esc_attr__( 'There were some errors', VIEW_ADMIN_AS_DOMAIN ) . ':',
+						'list' => $errors,
+					),
+					'error'
+				);
 			}
 		}
 
@@ -461,11 +465,14 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		if ( VAA_API::array_has( $data, 'export_role_defaults', array( 'validation' => 'is_string' ) ) ) {
 			$content = $this->export_role_defaults( wp_strip_all_tags( $data['export_role_defaults'] ) );
 			if ( is_array( $content ) ) {
-				$success = $this->ajax_data_popup( true, array(
-					'text'     => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
-					'textarea' => wp_json_encode( $content ),
-					'filename' => esc_html__( 'Role defaults', VIEW_ADMIN_AS_DOMAIN ) . '.json',
-				) );
+				$success = $this->ajax_data_popup(
+					true,
+					array(
+						'text'     => esc_attr__( 'Copy code', VIEW_ADMIN_AS_DOMAIN ) . ': ',
+						'textarea' => wp_json_encode( $content ),
+						'filename' => esc_html__( 'Role defaults', VIEW_ADMIN_AS_DOMAIN ) . '.json',
+					)
+				);
 			} else {
 				$success = $this->ajax_data_notice( false, array( 'text' => $content ), 'error' );
 			}

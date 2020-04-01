@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @version 1.8.5
+ * @version 1.8.6
  * @uses    \VAA_Util Extends class
  */
 final class VAA_API extends VAA_Util
@@ -470,6 +470,23 @@ final class VAA_API extends VAA_Util
 	 */
 	public static function is_customizer_admin() {
 		return (bool) ( is_customize_preview() && is_admin() );
+	}
+
+	/**
+	 * Backwards compat method for apply_shortcodes() since WP 5.4.
+	 * @todo  deprecate when 5.4 is the minimum version of WP.
+	 *
+	 * @since  1.8.6
+	 * @param  string  $content
+	 * @param  bool    $ignore_html
+	 *
+	 * @return string
+	 */
+	public static function apply_shortcodes( $content, $ignore_html = false ) {
+		if ( function_exists( 'apply_shortcodes' ) ) {
+			return apply_shortcodes( $content, $ignore_html );
+		}
+		return do_shortcode( $content, $ignore_html );
 	}
 
 	/**

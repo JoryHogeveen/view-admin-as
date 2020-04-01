@@ -291,9 +291,12 @@ class VAA_View_Admin_As_Form
 
 		if ( ! empty( $args['values'] ) ) {
 
-			$args['values'] = self::parse_multi_values( $args['values'], array(
-				'label' => '', // No default label.
-			) );
+			$args['values'] = self::parse_multi_values(
+				$args['values'],
+				array(
+					'label' => '', // No default label.
+				)
+			);
 
 			foreach ( $args['values'] as $val ) {
 
@@ -455,9 +458,12 @@ class VAA_View_Admin_As_Form
 		} else {
 			// It's a Base64 encoded string or file URL.
 			$class .= ' vaa-icon-image';
-			$attr   = self::merge_attr( $attr, array(
-				'style' => array( 'background-image: url("' . $icon . '") !important' ),
-			) );
+			$attr   = self::merge_attr(
+				$attr,
+				array(
+					'style' => array( 'background-image: url("' . $icon . '") !important' ),
+				)
+			);
 		}
 
 		if ( ! empty( $attr['class'] ) ) {
@@ -550,9 +556,12 @@ class VAA_View_Admin_As_Form
 		}
 
 		// Reset auto show/hide settings is $test is true. Disables show/hide on the label and sets it on the help icon.
-		$help_attr = self::merge_attr( $help_attr, array(
-			'class' => 'vaa-help',
-		) );
+		$help_attr = self::merge_attr(
+			$help_attr,
+			array(
+				'class' => 'vaa-help',
+			)
+		);
 		if ( true === $text ) {
 			// Do nothing is auto show/hide isn't enabled.
 			if ( ! isset( $showhide_attr['vaa-showhide'] ) ) {
@@ -565,9 +574,12 @@ class VAA_View_Admin_As_Form
 
 		if ( is_string( $text ) ) {
 			// ab-sub-wrapper for background, ab-item for text color.
-			$tooltip_attr = self::merge_attr( array(
-				'class' => 'ab-item ab-sub-wrapper vaa-tooltip',
-			), $tooltip_attr );
+			$tooltip_attr = self::merge_attr(
+				array(
+					'class' => 'ab-item ab-sub-wrapper vaa-tooltip',
+				),
+				$tooltip_attr
+			);
 			$tooltip_attr = self::parse_to_html_attr( $tooltip_attr );
 
 			$text = '<span ' . $tooltip_attr . '>' . $text . '</span>';
@@ -678,10 +690,12 @@ class VAA_View_Admin_As_Form
 		if ( ! empty( $args['auto_showhide'] ) && ! is_bool( $args['auto_showhide'] ) ) {
 			// Just the delay, keep the target value.
 			if ( is_numeric( $args['auto_showhide'] ) ) {
-				$trigger_target = wp_json_encode( array(
-					'target' => $trigger_target,
-					'delay'  => $args['auto_showhide'],
-				) );
+				$trigger_target = wp_json_encode(
+					array(
+						'target' => $trigger_target,
+						'delay'  => $args['auto_showhide'],
+					)
+				);
 			}
 			// Full data. Multiple targets allowed,
 			elseif ( is_array( $args['auto_showhide'] ) ) {
@@ -689,16 +703,22 @@ class VAA_View_Admin_As_Form
 			}
 		}
 
-		$trigger_attr = self::merge_attr( $trigger_attr, array(
-			'class'        => 'ab-vaa-showhide',
-			'vaa-showhide' => $trigger_target,
-		) );
+		$trigger_attr = self::merge_attr(
+			$trigger_attr,
+			array(
+				'class'        => 'ab-vaa-showhide',
+				'vaa-showhide' => $trigger_target,
+			)
+		);
 
 		// @todo Find a way to auto create multiple targets.
 		if ( ! empty( $target ) ) {
-			$target_attr = self::merge_attr( $target_attr, array(
-				'class' => $target,
-			) );
+			$target_attr = self::merge_attr(
+				$target_attr,
+				array(
+					'class' => $target,
+				)
+			);
 		}
 	}
 
@@ -723,6 +743,7 @@ class VAA_View_Admin_As_Form
 				$attr[ $key ] = array_merge( $attr[ $key ], (array) $value );
 				continue;
 			}
+			// The current value is a string, merge them using spaces.
 			if ( is_array( $value ) ) {
 				$value = implode( ' ', $value );
 			}
@@ -768,9 +789,12 @@ class VAA_View_Admin_As_Form
 	 * @return  array[]
 	 */
 	public static function parse_multi_values( $values, $defaults = array() ) {
-		$defaults = array_merge( array(
-			'value' => false,
-		), $defaults );
+		$defaults = array_merge(
+			array(
+				'value' => false,
+			),
+			$defaults
+		);
 
 		foreach ( (array) $values as $key => $val ) {
 			if ( ! is_array( $val ) ) {

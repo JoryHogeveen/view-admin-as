@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @version 1.8.3
+ * @version 1.8.6
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
@@ -149,7 +149,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		foreach ( $caps as $cap_key => $cap ) {
 			if ( is_string( $cap ) && ! is_numeric( $cap ) ) {
 				$all_caps[ $cap ] = $cap;
-			} else {
+			} elseif ( is_string( $cap_key ) && ! is_numeric( $cap_key ) ) {
 				$all_caps[ $cap_key ] = $cap_key;
 			}
 		}
@@ -204,7 +204,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			array_values( (array) get_taxonomies( array(), 'objects' ) )
 		);
 		foreach ( $wp_objects as $obj ) {
-			if ( isset( $obj->cap ) ) {
+			if ( ! empty( $obj->cap ) ) {
 				// WP stores the object caps as general_cap_name => actual_cap.
 				$caps = array_merge( array_combine( (array) $obj->cap, (array) $obj->cap ), $caps );
 			}
@@ -280,7 +280,16 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		if ( VAA_API::exists_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
 			$caps = array_merge( (array) URE_Own_Capabilities::get_caps(), $caps );
 		}
-		$caps = apply_filters( 'ure_full_capabilites', $caps );
+		// @since  1.8.6  Parse hooked caps.
+		foreach ( apply_filters( 'ure_full_capabilites', array() ) as $cap ) {
+			if ( is_array( $cap ) ) {
+				if ( empty( $cap['inner'] ) ) {
+					continue;
+				}
+				$cap = $cap['inner'];
+			}
+			$caps[ $cap ] = $cap;
+		}
 
 		// @since  1.7.1  WPFront User Role Editor.
 		if ( class_exists( 'WPFront_User_Role_Editor' ) && ! empty( WPFront_User_Role_Editor::$ROLE_CAPS ) ) {
@@ -351,13 +360,33 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			if ( function_exists( 'wpseo_get_capabilities' ) ) {
 				$caps = array_merge( (array) wpseo_get_capabilities(), $caps );
 			} elseif ( defined( 'WPSEO_VERSION' ) ) {
-				$yoast_seo_caps = array(
-					'wpseo_bulk_edit',
-					'wpseo_edit_advanced_metadata',
-					'wpseo_manage_options',
+				$caps = array_merge(
+					array(
+						// Yoast SEO caps.
+						'wpseo_bulk_edit',
+						'wpseo_edit_advanced_metadata',
+						'wpseo_manage_options',
+					),
+					$caps
 				);
-				$caps = array_merge( $yoast_seo_caps, $caps );
 			}
+		}
+
+		// @since  1.8.6  Google Site Kit.
+		if ( defined( 'GOOGLESITEKIT_VERSION' ) ) {
+			// @todo https://github.com/JoryHogeveen/view-admin-as/issues/110
+			$caps = array_merge(
+				array(
+					'googlesitekit_authenticate',
+					'googlesitekit_setup',
+					'googlesitekit_view_posts_insights',
+					'googlesitekit_view_dashboard',
+					'googlesitekit_view_module_details',
+					'googlesitekit_manage_options',
+					'googlesitekit_publish_posts',
+				),
+				$caps
+			);
 		}
 
 		// Members.
