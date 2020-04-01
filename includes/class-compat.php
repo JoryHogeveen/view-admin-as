@@ -280,7 +280,16 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		if ( VAA_API::exists_callable( array( 'URE_Own_Capabilities', 'get_caps' ) ) ) {
 			$caps = array_merge( (array) URE_Own_Capabilities::get_caps(), $caps );
 		}
-		$caps = apply_filters( 'ure_full_capabilites', $caps );
+		// @since  1.8.6  Parse hooked caps.
+		foreach ( apply_filters( 'ure_full_capabilites', array() ) as $cap ) {
+			if ( is_array( $cap ) ) {
+				if ( empty( $cap['inner'] ) ) {
+					continue;
+				}
+				$cap = $cap['inner'];
+			}
+			$caps[ $cap ] = $cap;
+		}
 
 		// @since  1.7.1  WPFront User Role Editor.
 		if ( class_exists( 'WPFront_User_Role_Editor' ) && ! empty( WPFront_User_Role_Editor::$ROLE_CAPS ) ) {
