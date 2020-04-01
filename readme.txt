@@ -69,6 +69,7 @@ This plugin will work with most other plugins but these are tested:
 *	**bbPress**
 *	**BuddyPress**
 *	**Genesis Framework** *(and probably other theme frameworks)*
+*	**Google Site Kit**
 *	**Gravity Forms**
 *	**Groups 2.1+** *(Custom integration: adds a view type for groups. Pro version not tested)*
 *	**Pods Framework 2.0+**
@@ -207,6 +208,15 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 12. Access levels taken from the "Restrict User Access" plugin
 
 == Changelog ==
+
+= 1.8.6 
+
+*	**Compatibility:** WordPress 5.4 `apply_shortcodes()` function. [#111](https://github.com/JoryHogeveen/view-admin-as/issues/111)
+*	**Compatibility:** Add Google Site Kit capabilities. [#110](https://github.com/JoryHogeveen/view-admin-as/issues/110)
+*	**Compatibility:** User Role Editor capability filter format. [#112](https://github.com/JoryHogeveen/view-admin-as/issues/112)
+*	**Enhancement:** Always show `force-ajax-users` setting to optionally prevent query.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/113)
 
 = 1.8.5 =
 
