@@ -450,7 +450,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			}
 			if ( $show_content ) {
 				remove_shortcode( $shortcode );
-				$content = do_shortcode( $content );
+				$content = VAA_API::apply_shortcodes( $content );
 				add_shortcode( $shortcode, array( $this, 'shortcode_' . $shortcode ) );
 				$output = $content;
 			}

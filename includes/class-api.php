@@ -473,6 +473,23 @@ final class VAA_API extends VAA_Util
 	}
 
 	/**
+	 * Backwards compat method for apply_shortcodes() since WP 5.4.
+	 * @todo  deprecate when 5.4 is the minimum version of WP.
+	 *
+	 * @since  1.8.6
+	 * @param  string  $content
+	 * @param  bool    $ignore_html
+	 *
+	 * @return string
+	 */
+	public static function apply_shortcodes( $content, $ignore_html = false ) {
+		if ( function_exists( 'apply_shortcodes' ) ) {
+			return apply_shortcodes( $content, $ignore_html );
+		}
+		return do_shortcode( $content, $ignore_html );
+	}
+
+	/**
 	 * Compare with the current WordPress version.
 	 * Returns true when it's the provided version or newer.
 	 *
