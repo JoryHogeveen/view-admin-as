@@ -149,7 +149,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		foreach ( $caps as $cap_key => $cap ) {
 			if ( is_string( $cap ) && ! is_numeric( $cap ) ) {
 				$all_caps[ $cap ] = $cap;
-			} else {
+			} elseif ( is_string( $cap_key ) && ! is_numeric( $cap_key ) ) {
 				$all_caps[ $cap_key ] = $cap_key;
 			}
 		}
@@ -204,7 +204,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			array_values( (array) get_taxonomies( array(), 'objects' ) )
 		);
 		foreach ( $wp_objects as $obj ) {
-			if ( isset( $obj->cap ) ) {
+			if ( ! empty( $obj->cap ) ) {
 				// WP stores the object caps as general_cap_name => actual_cap.
 				$caps = array_merge( array_combine( (array) $obj->cap, (array) $obj->cap ), $caps );
 			}
@@ -360,12 +360,15 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			if ( function_exists( 'wpseo_get_capabilities' ) ) {
 				$caps = array_merge( (array) wpseo_get_capabilities(), $caps );
 			} elseif ( defined( 'WPSEO_VERSION' ) ) {
-				$yoast_seo_caps = array(
-					'wpseo_bulk_edit',
-					'wpseo_edit_advanced_metadata',
-					'wpseo_manage_options',
+				$caps = array_merge(
+					array(
+						// Yoast SEO caps.
+						'wpseo_bulk_edit',
+						'wpseo_edit_advanced_metadata',
+						'wpseo_manage_options',
+					),
+					$caps
 				);
-				$caps = array_merge( $yoast_seo_caps, $caps );
 			}
 		}
 
