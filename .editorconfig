@@ -18,9 +18,9 @@ trim_trailing_whitespace = true
 # spaces_around_operators = true
 # spaces_around_brackets = both
 
-[*.txt]
+[*.{txt,md}]
 trim_trailing_whitespace = false
 
-[*.yml]
+[*.{yml,json}]
 indent_style = space
 indent_size = 2
