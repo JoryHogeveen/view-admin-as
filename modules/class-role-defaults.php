@@ -133,9 +133,9 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		 */
 		if ( ! is_network_admin() && $this->current_user_can( 'view_admin_as_role_defaults' ) ) {
 			$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-			$this->add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
+			$this->add_filter( 'view_admin_as_handle_ajax_' . $this->get_moduleKey(), array( $this, 'ajax_handler' ), 10, 2 );
 			// @since  1.8.2  Filter ajax search return.
-			$this->add_filter( 'view_admin_as_ajax_search_users_return_' . $this->moduleKey, array( $this, 'ajax_search_users_return' ), 10, 4 );
+			$this->add_filter( 'view_admin_as_ajax_search_users_return_' . $this->get_moduleKey(), array( $this, 'ajax_search_users_return' ), 10, 4 );
 		}
 	}
 
@@ -1067,7 +1067,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'label'       => __( 'Enable role defaults', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Set default screen settings for roles and apply them on users through various bulk and automatic actions', VIEW_ADMIN_AS_DOMAIN ),
 				'auto_js'     => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'enable',
 					'refresh' => true,
 				),
@@ -1167,7 +1167,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'compare' => true,
 				'label'   => __( 'Automatically apply defaults to new users', VIEW_ADMIN_AS_DOMAIN ),
 				'auto_js' => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'apply_defaults_on_register',
 					'refresh' => false,
 				),
@@ -1190,7 +1190,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'help'          => true,
 				'auto_showhide' => true,
 				'auto_js'       => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'disable_user_screen_options',
 					'refresh' => false,
 				),
@@ -1213,7 +1213,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'help'          => true,
 				'auto_showhide' => true,
 				'auto_js'       => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'lock_meta_boxes',
 					'refresh' => false,
 				),
@@ -1314,7 +1314,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
 				'auto_js' => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'update_meta',
 					'refresh' => false,
 					'value'   => array(
@@ -1463,7 +1463,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-primary',
 					'auto_js' => array(
-						'setting' => $this->moduleKey,
+						'setting' => $this->get_moduleKey(),
 						'key'     => 'apply_defaults_to_users',
 						'refresh' => false,
 						'value'   => array(
@@ -1522,7 +1522,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-primary',
 					'auto_js' => array(
-						'setting' => $this->moduleKey,
+						'setting' => $this->get_moduleKey(),
 						'key'     => 'apply_defaults_to_users_by_role',
 						'refresh' => false,
 						'value'   => array(
@@ -1593,7 +1593,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			) );
 
 			$auto_js = array(
-				'setting' => $this->moduleKey,
+				'setting' => $this->get_moduleKey(),
 				'key'     => 'copy_role_defaults',
 				'refresh' => false,
 				'values'  => array(
@@ -1696,7 +1696,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			) );
 
 			$auto_js = array(
-				'setting' => $this->moduleKey,
+				'setting' => $this->get_moduleKey(),
 				'key'     => 'export_role_defaults',
 				'refresh' => false,
 				'value'   => array(
@@ -1781,7 +1781,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 			) );
 
 			$auto_js = array(
-				'setting' => $this->moduleKey,
+				'setting' => $this->get_moduleKey(),
 				'key'     => 'import_role_defaults',
 				'refresh' => false,
 				'values'  => array(
@@ -1918,7 +1918,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',
 				'auto_js' => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'clear_role_defaults',
 					'confirm' => true,
 					'refresh' => false,

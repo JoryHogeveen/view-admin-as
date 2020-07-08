@@ -95,7 +95,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$this->init();
 
 		$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
-		$this->add_filter( 'view_admin_as_handle_ajax_' . $this->moduleKey, array( $this, 'ajax_handler' ), 10, 2 );
+		$this->add_filter( 'view_admin_as_handle_ajax_' . $this->get_moduleKey(), array( $this, 'ajax_handler' ), 10, 2 );
 	}
 
 	/**
@@ -719,7 +719,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'label'       => __( 'Enable role manager', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Add or remove roles and grant or deny them capabilities', VIEW_ADMIN_AS_DOMAIN ),
 				'auto_js'     => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'enable',
 					'refresh' => true,
 				),
@@ -912,7 +912,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 						'vaa-view-caps' => wp_json_encode( $this->store->get_selectedCaps() ),
 					),
 					'auto_js' => array(
-						'setting' => $this->moduleKey,
+						'setting' => $this->get_moduleKey(),
 						'key'     => 'apply_view_to_role',
 						'refresh' => false,
 						'values'  => array(
@@ -997,7 +997,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
 				'auto_js' => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'rename_role',
 					'refresh' => true,
 					'values'  => array(
@@ -1074,7 +1074,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
 				'auto_js' => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'clone_role',
 					'refresh' => true,
 					'values'  => array(
@@ -1150,7 +1150,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		) );
 
 		$auto_js = array(
-			'setting' => $this->moduleKey,
+			'setting' => $this->get_moduleKey(),
 			'key'     => 'export_roles',
 			'refresh' => false,
 			'values'  => array(
@@ -1270,7 +1270,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		) );
 
 		$auto_js = array(
-			'setting' => $this->moduleKey,
+			'setting' => $this->get_moduleKey(),
 			'key'     => 'import_roles',
 			'refresh' => true,
 			'values'  => array(
@@ -1416,7 +1416,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				'label'   => __( 'Delete', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
 				'auto_js' => array(
-					'setting' => $this->moduleKey,
+					'setting' => $this->get_moduleKey(),
 					'key'     => 'delete_role',
 					'confirm' => true,
 					'refresh' => true,
