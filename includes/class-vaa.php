@@ -636,19 +636,12 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.8.0
 	 * @access  public
-	 * @param   array  $data {
-	 *     Required. An array of module info.
-	 *     @type  string                  $id        The view type name, choose wisely since this is used for validation.
-	 *     @type  VAA_View_Admin_As_Type  $instance  The view type class reference/instance.
-	 * }
+	 * @param   \View_Admin_As\Type  $view_type  The view type class reference/instance.
 	 * @return  bool  Successfully registered?
 	 */
-	public function register_view_type( $data ) {
-		if (
-			! empty( $data['id'] ) && is_string( $data['id'] ) &&
-			! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Type
-		) {
-			$this->view_types[ $data['id'] ] = $data['instance'];
+	public function register_view_type( $view_type ) {
+		if ( $view_type instanceof View_Admin_As\Type ) {
+			$this->view_types[ $view_type->get_type() ] = $view_type;
 			return true;
 		}
 		return false;

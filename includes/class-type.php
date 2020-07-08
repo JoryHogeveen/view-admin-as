@@ -125,10 +125,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 
 		parent::__construct();
 
-		$this->vaa->register_view_type( array(
-			'id'       => $this->type,
-			'instance' => $this,
-		) );
+		view_admin_as()->register_view_type( $this );
 
 		$this->user_has_access = $this->current_user_can( $this->cap );
 
