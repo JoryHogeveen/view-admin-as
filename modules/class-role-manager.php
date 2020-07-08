@@ -80,10 +80,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		}
 
 		// Add this class to the modules in the main class.
-		$this->vaa->register_module( array(
-			'id'       => $this->moduleKey,
-			'instance' => self::$_instance,
-		) );
+		view_admin_as()->register_module( $this );
 
 		// Load data.
 		$this->set_optionData( get_option( $this->get_optionKey() ) );

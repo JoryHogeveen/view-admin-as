@@ -101,10 +101,7 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 		parent::__construct();
 
 		// Add this class to the modules in the main class.
-		$this->vaa->register_module( array(
-			'id'       => $this->moduleKey,
-			'instance' => self::$_instance,
-		) );
+		view_admin_as()->register_module( $this );
 
 		/**
 		 * Add capabilities for this module.

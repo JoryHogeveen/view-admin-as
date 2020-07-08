@@ -23,6 +23,14 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 {
 	/**
+	 * Module key.
+	 *
+	 * @since  1.9.0
+	 * @var    string
+	 */
+	protected $moduleKey;
+
+	/**
 	 * Option key.
 	 *
 	 * @since  1.5.0
@@ -168,6 +176,14 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 */
 	public function get_scriptLocalization( $key = null ) {
 		return VAA_API::get_array_data( $this->scriptLocalization, $key );
+	}
+
+	/**
+	 * Get the module key.
+	 * @return  string
+	 */
+	public function get_moduleKey() {
+		return (string) $this->moduleKey;
 	}
 
 	/**

@@ -673,19 +673,12 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.1
 	 * @access  public
-	 * @param   array  $data {
-	 *     Required. An array of module info.
-	 *     @type  string                    $id        The module name, choose wisely since this is used for validation.
-	 *     @type  VAA_View_Admin_As_Module  $instance  The module class reference/instance.
-	 * }
+	 * @param   \View_Admin_As\Module  $module  The module class reference/instance.
 	 * @return  bool  Successfully registered?
 	 */
-	public function register_module( $data ) {
-		if (
-			! empty( $data['id'] ) && is_string( $data['id'] ) &&
-			! empty( $data['instance'] ) && $data['instance'] instanceof VAA_View_Admin_As_Module
-		) {
-			$this->modules[ $data['id'] ] = $data['instance'];
+	public function register_module( $module ) {
+		if ( $module instanceof View_Admin_As\Module ) {
+			$this->modules[ $module->get_moduleKey() ] = $module;
 			return true;
 		}
 		return false;
