@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -23,9 +25,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
  * @version 1.8.6
- * @uses    \VAA_View_Admin_As_Type Extends class
+ * @uses    \View_Admin_As\Type Extends class
  */
-class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
+class Users extends Type
 {
 	/**
 	 * @since  1.8.0
@@ -107,7 +109,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$this->add_filter( 'user_row_actions', array( $this, 'filter_user_row_actions' ), 10, 2 );
 		}
 
-		if ( VAA_API::is_ajax_request( 'view_admin_as_search_users' ) ) {
+		if ( API::is_ajax_request( 'view_admin_as_search_users' ) ) {
 			// @since  1.8.2  Use pre-init hook to allow modules to filter ajax return.
 			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'ajax_search_users' ) );
 		}
@@ -273,7 +275,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Validate data for this view type.
 	 *
 	 * @since   1.7.0
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Controller`.
 	 * @access  public
 	 * @param   null   $null  Default return (invalid).
 	 * @param   mixed  $data  The view data.
@@ -291,7 +293,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Add the admin bar items.
 	 *
 	 * @since   1.5.0
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @access  public
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item.
@@ -318,7 +320,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
+			'title'  => Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -394,7 +396,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 */
 		if (
 			! $this->ajax_search()
-			&& VAA_API::is_view_type_enabled( 'role' )
+			&& API::is_view_type_enabled( 'role' )
 			&& $this->store->get_roles()
 			&& (
 				! $this->group_user_roles()
@@ -405,7 +407,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				array(
 					'id'     => $root . '-force-group-users',
 					'parent' => $root,
-					'title'  => VAA_View_Admin_As_Form::do_checkbox(
+					'title'  => Form::do_checkbox(
 						array(
 							'name'          => $root . '-force-group-users',
 							'value'         => $this->store->get_userSettings( 'force_group_users' ),
@@ -439,7 +441,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			array(
 				'id'     => $root . '-force-ajax-users',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_checkbox(
+				'title'  => Form::do_checkbox(
 					array(
 						'name'          => $root . '-force-ajax-users',
 						'value'         => $this->store->get_userSettings( 'force_ajax_users' ),
@@ -466,8 +468,8 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	/**
 	 * Group the users under their roles?
 	 *
-	 * @since   1.5.0  As a parameter in `VAA_View_Admin_As_Admin_Bar`.
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Admin_Bar` and changed to a separate method.
+	 * @since   1.5.0  As a parameter in `\View_Admin_As\Admin_Bar`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Admin_Bar` and changed to a separate method.
 	 * @access  public
 	 * @return  bool
 	 */
@@ -483,7 +485,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$roles = $this->store->get_roles();
 
-		if ( ! $roles || ! VAA_API::is_view_type_enabled( 'role' ) ) {
+		if ( ! $roles || ! API::is_view_type_enabled( 'role' ) ) {
 			return $check;
 		}
 
@@ -532,7 +534,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @return  \WP_User
 	 */
 	public function validate_target_user( $user ) {
-		$user_id = ( $user instanceof WP_User ) ? $user->ID : $user;
+		$user_id = ( $user instanceof \WP_User ) ? $user->ID : $user;
 
 		$check = $this->get_data( $user_id );
 		if ( $check ) {
@@ -555,7 +557,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.8.2  Different return types.
 	 */
 	public function ajax_search_users() {
-		$args = VAA_API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as_search_users' );
+		$args = API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as_search_users' );
 		if ( ! $args ) {
 			wp_send_json_error( __( 'Cheatin uh?', VIEW_ADMIN_AS_DOMAIN ) );
 			die();
@@ -605,11 +607,11 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				$return = '';
 
 				foreach ( $users as $user ) {
-					$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ) );
+					$href  = API::get_vaa_action_link( array( $this->type => $user->ID ) );
 					$class = 'vaa-' . $this->type . '-item';
 					$title = $this->get_view_title( $user );
 
-					$view_title  = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
+					$view_title  = Form::do_view_title( $title, $this, $user->ID );
 					$view_title .= $this->get_view_title_roles( $user );
 
 					$attr = array(
@@ -619,7 +621,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 						'title' => sprintf( __( 'View as %s', VIEW_ADMIN_AS_DOMAIN ), $title ),
 					);
 
-					$item    = '<a ' . VAA_View_Admin_As_Form::parse_to_html_attr( $attr ) . '>' . $view_title . '</a>';
+					$item    = '<a ' . Form::parse_to_html_attr( $attr ) . '>' . $view_title . '</a>';
 					$return .= '<li class="' . $class . '">' . $item . '</a>';
 				}
 				break;
@@ -672,7 +674,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @see     \WP_User_Query::get_search_sql()
 	 * @link    https://developer.wordpress.org/reference/classes/wp_user_query/get_search_sql/
 	 *
-	 * @global  wpdb    $wpdb    WordPress database abstraction object.
+	 * @global  \wpdb   $wpdb    WordPress database abstraction object.
 	 * @param   string  $string  The string to search for.
 	 * @param   array   $cols    (optional) Set the columns to look in.
 	 * @return  string
@@ -730,7 +732,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.5.0
 	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since   1.6.2  Reduce user queries to 1 for non-network pages with custom query handling.
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Store`.
 	 * @access  public
 	 * @global  \wpdb  $wpdb
 	 * @param   array  $args  Function arguments.
@@ -759,12 +761,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$super_admins = get_super_admins();
 		// Load the superior admins.
-		$superior_admins = VAA_API::get_superior_admins();
+		$superior_admins = API::get_superior_admins();
 
 		// Is the current user a super admin?
-		$is_super_admin = VAA_API::is_super_admin();
+		$is_super_admin = API::is_super_admin();
 		// Is it also one of the manually configured superior admins?
-		$is_superior_admin = VAA_API::is_superior_admin();
+		$is_superior_admin = API::is_superior_admin();
 
 		/**
 		 * Base user query.
@@ -892,7 +894,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				// Turn query results into WP_User objects.
 				foreach ( $users_results as $user ) {
 					$user->roles        = maybe_unserialize( $user->roles );
-					$users[ $user->ID ] = new WP_User( $user );
+					$users[ $user->ID ] = new \WP_User( $user );
 				}
 
 				// @hack  Restore the default meta queries.
@@ -942,7 +944,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @internal
 	 *
 	 * @since   1.6.2
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Store`.
 	 * @see     \WP_User::for_site() ( prev: \WP_User::_init_caps() ) >> wp-includes/class-wp-user.php
 	 * @see     get_metadata() >> `get_user_metadata` filter
 	 * @link    https://developer.wordpress.org/reference/functions/get_metadata/
@@ -996,19 +998,19 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		$super_admins = get_super_admins();
 		// Load the superior admins.
-		$superior_admins = VAA_API::get_superior_admins();
+		$superior_admins = API::get_superior_admins();
 
 		// Is the user a super admin?
-		$is_super_admin = VAA_API::is_super_admin( $user_id );
+		$is_super_admin = API::is_super_admin( $user_id );
 		// Is it also one of the manually configured superior admins?
-		$is_superior_admin = VAA_API::is_superior_admin( $user_id );
+		$is_superior_admin = API::is_superior_admin( $user_id );
 
 		foreach ( $users as $user_key => $user ) {
 
-			if ( ! $user instanceof WP_User ) {
+			if ( ! $user instanceof \WP_User ) {
 				$user = get_user_by( 'ID', $user );
 				unset( $users[ $user_key ] );
-				if ( ! $user instanceof WP_User ) {
+				if ( ! $user instanceof \WP_User ) {
 					continue;
 				}
 				$user_key           = $user->ID;
@@ -1059,7 +1061,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.7.1  User ID as array key.
 	 * @access  public
 	 *
-	 * @see     VAA_View_Admin_As_Users::store_data()
+	 * @see     \View_Admin_As\Users::store_data()
 	 *
 	 * @param   \WP_User[]  $users  Array of user objects (WP_User).
 	 * @return  \WP_User[]  $users
@@ -1102,12 +1104,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 
 		if ( (int) $user_id === (int) $this->store->get_curUser()->ID ) {
 			// Add reset link if it is the current user and a view is selected.
-			if ( VAA_API::is_view_active() ) {
-				$link = VAA_API::get_reset_link( $url );
+			if ( API::is_view_active() ) {
+				$link = API::get_reset_link( $url );
 			}
 		}
 		elseif ( $this->validate_target_user( $user_id ) ) {
-			$link = VAA_API::get_vaa_action_link( array( $this->type => $user_id ), $url );
+			$link = API::get_vaa_action_link( array( $this->type => $user_id ), $url );
 		}
 
 		return $link;
@@ -1118,7 +1120,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.6.0
 	 * @since   1.6.3   Check whether to place link + reset link for current user.
-	 * @since   1.8.0   Moved from `VAA_View_Admin_As_UI`.
+	 * @since   1.8.0   Moved from `\View_Admin_As\UI`.
 	 * @access  public
 	 * @param   array     $actions  The existing actions.
 	 * @param   \WP_User  $user     The user object.
@@ -1139,7 +1141,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 				),
 			);
 
-			$title = VAA_View_Admin_As_Form::do_icon( $icon, $icon_attr ) . ' ' . esc_html__( 'View as', VIEW_ADMIN_AS_DOMAIN );
+			$title = Form::do_icon( $icon, $icon_attr ) . ' ' . esc_html__( 'View as', VIEW_ADMIN_AS_DOMAIN );
 
 			$actions['vaa_view'] = '<a href="' . $link . '">' . $title . '</a>';
 		}

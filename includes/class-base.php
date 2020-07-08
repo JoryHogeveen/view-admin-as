@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -17,10 +19,10 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5.0
- * @since   1.7.3  Renamed from `VAA_View_Admin_As_Class_Base`.
+ * @since   1.7.3  Renamed from `Class_Base`.
  * @version 1.8.0
  */
-abstract class VAA_View_Admin_As_Base
+abstract class Base
 {
 	/**
 	 * Instances.
@@ -41,7 +43,7 @@ abstract class VAA_View_Admin_As_Base
 	 * View Admin As store object.
 	 *
 	 * @since  1.6.0
-	 * @var    \VAA_View_Admin_As_Store
+	 * @var    \View_Admin_As\Store
 	 */
 	protected $store = null;
 
@@ -122,9 +124,9 @@ abstract class VAA_View_Admin_As_Base
 	 */
 	public function current_user_can( $capability = null ) {
 		if ( $capability ) {
-			return ( $this->is_vaa_enabled() && ( VAA_API::is_super_admin() || current_user_can( $capability ) ) );
+			return ( $this->is_vaa_enabled() && ( API::is_super_admin() || current_user_can( $capability ) ) );
 		}
-		return ( $this->is_vaa_enabled() && VAA_API::is_super_admin() );
+		return ( $this->is_vaa_enabled() && API::is_super_admin() );
 	}
 
 	/**
@@ -147,7 +149,7 @@ abstract class VAA_View_Admin_As_Base
 	 * Add a new action to this plugin hooks registry.
 	 *
 	 * @since   1.8.0
-	 * @see     \VAA_View_Admin_As_Hooks::add_action()
+	 * @see     \View_Admin_As\Hooks::add_action()
 	 * @inheritdoc
 	 */
 	public function add_action( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
@@ -158,7 +160,7 @@ abstract class VAA_View_Admin_As_Base
 	 * Add a new filter to this plugin hooks registry.
 	 *
 	 * @since   1.8.0
-	 * @see     \VAA_View_Admin_As_Hooks::add_filter()
+	 * @see     \View_Admin_As\Hooks::add_filter()
 	 * @inheritdoc
 	 */
 	public function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {

@@ -5,17 +5,19 @@
  * @since    1.7.0
  * @version  1.8.0
  *
- * @var  \VAA_View_Admin_As_Users  $this
- * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.
- * @var  string                    $root       The current root item.
- * @var  string                    $main_root  The main VAA root item.
+ * @var  \View_Admin_As\Users  $this
+ * @var  \WP_Admin_Bar         $admin_bar  The toolbar object.
+ * @var  string                $root       The current root item.
+ * @var  string                $main_root  The main VAA root item.
  */
+
+namespace View_Admin_As;
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root ) ) {
+if ( isset( $admin_bar ) && $admin_bar instanceof \WP_Admin_Bar && isset( $root ) ) {
 
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
@@ -32,23 +34,23 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		// Reset parent for each loop due to groupUserRoles.
 		$item_parent = $parent;
 
-		$href  = VAA_API::get_vaa_action_link( array( $this->type => $user->ID ) );
+		$href  = API::get_vaa_action_link( array( $this->type => $user->ID ) );
 		$class = 'vaa-' . $this->type . '-item';
 		$title = $this->get_view_title( $user );
 
-		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $user->ID );
+		$view_title = Form::do_view_title( $title, $this, $user->ID );
 
 		/**
 		 * Add the user roles to the user title?
 		 * Only available if users are not grouped under their roles.
-		 * @see VAA_View_Admin_As_Users::get_view_title_roles()
+		 * @see \View_Admin_As\Users::get_view_title_roles()
 		 */
 		if ( ! $this->group_user_roles() ) {
 			$view_title .= $this->get_view_title_roles( $user );
 		}
 
 		// Check if this user is the current view.
-		if ( VAA_API::is_current_view( $user->ID, $this->type ) ) {
+		if ( API::is_current_view( $user->ID, $this->type ) ) {
 			$class .= ' current';
 			if ( 1 === count( $this->store->get_view() ) ) {
 				$href = false;

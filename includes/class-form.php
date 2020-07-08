@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -19,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   1.8.0  Moved to the includes folder.
  * @version 1.8.0
  */
-class VAA_View_Admin_As_Form
+class Form
 {
 	/**
 	 * Generate a view type title and it's view related data.
@@ -31,7 +33,7 @@ class VAA_View_Admin_As_Form
 	 * @static
 	 *
 	 * @param   string                          $title  The title content.
-	 * @param   string|\VAA_View_Admin_As_Type  $type   The view type.
+	 * @param   string|\View_Admin_As\Type  $type   The view type.
 	 * @param   string                          $value  The view value.
 	 * @param   array                           $attr   (optional) Array of other attributes.
 	 * @param   string                          $elem   (optional) HTML element type.
@@ -42,7 +44,7 @@ class VAA_View_Admin_As_Form
 		$class = ( ! empty( $attr['class'] ) ) ? ' ' . $attr['class'] : '';
 
 		$attr['class'] = 'vaa-view-data' . $class;
-		if ( $type instanceof VAA_View_Admin_As_Type ) {
+		if ( $type instanceof Type ) {
 			$attr['vaa-view-type']       = $type->get_type();
 			$attr['vaa-view-type-label'] = $type->get_label_singular();
 		} else {
@@ -69,9 +71,9 @@ class VAA_View_Admin_As_Form
 		$return = array();
 		foreach ( $args as $key => $value ) {
 			$method = $key;
-			if ( is_callable( array( 'VAA_View_Admin_As_Form', $key ) ) ) {
+			if ( is_callable( array( get_class(), $key ) ) ) {
 				$return[] = self::$method( $value );
-			} elseif ( is_callable( array( 'VAA_View_Admin_As_Form', 'do_' . $key ) ) ) {
+			} elseif ( is_callable( array( get_class(), 'do_' . $key ) ) ) {
 				$method   = 'do_' . $key;
 				$return[] = self::$method( $value );
 			}
@@ -84,7 +86,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.2  Added `$element` option.
-	 * @since   1.7.2  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @access  public
 	 * @static
 	 *
@@ -96,7 +98,7 @@ class VAA_View_Admin_As_Form
 	 *     @type  string  $class    (optional)
 	 *     @type  string  $element  (optional)
 	 *     @type  array   $attr     (optional)
-	 *     @type  array   $auto_js  (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  array   $auto_js  (optional) See \View_Admin_As\Form::enable_auto_js().
 	 * }
 	 * @return  string
 	 */
@@ -132,7 +134,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Automatic show/hide description option.
-	 * @since   1.7.2  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @access  public
 	 * @static
 	 *
@@ -149,7 +151,7 @@ class VAA_View_Admin_As_Form
 	 *     @type  string  $class          (optional)
 	 *     @type  array   $type           (optional) Optional input type attribute.
 	 *     @type  array   $attr           (optional)
-	 *     @type  array   $auto_js        (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  array   $auto_js        (optional) See \View_Admin_As\Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide  (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
 	 * }
 	 * @return  string
@@ -190,7 +192,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Automatic show/hide description option + removable option.
-	 * @since   1.7.2  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @access  public
 	 * @static
 	 *
@@ -206,7 +208,7 @@ class VAA_View_Admin_As_Form
 	 *     @type  string  $help            (optional)
 	 *     @type  string  $class           (optional)
 	 *     @type  array   $attr            (optional)
-	 *     @type  array   $auto_js         (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  array   $auto_js         (optional) See \View_Admin_As\Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide   (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
 	 *     @type  bool    $removable       (optional)
 	 * }
@@ -258,7 +260,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Automatic show/hide description option.
-	 * @since   1.7.2  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @access  public
 	 * @static
 	 *
@@ -268,7 +270,7 @@ class VAA_View_Admin_As_Form
 	 *     @type  string  $id             (optional) Will be generated from $name if empty.
 	 *     @type  string  $value          (optional)
 	 *     @type  string  $description    (optional)
-	 *     @type  array   $auto_js        (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  array   $auto_js        (optional) See \View_Admin_As\Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide  (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
 	 *     @type  array   $values {
 	 *         Array of radio options data.
@@ -351,7 +353,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Automatic show/hide description option.
-	 * @since   1.7.2  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @access  public
 	 * @static
 	 *
@@ -365,7 +367,7 @@ class VAA_View_Admin_As_Form
 	 *     @type  string  $help           (optional)
 	 *     @type  string  $class          (optional)
 	 *     @type  array   $attr           (optional)
-	 *     @type  array   $auto_js        (optional) See VAA_View_Admin_As_Form::enable_auto_js().
+	 *     @type  array   $auto_js        (optional) See \View_Admin_As\Form::enable_auto_js().
 	 *     @type  bool    $auto_showhide  (optional) Pass `true` or int for auto show/hide description. Integer stands for the delay (default: 200).
 	 *     @type  array   $values {
 	 *         Arrays of selectbox value data.
@@ -435,7 +437,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Added second `$attr` parameter.
-	 * @since   1.7.2  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @since   1.7.3  Added third `$content` parameter.
 	 * @since   1.7.6  Support SVG and file icons + Base64 encoded strings (just like WP admin menu's).
 	 * @static
@@ -481,7 +483,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Added third `$attr` parameter.
-	 * @since   1.7.2  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @static
 	 *
 	 * @param   string|array  $label  The label. Also accepts an array with a `label` key.
@@ -507,7 +509,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.6.3  Added second `$attr` parameter.
-	 * @since   1.7.2  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @since   1.7.5  Added third `$elem` parameter.
 	 * @static
 	 *
@@ -658,7 +660,7 @@ class VAA_View_Admin_As_Form
 	 * Update auto show/hide trigger and target attributes to enable auto show/hide functionality.
 	 *
 	 * @since   1.7.0
-	 * @since   1.7.2   Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2   Moved from `\View_Admin_As\Admin_Bar`.
 	 * @since   1.7.3   Renamed from `enable_auto_showhide_desc()` + allow multiple values for trigger.
 	 * @static
 	 *
@@ -757,7 +759,7 @@ class VAA_View_Admin_As_Form
 	 *
 	 * @since   1.6.1
 	 * @since   1.7.0   Renamed from `parse_attr_to_html()`
-	 * @since   1.7.2   Support array values. (Example: CSS classes). Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.7.2   Support array values. (Example: CSS classes). Moved from `\View_Admin_As\Admin_Bar`.
 	 * @static
 	 *
 	 * @param   array   $array  Array to parse. (attribute => value pairs)
@@ -818,4 +820,4 @@ class VAA_View_Admin_As_Form
 		return $values;
 	}
 
-} // End class VAA_View_Admin_As_Form.
+} // End class \View_Admin_As\Form.

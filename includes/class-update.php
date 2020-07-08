@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -17,9 +19,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.0
  * @version 1.7.4
- * @uses    \VAA_View_Admin_As_Base Extends class
+ * @uses    \View_Admin_As\Base Extends class
  */
-final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
+final class Update extends Base
 {
 	/**
 	 * Is this a new installation?

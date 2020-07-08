@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -16,11 +18,11 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @since   1.7.0  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
+ * @since   1.7.0  Class got split up: data handling/updating is now in \View_Admin_As\Controller.
  * @version 1.8.4
- * @uses    \VAA_View_Admin_As_Base Extends class
+ * @uses    \View_Admin_As\Base Extends class
  */
-final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
+final class View extends Base
 {
 	/**
 	 * Is the current user modified?
@@ -38,7 +40,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	public function init() {
-		if ( VAA_API::is_view_active() ) {
+		if ( API::is_view_active() ) {
 			$this->do_view();
 		}
 	}
@@ -418,7 +420,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		}
 
 		$user = ( null !== $user ) ? $user : $this->store->get_selectedUser();
-		if ( ! $user instanceof WP_User ) {
+		if ( ! $user instanceof \WP_User ) {
 			$user = get_user_by( $field, $user );
 		}
 

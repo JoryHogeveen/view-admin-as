@@ -5,17 +5,19 @@
  * @since    1.8.0
  * @version  1.8.2
  *
- * @var  \VAA_View_Admin_As_Users  $this
- * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.
- * @var  string                    $root       The current root item.
- * @var  string                    $main_root  The main VAA root item.
+ * @var  \View_Admin_As\Users  $this
+ * @var  \WP_Admin_Bar         $admin_bar  The toolbar object.
+ * @var  string                $root       The current root item.
+ * @var  string                $main_root  The main VAA root item.
  */
+
+namespace View_Admin_As;
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root ) ) {
+if ( isset( $admin_bar ) && $admin_bar instanceof \WP_Admin_Bar && isset( $root ) ) {
 
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
@@ -32,16 +34,16 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 
 		$title = '';
 		if ( $this->group_user_roles() ) {
-			$title = VAA_View_Admin_As_Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) );
+			$title = Form::do_description( __( 'Users are grouped under their roles', VIEW_ADMIN_AS_DOMAIN ) );
 		}
 		if ( $this->ajax_search() ) {
-			$title .= VAA_View_Admin_As_Form::do_select( array(
+			$title .= Form::do_select( array(
 				'name'   => $root . '-search-by',
 				'values' => $this->search_users_by_select_values(),
 				'class'  => 'vaa-wide',
 			) );
 		}
-		$title .= VAA_View_Admin_As_Form::do_input( array(
+		$title .= Form::do_input( array(
 			'name'        => $root . '-search',
 			'placeholder' => __( 'Search', VIEW_ADMIN_AS_DOMAIN ),
 			'class'       => 'vaa-wide',

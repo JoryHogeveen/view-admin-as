@@ -5,17 +5,19 @@
  * @since    1.7.0
  * @version  1.8.0
  *
- * @var  \VAA_View_Admin_As_Caps  $this
- * @var  \WP_Admin_Bar            $admin_bar  The toolbar object.
- * @var  string                   $root       The current root item.
- * @var  string                   $main_root  The main VAA root item.
+ * @var  \View_Admin_As\Caps  $this
+ * @var  \WP_Admin_Bar        $admin_bar  The toolbar object.
+ * @var  string               $root       The current root item.
+ * @var  string               $main_root  The main VAA root item.
  */
+
+namespace View_Admin_As;
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root ) ) {
+if ( isset( $admin_bar ) && $admin_bar instanceof \WP_Admin_Bar && isset( $root ) ) {
 
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
@@ -34,13 +36,13 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 			$checked = (bool) $selected_caps[ $cap ];
 		}
 		// Check for this capability in any view set.
-		if ( $this->vaa->view()->current_view_can( $cap ) ) {
+		if ( view_admin_as()->view()->current_view_can( $cap ) ) {
 			$class .= ' current';
 		}
 		// The list of capabilities.
 		$caps_items .=
 			'<div class="ab-item ' . $class . '">'
-			. VAA_View_Admin_As_Form::do_checkbox(
+			. Form::do_checkbox(
 				array(
 					'name'           => 'vaa_cap_' . esc_attr( $cap ),
 					'value'          => $checked,

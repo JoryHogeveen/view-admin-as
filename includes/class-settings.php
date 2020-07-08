@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -13,15 +15,15 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 /**
  * Settings class that stores the VAA settings for use.
  *
- * @see VAA_View_Admin_As_Store
+ * @see \View_Admin_As\Store
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.0
+ * @since   1.9.0  Convert to trait and use namespace.
  * @version 1.8.6
- * @uses    \VAA_View_Admin_As_Base Extends class
  */
-class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
+trait Settings
 {
 	/**
 	 * The key to use for filters.
@@ -37,7 +39,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Can only be set with set_for_network().
 	 *
 	 * @since  1.7.5
-	 * @see    \VAA_View_Admin_As_Settings::store_optionData()
+	 * @see    \View_Admin_As\Settings::store_optionData()
 	 * @var    bool
 	 */
 	protected $for_network = false;
@@ -47,7 +49,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Can only be set with store_userMeta().
 	 *
 	 * @since  1.7.5
-	 * @see    \VAA_View_Admin_As_Settings::store_userMeta()
+	 * @see    \View_Admin_As\Settings::store_userMeta()
 	 * @var    int
 	 */
 	protected $for_user = null;
@@ -59,7 +61,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.4.0
 	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since  1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @var    string
 	 */
 	protected $optionKey = null;
@@ -69,7 +71,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.4.0
 	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since  1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @var    array
 	 */
 	protected $optionData = array();
@@ -81,7 +83,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.3.4
 	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since  1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @var    string
 	 */
 	protected $userMetaKey = null;
@@ -91,7 +93,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.5.0
 	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since  1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @var    array
 	 */
 	protected $userMeta = array();
@@ -109,7 +111,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.5.0
 	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since  1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @var    array
 	 */
 	protected $defaultSettings = array();
@@ -119,7 +121,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *
 	 * @since  1.5.0
 	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since  1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @var    array
 	 */
 	protected $allowedSettings = array();
@@ -131,7 +133,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @since  1.5.2  Added force_group_users.
 	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since  1.6.1  Added freeze_locale.
-	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since  1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @var    array
 	 */
 	protected $defaultUserSettings = array();
@@ -144,7 +146,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @since  1.5.2  Added force_group_users.
 	 * @since  1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since  1.6.1  Added freeze_locale.
-	 * @since  1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since  1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @var    array
 	 */
 	protected $allowedUserSettings = array();
@@ -153,6 +155,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Sets the default data.
 	 *
 	 * @since   1.7.0
+	 * @since   1.9.0  Renamed from `__construct`
 	 * @access  protected
 	 * @param   string  $id    Identifier for this settings instance.
 	 * @param   array   $args  {
@@ -163,8 +166,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *     @type  array  $allowed_user  The allowed user settings (meta). Use arrays to define all possible values for a setting.
 	 * }
 	 */
-	protected function __construct( $id, $args = array() ) {
-		parent::__construct();
+	protected function init_settings( $id, $args = array() ) {
 
 		if ( empty( $id ) || ! is_string( $id ) ) {
 			return null;
@@ -186,7 +188,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		$default_user = $args['default_user'];
 		$allowed_user = $args['allowed_user'];
 
-		if ( 'VAA_View_Admin_As_Store' === get_class( $this ) ) {
+		if ( 'View_Admin_As\Store' === get_class( $this ) ) {
 
 			$this->set_optionKey( 'vaa_view_admin_as' );
 			$this->set_optionData(
@@ -251,7 +253,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 						// Translators: %1$s stands for an option key and %2$s stands for a class name.
 						esc_html__( 'The setting key %1$s is reserved for class %2$s', VIEW_ADMIN_AS_DOMAIN ),
 						esc_html( $id ),
-						'VAA_View_Admin_As_Store'
+						'\View_Admin_As\Store'
 					),
 					''
 				);
@@ -361,7 +363,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.5.0
 	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since   1.7.0  Moved from `VAA_View_Admin_As_Store`. Added third `$merge` parameter.
+	 * @since   1.7.0  Moved from `\View_Admin_As\Store`. Added third `$merge` parameter.
 	 * @access  public
 	 *
 	 * @param   array       $settings  The new settings.
@@ -403,7 +405,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.5.0
 	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since   1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since   1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @since   1.7.3  Renamed from `store_settings()`.
 	 * @access  public
 	 *
@@ -529,7 +531,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * Should be used together with get_all_user_meta() to get column id's.
 	 *
 	 * @since   1.8.0
-	 * @see     \VAA_View_Admin_As_Settings::get_all_user_meta()
+	 * @see     \View_Admin_As\Settings::get_all_user_meta()
 	 * @param   mixed  $value
 	 * @param   int    $user_id
 	 * @param   int    $column_id
@@ -568,7 +570,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @since   1.5.0
 	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
 	 * @since   1.6.2  Option to remove the VAA metadata for all users.
-	 * @since   1.7.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since   1.7.0  Moved from `\View_Admin_As\Store`.
 	 * @access  public
 	 *
 	 * @param   int|string  $user_id     ID of the user being deleted/removed (pass `all` for all users).
@@ -668,7 +670,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function get_optionData( $key = null ) {
-		return VAA_API::get_array_data( $this->optionData, $key );
+		return API::get_array_data( $this->optionData, $key );
 	}
 
 	/**
@@ -677,7 +679,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function get_userMeta( $key = null ) {
-		return VAA_API::get_array_data( $this->userMeta, $key );
+		return API::get_array_data( $this->userMeta, $key );
 	}
 
 	/**
@@ -686,7 +688,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function get_defaultSettings( $key = null ) {
-		return VAA_API::get_array_data( $this->defaultSettings, $key );
+		return API::get_array_data( $this->defaultSettings, $key );
 	}
 
 	/**
@@ -695,7 +697,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function get_defaultUserSettings( $key = null ) {
-		return VAA_API::get_array_data( $this->defaultUserSettings, $key );
+		return API::get_array_data( $this->defaultUserSettings, $key );
 	}
 
 	/**
@@ -704,7 +706,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  array
 	 */
 	public function get_allowedSettings( $key = null ) {
-		return (array) VAA_API::get_array_data( $this->allowedSettings, $key );
+		return (array) API::get_array_data( $this->allowedSettings, $key );
 	}
 
 	/**
@@ -713,7 +715,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  array
 	 */
 	public function get_allowedUserSettings( $key = null ) {
-		return (array) VAA_API::get_array_data( $this->allowedUserSettings, $key );
+		return (array) API::get_array_data( $this->allowedUserSettings, $key );
 	}
 
 	/**
@@ -722,7 +724,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function get_settings( $key = null ) {
-		return VAA_API::get_array_data(
+		return API::get_array_data(
 			$this->validate_settings(
 				$this->get_optionData( 'settings' ),
 				'global'
@@ -737,7 +739,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function get_userSettings( $key = null ) {
-		return VAA_API::get_array_data(
+		return API::get_array_data(
 			$this->validate_settings(
 				$this->get_userMeta( 'settings' ),
 				'user'
@@ -772,7 +774,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	protected function set_defaultSettings( $val, $key = null, $append = false ) {
-		$this->defaultSettings = VAA_API::set_array_data( $this->defaultSettings, $val, $key, $append );
+		$this->defaultSettings = API::set_array_data( $this->defaultSettings, $val, $key, $append );
 	}
 
 	/**
@@ -783,7 +785,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	protected function set_defaultUserSettings( $val, $key = null, $append = false ) {
-		$this->defaultUserSettings = VAA_API::set_array_data( $this->defaultUserSettings, $val, $key, $append );
+		$this->defaultUserSettings = API::set_array_data( $this->defaultUserSettings, $val, $key, $append );
 	}
 
 	/**
@@ -794,7 +796,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	protected function set_allowedSettings( $val, $key = null, $append = false ) {
-		$this->allowedSettings = VAA_API::set_array_data( $this->allowedSettings, $val, $key, $append );
+		$this->allowedSettings = API::set_array_data( $this->allowedSettings, $val, $key, $append );
 	}
 
 	/**
@@ -805,7 +807,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	protected function set_allowedUserSettings( $val, $key = null, $append = false ) {
-		$this->allowedUserSettings = VAA_API::set_array_data( $this->allowedUserSettings, $val, $key, $append );
+		$this->allowedUserSettings = API::set_array_data( $this->allowedUserSettings, $val, $key, $append );
 	}
 
 	/**
@@ -818,7 +820,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	public function set_settings( $val, $key = null, $append = false ) {
 		$this->set_optionData(
 			$this->validate_settings(
-				VAA_API::set_array_data( $this->get_settings(), $val, $key, $append ),
+				API::set_array_data( $this->get_settings(), $val, $key, $append ),
 				'global'
 			),
 			'settings',
@@ -836,7 +838,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	public function set_userSettings( $val, $key = null, $append = false ) {
 		$this->set_userMeta(
 			$this->validate_settings(
-				VAA_API::set_array_data( $this->get_userSettings(), $val, $key, $append ),
+				API::set_array_data( $this->get_userSettings(), $val, $key, $append ),
 				'user'
 			),
 			'settings',
@@ -852,7 +854,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	public function set_optionData( $val, $key = null, $append = false ) {
-		$this->optionData = VAA_API::set_array_data( $this->optionData, $val, $key, $append );
+		$this->optionData = API::set_array_data( $this->optionData, $val, $key, $append );
 	}
 
 	/**
@@ -863,7 +865,7 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	public function set_userMeta( $val, $key = null, $append = false ) {
-		$this->userMeta = VAA_API::set_array_data( $this->userMeta, $val, $key, $append );
+		$this->userMeta = API::set_array_data( $this->userMeta, $val, $key, $append );
 	}
 
 	/**
@@ -941,4 +943,4 @@ class VAA_View_Admin_As_Settings extends VAA_View_Admin_As_Base
 		return (bool) $this->for_network;
 	}
 
-} // End class VAA_View_Admin_As_Settings.
+} // End class \View_Admin_As\Settings.

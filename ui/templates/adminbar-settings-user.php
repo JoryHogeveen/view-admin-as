@@ -17,6 +17,8 @@
  * - freeze_locale
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -24,7 +26,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 if (
 	isset( $this )
 	&& isset( $this->store )
-	&& isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar
+	&& isset( $admin_bar ) && $admin_bar instanceof \WP_Admin_Bar
 	&& isset( $root )
 ) {
 
@@ -37,7 +39,7 @@ if (
 		array(
 			'id'     => $root . '-admin-menu-location',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_select(
+			'title'  => Form::do_select(
 				array(
 					'name'          => $root . '-admin-menu-location',
 					'value'         => $this->store->get_userSettings( 'admin_menu_location' ),
@@ -78,7 +80,7 @@ if (
 		array(
 			'id'     => $root . '-view-mode',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_radio(
+			'title'  => Form::do_radio(
 				array(
 					'name'          => $root . '-view-mode',
 					'value'         => $this->store->get_userSettings( 'view_mode' ),
@@ -124,7 +126,7 @@ if (
 			array(
 				'id'     => $root . '-disable-super-admin',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_checkbox(
+				'title'  => Form::do_checkbox(
 					array(
 						'name'          => $root . '-disable-super-admin',
 						'value'         => $this->store->get_userSettings( 'disable_super_admin' ),
@@ -157,7 +159,7 @@ if (
 		array(
 			'id'     => $root . '-hide-front',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_checkbox(
+			'title'  => Form::do_checkbox(
 				array(
 					'name'          => $root . '-hide-front',
 					'value'         => $this->store->get_userSettings( 'hide_front' ),
@@ -189,7 +191,7 @@ if (
 		array(
 			'id'     => $root . '-hide-customizer',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_checkbox(
+			'title'  => Form::do_checkbox(
 				array(
 					'name'          => $root . '-hide-customizer',
 					'value'         => $this->store->get_userSettings( 'hide_customizer' ),
@@ -201,7 +203,7 @@ if (
 					'auto_js'       => array(
 						'setting' => 'user_setting',
 						'key'     => 'hide_customizer',
-						'refresh' => VAA_API::is_customizer_admin(),
+						'refresh' => API::is_customizer_admin(),
 					),
 				)
 			),
@@ -219,12 +221,12 @@ if (
 	 * @see     https://github.com/JoryHogeveen/view-admin-as/issues/21
 	 * @since   1.6.1
 	 */
-	if ( VAA_API::validate_wp_version( '4.7' ) ) {
+	if ( API::validate_wp_version( '4.7' ) ) {
 		$admin_bar->add_node(
 			array(
 				'id'     => $root . '-freeze-locale',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_checkbox(
+				'title'  => Form::do_checkbox(
 					array(
 						'name'          => $root . '-freeze-locale',
 						'value'         => $this->store->get_userSettings( 'freeze_locale' ),

@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -18,9 +20,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
  * @version 1.8.0
- * @uses    \VAA_View_Admin_As_Type Extends class
+ * @uses    \View_Admin_As\Type Extends class
  */
-class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
+class Roles extends Type
 {
 	/**
 	 * @since  1.8.0
@@ -95,7 +97,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 */
 	public function modify_user( $user ) {
 
-		if ( $this->get_data( $this->selected ) instanceof WP_Role ) {
+		if ( $this->get_data( $this->selected ) instanceof \WP_Role ) {
 			// @since  1.6.3  Set the current user's role to the current view.
 			$user->caps = array( $this->selected => 1 );
 			// Sets the `allcaps` and `roles` properties correct.
@@ -148,7 +150,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 * Validate data for this view type
 	 *
 	 * @since   1.7.0
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Controller`.
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
@@ -166,7 +168,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 * Add the admin bar items.
 	 *
 	 * @since   1.5.0
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @access  public
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item.
@@ -201,7 +203,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
+			'title'  => Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -245,7 +247,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 * @since   1.5.0
 	 * @since   1.5.2  Get role objects instead of arrays.
 	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Store`.
 	 * @access  public
 	 * @global  \WP_Roles  $wp_roles
 	 * @return  void
@@ -262,7 +264,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		// Store available roles (role_objects for objects, roles for arrays).
 		$roles = $wp_roles->role_objects;
 
-		if ( ! VAA_API::is_super_admin() ) {
+		if ( ! API::is_super_admin() ) {
 
 			// The current user is not a super admin (or regular admin in single installations).
 			unset( $roles['administrator'] );
@@ -276,7 +278,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 					// Remove roles that this user isn't allowed to edit.
 					unset( $roles[ $role_key ] );
 				}
-				elseif ( $role instanceof WP_Role && $role->has_cap( 'view_admin_as' ) ) {
+				elseif ( $role instanceof \WP_Role && $role->has_cap( 'view_admin_as' ) ) {
 					// Remove roles that have the view_admin_as capability.
 					unset( $roles[ $role_key ] );
 				}

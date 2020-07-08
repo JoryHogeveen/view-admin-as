@@ -52,7 +52,7 @@ final class VAA_View_Admin_As
 	 * VAA Hooks.
 	 *
 	 * @since  1.8.0
-	 * @var    \VAA_View_Admin_As_Hooks
+	 * @var    \View_Admin_As\Hooks
 	 */
 	private $hooks = null;
 
@@ -60,7 +60,7 @@ final class VAA_View_Admin_As
 	 * VAA Store.
 	 *
 	 * @since  1.6.0
-	 * @var    \VAA_View_Admin_As_Store
+	 * @var    \View_Admin_As\Store
 	 */
 	private $store = null;
 
@@ -68,7 +68,7 @@ final class VAA_View_Admin_As
 	 * VAA Controller.
 	 *
 	 * @since  1.6.0
-	 * @var    \VAA_View_Admin_As_Controller
+	 * @var    \View_Admin_As\Controller
 	 */
 	private $controller = null;
 
@@ -76,7 +76,7 @@ final class VAA_View_Admin_As
 	 * VAA View handler.
 	 *
 	 * @since  1.6.0
-	 * @var    \VAA_View_Admin_As_View
+	 * @var    \View_Admin_As\View
 	 */
 	private $view = null;
 
@@ -95,7 +95,7 @@ final class VAA_View_Admin_As
 	 * @since  1.4.0
 	 * @see    \VAA_View_Admin_As::load_modules()
 	 * @see    \VAA_View_Admin_As::register_module()
-	 * @var    \VAA_View_Admin_As_Module[]
+	 * @var    \View_Admin_As\Module[]
 	 */
 	private $modules = array();
 
@@ -105,7 +105,7 @@ final class VAA_View_Admin_As
 	 * @since  1.8.0
 	 * @see    \VAA_View_Admin_As::load_modules()
 	 * @see    \VAA_View_Admin_As::register_view_type()
-	 * @var    \VAA_View_Admin_As_Type[]
+	 * @var    \View_Admin_As\Type[]
 	 */
 	private $view_types = array();
 
@@ -116,19 +116,19 @@ final class VAA_View_Admin_As
 	 * @var    array
 	 */
 	private $classes = array(
-		'VAA_Util'                     => 'includes/class-util.php',
-		'VAA_API'                      => 'includes/class-api.php',
-		'VAA_View_Admin_As_Base'       => 'includes/class-base.php',
-		'VAA_View_Admin_As_Hooks'      => 'includes/class-hooks.php',
-		'VAA_View_Admin_As_Settings'   => 'includes/class-settings.php',
-		'VAA_View_Admin_As_Store'      => 'includes/class-store.php',
-		'VAA_View_Admin_As_Controller' => 'includes/class-controller.php',
-		'VAA_View_Admin_As_View'       => 'includes/class-view.php',
-		'VAA_View_Admin_As_Update'     => 'includes/class-update.php',
-		'VAA_View_Admin_As_Compat'     => 'includes/class-compat.php',
-		'VAA_View_Admin_As_Type'       => 'includes/class-type.php',
-		'VAA_View_Admin_As_Module'     => 'includes/class-module.php',
-		'VAA_View_Admin_As_Form'       => 'includes/class-form.php',
+		'View_Admin_As\Util'       => 'includes/class-util.php',
+		'View_Admin_as\API'        => 'includes/class-api.php',
+		'View_Admin_As\Base'       => 'includes/class-base.php',
+		'View_Admin_As\Hooks'      => 'includes/class-hooks.php',
+		'View_Admin_As\Settings'   => 'includes/class-settings.php',
+		'View_Admin_As\Store'      => 'includes/class-store.php',
+		'View_Admin_As\Controller' => 'includes/class-controller.php',
+		'View_Admin_As\View'       => 'includes/class-view.php',
+		'View_Admin_As\Update'     => 'includes/class-update.php',
+		'View_Admin_As\Compat'     => 'includes/class-compat.php',
+		'View_Admin_As\Type'       => 'includes/class-type.php',
+		'View_Admin_As\Module'     => 'includes/class-module.php',
+		'View_Admin_As\Form'       => 'includes/class-form.php',
 	);
 
 	/**
@@ -172,7 +172,7 @@ final class VAA_View_Admin_As
 	 * @param   string  $class  The class name.
 	 */
 	public function _autoload( $class ) {
-		if ( 0 !== strpos( $class, 'VAA_' ) ) {
+		if ( 0 !== strpos( $class, 'VAA_' ) || 0 !== strpos( $class, 'View_Admin_As' ) ) {
 			return;
 		}
 		if ( isset( $this->classes[ $class ] ) ) {
@@ -234,26 +234,26 @@ final class VAA_View_Admin_As
 	 */
 	private function run() {
 
-		$this->hooks      = new VAA_View_Admin_As_Hooks();
-		$this->store      = VAA_View_Admin_As_Store::get_instance( $this );
-		$this->controller = VAA_View_Admin_As_Controller::get_instance( $this );
-		$this->view       = VAA_View_Admin_As_View::get_instance( $this );
+		$this->hooks      = new View_Admin_As\Hooks();
+		$this->store      = View_Admin_As\Store::get_instance();
+		$this->controller = View_Admin_As\Controller::get_instance();
+		$this->view       = View_Admin_As\View::get_instance();
 
 		$this->set_enabled();
 
 		$this->load_modules();
 
 		// Check if a database update is needed.
-		VAA_View_Admin_As_Update::get_instance( $this )->maybe_db_update();
+		View_Admin_As\Update::get_instance()->maybe_db_update();
 
 		if ( $this->is_enabled() ) {
 
-			if ( VAA_View_Admin_As_Update::$fresh_install ) {
+			if ( View_Admin_As\Update::$fresh_install ) {
 				$this->welcome_notice();
 			}
 
 			// Third party compatibility.
-			VAA_View_Admin_As_Compat::get_instance( $this )->init();
+			View_Admin_As\Compat::get_instance()->init();
 
 			/**
 			 * Plugin enabled + update and compat scripts done.
@@ -321,10 +321,10 @@ final class VAA_View_Admin_As
 	public function validate_user() {
 
 		if ( is_network_admin() ) {
-			$valid = VAA_API::is_superior_admin( $this->store->get_curUser()->ID );
+			$valid = View_Admin_As\API::is_superior_admin( $this->store->get_curUser()->ID );
 		} else {
 			$valid = (
-				VAA_API::is_super_admin()
+				View_Admin_As\API::is_super_admin()
 				|| ( current_user_can( 'view_admin_as' ) && current_user_can( 'edit_users' ) )
 			);
 		}
@@ -413,7 +413,7 @@ final class VAA_View_Admin_As
 			$this->include_file( VIEW_ADMIN_AS_DIR . $inc['file'], $class );
 
 			// If it's a class file, add the class instance to the group.
-			if ( ! empty( $class ) && VAA_API::exists_callable( array( $class, 'get_instance' ) ) ) {
+			if ( ! empty( $class ) && View_Admin_As\API::exists_callable( array( $class, 'get_instance' ) ) ) {
 				$group[ $key ] = call_user_func( array( $class, 'get_instance' ) );
 			}
 		}
@@ -434,19 +434,19 @@ final class VAA_View_Admin_As
 		$includes = array(
 			'ui'        => array(
 				'file'  => 'ui/class-ui.php',
-				'class' => 'VAA_View_Admin_As_UI',
+				'class' => 'View_Admin_As\UI',
 			),
 			'admin_bar' => array(
 				'file'  => 'ui/class-admin-bar.php',
-				'class' => 'VAA_View_Admin_As_Admin_Bar',
+				'class' => 'View_Admin_As\Admin_Bar',
 			),
 		);
 
 		// Compat for < 4.2 since it breaks due to WP calling require() instead of require_once().
-		if ( VAA_API::validate_wp_version( '4.2' ) ) {
+		if ( View_Admin_As\API::validate_wp_version( '4.2' ) ) {
 			$includes['toolbar'] = array(
 				'file'  => 'ui/class-toolbar.php',
-				'class' => 'VAA_View_Admin_As_Toolbar',
+				'class' => 'View_Admin_As\Toolbar',
 			);
 		}
 
@@ -466,41 +466,41 @@ final class VAA_View_Admin_As
 		$includes = array(
 			'role_switcher'       => array(
 				'file'  => 'modules/class-roles.php',
-				'class' => 'VAA_View_Admin_As_Roles',
+				'class' => 'View_Admin_As\Roles',
 			),
 			'user_switcher'       => array(
 				'file'  => 'modules/class-users.php',
-				'class' => 'VAA_View_Admin_As_Users',
+				'class' => 'View_Admin_As\Users',
 			),
 			'capability_switcher' => array(
 				'file'  => 'modules/class-caps.php',
-				'class' => 'VAA_View_Admin_As_Caps',
+				'class' => 'View_Admin_As\Caps',
 			),
 			'language_switcher'   => array(
 				'file'  => 'modules/class-languages.php',
-				'class' => 'VAA_View_Admin_As_Languages',
+				'class' => 'View_Admin_As\Languages',
 			),
 			'role_defaults'       => array(
 				'file'  => 'modules/class-role-defaults.php',
-				'class' => 'VAA_View_Admin_As_Role_Defaults',
+				'class' => 'View_Admin_As\Role_Defaults',
 			),
 			'role_manager'        => array(
 				'file'  => 'modules/class-role-manager.php',
-				'class' => 'VAA_View_Admin_As_Role_Manager',
+				'class' => 'View_Admin_As\Role_Manager',
 			),
 		);
 
-		if ( VAA_API::exists_callable( array( 'RUA_App', 'instance' ) ) ) {
+		if ( View_Admin_As\API::exists_callable( array( 'RUA_App', 'instance' ) ) ) {
 			$includes['rua_level'] = array(
 				'file'  => 'modules/class-restrict-user-access.php',
-				'class' => 'VAA_View_Admin_As_RUA',
+				'class' => 'View_Admin_As\RUA',
 			);
 		}
 
-		if ( VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
+		if ( View_Admin_As\API::exists_callable( array( 'Groups_Group', 'get_groups' ) ) ) {
 			$includes['groups'] = array(
 				'file'  => 'modules/class-groups.php',
-				'class' => 'VAA_View_Admin_As_Groups',
+				'class' => 'View_Admin_As\Groups',
 			);
 		}
 
@@ -532,7 +532,7 @@ final class VAA_View_Admin_As
 
 		load_plugin_textdomain( VIEW_ADMIN_AS_DOMAIN );
 
-		if ( VAA_API::validate_wp_version( '5.2' ) ) {
+		if ( View_Admin_As\API::validate_wp_version( '5.2' ) ) {
 			// Roles are now translated in all cases.
 			return;
 		}
@@ -555,7 +555,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.8.0
 	 * @access  public
-	 * @return  \VAA_View_Admin_As_Hooks
+	 * @return  \View_Admin_As\Hooks
 	 */
 	public function hooks() {
 		return $this->hooks;
@@ -566,7 +566,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.0
 	 * @access  public
-	 * @return  \VAA_View_Admin_As_Store
+	 * @return  \View_Admin_As\Store
 	 */
 	public function store() {
 		return $this->store;
@@ -577,7 +577,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.7.0
 	 * @access  public
-	 * @return  \VAA_View_Admin_As_Controller
+	 * @return  \View_Admin_As\Controller
 	 */
 	public function controller() {
 		return $this->controller;
@@ -588,7 +588,7 @@ final class VAA_View_Admin_As
 	 *
 	 * @since   1.6.0
 	 * @access  public
-	 * @return  \VAA_View_Admin_As_View
+	 * @return  \View_Admin_As\View
 	 */
 	public function view() {
 		return $this->view;
@@ -602,10 +602,10 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 * @see     \VAA_View_Admin_As::load_ui()
 	 * @param   string  $key  (optional) UI class name.
-	 * @return  \VAA_View_Admin_As_Module|\VAA_View_Admin_As_Module[]
+	 * @return  \View_Admin_As\Module|\View_Admin_As\Module[]
 	 */
 	public function get_ui( $key = null ) {
-		return VAA_API::get_array_data( $this->ui, $key );
+		return View_Admin_As\API::get_array_data( $this->ui, $key );
 	}
 
 	/**
@@ -616,7 +616,7 @@ final class VAA_View_Admin_As
 	 * @access  public
 	 * @param   string  $key           (optional) The type key.
 	 * @param   bool    $check_access  (optional) Check if the user has access? Default: true.
-	 * @return  \VAA_View_Admin_As_Type|\VAA_View_Admin_As_Type[]
+	 * @return  \View_Admin_As\Type|\View_Admin_As\Type[]
 	 */
 	public function get_view_types( $key = null, $check_access = true ) {
 		$view_types = $this->view_types;
@@ -627,7 +627,7 @@ final class VAA_View_Admin_As
 				}
 			}
 		}
-		$view_types = VAA_API::get_array_data( $view_types, $key );
+		$view_types = View_Admin_As\API::get_array_data( $view_types, $key );
 		return $view_types;
 	}
 
@@ -658,7 +658,7 @@ final class VAA_View_Admin_As
 	 * @return  object|object[]
 	 */
 	public function get_modules( $key = null ) {
-		return VAA_API::get_array_data( $this->modules, $key );
+		return View_Admin_As\API::get_array_data( $this->modules, $key );
 	}
 
 	/**
@@ -858,7 +858,7 @@ final class VAA_View_Admin_As
 		// Make sure the main class is initialized.
 		view_admin_as();
 		// Set the update class to a fresh installation which will trigger the update.
-		VAA_View_Admin_As_Update::$fresh_install = true;
+		View_Admin_As\Update::$fresh_install = true;
 	}
 
 	/**

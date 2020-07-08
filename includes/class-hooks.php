@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -19,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   1.8.0
  * @version 1.8.2
  */
-class VAA_View_Admin_As_Hooks
+class Hooks
 {
 	/**
 	 * The array of actions registered with WordPress.
@@ -55,7 +57,7 @@ class VAA_View_Admin_As_Hooks
 			return _wp_filter_build_unique_id( $hook, $callback, $priority );
 		}
 		// Fallback since `_wp_filter_build_unique_id()` is a private WP function.
-		return VAA_API::callable_to_string( $callback );
+		return API::callable_to_string( $callback );
 	}
 
 	/**
@@ -393,7 +395,7 @@ class VAA_View_Admin_As_Hooks
 		if ( $keys ) {
 			$keys = (array) $keys;
 			foreach ( $keys as $key ) {
-				$data = VAA_API::get_array_data( $data, $key );
+				$data = API::get_array_data( $data, $key );
 			}
 		}
 		return $data;
@@ -452,4 +454,4 @@ class VAA_View_Admin_As_Hooks
 		return $hooks;
 	}
 
-} // End class VAA_View_Admin_As_Hooks.
+} // End class \View_Admin_As\Hooks.

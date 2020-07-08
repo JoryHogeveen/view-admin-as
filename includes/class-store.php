@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -17,10 +19,12 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.0
  * @version 1.8.0
- * @uses    \VAA_View_Admin_As_Settings Extends class
+ * @uses    \View_Admin_As\Base Extends class
+ * @uses    \View_Admin_As\Settings Trait class
  */
-final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
+final class Store extends Base
 {
+	use Settings;
 
 	/**
 	 * The nonce.
@@ -41,9 +45,9 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 
 	/**
 	 * View type data.
-	 * You can add custom view data with VAA_View_Admin_As_Store::set_data().
+	 * You can add custom view data with View_Admin_As\Store::set_data().
 	 *
-	 * @see    \VAA_View_Admin_As_Store::set_data()
+	 * @see    \View_Admin_As\Store::set_data()
 	 * @since  1.7.0
 	 * @var    array {
 	 *     Default view data.
@@ -133,8 +137,9 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @since  1.6.0
 	 */
 	protected function __construct() {
-		parent::__construct( 'view-admin-as' );
+		parent::__construct();
 
+		$this->init_settings( 'view-admin-as' );
 		$this->init( true );
 	}
 
@@ -157,11 +162,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 		// Get the current user session (WP 4.0+).
 		$this->set_curUserSession( (string) wp_get_session_token() );
 
-		$this->curUserHasFullAccess = VAA_API::user_has_full_access( $this->get_curUser() );
+		$this->curUserHasFullAccess = API::user_has_full_access( $this->get_curUser() );
 		$this->curUserData          = get_object_vars( $this->get_curUser() );
 
 		// Get database settings.
-		$this->store_optionData( VAA_View_Admin_As::is_network_active() );
+		$this->store_optionData( \VAA_View_Admin_As::is_network_active() );
 		// Get database settings of the current user.
 		$this->store_userMeta( get_current_user_id() );
 
@@ -185,7 +190,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  bool
 	 */
 	public function is_curUser( $user ) {
-		if ( $user instanceof WP_User ) {
+		if ( $user instanceof \WP_User ) {
 			$user = $user->ID;
 		}
 		if ( ! is_numeric( $user ) ) {
@@ -199,7 +204,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * Will validate the original user if it is the current user or no user ID is passed.
 	 * This can prevent invalid checks after a view is applied.
 	 *
-	 * @see     \VAA_API::is_super_admin()
+	 * @see     \View_Admin_As\API::is_super_admin()
 	 * @deprecated  1.8.0
 	 * @todo    Remove in 1.9
 	 *
@@ -210,11 +215,11 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  bool
 	 */
 	public function is_super_admin( $user_id = null ) {
-		_deprecated_function( __FUNCTION__, '1.8', 'VAA_API::is_super_admin()' );
+		_deprecated_function( __FUNCTION__, '1.8', 'API::is_super_admin()' );
 		if ( null === $user_id || (int) $this->curUser->ID === (int) $user_id ) {
 			return $this->curUserHasFullAccess;
 		}
-		return VAA_API::user_has_full_access( $user_id );
+		return API::user_has_full_access( $user_id );
 	}
 
 	/**
@@ -229,7 +234,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  mixed
 	 */
 	public function get_originalUserData( $key = null ) {
-		return VAA_API::get_array_data( $this->curUserData, $key );
+		return API::get_array_data( $this->curUserData, $key );
 	}
 
 	/**
@@ -255,7 +260,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  mixed
 	 */
 	public function get_view( $key = null ) {
-		return VAA_API::get_array_data( $this->view, $key );
+		return API::get_array_data( $this->view, $key );
 	}
 
 	/**
@@ -267,7 +272,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 */
 	public function get_data( $type, $key = null ) {
 		if ( isset( $this->data[ $type ] ) ) {
-			return VAA_API::get_array_data( $this->data[ $type ], $key );
+			return API::get_array_data( $this->data[ $type ], $key );
 		}
 		return null;
 	}
@@ -362,7 +367,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  bool[]|bool  Array of capabilities or a single capability value.
 	 */
 	public function get_selectedCaps( $key = null ) {
-		return VAA_API::get_array_data( $this->selectedCaps, $key );
+		return API::get_array_data( $this->selectedCaps, $key );
 	}
 
 	/**
@@ -397,7 +402,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @param   \WP_User  $val  User object.
 	 * @return  void
 	 */
-	public function set_curUser( WP_User $val ) {
+	public function set_curUser( \WP_User $val ) {
 		$this->curUser = $val;
 	}
 
@@ -418,7 +423,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_view( $val, $key = null, $append = false ) {
-		$this->view = (array) VAA_API::set_array_data( $this->view, $val, $key, $append );
+		$this->view = (array) API::set_array_data( $this->view, $val, $key, $append );
 	}
 
 	/**
@@ -432,13 +437,13 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_data( $type, $val, $key = null, $append = false ) {
-		if ( VAA_API::exists_callable( array( $this, 'set_' . $type ) ) ) {
+		if ( API::exists_callable( array( $this, 'set_' . $type ) ) ) {
 			$method = 'set_' . $type;
 			$this->$method( $val, $key, $append );
 			return;
 		}
 		$current             = ( isset( $this->data[ $type ] ) ) ? $this->data[ $type ] : array();
-		$this->data[ $type ] = (array) VAA_API::set_array_data( $current, $val, $key, $append );
+		$this->data[ $type ] = (array) API::set_array_data( $current, $val, $key, $append );
 	}
 
 	/**
@@ -449,7 +454,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_caps( $val, $key = null, $append = false ) {
-		$this->data['caps'] = (array) VAA_API::set_array_data( $this->data['caps'], $val, $key, $append );
+		$this->data['caps'] = (array) API::set_array_data( $this->data['caps'], $val, $key, $append );
 	}
 
 	/**
@@ -460,7 +465,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_roles( $val, $key = null, $append = false ) {
-		$this->data['roles'] = (array) VAA_API::set_array_data( $this->data['roles'], $val, $key, $append );
+		$this->data['roles'] = (array) API::set_array_data( $this->data['roles'], $val, $key, $append );
 	}
 
 	/**
@@ -472,7 +477,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_rolenames( $val, $key = null, $append = false ) {
-		$this->data['rolenames'] = (array) VAA_API::set_array_data( $this->data['rolenames'], $val, $key, $append );
+		$this->data['rolenames'] = (array) API::set_array_data( $this->data['rolenames'], $val, $key, $append );
 	}
 
 	/**
@@ -483,7 +488,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_users( $val, $key = null, $append = false ) {
-		$this->data['users'] = (array) VAA_API::set_array_data( $this->data['users'], $val, $key, $append );
+		$this->data['users'] = (array) API::set_array_data( $this->data['users'], $val, $key, $append );
 	}
 
 	/**
@@ -495,7 +500,7 @@ final class VAA_View_Admin_As_Store extends VAA_View_Admin_As_Settings
 	 * @return  void
 	 */
 	public function set_languages( $val, $key = null, $append = false ) {
-		$this->data['languages'] = (array) VAA_API::set_array_data( $this->data['languages'], $val, $key, $append );
+		$this->data['languages'] = (array) API::set_array_data( $this->data['languages'], $val, $key, $append );
 	}
 
 	/**

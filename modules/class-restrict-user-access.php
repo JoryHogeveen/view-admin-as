@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -22,9 +24,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.4
  * @version 1.8.4
- * @uses    \VAA_View_Admin_As_Type Extends class
+ * @uses    \View_Admin_As\Type Extends class
  */
-final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
+final class RUA extends Type
 {
 	/**
 	 * @since  1.6.4
@@ -100,22 +102,22 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 */
 	protected function __construct() {
 
-		if ( is_network_admin() || ! VAA_API::exists_callable( array( 'RUA_App', 'instance' ), 'debug' ) ) {
+		if ( is_network_admin() || ! API::exists_callable( array( 'RUA_App', 'instance' ), 'debug' ) ) {
 			return;
 		}
-		$this->ruaApp = RUA_App::instance();
+		$this->ruaApp = \RUA_App::instance();
 
 		if ( ! is_object( $this->ruaApp->level_manager ) ) {
 			return;
 		}
 		$this->ruaLevelManager = $this->ruaApp->level_manager;
 
-		$this->ruaMetaPrefix   = ( defined( 'RUA_App::META_PREFIX' ) ) ? RUA_App::META_PREFIX : '_ca_';
-		$this->ruaTypeRestrict = ( defined( 'RUA_App::TYPE_RESTRICT' ) ) ? RUA_App::TYPE_RESTRICT : 'restriction';
-		$this->ruaScreen       = ( defined( 'RUA_App::BASE_SCREEN' ) ) ? RUA_App::BASE_SCREEN : 'wprua';
-		$this->cap             = ( defined( 'RUA_App::CAPABILITY' ) ) ? RUA_App::CAPABILITY : 'manage_options';
+		$this->ruaMetaPrefix   = ( defined( 'RUA_App::META_PREFIX' ) ) ? \RUA_App::META_PREFIX : '_ca_';
+		$this->ruaTypeRestrict = ( defined( 'RUA_App::TYPE_RESTRICT' ) ) ? \RUA_App::TYPE_RESTRICT : 'restriction';
+		$this->ruaScreen       = ( defined( 'RUA_App::BASE_SCREEN' ) ) ? \RUA_App::BASE_SCREEN : 'wprua';
+		$this->cap             = ( defined( 'RUA_App::CAPABILITY' ) ) ? \RUA_App::CAPABILITY : 'manage_options';
 
-		parent::__construct( $vaa );
+		parent::__construct();
 
 		if ( ! $this->has_access() ) {
 			return;
@@ -170,10 +172,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 
 		if ( parent::do_view() ) {
 
-			if ( ! VAA_API::exists_callable( array( 'WPCALoader', 'load' ), 'debug' ) ) {
+			if ( ! API::exists_callable( array( 'WPCALoader', 'load' ), 'debug' ) ) {
 				return;
 			}
-			WPCALoader::load();
+			\WPCALoader::load();
 
 			//$this->selected     = $this->store->get_view( $this->type );
 			$this->selectedCaps = $this->get_level_caps( $this->selected, true );
@@ -184,13 +186,13 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			$this->add_filter( 'get_user_metadata', array( $this, 'get_user_metadata' ), 10, 3 );
 
 			// Administrators can see all restricted content in RUA.
-			if ( VAA_API::is_view_active() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
+			if ( API::is_view_active() && ! $this->store->get_selectedCaps( 'administrator' ) ) {
 				// Not a view with administrator capability == no global access.
 				$this->add_filter( 'rua/user/global-access', '__return_false' );
 			}
 		}
 
-		if ( VAA_API::is_user_modified() && is_object( $this->ruaLevelManager ) ) {
+		if ( API::is_user_modified() && is_object( $this->ruaLevelManager ) ) {
 
 			if ( is_callable( array( $this->ruaLevelManager, 'reset_user_levels_caps' ) ) ) {
 				/**
@@ -331,7 +333,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			$admin_bar->add_node( array(
 				'id'     => $root . '-title',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
+				'title'  => Form::do_icon( $this->icon ) . $this->label,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -342,8 +344,8 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			$admin_bar->add_node( array(
 				'id'     => $root . '-admin',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_description(
-					VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
+				'title'  => Form::do_description(
+					Form::do_icon( 'dashicons-admin-links' )
 					. __( 'Plugin' ) . ': ' . $this->translate_remote( 'Restrict User Access' )
 				),
 				'href'   => menu_page_url( $this->ruaScreen, false ),
@@ -357,7 +359,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			$admin_bar->add_node( array(
 				'id'     => $root . '-rua-levels',
 				'parent' => $root,
-				'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
+				'title'  => Form::do_icon( $this->icon ) . $this->label,
 				'href'   => false,
 				'meta'   => array(
 					'class'    => 'vaa-has-icon',
@@ -386,12 +388,12 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 			if ( $role ) {
 				$view_data['role'] = $role;
 			}
-			$href  = VAA_API::get_vaa_action_link( $view_data );
+			$href  = API::get_vaa_action_link( $view_data );
 			$class = 'vaa-' . $this->type . '-item';
-			$title = VAA_View_Admin_As_Form::do_view_title( $level->post_title, $this, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
+			$title = Form::do_view_title( $level->post_title, $this, ( $role ) ? wp_json_encode( $view_data ) : $view_value );
 			// Check if this level is the current view.
 			if ( $this->store->get_view( $this->type ) ) {
-				if ( VAA_API::is_current_view( $view_value, $this->type ) ) {
+				if ( API::is_current_view( $view_value, $this->type ) ) {
 					$class .= ' current';
 					if ( 1 === count( $this->store->get_view() ) && empty( $role ) ) {
 						// The node item is the only view and is not related to a role.
@@ -558,7 +560,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * @return  string
 	 */
 	public function translate_remote( $string ) {
-		$domain = ( defined( 'RUA_App::DOMAIN' ) ) ? RUA_App::DOMAIN : 'restrict-user-access';
+		$domain = ( defined( 'RUA_App::DOMAIN' ) ) ? \RUA_App::DOMAIN : 'restrict-user-access';
 		// @codingStandardsIgnoreLine >> Prevent groups translation from getting parsed by translate.wordpress.org
 		return __( $string, $domain );
 	}

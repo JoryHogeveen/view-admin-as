@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -18,9 +20,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   1.3.0  View type existed in core.
  * @since   1.8.0  Created this class.
  * @version 1.8.3
- * @uses    \VAA_View_Admin_As_Type Extends class
+ * @uses    \View_Admin_As\Type Extends class
  */
-class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
+class Caps extends Type
 {
 	/**
 	 * @since  1.8.0
@@ -128,7 +130,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 * Validate data for this view type
 	 *
 	 * @since   1.7.0
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Controller`.
 	 * @access  public
 	 * @param   null   $null  Default return (invalid)
 	 * @param   mixed  $data  The view data
@@ -144,7 +146,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			ksort( $data );
 
 			// Only allow assigned capabilities if it isn't a super admin.
-			if ( ! VAA_API::is_super_admin() ) {
+			if ( ! API::is_super_admin() ) {
 				$data = array_intersect_key( $data, $this->store->get_caps() );
 			}
 
@@ -174,9 +176,9 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		}
 
 		// Check if the selected caps are equal to the default caps.
-		if ( VAA_API::array_equal( $this->store->get_curUser()->allcaps, $data ) ) {
+		if ( API::array_equal( $this->store->get_curUser()->allcaps, $data ) ) {
 			// The selected caps are equal to the current user default caps so we can reset the view.
-			$this->vaa->controller()->reset_view();
+			view_admin_as()->controller()->reset_view();
 			if ( $this->selected ) {
 				// The user was in a custom caps view.
 				$success = true; // and continue.
@@ -195,7 +197,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			$new_caps = array_map( 'absint', $data );
 
 			// Check if the new caps selection is different.
-			if ( VAA_API::array_equal( $this->selected, $new_caps ) ) {
+			if ( API::array_equal( $this->selected, $new_caps ) ) {
 				$success = array(
 					'success' => false,
 					'data'    => array(
@@ -215,7 +217,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 * Add the admin bar items.
 	 *
 	 * @since   1.5.0
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Admin_Bar`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Admin_Bar`.
 	 * @access  public
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item.
@@ -268,7 +270,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
+			'title'  => Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title' . $title_class,
@@ -310,20 +312,20 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-applycaps',
 			'parent' => $root . '-manager',
-			'title'  => VAA_View_Admin_As_Form::do_button( array(
+			'title'  => Form::do_button( array(
 				'name'  => 'apply-caps-view',
 				'label' => __( 'Apply view', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => 'button-primary',
 			) )
-			. VAA_View_Admin_As_Form::do_button( array(
+			. Form::do_button( array(
 				'name'    => 'close-caps-popup',
-				'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-editor-contract' ),
+				'label'   => Form::do_icon( 'dashicons-editor-contract' ),
 				'class'   => 'button-secondary vaa-icon vaa-hide-responsive',
 				'element' => 'a',
 			) )
-			. VAA_View_Admin_As_Form::do_button( array(
+			. Form::do_button( array(
 				'name'    => 'open-caps-popup',
-				'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-editor-expand' ),
+				'label'   => Form::do_icon( 'dashicons-editor-expand' ),
 				'class'   => 'button-secondary vaa-icon vaa-hide-responsive',
 				'element' => 'a',
 			) ),
@@ -403,7 +405,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.4.1
 	 * @since   1.6.0  Moved from `VAA_View_Admin_As`.
-	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Store`.
+	 * @since   1.8.0  Moved from `\View_Admin_As\Store`.
 	 * @access  public
 	 * @return  void
 	 */
@@ -417,13 +419,13 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		}
 
 		// Only allow to add capabilities for an admin (or super admin).
-		if ( VAA_API::is_super_admin() ) {
+		if ( API::is_super_admin() ) {
 
 			/**
 			 * Add compatibility for other cap managers.
 			 *
 			 * @since  1.5.0
-			 * @see    \VAA_View_Admin_As_Compat->init()
+			 * @see    \View_Admin_As\Compat::init()
 			 * @param  array  $caps  An empty array, waiting to be filled with capabilities.
 			 * @return array
 			 */

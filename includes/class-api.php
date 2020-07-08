@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -19,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @version 1.8.6
  * @uses    \VAA_Util Extends class
  */
-final class VAA_API extends VAA_Util
+final class API extends Util
 {
 	/**
 	 * Check if a user has full access to this plugin.
@@ -33,7 +35,7 @@ final class VAA_API extends VAA_Util
 	 * @return  bool
 	 */
 	public static function user_has_full_access( $user ) {
-		if ( ! $user instanceof WP_User ) {
+		if ( ! $user instanceof \WP_User ) {
 			$user = get_user_by( 'ID', $user );
 			if ( ! $user ) {
 				return false;
@@ -80,8 +82,8 @@ final class VAA_API extends VAA_Util
 	 * This check is more strict for single installations since it checks VAA_API::user_has_full_access.
 	 * It will validate the original user while in a view and no parameter is passed.
 	 *
-	 * @see  \VAA_API::user_has_full_access()
-	 * @see  \VAA_View_Admin_As_Store::cur_user_has_full_access()
+	 * @see  \View_Admin_As\API::user_has_full_access()
+	 * @see  \View_Admin_As\Store::cur_user_has_full_access()
 	 *
 	 * @since   1.6.3
 	 * @since   1.8.0  Check full access.
@@ -129,7 +131,7 @@ final class VAA_API extends VAA_Util
 
 		if ( null === $user_id ) {
 			$user_id = view_admin_as()->store()->get_originalUserData( 'ID' );
-		} elseif ( $user_id instanceof WP_User ) {
+		} elseif ( $user_id instanceof \WP_User ) {
 			$user_id = $user_id->ID;
 		}
 
@@ -170,7 +172,7 @@ final class VAA_API extends VAA_Util
 	/**
 	 * Get the current active view. Returns `null` if no view (type) is active.
 	 *
-	 * @see  \VAA_View_Admin_As_Store::get_view()
+	 * @see  \View_Admin_As\Store::get_view()
 	 *
 	 * @since   1.8.3
 	 * @access  public
@@ -206,7 +208,7 @@ final class VAA_API extends VAA_Util
 	/**
 	 * Check if the provided data is the same as the current view.
 	 *
-	 * @see  \VAA_View_Admin_As_Controller::is_current_view()
+	 * @see  \View_Admin_As\Controller::is_current_view()
 	 *
 	 * @since   1.7.1
 	 * @access  public
@@ -232,7 +234,7 @@ final class VAA_API extends VAA_Util
 	 * Is the current user modified?
 	 * Returns true if the currently active user's capabilities or roles are changed by the selected view.
 	 *
-	 * @see  \VAA_View_Admin_As_View::current_view_can()
+	 * @see  \View_Admin_As\View::current_view_can()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -252,7 +254,7 @@ final class VAA_API extends VAA_Util
 	/**
 	 * Similar function to current_user_can() but applies to the currently active view.
 	 *
-	 * @see  \VAA_View_Admin_As_View::current_view_can()
+	 * @see  \View_Admin_As\View::current_view_can()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -275,8 +277,8 @@ final class VAA_API extends VAA_Util
 	/**
 	 * Set the current view.
 	 *
-	 * @see  \VAA_View_Admin_As_Controller::update()
-	 * @see  \VAA_View_Admin_As_Controller::update_view()
+	 * @see  \View_Admin_As\Controller::update()
+	 * @see  \View_Admin_As\Controller::update_view()
 	 *
 	 * @since   1.8.3
 	 * @access  public
@@ -311,13 +313,13 @@ final class VAA_API extends VAA_Util
 		$type = view_admin_as()->get_view_types( $type );
 		if ( is_array( $type ) ) {
 			foreach ( $type as $view_type ) {
-				if ( ! $view_type instanceof VAA_View_Admin_As_Type || ! $view_type->is_enabled() ) {
+				if ( ! $view_type instanceof Type || ! $view_type->is_enabled() ) {
 					return false;
 				}
 			}
 			return true;
 		}
-		if ( $type instanceof VAA_View_Admin_As_Type ) {
+		if ( $type instanceof Type ) {
 			return $type->is_enabled();
 		}
 		return false;
@@ -432,8 +434,8 @@ final class VAA_API extends VAA_Util
 	 */
 	public static function is_vaa_toolbar_showing() {
 
-		if ( class_exists( 'VAA_View_Admin_As_Toolbar' ) ) {
-			return (bool) VAA_View_Admin_As_Toolbar::$showing;
+		if ( class_exists( 'View_Admin_As\Toolbar' ) ) {
+			return (bool) Toolbar::$showing;
 		}
 		return false;
 	}
@@ -451,7 +453,7 @@ final class VAA_API extends VAA_Util
 	 * @return  bool
 	 */
 	public static function is_admin() {
-		if ( ! VAA_Util::doing_ajax() ) {
+		if ( ! Util::doing_ajax() ) {
 			return is_admin();
 		}
 		// It's an ajax call, is_admin() would always return `true`. Compare the referrer url with the admin url.
@@ -518,4 +520,4 @@ final class VAA_API extends VAA_Util
 		return (bool) version_compare( $version, $compare, '<=' );
 	}
 
-} // End class VAA_API.
+} // End class \View_Admin_As\API.

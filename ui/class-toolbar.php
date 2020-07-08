@@ -6,15 +6,17 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-if ( ! class_exists( 'WP_Admin_Bar' ) && file_exists( ABSPATH . WPINC . '/class-wp-admin-bar.php' ) ) {
+if ( ! class_exists( '\WP_Admin_Bar' ) && file_exists( ABSPATH . WPINC . '/class-wp-admin-bar.php' ) ) {
 	require_once ABSPATH . WPINC . '/class-wp-admin-bar.php';
 }
 
-if ( class_exists( 'WP_Admin_Bar' ) ) {
+if ( class_exists( '\WP_Admin_Bar' ) ) {
 
 /**
  * Toolbar UI for View Admin As.
@@ -26,14 +28,14 @@ if ( class_exists( 'WP_Admin_Bar' ) ) {
  * @see     wp-includes/class-wp-admin-bar.php
  * @uses    \WP_Admin_Bar Extends class
  */
-final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
+final class Toolbar extends \WP_Admin_Bar
 {
 	/**
 	 * The single instance of the class.
 	 *
 	 * @since  1.6.0
 	 * @static
-	 * @var    \VAA_View_Admin_As_Toolbar
+	 * @var    \View_Admin_As\Toolbar
 	 */
 	private static $_instance = null;
 
@@ -143,7 +145,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6.0
 	 * @access  public
 	 * @static
-	 * @return  \VAA_View_Admin_As_Toolbar  $this
+	 * @return  \View_Admin_As\Toolbar  $this
 	 */
 	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
@@ -152,6 +154,6 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		return self::$_instance;
 	}
 
-} // End class VAA_View_Admin_As_Toolbar.
+} // End class \View_Admin_As\Toolbar.
 
 } // End if().

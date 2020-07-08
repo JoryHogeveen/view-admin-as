@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -16,11 +18,11 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  *
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
- * @since   1.5.0  (This was one class with VAA_View_Admin_As_Class_Base)
+ * @since   1.5.0  (This was one class with \View_Admin_As\Base)
  * @version 1.8.4
- * @uses    \VAA_View_Admin_As_Base Extends class
+ * @uses    \View_Admin_As\Base Extends class
  */
-abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
+abstract class Module extends Base
 {
 	/**
 	 * Module key.
@@ -175,7 +177,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function get_scriptLocalization( $key = null ) {
-		return VAA_API::get_array_data( $this->scriptLocalization, $key );
+		return API::get_array_data( $this->scriptLocalization, $key );
 	}
 
 	/**
@@ -200,7 +202,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	public function get_optionData( $key = null ) {
-		return VAA_API::get_array_data( $this->optionData, $key );
+		return API::get_array_data( $this->optionData, $key );
 	}
 
 	/**
@@ -210,7 +212,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 */
 	protected function set_scriptLocalization( $val, $key = null, $append = false ) {
-		$this->scriptLocalization = (array) VAA_API::set_array_data( $this->scriptLocalization, $val, $key, $append );
+		$this->scriptLocalization = (array) API::set_array_data( $this->scriptLocalization, $val, $key, $append );
 	}
 
 	/**
@@ -228,7 +230,7 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 	 * @param   bool    $append  (optional) Append if it doesn't exist?
 	 */
 	protected function set_optionData( $val, $key = null, $append = false ) {
-		$this->optionData = VAA_API::set_array_data( $this->optionData, $val, $key, $append );
+		$this->optionData = API::set_array_data( $this->optionData, $val, $key, $append );
 	}
 
 	/**
@@ -243,4 +245,4 @@ abstract class VAA_View_Admin_As_Module extends VAA_View_Admin_As_Base
 		return update_option( $this->get_optionKey(), $this->optionData );
 	}
 
-} // End class VAA_View_Admin_As_Module.
+} // End class \View_Admin_As\Module.

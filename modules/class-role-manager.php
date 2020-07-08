@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -22,9 +24,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7.0
  * @version 1.8.4
- * @uses    \VAA_View_Admin_As_Module Extends class
+ * @uses    \View_Admin_As\Module Extends class
  */
-final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
+final class Role_Manager extends Module
 {
 	/**
 	 * Module key.
@@ -75,7 +77,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		 *
 		 * @since  1.7.0
 		 */
-		if ( is_network_admin() || ! VAA_API::is_super_admin() ) {
+		if ( is_network_admin() || ! API::is_super_admin() ) {
 			return;
 		}
 
@@ -118,7 +120,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 
 		if ( ! $this->wp_roles->use_db ) {
 			$this->set_enable( false );
-			$this->vaa->add_notice(
+			view_admin_as()->add_notice(
 				'role_manager_no_db',
 				array(
 					'type'    => 'warning',
@@ -145,7 +147,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	public function vaa_init() {
 
 		// Enabling this module can only be done by a super admin.
-		if ( VAA_API::is_super_admin() ) {
+		if ( API::is_super_admin() ) {
 
 			// Add adminbar menu items in settings section.
 			$this->add_action( 'vaa_admin_bar_modules', array( $this, 'admin_bar_menu_modules' ), 10, 2 );
@@ -189,7 +191,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$success = false;
 
 		// Validate super admin.
-		if ( VAA_API::is_super_admin() ) {
+		if ( API::is_super_admin() ) {
 
 			if ( isset( $data['enable'] ) ) {
 				$success = $this->set_enable( (bool) $data['enable'] );
@@ -205,7 +207,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		}
 
 		// @since  1.7.3  Export.
-		if ( VAA_API::array_has( $data, 'export_roles', array( 'validation' => 'is_array' ) ) ) {
+		if ( API::array_has( $data, 'export_roles', array( 'validation' => 'is_array' ) ) ) {
 			$content = $this->export_roles( $data['export_roles'] );
 			if ( is_array( $content ) ) {
 				$success = $this->ajax_data_popup( true, array(
@@ -219,7 +221,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		}
 
 		// @since  1.7.3  Import.
-		if ( VAA_API::array_has( $data, 'import_roles', array( 'validation' => 'is_array' ) ) ) {
+		if ( API::array_has( $data, 'import_roles', array( 'validation' => 'is_array' ) ) ) {
 			// $content format: array( 'text' => **text**, 'errors' => **error array** ).
 			$content = $this->import_roles( $data['import_roles'] );
 			if ( true === $content ) {
@@ -264,7 +266,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		);
 
 		foreach ( $options as $key => $val ) {
-			if ( VAA_API::array_has( $data, $key, array( 'validation' => $val['validation'] ) ) ) {
+			if ( API::array_has( $data, $key, array( 'validation' => $val['validation'] ) ) ) {
 				$val = wp_parse_args( $val, array(
 					'combine_from' => null,
 				) );
@@ -278,7 +280,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					);
 				} else {
 					$args = (array) $data[ $key ];
-					if ( VAA_API::array_has( $val, 'values', array( 'validation' => 'is_array' ) ) ) {
+					if ( API::array_has( $val, 'values', array( 'validation' => 'is_array' ) ) ) {
 						// Make sure the arguments are in the right order.
 						$args = array_merge( $val['values'], $args );
 					}
@@ -392,7 +394,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 * @return  bool
 	 */
 	public function update_role_caps( $role, $capabilities, $method = '' ) {
-		if ( $role instanceof WP_Role && is_array( $capabilities ) ) {
+		if ( $role instanceof \WP_Role && is_array( $capabilities ) ) {
 			switch ( (string) $method ) {
 				case 'append':
 					// Append any new cap keys.
@@ -585,7 +587,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		foreach ( $data as $role_key => $role_data ) {
 			$role         = get_role( $role_key );
 			$capabilities = array_map( 'boolval', (array) $role_data );
-			if ( ! VAA_API::array_equal( $role_data, $capabilities, false ) ) {
+			if ( ! API::array_equal( $role_data, $capabilities, false ) ) {
 				$error_list[] = esc_attr__( 'No valid data found', VIEW_ADMIN_AS_DOMAIN ) . ': ' . (string) $role_key;
 			} else {
 				if ( $role ) {
@@ -712,7 +714,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root_prefix . '-enable',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+			'title'  => Form::do_checkbox( array(
 				'name'        => $root_prefix . '-enable',
 				'value'       => $this->get_optionData( 'enable' ),
 				'compare'     => true,
@@ -748,7 +750,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-role-manager',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-id-alt' ) . __( 'Role manager', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-id-alt' ) . __( 'Role manager', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -761,7 +763,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-docs',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-book-alt' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-book-alt' ) . __( 'Documentation', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => 'https://github.com/JoryHogeveen/view-admin-as/wiki/Role-Manager',
 			'meta'   => array(
 				'class'  => 'auto-height vaa-has-icon',
@@ -770,7 +772,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		) );
 
 		$view_type = view_admin_as()->get_view_types( 'caps' );
-		if ( $view_type instanceof VAA_View_Admin_As_Caps ) {
+		if ( $view_type instanceof Caps ) {
 			$view_type_label = $view_type->get_label();
 
 			// This module requires the capability view type to enable all it's features.
@@ -778,9 +780,9 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 				$admin_bar->add_node( array(
 					'id'     => $root . '-dependency',
 					'parent' => $root,
-					'title'  => VAA_View_Admin_As_Form::do_button( array(
+					'title'  => Form::do_button( array(
 						'name'    => $root . 'dependency-caps',
-						'label'   => VAA_View_Admin_As_Form::do_icon( 'dashicons-warning' )
+						'label'   => Form::do_icon( 'dashicons-warning' )
 						             // Translators: %s stands for the translated view type label "Capabilities".
 						             . sprintf( __( 'Please enable the "%s" view type to add/edit roles', VIEW_ADMIN_AS_DOMAIN ), $view_type_label ),
 						'auto_js' => array(
@@ -828,7 +830,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.7.0  Separated the tools from the main function.
 	 * @access  public
-	 * @see     \VAA_View_Admin_As_Role_Manager::admin_bar_menu()
+	 * @see     \View_Admin_As\Role_Manager::admin_bar_menu()
 	 *
 	 * @param   \WP_Admin_Bar  $admin_bar  The toolbar object.
 	 * @param   string         $root       The root item (vaa).
@@ -864,7 +866,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		 * @since  1.7.0  Apply current view capabilities to role.
 		 */
 		$icon = 'dashicons-hidden';
-		if ( VAA_API::is_view_active() ) {
+		if ( API::is_view_active() ) {
 			$icon = 'dashicons-visibility';
 		}
 		$admin_bar->add_group( array(
@@ -877,7 +879,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-apply-view-title',
 			'parent' => $root . '-apply-view',
-			'title'  => VAA_View_Admin_As_Form::do_icon( $icon ) . __( 'Apply current view capabilities to role', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( $icon ) . __( 'Apply current view capabilities to role', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
@@ -889,7 +891,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-apply-view-select',
 				'parent' => $root . '-apply-view',
-				'title'  => VAA_View_Admin_As_Form::do_select(
+				'title'  => Form::do_select(
 					array(
 						'name'   => $root . '-apply-view-select',
 						'values' => $role_select_options,
@@ -904,7 +906,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			$admin_bar->add_node( array(
 				'id'     => $root . '-apply-view-apply',
 				'parent' => $root . '-apply-view',
-				'title'  => VAA_View_Admin_As_Form::do_button( array(
+				'title'  => Form::do_button( array(
 					'name'    => $root . '-apply-view-apply',
 					'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 					'class'   => 'button-primary',
@@ -954,7 +956,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-rename-title',
 			'parent' => $root . '-rename',
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-edit' ) . __( 'Rename role', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-edit' ) . __( 'Rename role', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
@@ -964,7 +966,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-rename-select',
 			'parent' => $root . '-rename',
-			'title'  => VAA_View_Admin_As_Form::do_select(
+			'title'  => Form::do_select(
 				array(
 					'name'   => $root . '-rename-select',
 					'values' => $role_select_options,
@@ -978,7 +980,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-rename-input',
 			'parent' => $root . '-rename',
-			'title'  => VAA_View_Admin_As_Form::do_input(
+			'title'  => Form::do_input(
 				array(
 					'name'        => $root . '-rename-input',
 					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
@@ -992,7 +994,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-rename-apply',
 			'parent' => $root . '-rename',
-			'title'  => VAA_View_Admin_As_Form::do_button( array(
+			'title'  => Form::do_button( array(
 				'name'    => $root . '-rename-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
@@ -1031,7 +1033,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-clone-title',
 			'parent' => $root . '-clone',
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-pressthis' ) . __( 'Clone role', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-pressthis' ) . __( 'Clone role', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
@@ -1041,7 +1043,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-clone-select',
 			'parent' => $root . '-clone',
-			'title'  => VAA_View_Admin_As_Form::do_select(
+			'title'  => Form::do_select(
 				array(
 					'name'   => $root . '-clone-select',
 					'values' => $role_select_options,
@@ -1055,7 +1057,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-clone-input',
 			'parent' => $root . '-clone',
-			'title'  => VAA_View_Admin_As_Form::do_input(
+			'title'  => Form::do_input(
 				array(
 					'name'        => $root . '-clone-input',
 					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
@@ -1069,7 +1071,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-clone-apply',
 			'parent' => $root . '-clone',
-			'title'  => VAA_View_Admin_As_Form::do_button( array(
+			'title'  => Form::do_button( array(
 				'name'    => $root . '-clone-apply',
 				'label'   => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
@@ -1115,7 +1117,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-export-roles',
 			'parent' => $root . '-export',
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-upload' )
+			'title'  => Form::do_icon( 'dashicons-upload' )
 			            . __( 'Export roles', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
@@ -1126,7 +1128,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-export-roles-select',
 			'parent' => $root . '-export',
-			'title'  => VAA_View_Admin_As_Form::do_select( array(
+			'title'  => Form::do_select( array(
 				'name'   => $root . '-export-roles-select',
 				'values' => $role_export_options,
 			) ),
@@ -1138,7 +1140,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-export-roles-caps-only',
 			'parent' => $root . '-export',
-			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+			'title'  => Form::do_checkbox( array(
 				'name'        => $root . '-export-roles-caps-only',
 				'label'       => __( 'Capabilities only', VIEW_ADMIN_AS_DOMAIN ),
 				'description' => __( 'Not compatible with the "All" option.', VIEW_ADMIN_AS_DOMAIN ),
@@ -1168,12 +1170,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-export-roles-export',
 			'parent' => $root . '-export',
-			'title'  => VAA_View_Admin_As_Form::do_button( array(
+			'title'  => Form::do_button( array(
 				'name'    => $root . '-export-roles-export',
 				'label'   => __( 'Export', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',
 				'auto_js' => $auto_js,
-			) ) . ' ' . VAA_View_Admin_As_Form::do_button( array(
+			) ) . ' ' . Form::do_button( array(
 				'name'    => $root . '-export-roles-download',
 				'label'   => __( 'Download', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary',
@@ -1200,7 +1202,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-import-roles',
 			'parent' => $root . '-import',
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-download' )
+			'title'  => Form::do_icon( 'dashicons-download' )
 			            . __( 'Import roles', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
@@ -1221,7 +1223,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-import-roles-file',
 			'parent' => $root . '-import',
-			'title'  => VAA_View_Admin_As_Form::do_input( array(
+			'title'  => Form::do_input( array(
 				'name'    => $root . '-import-roles-file',
 				'type'    => 'file',
 				'auto_js' => array(
@@ -1243,7 +1245,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-import-roles-caps-only',
 			'parent' => $root . '-import',
-			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+			'title'  => Form::do_checkbox( array(
 				'name'  => $root . '-import-roles-caps-only',
 				'label' => __( 'Capabilities only', VIEW_ADMIN_AS_DOMAIN ),
 			) ),
@@ -1255,7 +1257,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-import-roles-select',
 			'parent' => $root . '-import',
-			'title'  => VAA_View_Admin_As_Form::do_select( array(
+			'title'  => Form::do_select( array(
 				'name'   => $root . '-import-roles-select',
 				'values' => $role_select_options,
 				'attr'   => array(
@@ -1297,7 +1299,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-import-roles-import',
 			'parent' => $root . '-import',
-			'title'  => VAA_View_Admin_As_Form::do_button( array(
+			'title'  => Form::do_button( array(
 				'name'    => $root . '-import-roles-import',
 				'label'   => __( 'Import', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary ab-vaa-showhide vaa-import-role-manager',
@@ -1307,7 +1309,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'vaa-showhide' => 'p.vaa-import-role-manager-desc',
 				),
 			) ) . ' '
-			. VAA_View_Admin_As_Form::do_button( array(
+			. Form::do_button( array(
 				'name'    => $root . '-import-roles-import-merge',
 				'label'   => __( 'Merge', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary ab-vaa-showhide vaa-import-role-defaults',
@@ -1317,7 +1319,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'vaa-showhide' => 'p.vaa-import-role-manager-merge-desc',
 				),
 			) ) . ' '
-			. VAA_View_Admin_As_Form::do_button( array(
+			. Form::do_button( array(
 				'name'    => $root . '-import-roles-import-append',
 				'label'   => __( 'Append', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-secondary ab-vaa-showhide vaa-import-role-manager',
@@ -1327,15 +1329,15 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 					'vaa-showhide' => 'p.vaa-import-role-manager-append-desc',
 				),
 			) )
-			. VAA_View_Admin_As_Form::do_description(
+			. Form::do_description(
 				__( 'Fully overwrite capabilities', VIEW_ADMIN_AS_DOMAIN ),
 				array( 'class' => 'vaa-import-role-manager-desc' )
 			)
-			. VAA_View_Admin_As_Form::do_description(
+			. Form::do_description(
 				__( 'Merge and overwrite existing capabilities', VIEW_ADMIN_AS_DOMAIN ),
 				array( 'class' => 'vaa-import-role-manager-merge-desc' )
 			)
-			. VAA_View_Admin_As_Form::do_description(
+			. Form::do_description(
 				__( 'Append without overwriting the existing capabilities', VIEW_ADMIN_AS_DOMAIN ),
 				array( 'class' => 'vaa-import-role-manager-append-desc' )
 			),
@@ -1359,7 +1361,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-delete-title',
 			'parent' => $root . '-delete',
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-trash' ) . __( 'Delete role', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-trash' ) . __( 'Delete role', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
@@ -1369,7 +1371,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-delete-select',
 			'parent' => $root . '-delete',
-			'title'  => VAA_View_Admin_As_Form::do_select(
+			'title'  => Form::do_select(
 				array(
 					'name'   => $root . '-delete-select',
 					'values' => $role_delete_options,
@@ -1383,7 +1385,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-delete-migrate',
 			'parent' => $root . '-delete',
-			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+			'title'  => Form::do_checkbox( array(
 				'name'  => $root . '-delete-migrate',
 				'label' => __( 'Migrate users to role', VIEW_ADMIN_AS_DOMAIN ),
 			) ),
@@ -1395,7 +1397,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-delete-migrate-select',
 			'parent' => $root . '-delete',
-			'title'  => VAA_View_Admin_As_Form::do_select( array(
+			'title'  => Form::do_select( array(
 				'name'   => $root . '-delete-migrate-select',
 				'values' => $role_select_options,
 				'attr'   => array(
@@ -1411,7 +1413,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-delete-apply',
 			'parent' => $root . '-delete',
-			'title'  => VAA_View_Admin_As_Form::do_button( array(
+			'title'  => Form::do_button( array(
 				'name'    => $root . '-delete-apply',
 				'label'   => __( 'Delete', VIEW_ADMIN_AS_DOMAIN ),
 				'class'   => 'button-primary',
@@ -1474,7 +1476,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-id-alt' ) . __( 'Role manager', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-id-alt' ) . __( 'Role manager', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'ab-bold vaa-has-icon ab-vaa-toggle',
@@ -1483,7 +1485,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		) );
 
 		$caps = $this->store->get_curUser()->allcaps;
-		if ( VAA_API::is_view_active() ) {
+		if ( API::is_view_active() ) {
 			$caps = $this->store->get_selectedCaps();
 		}
 		$role_select_options = array(
@@ -1511,12 +1513,12 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-edit-role',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_select(
+			'title'  => Form::do_select(
 				array(
 					'name'   => $root . '-edit-role',
 					'values' => $role_select_options,
 				)
-			) . VAA_View_Admin_As_Form::do_button(
+			) . Form::do_button(
 				array(
 					'name'  => $root . '-save-role',
 					'label' => __( 'Save role', VIEW_ADMIN_AS_DOMAIN ),
@@ -1532,7 +1534,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-new-role',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_input(
+			'title'  => Form::do_input(
 				array(
 					'name'        => $root . '-new-role',
 					'placeholder' => __( 'New role name', VIEW_ADMIN_AS_DOMAIN ),
@@ -1552,16 +1554,16 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 		$admin_bar->add_node( array(
 			'id'     => $root . '-new-cap',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_input( array(
+			'title'  => Form::do_input( array(
 				'name'        => $root . '-new-cap',
 				'placeholder' => esc_attr__( 'Add new custom capability', VIEW_ADMIN_AS_DOMAIN ),
-			) ) . VAA_View_Admin_As_Form::do_button( array(
+			) ) . Form::do_button( array(
 				'name'  => $root . '-add-cap',
 				'label' => __( 'Add', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => 'button-primary input-overlay',
 			) )
 			. '<div id="' . $root . '-cap-template" style="display: none;"><div class="ab-item vaa-cap-item">'
-			. VAA_View_Admin_As_Form::do_checkbox( array(
+			. Form::do_checkbox( array(
 				'name'           => 'vaa_cap_vaa_new_item',
 				'value'          => true,
 				'compare'        => true,

@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -19,9 +21,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7.2
  * @version 1.8.3
- * @uses    \VAA_View_Admin_As_Type Extends class
+ * @uses    \View_Admin_As\Type Extends class
  */
-final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
+final class Groups extends Type
 {
 	/**
 	 * @since  1.7.2
@@ -63,7 +65,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 */
 	protected function __construct() {
 
-		if ( is_network_admin() || ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), 'debug' ) ) {
+		if ( is_network_admin() || ! API::exists_callable( array( 'Groups_Group', 'get_groups' ), 'debug' ) ) {
 			return;
 		}
 
@@ -124,7 +126,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 		if ( parent::do_view() ) {
 
-			$this->selected = new Groups_Group( $this->store->get_view( $this->type ) );
+			$this->selected = new \Groups_Group( $this->store->get_view( $this->type ) );
 
 			$this->reset_groups_user();
 
@@ -136,7 +138,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			/**
 			 * Replicate 404 page when the selected user has no access to read.
 			 * I use this since I can't hook into the `posts_where` filter from Groups.
-			 * @see VAA_View_Admin_As_Groups::groups_post_access_user_can_read_post()
+			 * @see \View_Admin_As\Groups::groups_post_access_user_can_read_post()
 			 */
 			$this->add_action( 'wp', array( $this, 'post_access_404' ) );
 			//$this->add_filter( 'groups_post_access_posts_where_apply', '__return_false' );
@@ -151,7 +153,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		}
 
 		// Filter group capabilities.
-		if ( VAA_API::is_user_modified() ) {
+		if ( API::is_user_modified() ) {
 			$this->add_filter( 'groups_group_can', array( $this, 'groups_group_can' ), 20, 3 );
 			$this->add_filter( 'groups_user_can', array( $this, 'groups_user_can' ), 20, 3 );
 		}
@@ -168,7 +170,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * @param   int  $user_id
 	 */
 	public function reset_groups_user( $user_id = null ) {
-		if ( ! VAA_API::exists_callable( array( 'Groups_User', 'clear_cache' ), 'debug' ) ) {
+		if ( ! API::exists_callable( array( 'Groups_User', 'clear_cache' ), 'debug' ) ) {
 			return;
 		}
 
@@ -178,7 +180,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 		try {
 
-			Groups_User::clear_cache( $user_id );
+			\Groups_User::clear_cache( $user_id );
 
 			$capabilities_base   = array();
 			$capability_ids_base = array();
@@ -189,18 +191,18 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			$groups_ids          = null;
 			$groups              = null;
 
-			Groups_Cache::set( Groups_User::CAPABILITIES_BASE . $user_id, $capabilities_base, Groups_User::CACHE_GROUP );
-			Groups_Cache::set( Groups_User::CAPABILITY_IDS_BASE . $user_id, $capability_ids_base, Groups_User::CACHE_GROUP );
-			Groups_Cache::set( Groups_User::GROUP_IDS_BASE . $user_id, $groups_ids_base, Groups_User::CACHE_GROUP );
-			Groups_Cache::set( Groups_User::GROUPS_BASE . $user_id, $groups_base, Groups_User::CACHE_GROUP );
+			\Groups_Cache::set( \Groups_User::CAPABILITIES_BASE . $user_id, $capabilities_base, \Groups_User::CACHE_GROUP );
+			\Groups_Cache::set( \Groups_User::CAPABILITY_IDS_BASE . $user_id, $capability_ids_base, \Groups_User::CACHE_GROUP );
+			\Groups_Cache::set( \Groups_User::GROUP_IDS_BASE . $user_id, $groups_ids_base, \Groups_User::CACHE_GROUP );
+			\Groups_Cache::set( \Groups_User::GROUPS_BASE . $user_id, $groups_base, \Groups_User::CACHE_GROUP );
 			//Groups_Cache::set( Groups_User::CAPABILITIES . $user_id, $capabilities, Groups_User::CACHE_GROUP );
 			//Groups_Cache::set( Groups_User::CAPABILITY_IDS . $user_id, $capability_ids, Groups_User::CACHE_GROUP );
 			//Groups_Cache::set( Groups_User::GROUP_IDS . $user_id, $groups_ids, Groups_User::CACHE_GROUP );
 			//Groups_Cache::set( Groups_User::GROUPS . $user_id, $groups, Groups_User::CACHE_GROUP );
 
-		} catch ( Exception $e ) {
+		} catch ( \Exception $e ) {
 
-			$this->vaa->add_error_notice( __METHOD__, $e->getMessage() );
+			view_admin_as()->add_error_notice( __METHOD__, $e->getMessage() );
 
 		} // End try().
 	}
@@ -307,7 +309,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			$result = false;
 		} else {
 			// For other view types.
-			$result = VAA_API::current_view_can( $cap );
+			$result = API::current_view_can( $cap );
 		}
 		return $result;
 	}
@@ -348,11 +350,11 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		if ( $this->store->get_selectedUser()->ID !== $user_id || ! $this->selected ) {
 			return $result;
 		}
-		if ( ! VAA_API::exists_callable( array( 'Groups_Post_Access', 'get_read_group_ids' ), 'debug' ) ) {
+		if ( ! API::exists_callable( array( 'Groups_Post_Access', 'get_read_group_ids' ), 'debug' ) ) {
 			return $result;
 		}
 
-		$post_access = Groups_Post_Access::get_read_group_ids( $post_id );
+		$post_access = \Groups_Post_Access::get_read_group_ids( $post_id );
 
 		$result = true;
 		if ( ! empty( $post_access ) && ! in_array( $this->selected->group_id, $post_access, true ) ) {
@@ -366,7 +368,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * I use this since I can't hook into the `posts_where` filter from Groups.
 	 *
 	 * @hook    `wp`
-	 * @see     \VAA_View_Admin_As_Groups::groups_post_access_user_can_read_post()
+	 * @see     \View_Admin_As\Groups::groups_post_access_user_can_read_post()
 	 *
 	 * @since   1.7.2
 	 * @access  public
@@ -410,8 +412,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	/**
 	 * Our own implementation for the Groups member shortcodes.
 	 *
-	 * @see  \VAA_View_Admin_As_Groups::shortcode_groups_member()
-	 * @see  \VAA_View_Admin_As_Groups::shortcode_groups_non_member()
+	 * @see  \View_Admin_As\Groups::shortcode_groups_member()
+	 * @see  \View_Admin_As\Groups::shortcode_groups_non_member()
 	 *
 	 * @since   1.7.2
 	 * @param   array   $atts
@@ -429,9 +431,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			foreach ( $groups as $group ) {
 				$group          = trim( $group );
 				$selected_group = $this->selected;
-				$current_group  = Groups_Group::read( $group );
+				$current_group  = \Groups_Group::read( $group );
 				if ( ! $current_group ) {
-					$current_group = Groups_Group::read_by_name( $group );
+					$current_group = \Groups_Group::read_by_name( $group );
 				}
 				if ( $current_group && $current_group->group_id === $selected_group->group_id ) {
 					$show_content = ! $reverse;
@@ -440,7 +442,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			}
 			if ( $show_content ) {
 				remove_shortcode( $shortcode );
-				$content = VAA_API::apply_shortcodes( $content );
+				$content = API::apply_shortcodes( $content );
 				add_shortcode( $shortcode, array( $this, 'shortcode_' . $shortcode ) );
 				$output = $content;
 			}
@@ -506,7 +508,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( $this->icon ) . $this->label,
+			'title'  => Form::do_icon( $this->icon ) . $this->label,
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -517,8 +519,8 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		$admin_bar->add_node( array(
 			'id'     => $root . '-admin',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_description(
-				VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-links' )
+			'title'  => Form::do_description(
+				Form::do_icon( 'dashicons-admin-links' )
 				. __( 'Plugin' ) . ': ' . $this->label
 			),
 			'href'   => menu_page_url( $this->groupsScreen, false ),
@@ -541,9 +543,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		foreach ( $this->get_groups() as $group_key => $group ) {
 			$view_value = $group->group_id;
 			$view_data  = array( $this->type => $view_value );
-			$href       = VAA_API::get_vaa_action_link( $view_data );
+			$href       = API::get_vaa_action_link( $view_data );
 			$class      = 'vaa-' . $this->type . '-item';
-			$title      = VAA_View_Admin_As_Form::do_view_title( $group->name, $this, $view_value );
+			$title      = Form::do_view_title( $group->name, $this, $view_value );
 			// Check if this group is the current view.
 			if ( $this->store->get_view( $this->type ) ) {
 				if ( (int) $this->store->get_view( $this->type ) === (int) $group->group_id ) {
@@ -591,7 +593,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * @access  private
 	 */
 	public function store_data() {
-		$groups = Groups_Group::get_groups();
+		$groups = \Groups_Group::get_groups();
 
 		$data = array();
 		if ( ! empty( $groups ) ) {

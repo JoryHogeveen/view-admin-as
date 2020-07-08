@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -17,9 +19,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.8.0
  * @version 1.8.0
- * @uses    \VAA_View_Admin_As_Base Extends class
+ * @uses    \View_Admin_As\Base Extends class
  */
-abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
+abstract class Type extends Base
 {
 	/**
 	 * View type settings.
@@ -119,7 +121,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	protected function __construct() {
 		static $done;
 		if ( ! $done ) {
-			$this->add_filter( 'view_admin_as_update_global_settings', array( 'VAA_View_Admin_As_Type', 'filter_update_view_types' ), 1, 3 );
+			$this->add_filter( 'view_admin_as_update_global_settings', array( '\View_Admin_As\Type', 'filter_update_view_types' ), 1, 3 );
 			$done = true;
 		}
 
@@ -249,7 +251,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	public function init_user_modifications() {
-		$this->vaa->view()->init_user_modifications();
+		view_admin_as()->view()->init_user_modifications();
 	}
 
 	/**
@@ -403,7 +405,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * @return  mixed
 	 */
 	final public function get_settings( $key = null ) {
-		return VAA_API::get_array_data( $this->settings, $key );
+		return API::get_array_data( $this->settings, $key );
 	}
 
 	/**
@@ -416,7 +418,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	final public function set_settings( $val, $key = null, $append = false ) {
-		$this->settings = VAA_API::set_array_data( $this->settings, $val, $key, $append );
+		$this->settings = API::set_array_data( $this->settings, $val, $key, $append );
 
 		$view_types = (array) $this->store->get_settings( 'view_types' );
 
@@ -459,7 +461,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 
 		foreach ( $data['view_types'] as $type => $settings ) {
 			$type = view_admin_as()->get_view_types( $type );
-			if ( ! $type instanceof VAA_View_Admin_As_Type ) {
+			if ( ! $type instanceof Type ) {
 				unset( $data['view_types'][ $type ] );
 				continue;
 			}
@@ -471,4 +473,4 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		return $data;
 	}
 
-} // End class VAA_View_Admin_As_Type.
+} // End class \View_Admin_As\Type.

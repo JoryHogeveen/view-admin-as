@@ -5,17 +5,19 @@
  * @since    1.7.0
  * @version  1.8.0
  *
- * @var  \VAA_View_Admin_As_Roles  $this
- * @var  \WP_Admin_Bar             $admin_bar  The toolbar object.
- * @var  string                    $root       The current root item.
- * @var  string                    $main_root  The main VAA root item.
+ * @var  \View_Admin_As\Roles  $this
+ * @var  \WP_Admin_Bar         $admin_bar  The toolbar object.
+ * @var  string                $root       The current root item.
+ * @var  string                $main_root  The main VAA root item.
  */
+
+namespace View_Admin_As;
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root ) ) {
+if ( isset( $admin_bar ) && $admin_bar instanceof \WP_Admin_Bar && isset( $root ) ) {
 
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
@@ -25,18 +27,18 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 	}
 
 	foreach ( $this->store->get_roles() as $role_key => $role ) {
-		$href  = VAA_API::get_vaa_action_link( array( $this->type => $role_key ) );
+		$href  = API::get_vaa_action_link( array( $this->type => $role_key ) );
 		$class = 'vaa-' . $this->type . '-item';
 		$title = $this->get_view_title( $role );
 
-		$view_title = VAA_View_Admin_As_Form::do_view_title( $title, $this, $role_key );
+		$view_title = Form::do_view_title( $title, $this, $role_key );
 
 		/**
 		 * Check if the users need to be grouped under their roles.
-		 * @var  \VAA_View_Admin_As_Users  $user_view_type
+		 * @var  \View_Admin_As\Users  $user_view_type
 		 */
 		$user_view_type = view_admin_as()->get_view_types( 'user' );
-		if ( $user_view_type instanceof VAA_View_Admin_As_Users && $user_view_type->group_user_roles() ) {
+		if ( $user_view_type instanceof Users && $user_view_type->group_user_roles() ) {
 			// Used to align items properly when some roles don't have users.
 			$class .= ' vaa-menupop';
 			// Check if the current view is a user with this role.
@@ -59,7 +61,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		}
 
 		// Check if this role is the current view.
-		if ( VAA_API::is_current_view( $role_key, $this->type ) ) {
+		if ( API::is_current_view( $role_key, $this->type ) ) {
 			$class .= ' current';
 			if ( 1 === count( $this->store->get_view() ) ) {
 				$href = false;

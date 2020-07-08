@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -18,7 +20,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @since   1.8.5
  * @version 1.8.5
  */
-abstract class VAA_Util
+abstract class Util
 {
 	/**
 	 * Get full array or array key(s).
@@ -507,4 +509,4 @@ abstract class VAA_Util
 		return $value;
 	}
 
-} // End class VAA_Util.
+} // End class \View_Admin_As\Util.

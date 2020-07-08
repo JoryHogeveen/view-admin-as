@@ -5,17 +5,19 @@
  * @since    1.7.0
  * @version  1.8.4
  *
- * @var  \VAA_View_Admin_As_Caps  $this
- * @var  \WP_Admin_Bar            $admin_bar  The toolbar object.
- * @var  string                   $root       The current root item.
- * @var  string                   $main_root  The main VAA root item.
+ * @var  \View_Admin_As\Caps  $this
+ * @var  \WP_Admin_Bar        $admin_bar  The toolbar object.
+ * @var  string               $root       The current root item.
+ * @var  string               $main_root  The main VAA root item.
  */
+
+namespace View_Admin_As;
 
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
 
-if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root ) ) {
+if ( isset( $admin_bar ) && $admin_bar instanceof \WP_Admin_Bar && isset( $root ) ) {
 
 	if ( ! isset( $main_root ) ) {
 		$main_root = $root;
@@ -29,7 +31,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		array(
 			'id'     => $root . '-filtercaps',
 			'parent' => $parent,
-			'title'  => VAA_View_Admin_As_Form::do_input(
+			'title'  => Form::do_input(
 				array(
 					'name'        => $root . '-filtercaps',
 					'placeholder' => esc_attr__( 'Filter', VIEW_ADMIN_AS_DOMAIN ),
@@ -50,7 +52,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		),
 	);
 	// View filter
-	if ( VAA_API::is_view_active() ) {
+	if ( API::is_view_active() ) {
 		$data_caps             = wp_json_encode( $this->store->get_selectedCaps() );
 		$role_select_options[] = array(
 			'compare' => 'vaa',
@@ -91,7 +93,7 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		array(
 			'id'     => $root . '-selectrolecaps',
 			'parent' => $parent,
-			'title'  => VAA_View_Admin_As_Form::do_select(
+			'title'  => Form::do_select(
 				array(
 					'name'   => $root . '-selectrolecaps',
 					'values' => $role_select_options,
@@ -110,13 +112,13 @@ if ( isset( $admin_bar ) && $admin_bar instanceof WP_Admin_Bar && isset( $root )
 		array(
 			'id'     => $root . '-bulkselectcaps',
 			'parent' => $parent,
-			'title'  => VAA_View_Admin_As_Form::do_button(
+			'title'  => Form::do_button(
 				array(
 					'name'    => 'select-all-caps',
 					'label'   => __( 'Select', VIEW_ADMIN_AS_DOMAIN ),
 					'classes' => 'button-secondary',
 				)
-			) . ' ' . VAA_View_Admin_As_Form::do_button(
+			) . ' ' . Form::do_button(
 				array(
 					'name'    => 'deselect-all-caps',
 					'label'   => __( 'Deselect', VIEW_ADMIN_AS_DOMAIN ),

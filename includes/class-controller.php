@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -17,9 +19,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.7.0
  * @version 1.8.3
- * @uses    \VAA_View_Admin_As_Base Extends class
+ * @uses    \View_Admin_As\Base Extends class
  */
-final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
+final class Controller extends Base
 {
 	/**
 	 * Expiration time for view data.
@@ -31,7 +33,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	private $viewExpiration = 86400; // one day: ( 24 * 60 * 60 ).
 
 	/**
-	 * VAA_View_Admin_As_Controller constructor.
+	 * Controller constructor.
 	 *
 	 * @since   1.6.0
 	 * @since   1.6.1  `$vaa` param.
@@ -80,7 +82,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * @since    1.2.0  Only check for key
 		 * @example  http://www.your.domain/wp-admin/?reset-view
 		 */
-		if ( VAA_API::is_request( 'reset-view', 'get' ) ) {
+		if ( API::is_request( 'reset-view', 'get' ) ) {
 			$this->reset_view();
 		}
 		/**
@@ -89,7 +91,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * @since    1.3.4
 		 * @example  http://www.your.domain/wp-admin/?reset-all-views
 		 */
-		if ( VAA_API::is_request( 'reset-all-views', 'get' ) ) {
+		if ( API::is_request( 'reset-all-views', 'get' ) ) {
 			$this->reset_all_views();
 		}
 
@@ -104,7 +106,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		$this->store->set_view( $this->get_view() );
 
 		// Short circuit needed for visitor view (BEFORE the current user is set).
-		if ( VAA_API::is_ajax_request( 'view_admin_as' ) ) {
+		if ( API::is_ajax_request( 'view_admin_as' ) ) {
 			$this->ajax_view_admin_as();
 		} else {
 			// Admin selector ajax return (fallback).
@@ -129,7 +131,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function ajax_view_admin_as() {
 
-		$data = VAA_API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as' );
+		$data = API::get_ajax_request( $this->store->get_nonce(), 'view_admin_as' );
 		if ( ! $data ) {
 			wp_send_json_error( __( 'Cheatin uh?', VIEW_ADMIN_AS_DOMAIN ) );
 			die();
@@ -260,7 +262,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			$this->store->set_view( $data, $type, true );
 			$success = true;
 		}
-		if ( $success && 'visitor' === $type && VAA_API::is_admin() ) {
+		if ( $success && 'visitor' === $type && API::is_admin() ) {
 			$success = array(
 				'success' => true,
 				'data'    => array(
@@ -290,7 +292,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				return false;
 			}
 			if ( is_array( $data ) ) {
-				return VAA_API::array_equal( $data, $current );
+				return API::array_equal( $data, $current );
 			}
 			if ( null === $data ) {
 				return true;
@@ -300,7 +302,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			}
 			return ( (string) $data === (string) $current );
 		}
-		return VAA_API::array_equal( $data, $this->store->get_view() );
+		return API::array_equal( $data, $this->store->get_view() );
 	}
 
 	/**
@@ -333,7 +335,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 *
 		 * - Menu items require the class vaa-{TYPE}-item (through the add_node() meta key).
 		 * - Menu items require the href attribute (the node needs to be an <a> element).
-		 * @see \VAA_View_Admin_As_Form::do_view_title()
+		 * @see \Form::do_view_title()
 		 *
 		 * @deprecated  1.8.0
 		 *
@@ -377,12 +379,12 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		if ( 'browse' === $view_mode ) {
 
 			// Static actions.
-			$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as', 'get' );
+			$request = API::get_normal_request( $this->store->get_nonce(), 'view_admin_as', 'get' );
 			if ( $request ) {
 				$this->store->set_view( $this->validate_view_data( $request ) );
 				$this->update_view();
 				// Trigger page refresh.
-				// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See VAA_API.
+				// @todo fix WP referrer/nonce checks and allow switching on any page without ajax. See \View_Admin_As\API.
 				if ( is_network_admin() ) {
 					wp_safe_redirect( network_admin_url(), 302, VIEW_ADMIN_AS_DOMAIN );
 				} else {
@@ -400,7 +402,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		} elseif ( 'single' === $view_mode ) {
 
 			// Single mode.
-			$request = VAA_API::get_normal_request( $this->store->get_nonce(), 'view_admin_as' );
+			$request = API::get_normal_request( $this->store->get_nonce(), 'view_admin_as' );
 			if ( $request ) {
 				return $this->validate_view_data( $request );
 			}
@@ -572,7 +574,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				// View types.
 				$this->get_view_types(),
 				// Module keys.
-				array_keys( $this->vaa->get_modules() ),
+				array_keys( view_admin_as()->get_modules() ),
 				// VAA core keys.
 				array( 'setting', 'user_setting', 'reset' )
 			)

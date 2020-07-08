@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -17,9 +19,9 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.5.0
  * @version 1.8.4
- * @uses    \VAA_View_Admin_As_Base Extends class
+ * @uses    \View_Admin_As\Base Extends class
  */
-final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
+final class Admin_Bar extends Base
 {
 	/**
 	 * Admin bar root item ID.
@@ -115,7 +117,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * @since   1.7.2
 	 * @since   1.8.3  Made public.
 	 * @access  public
-	 * @see     \VAA_View_Admin_As_Admin_Bar::admin_bar_menu()
+	 * @see     \View_Admin_As\Admin_Bar::admin_bar_menu()
 	 * @return  string
 	 */
 	public function get_admin_bar_menu_title() {
@@ -202,7 +204,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$icon    = 'dashicons-hidden';
 		$tooltip = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN );
 
-		if ( VAA_API::is_view_active() ) {
+		if ( API::is_view_active() ) {
 			$icon     = 'dashicons-visibility';
 			$tooltip .= ' - ' . __( 'View active', VIEW_ADMIN_AS_DOMAIN );
 		}
@@ -217,7 +219,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => self::$root,
 			'parent' => $root,
-			'title'  => '<span class="ab-label">' . $title . '</span>' . VAA_View_Admin_As_Form::do_icon(
+			'title'  => '<span class="ab-label">' . $title . '</span>' . Form::do_icon(
 				$icon,
 				array( 'class' => 'alignright' )
 			),
@@ -241,7 +243,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		do_action( 'vaa_admin_bar_menu_before', $admin_bar, self::$root, self::$root );
 
 		// Add reset button.
-		if ( VAA_API::is_view_active() ) {
+		if ( API::is_view_active() ) {
 			$name = 'reset-view';
 			if ( 'single' === $this->store->get_userSettings( 'view_mode' ) ) {
 				$name = 'reload';
@@ -249,12 +251,12 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 			$admin_bar->add_node( array(
 				'id'     => self::$root . '-reset',
 				'parent' => self::$root,
-				'title'  => VAA_View_Admin_As_Form::do_button( array(
+				'title'  => Form::do_button( array(
 					'name'  => self::$root . '-' . $name,
 					'label' => __( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'button-secondary',
 				) ),
-				'href'   => VAA_API::get_reset_link(),
+				'href'   => API::get_reset_link(),
 				'meta'   => array(
 					'title' => esc_attr__( 'Reset to default', VIEW_ADMIN_AS_DOMAIN ),
 					'class' => 'vaa-reset-item vaa-button-container',
@@ -305,7 +307,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => $root,
 			'parent' => self::$root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-info' ) . __( 'Info', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-info' ) . __( 'Info', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -353,11 +355,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 */
 		do_action( 'vaa_admin_bar_info_before', $admin_bar, $root, self::$root );
 
-		/** @var VAA_View_Admin_As_UI $vaa_ui */
-		$vaa_ui = $this->vaa->get_ui( 'ui' );
+		/** @var \View_Admin_As\UI $vaa_ui */
+		$vaa_ui = view_admin_as()->get_ui( 'ui' );
 
 		// Add the general admin links.
-		if ( VAA_API::exists_callable( array( $vaa_ui, 'get_links' ), true ) ) {
+		if ( API::exists_callable( array( $vaa_ui, 'get_links' ), true ) ) {
 
 			$admin_bar->add_group( array(
 				'id'     => $root . '-links',
@@ -368,7 +370,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 				$admin_bar->add_node( array(
 					'parent' => $root . '-links',
 					'id'     => $root . '-' . $id,
-					'title'  => VAA_View_Admin_As_Form::do_icon( $link['icon'] ) . $link['description'],
+					'title'  => Form::do_icon( $link['icon'] ) . $link['description'],
 					'href'   => esc_url( $link['url'] ),
 					'meta'   => array(
 						'class'  => 'auto-height vaa-has-icon',
@@ -408,7 +410,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => $root,
 			'parent' => self::$root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-settings' ) . __( 'Settings', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-admin-settings' ) . __( 'Settings', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon',
@@ -456,11 +458,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 */
 	public function admin_bar_menu_view_types( $admin_bar, $root ) {
 
-		if ( ! VAA_API::is_super_admin() ) {
+		if ( ! API::is_super_admin() ) {
 			return;
 		}
 
-		$view_types = $this->vaa->get_view_types();
+		$view_types = view_admin_as()->get_view_types();
 
 		// Do not render the view_types group if there are no view types to show.
 		if ( ! $view_types ) {
@@ -480,7 +482,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-visibility' ) . __( 'View types', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-visibility' ) . __( 'View types', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -522,7 +524,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 			$view_type_nodes[ $type->get_priority() ][] = array(
 				'id'     => $root . '-' . $type->get_type(),
 				'parent' => $parent,
-				'title'  => VAA_View_Admin_As_Form::do_checkbox( $view_type_node ),
+				'title'  => Form::do_checkbox( $view_type_node ),
 				'href'   => false,
 				'meta'   => array(
 					'class' => 'auto-height',
@@ -580,7 +582,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-title',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-admin-plugins' ) . __( 'Modules', VIEW_ADMIN_AS_DOMAIN ),
+			'title'  => Form::do_icon( 'dashicons-admin-plugins' ) . __( 'Modules', VIEW_ADMIN_AS_DOMAIN ),
 			'href'   => false,
 			'meta'   => array(
 				'class'    => 'vaa-has-icon ab-vaa-title ab-vaa-toggle active',
@@ -637,8 +639,8 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => $main_root . '-visitor-view',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_icon( 'dashicons-universal-access' )
-			            . VAA_View_Admin_As_Form::do_view_title( __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ), 'visitor', true ),
+			'title'  => Form::do_icon( 'dashicons-universal-access' )
+			            . Form::do_view_title( __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN ), 'visitor', true ),
 			'href'   => '#',
 			'meta'   => array(
 				'title' => esc_attr__( 'View as site visitor', VIEW_ADMIN_AS_DOMAIN ),
@@ -665,10 +667,10 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		$admin_bar->add_node( array(
 			'id'     => $root . '-combine-views',
 			'parent' => $root,
-			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
+			'title'  => Form::do_checkbox( array(
 				'name'  => $root . '-combine-views',
 				'label' => __( 'Combine views', VIEW_ADMIN_AS_DOMAIN ),
-			) ) . VAA_View_Admin_As_Form::do_button( array(
+			) ) . Form::do_button( array(
 				'name'  => $root . '-combine-views-apply',
 				'label' => __( 'Apply', VIEW_ADMIN_AS_DOMAIN ),
 				'class' => 'button-primary ab-vaa-conditional vaa-alignright',

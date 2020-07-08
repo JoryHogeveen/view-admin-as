@@ -6,6 +6,8 @@
  * @package View_Admin_As
  */
 
+namespace View_Admin_As;
+
 if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 	die();
 }
@@ -16,11 +18,11 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @since   1.7.0  Renamed from `VAA_View_Admin_As_Admin`.
+ * @since   1.7.0  Renamed from `View_Admin_As\Admin`.
  * @version 1.8.4
- * @uses    \VAA_View_Admin_As_Base Extends class
+ * @uses    \View_Admin_As\Base Extends class
  */
-final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
+final class UI extends Base
 {
 	/**
 	 * Plugin links.
@@ -57,7 +59,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		 * @since  1.6.4
 		 * @link   https://developer.wordpress.org/reference/functions/wp_admin_canonical_url/
 		 */
-		if ( ! is_admin() || ! VAA_API::validate_wp_version( '4.2' ) ) {
+		if ( ! is_admin() || ! API::validate_wp_version( '4.2' ) ) {
 			$this->add_action( 'wp_head', array( $this, 'remove_query_args' ) );
 		}
 	}
@@ -69,9 +71,9 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * @access  public
 	 */
 	public function action_wp_meta() {
-		if ( ! VAA_API::is_toolbar_showing() && VAA_API::is_view_active() ) {
+		if ( ! API::is_toolbar_showing() && API::is_view_active() ) {
 			$link = __( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ) . ': ' . __( 'Reset view', VIEW_ADMIN_AS_DOMAIN );
-			$url  = VAA_API::get_reset_link();
+			$url  = API::get_reset_link();
 			echo '<li id="vaa_reset_view"><a href="' . esc_url( $url ) . '">' . esc_html( $link ) . '</a></li>';
 		}
 	}
@@ -96,7 +98,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 				),
 			);
 			foreach ( $this->get_links() as $id => $link ) {
-				$title = VAA_View_Admin_As_Form::do_icon( $link['icon'], $icon_attr ) . ' ' . esc_html( $link['title'] );
+				$title = Form::do_icon( $link['icon'], $icon_attr ) . ' ' . esc_html( $link['title'] );
 
 				$links[ $id ] = '<a href="' . esc_url( $link['url'] ) . '" target="_blank">' . $title . '</a>';
 			}
@@ -241,7 +243,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 */
 	public function enqueue_scripts() {
 		// Only enqueue scripts if the admin bar is enabled otherwise they have no use.
-		if ( ! VAA_API::is_toolbar_showing() ) {
+		if ( ! API::is_toolbar_showing() ) {
 			return;
 		}
 
@@ -300,7 +302,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 * Add options to the access denied page when the user has selected a view and did something this view is not allowed.
 	 *
 	 * @since   1.3.0
-	 * @since   1.5.1   Check for SSL (Moved to `VAA_API`).
+	 * @since   1.5.1   Check for SSL (Moved to `\View_Admin_As\API`).
 	 * @since   1.6.0   More options and better description.
 	 * @since   1.7.0   Moved from `VAA_View_Admin_As`.
 	 * @since   1.8.0   Renamed from `die_handler()`.
@@ -313,7 +315,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	public function filter_wp_die_handler( $callback ) {
 
 		// Only do something if a view is selected.
-		if ( ! VAA_API::is_view_active() ) {
+		if ( ! API::is_view_active() ) {
 			return $callback;
 		}
 
@@ -338,7 +340,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		// Reset url.
 		$options[] = array(
 			'text' => __( 'Reset the view', VIEW_ADMIN_AS_DOMAIN ),
-			'url'  => VAA_API::get_reset_link(),
+			'url'  => API::get_reset_link(),
 		);
 
 		/**
