@@ -86,7 +86,7 @@ abstract class VAA_View_Admin_As_Base
 	 * @return  bool
 	 */
 	final public function is_vaa_enabled() {
-		return (bool) $this->vaa->is_enabled();
+		return (bool) view_admin_as()->is_enabled();
 	}
 
 	/**
