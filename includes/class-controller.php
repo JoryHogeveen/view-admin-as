@@ -22,15 +22,6 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 {
 	/**
-	 * The single instance of the class.
-	 *
-	 * @since  1.6.0
-	 * @static
-	 * @var    \VAA_View_Admin_As_Controller
-	 */
-	private static $_instance = null;
-
-	/**
 	 * Expiration time for view data.
 	 *
 	 * @since  1.3.4  (as $metaExpiration).
@@ -635,22 +626,4 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		return $data;
 	}
 
-	/**
-	 * Main Instance.
-	 *
-	 * Ensures only one instance of this class is loaded or can be loaded.
-	 *
-	 * @since   1.6.0
-	 * @access  public
-	 * @static
-	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  \VAA_View_Admin_As_Controller  $this
-	 */
-	public static function get_instance( $caller = null ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $caller );
-		}
-		return self::$_instance;
-	}
-
-} // End class VAA_View_Admin_As_Controller.
+} // End class \View_Admin_As\Controller.

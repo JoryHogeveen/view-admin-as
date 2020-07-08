@@ -23,6 +23,13 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 abstract class VAA_View_Admin_As_Base
 {
 	/**
+	 * Instances.
+	 * @since  1.9
+	 * @var    \View_Admin_As\Base[]
+	 */
+	private static $instances = array();
+
+	/**
 	 * View Admin As object.
 	 *
 	 * @since  1.5.0
@@ -218,4 +225,22 @@ abstract class VAA_View_Admin_As_Base
 		return null;
 	}
 
-} // End class VAA_View_Admin_As_Class_Base.
+	/**
+	 * Main Instance.
+	 *
+	 * Ensures only one instance of this class is loaded or can be loaded.
+	 *
+	 * @since   1.5.0
+	 * @access  public
+	 * @static
+	 * @return  $this
+	 */
+	public static function get_instance() {
+		$class = get_called_class();
+		if ( empty( self::$instances[ $class ] ) ) {
+			self::$instances[ $class ] = new $class();
+		}
+		return self::$instances[ $class ];
+	}
+
+} // End class \View_Admin_As\Base.

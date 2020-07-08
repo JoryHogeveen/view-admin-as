@@ -22,15 +22,6 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 {
 	/**
-	 * The single instance of the class.
-	 *
-	 * @since  1.6.0
-	 * @static
-	 * @var    \VAA_View_Admin_As_Compat
-	 */
-	private static $_instance = null;
-
-	/**
 	 * Fix compatibility issues.
 	 *
 	 * @since   0.1.0
@@ -585,22 +576,4 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		return $no_submenu;
 	}
 
-	/**
-	 * Main Instance.
-	 *
-	 * Ensures only one instance of this class is loaded or can be loaded.
-	 *
-	 * @since   1.6.0
-	 * @access  public
-	 * @static
-	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  \VAA_View_Admin_As_Compat  $this
-	 */
-	public static function get_instance( $caller = null ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $caller );
-		}
-		return self::$_instance;
-	}
-
-} // End class VAA_View_Admin_As_Compat.
+} // End class \View_Admin_As\Compat.

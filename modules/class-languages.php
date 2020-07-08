@@ -22,15 +22,6 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
 class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 {
 	/**
-	 * The single instance of the class.
-	 *
-	 * @since  1.7.5
-	 * @static
-	 * @var    \VAA_View_Admin_As_Languages
-	 */
-	private static $_instance = null;
-
-	/**
 	 * Option key.
 	 *
 	 * @since  1.7.5
@@ -348,22 +339,4 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		return $this->store->get_languages( $key );
 	}
 
-	/**
-	 * Main Instance.
-	 *
-	 * Ensures only one instance of this class is loaded or can be loaded.
-	 *
-	 * @since   1.7.5
-	 * @access  public
-	 * @static
-	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
-	 * @return  \VAA_View_Admin_As_Languages  $this
-	 */
-	public static function get_instance( $caller = null ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $caller );
-		}
-		return self::$_instance;
-	}
-
-} // End class VAA_View_Admin_As_Languages.
+} // End class \View_Admin_As\Languages.
