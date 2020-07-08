@@ -113,17 +113,17 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * Populate the instance.
 	 *
 	 * @since   1.8.0
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
+	protected function __construct() {
 		static $done;
 		if ( ! $done ) {
 			$this->add_filter( 'view_admin_as_update_global_settings', array( 'VAA_View_Admin_As_Type', 'filter_update_view_types' ), 1, 3 );
 			$done = true;
 		}
 
-		parent::__construct( $vaa );
+		parent::__construct();
 
 		$this->vaa->register_view_type( array(
 			'id'       => $this->type,

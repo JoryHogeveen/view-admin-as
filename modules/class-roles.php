@@ -49,11 +49,10 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	 * Populate the instance.
 	 *
 	 * @since   1.8.0
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
+	protected function __construct() {
 
 		if ( is_network_admin() ) {
 			return;

@@ -103,12 +103,11 @@ final class VAA_View_Admin_As_Role_Defaults extends VAA_View_Admin_As_Module
 	 *
 	 * @since   1.4.0
 	 * @since   1.6.1  `$vaa` param.
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		parent::__construct( $vaa );
+	protected function __construct() {
+		parent::__construct();
 
 		// Add this class to the modules in the main class.
 		$this->vaa->register_module( array(

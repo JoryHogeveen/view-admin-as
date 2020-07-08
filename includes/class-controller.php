@@ -44,12 +44,11 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.0
 	 * @since   1.6.1  `$vaa` param.
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		parent::__construct( $vaa );
+	protected function __construct() {
+		parent::__construct();
 
 		// When a user logs in or out, reset the view to default.
 		$this->add_action( 'wp_login',  array( $this, 'cleanup_views' ), 10, 2 );

@@ -73,12 +73,11 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Populate the instance.
 	 *
 	 * @since   1.8.0
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		parent::__construct( $vaa );
+	protected function __construct() {
+		parent::__construct();
 
 		if ( ! $this->has_access() ) {
 			return;

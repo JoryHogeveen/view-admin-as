@@ -67,11 +67,10 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * Populate the instance and validate Groups plugin.
 	 *
 	 * @since   1.7.2
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
+	protected function __construct() {
 
 		if ( is_network_admin() || ! VAA_API::exists_callable( array( 'Groups_Group', 'get_groups' ), 'debug' ) ) {
 			return;

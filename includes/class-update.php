@@ -40,19 +40,6 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	public static $fresh_install = false;
 
 	/**
-	 * Populate the instance.
-	 *
-	 * @since   1.6.0
-	 * @since   1.6.1  `$vaa` param.
-	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
-	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		parent::__construct( $vaa );
-	}
-
-	/**
 	 * Check the correct DB version in the DB.
 	 *
 	 * @since   1.4.0

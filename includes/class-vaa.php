@@ -414,7 +414,7 @@ final class VAA_View_Admin_As
 
 			// If it's a class file, add the class instance to the group.
 			if ( ! empty( $class ) && VAA_API::exists_callable( array( $class, 'get_instance' ) ) ) {
-				$group[ $key ] = call_user_func( array( $class, 'get_instance' ), $this );
+				$group[ $key ] = call_user_func( array( $class, 'get_instance' ) );
 			}
 		}
 		return $group;

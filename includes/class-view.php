@@ -40,19 +40,6 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	private $is_user_modified = false;
 
 	/**
-	 * VAA_View_Admin_As_View constructor.
-	 *
-	 * @since   1.6.0
-	 * @since   1.6.1  `$vaa` param.
-	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
-	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		parent::__construct( $vaa );
-	}
-
-	/**
 	 * Initializes after VAA is enabled.
 	 *
 	 * @since   1.6.0

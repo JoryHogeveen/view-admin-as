@@ -31,19 +31,6 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	private static $_instance = null;
 
 	/**
-	 * Populate the instance.
-	 *
-	 * @since   1.6.0
-	 * @since   1.6.1  `$vaa` param.
-	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
-	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		parent::__construct( $vaa );
-	}
-
-	/**
 	 * Fix compatibility issues.
 	 *
 	 * @since   0.1.0

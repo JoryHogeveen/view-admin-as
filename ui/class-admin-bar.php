@@ -54,12 +54,11 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.5.0
 	 * @since   1.6.1  `$vaa` param.
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		parent::__construct( $vaa );
+	protected function __construct() {
+		parent::__construct();
 
 		if ( $this->is_vaa_enabled() ) {
 			$this->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );

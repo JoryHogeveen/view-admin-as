@@ -44,12 +44,11 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.6.0
 	 * @since   1.6.1  `$vaa` param.
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		parent::__construct( $vaa );
+	protected function __construct() {
+		parent::__construct();
 
 		$this->add_action( 'wp_meta', array( $this, 'action_wp_meta' ) );
 		$this->add_action( 'plugin_row_meta', array( $this, 'action_plugin_row_meta' ), 10, 2 );

@@ -104,11 +104,10 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	 * Populate the instance and validate RUA plugin is active.
 	 *
 	 * @since   1.6.4
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
+	protected function __construct() {
 
 		if ( is_network_admin() || ! VAA_API::exists_callable( array( 'RUA_App', 'instance' ), 'debug' ) ) {
 			return;

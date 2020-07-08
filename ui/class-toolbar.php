@@ -47,26 +47,15 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	public static $showing = false;
 
 	/**
-	 * View Admin As store.
-	 *
-	 * @since  1.6.0
-	 * @var    \VAA_View_Admin_As_Store
-	 */
-	private $vaa_store = null;
-
-	/**
 	 * Construct function.
 	 * Protected to make sure it isn't declared elsewhere.
 	 *
 	 * @since   1.6.0
 	 * @since   1.6.1  `$vaa` param.
+	 * @since   1.9.0  Remove `$vaa` param.
 	 * @access  protected
-	 * @param   \VAA_View_Admin_As  $vaa  The main VAA object.
 	 */
-	protected function __construct( $vaa ) {
-		self::$_instance = $this;
-		$this->vaa_store = view_admin_as()->store();
-
+	protected function __construct() {
 		view_admin_as()->hooks()->add_action( 'vaa_view_admin_as_init', array( $this, 'vaa_init' ) );
 	}
 
@@ -98,10 +87,12 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 			return;
 		}
 
+		$store = view_admin_as()->store();
+
 		if (
-			( is_customize_preview() && ! $this->vaa_store->get_userSettings( 'hide_customizer' ) )
-			|| ( ! is_admin() && ! $this->vaa_store->get_userSettings( 'hide_front' ) )
-			|| $this->vaa_store->get_view()
+			( is_customize_preview() && ! $store->get_userSettings( 'hide_customizer' ) )
+			|| ( ! is_admin() && ! $store->get_userSettings( 'hide_front' ) )
+			|| $store->get_view()
 		) {
 
 			self::$showing = true;
@@ -152,12 +143,11 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6.0
 	 * @access  public
 	 * @static
-	 * @param   \VAA_View_Admin_As  $caller  The referrer class.
 	 * @return  \VAA_View_Admin_As_Toolbar  $this
 	 */
-	public static function get_instance( $caller = null ) {
+	public static function get_instance() {
 		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $caller );
+			self::$_instance = new self();
 		}
 		return self::$_instance;
 	}
