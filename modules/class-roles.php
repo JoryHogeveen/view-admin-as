@@ -49,7 +49,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 			return;
 		}
 
-		parent::__construct( $vaa );
+		parent::__construct();
 
 		// Roles should always be stored because of dependencies.
 		if ( ! $this->is_enabled() ) {

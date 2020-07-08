@@ -69,7 +69,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 		$this->cap = ( defined( 'GROUPS_ADMINISTER_GROUPS' ) ) ? GROUPS_ADMINISTER_GROUPS : 'manage_options';
 
-		parent::__construct( $vaa );
+		parent::__construct();
 
 		if ( ! $this->has_access() ) {
 			return;
