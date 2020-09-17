@@ -454,6 +454,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.x   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -462,6 +463,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @return  bool
 	 */
 	public function reset_view( $user_login = null, $user = null ) {
+		$return = true;
 
 		if ( null === $user ) {
 			// Function is not triggered by the wp_login action hook.
@@ -469,21 +471,34 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		}
 		if ( ! empty( $user->ID ) ) {
 			// Do not use the store as it currently doesn't support a different user ID.
-			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
+			$meta    = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
+			$session = $this->store->get_curUserSession();
 			// Check if this user session has metadata.
-			if ( isset( $meta['views'][ $this->store->get_curUserSession() ] ) ) {
+			if ( isset( $meta['views'][ $session ] ) ) {
+				// Store old view data for hooks.
+				$old_view_data = $meta['views'][ $session ];
 				// Remove metadata from this session.
-				unset( $meta['views'][ $this->store->get_curUserSession() ] );
+				unset( $meta['views'][ $session ] );
 				// Update current metadata if it is the current user.
 				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure).
-				return update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+				$return = update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+
+				/**
+				 * Fires after a view has been reset for a user.
+				 *
+				 * @since 1.8.x
+				 * @param \WP_User $user           User object.
+				 * @param array    $old_view_data  Removed view data.
+				 * @param string   $session        User session.
+				 */
+				do_action( 'vaa_view_admin_as_reset_view', $user, $old_view_data, $session );
 			}
 		}
 		// No meta found, no reset needed.
-		return true;
+		return $return;
 	}
 
 	/**
