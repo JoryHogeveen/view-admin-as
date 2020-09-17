@@ -534,6 +534,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.x   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -542,6 +543,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @return  bool
 	 */
 	public function reset_all_views( $user_login = null, $user = null ) {
+		$return = true;
 
 		if ( null === $user ) {
 			// Function is not triggered by the wp_login action hook.
@@ -551,17 +553,29 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, reset it.
 			if ( isset( $meta['views'] ) ) {
+				// Store old views for hooks.
+				$old_views     = $meta['views'];
 				$meta['views'] = array();
 				// Update current metadata if it is the current user.
 				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
+
 				// Update db metadata (returns: true on success, false on failure).
-				return update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+				$return = update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+
+				/**
+				 * Fires after all views have been reset for a user.
+				 *
+				 * @since  1.8.x
+				 * @param  \WP_User  $user       User object.
+				 * @param  array     $old_views  Old views.
+				 */
+				do_action( 'vaa_view_admin_as_reset_all_views', $user, $old_views );
 			}
 		}
 		// No meta found, no reset needed.
-		return true;
+		return $return;
 	}
 
 	/**
