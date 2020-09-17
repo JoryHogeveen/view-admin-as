@@ -425,27 +425,40 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @since   1.8.3   Made public.
+	 * @since   1.8.x   Add action.
 	 * @access  public
 	 *
 	 * @return  bool
 	 */
 	public function update_view() {
-		$data = $this->validate_view_data( $this->store->get_view() );
-		if ( $data ) {
-			$meta = $this->store->get_userMeta( 'views' );
+		$return    = false;
+		$view_data = $this->validate_view_data( $this->store->get_view() );
+		if ( $view_data ) {
+			$meta    = $this->store->get_userMeta( 'views' );
+			$session = $this->store->get_curUserSession();
 			// Make sure it is an array (no array means no valid data so we can safely clear it).
 			if ( ! is_array( $meta ) ) {
 				$meta = array();
 			}
 			// Add the new view metadata and expiration date.
-			$meta[ $this->store->get_curUserSession() ] = array(
-				'view'   => $data,
+			$meta[ $session ] = array(
+				'view'   => $view_data,
 				'expire' => ( time() + (int) $this->viewExpiration ),
 			);
 			// Update metadata (returns: true on success, false on failure).
-			return $this->store->update_userMeta( $meta, 'views', true );
+			$return = $this->store->update_userMeta( $meta, 'views', true );
+
+			/**
+			 * Fires after a view has been updated for a user.
+			 *
+			 * @since 1.8.x
+			 * @param \WP_User $user       User object.
+			 * @param array    $view_data  View data.
+			 * @param string   $session    User session.
+			 */
+			do_action( 'vaa_view_admin_as_update_view', $this->store->get_curUser(), $view_data, $session );
 		}
-		return false;
+		return $return;
 	}
 
 	/**
