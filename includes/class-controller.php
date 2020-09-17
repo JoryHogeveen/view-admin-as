@@ -492,6 +492,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.x   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -500,6 +501,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @return  bool
 	 */
 	public function cleanup_views( $user_login = null, $user = null ) {
+		$return = true;
 
 		if ( null === $user ) {
 			// Function is not triggered by the wp_login action hook.
@@ -510,6 +512,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, loop it.
 			if ( isset( $meta['views'] ) ) {
+				// Store old views for hooks.
+				$old_views = $meta['views'];
 
 				foreach ( (array) $meta['views'] as $key => $value ) {
 					// Check expiration date: if it doesn't exist or is in the past, remove it.
@@ -517,16 +521,28 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 						unset( $meta['views'][ $key ] );
 					}
 				}
+				$views = $meta['views'];
+
 				// Update current metadata if it is the current user.
 				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure).
-				return update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+				$return = update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+
+				/**
+				 * Fires after old views have been cleaned for a user.
+				 *
+				 * @since 1.8.x
+				 * @param  \WP_User  $user       User object.
+				 * @param  array     $views      Current views.
+				 * @param  array     $old_views  Old views.
+				 */
+				do_action( 'vaa_view_admin_as_cleanup_views', $user, $views, $old_views );
 			}
 		}
 		// No meta found, no cleanup needed.
-		return true;
+		return $return;
 	}
 
 	/**
