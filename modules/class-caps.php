@@ -120,7 +120,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.8.0
 	 * @since   1.8.x  Added second required `$view` param.

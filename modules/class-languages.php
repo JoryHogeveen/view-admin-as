@@ -137,7 +137,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.7.5
 	 * @since   1.8.0  Renamed from `vaa_admin_bar_view_titles()`.

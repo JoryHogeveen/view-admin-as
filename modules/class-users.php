@@ -152,7 +152,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.8.0
 	 * @since   1.8.x  Added second required `$view` param and convert to default method.
@@ -219,6 +219,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @return  string
 	 */
 	public function get_view_title_roles( $user ) {
+		if ( ! $user instanceof \WP_User ) {
+			$user = $this->store->get_users( $user );
+			if ( ! $user ) {
+				return '';
+			}
+		}
 
 		/**
 		 * Add the user roles to the user title?

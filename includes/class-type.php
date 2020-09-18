@@ -308,7 +308,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	abstract public function store_data();
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.8.0
 	 * @since   1.8.x  Added second required `$view` param and convert to default method.
