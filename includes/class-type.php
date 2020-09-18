@@ -221,6 +221,8 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		$this->add_filter( 'view_admin_as_update_view_' . $this->type, array( $this, 'update_view' ), $this->get_priority( 'update_view' ), 3 );
 
 		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ), $this->get_priority( 'do_view' ) );
+
+		$this->add_filter( 'vaa_view_admin_as_view_titles', array( $this, 'view_title' ), $this->get_priority( 'view_title' ), 2 );
 	}
 
 	/**
@@ -235,8 +237,6 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		$this->selected = $this->store->get_view( $this->type );
 
 		if ( $this->selected ) {
-
-			$this->add_filter( 'vaa_admin_bar_view_titles', array( $this, 'view_title' ), $this->get_priority( 'view_title' ) );
 			return true;
 		}
 		return false;

@@ -129,36 +129,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * @return  string
 	 */
 	public function get_admin_bar_menu_title() {
-		if ( ! $this->store->get_view() ) {
+		$view = (array) $this->store->get_view();
+		if ( ! $view ) {
 			return __( 'View As', VIEW_ADMIN_AS_DOMAIN );
 		}
 
-		$titles = array();
-
-		if ( $this->store->get_view( 'visitor' ) ) {
-			$titles[] = __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN );
-		}
+		$titles = VAA_API::get_view_titles();
 
 		/**
-		 * Filter what to show when a view is applied.
+		 * Filter what to show in the admin bar when a view is applied.
 		 *
-		 * @hooked
-		 * 5:   user
-		 * 8:   role
-		 * 10:  group (Groups)
-		 * 10:  rua_level (Restrict User Access)
-		 * 80:  caps
-		 * 90:  locale (Languages)
-		 * 999: role defaults (appends an icon)
-		 *
+		 * @see `vaa_view_admin_as_view_titles`
 		 * @since  1.7.5
-		 *
 		 * @param  array  $titles   The current title(s).
 		 * @param  array  $view     The view data.
-		 *
 		 * @return array|string
 		 */
-		$titles = apply_filters( 'vaa_admin_bar_view_titles', $titles, (array) $this->store->get_view() );
+		$titles = apply_filters( 'vaa_admin_bar_view_titles', $titles, $view );
 
 		if ( is_array( $titles ) ) {
 			if ( 1 < count( $titles ) ) {
@@ -191,7 +178,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param  string  $view    The view data.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_title', $title, (array) $this->store->get_view() );
+		$title = apply_filters( 'vaa_admin_bar_title', $title, $view );
 
 		return $title;
 	}
