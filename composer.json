@@ -1,5 +1,5 @@
 {
-	"name": "JoryHogeveen/view-admin-as",
+	"name": "joryhogeveen/view-admin-as",
 	"type": "wordpress-plugin",
 	"description": "View the WordPress admin as a different role or visitor, switch between users, temporarily change your capabilities, set screen settings for roles.",
 	"keywords": [
