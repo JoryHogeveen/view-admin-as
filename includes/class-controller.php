@@ -109,6 +109,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		// Validation & update hooks for visitor view.
 		$this->add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
 		$this->add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
+		$this->add_filter( 'vaa_view_admin_as_view_titles', array( $this, 'filter_default_view_titles' ), 1, 2 );
 
 		// Get the current view.
 		$this->store->set_view( $this->get_view() );
@@ -279,6 +280,22 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			);
 		}
 		return $success;
+	}
+
+	/**
+	 * Update the view titles for default views like `visitor` if selected.
+	 *
+	 * @since   1.8.x
+	 * @access  public
+	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    The view data.
+	 * @return  array
+	 */
+	public function filter_default_view_titles( $titles, $view ) {
+		if ( isset( $view['visitor'] ) ) {
+			$titles[] = __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN );
+		}
+		return $titles;
 	}
 
 	/**

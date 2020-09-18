@@ -212,10 +212,6 @@ final class VAA_API extends VAA_Util
 
 		$titles = array();
 
-		if ( isset( $view['visitor'] ) ) {
-			$titles[] = __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN );
-		}
-
 		/**
 		 * Filter what to show when a view is applied.
 		 *
