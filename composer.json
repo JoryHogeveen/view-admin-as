@@ -30,7 +30,7 @@
 	],
 	"require": {
 		"composer/installers": "1.2.*",
-		"php": ">=5.2.4"
+		"php": ">=5.3"
 	},
 	"require-dev": {
 		"phpmd/phpmd": "@stable",
