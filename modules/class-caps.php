@@ -123,15 +123,43 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.8.0
+	 * @since   1.8.x  Added second required `$view` param.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    Current view data.
 	 * @return  array
 	 */
-	public function view_title( $titles = array() ) {
-		if ( $this->selected ) {
-			$titles[] = $this->label;
+	public function view_title( $titles, $view ) {
+		if ( isset( $view[ $this->type ] ) ) {
+			$title = $this->get_view_title( $view[ $this->type ] );
+			if ( $title ) {
+				$titles[ /* No need for view type key. */ ] = $title;
+			}
 		}
 		return $titles;
+	}
+
+	/**
+	 * Get the view title.
+	 *
+	 * @since   1.8.x
+	 * @param   string  $key  The data key.
+	 * @return  string
+	 */
+	public function get_view_title( $key ) {
+		$title = $this->label;
+
+		/**
+		 * Change the display title for view type nodes.
+		 *
+		 * @since  1.8.0
+		 * @param  string  $title  View title.
+		 * @param  string  $key    View data key.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
+
+		return $title;
 	}
 
 	/**

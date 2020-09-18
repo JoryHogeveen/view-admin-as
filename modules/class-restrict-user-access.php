@@ -286,23 +286,30 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Get the view title.
 	 *
-	 * @since   1.6.4
-	 * @since   1.7.5  Renamed from `vaa_viewing_as_title()`.
-	 * @since   1.8.0  Renamed from `vaa_admin_bar_view_titles()`.
-	 * @access  public
-	 * @param   array  $titles  The current title(s).
-	 * @return  array
+	 * @since   1.8.x
+	 * @param   string  $key  The data key.
+	 * @return  string
 	 */
-	public function view_title( $titles = array() ) {
-
-		$current = $this->get_levels( $this->selected );
-		if ( $current ) {
-
-			$titles[ $this->label_singular ] = $current->post_title;
+	public function get_view_title( $key ) {
+		$title = $key;
+		$item  = $this->get_levels( $key );
+		if ( $item ) {
+			$title = $item->post_title;
 		}
-		return $titles;
+
+		/**
+		 * Change the display title for view type nodes.
+		 *
+		 * @since  1.8.0
+		 * @param  string  $title  Level title.
+		 * @param  string  $key    Level key.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
+
+		return $title;
 	}
 
 	/**

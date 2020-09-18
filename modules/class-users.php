@@ -155,25 +155,24 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Change the VAA admin bar menu title.
 	 *
 	 * @since   1.8.0
+	 * @since   1.8.x  Added second required `$view` param and convert to default method.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    The view data.
 	 * @return  array
 	 */
-	public function view_title( $titles = array() ) {
-		$current = $this->validate_target_user( $this->selected );
-		if ( $current ) {
+	public function view_title( $titles, $view ) {
+		if ( isset( $view[ $this->type ] ) ) {
 
-			$type = $this->label_singular;
-			$user = $this->store->get_selectedUser();
+			$type  = $this->label_singular;
+			$title = $this->get_view_title( $view[ $this->type ] );
 
-			$titles[ $type ] = $this->get_view_title( $user );
+			if ( $title ) {
+				$titles[ $type ] = $title;
+			}
 
-			/**
-			 * Add the roles for the selected user to the view title?
-			 * Only done when a role view isn't selected.
-			 */
-			if ( ! $this->store->get_view( 'role' ) ) {
-				$titles[ $type ] .= $this->get_view_title_roles( $user );
+			if ( ! isset( $view['role'] ) ) {
+				$titles[ $type ] .= $this->get_view_title_roles( $view[ $this->type ] );
 			}
 		}
 		return $titles;
@@ -183,13 +182,20 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Get the view title.
 	 *
 	 * @since   1.8.0
-	 * @param   \WP_User  $user
+	 * @param   int|\WP_User  $key
 	 * @return  string
 	 */
-	public function get_view_title( $user ) {
-		$title = $user->display_name;
-		if ( ! $title ) {
-			$title = $user->nickname;
+	public function get_view_title( $key ) {
+		$title = ( is_scalar( $key ) ) ? $key : '';
+		$user  = $key;
+		if ( ! $user instanceof \WP_User ) {
+			$user = $this->store->get_users( $user );
+		}
+		if ( $user ) {
+			$title = $user->display_name;
+			if ( ! $title ) {
+				$title = $user->nickname;
+			}
 		}
 
 		/**
@@ -197,10 +203,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 *
 		 * @since  1.8.0
 		 * @param  string    $title  User display name.
-		 * @param  \WP_User  $user   The user object.
+		 * @param  \WP_User  $key    The user ID.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
 
 		return $title;
 	}

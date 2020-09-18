@@ -290,16 +290,6 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	abstract public function validate_view_data( $null, $data = null );
 
 	/**
-	 * Change the VAA admin bar menu title.
-	 *
-	 * @since   1.8.0
-	 * @access  public
-	 * @param   array  $titles  The current title(s).
-	 * @return  array
-	 */
-	abstract public function view_title( $titles = array() );
-
-	/**
 	 * Add the admin bar items.
 	 *
 	 * @since   1.8.0
@@ -316,6 +306,26 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * @access  private
 	 */
 	abstract public function store_data();
+
+	/**
+	 * Change the VAA admin bar menu title.
+	 *
+	 * @since   1.8.0
+	 * @since   1.8.x  Added second required `$view` param and convert to default method.
+	 * @access  public
+	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    The view data.
+	 * @return  array
+	 */
+	public function view_title( $titles, $view ) {
+		if ( isset( $view[ $this->type ] ) ) {
+			$title = $this->get_view_title( $view[ $this->type ] );
+			if ( $title ) {
+				$titles[ $this->label_singular ] = $title;
+			}
+		}
+		return $titles;
+	}
 
 	/**
 	 * Set the view type data.
@@ -384,6 +394,29 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 */
 	public function get_description() {
 		return $this->description;
+	}
+
+	/**
+	 * Get the view title.
+	 *
+	 * @since   1.8.x
+	 * @param   string  $key  The data key.
+	 * @return  string
+	 */
+	public function get_view_title( $key ) {
+		$title = $this->get_data( $key );
+
+		/**
+		 * Change the display title for view type nodes.
+		 *
+		 * @since  1.8.0
+		 * @param  string  $title  View title.
+		 * @param  string  $key    View data key.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
+
+		return $title;
 	}
 
 	/**

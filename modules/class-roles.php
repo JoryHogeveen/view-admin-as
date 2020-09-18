@@ -116,40 +116,31 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
-	 *
-	 * @since   1.8.0
-	 * @access  public
-	 * @param   array  $titles  The current title(s).
-	 * @return  array
-	 */
-	public function view_title( $titles = array() ) {
-		$current = $this->get_data( $this->selected );
-		if ( $current ) {
-			$titles[ $this->label_singular ] = $this->get_view_title( $current );
-		}
-		return $titles;
-	}
-
-	/**
 	 * Get the view title.
 	 *
 	 * @since   1.8.0
-	 * @param   \WP_Role  $role
+	 * @param   string|\WP_Role  $key
 	 * @return  string
 	 */
-	public function get_view_title( $role ) {
-		$title = $this->store->get_rolenames( $role->name );
+	public function get_view_title( $key ) {
+		$title = ( is_scalar( $key ) ) ? $key : '';
+		$role  = $key;
+		if ( ! $role instanceof \WP_Role ) {
+			$role = $this->store->get_roles( $role );
+		}
+		if ( $role ) {
+			$title = $this->store->get_rolenames( $role->name );
+		}
 
 		/**
 		 * Change the display title for role nodes.
 		 *
 		 * @since  1.8.0
 		 * @param  string    $title  Role name (translated).
-		 * @param  \WP_Role  $role   The role object.
+		 * @param  \WP_Role  $key    The role name.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
 
 		return $title;
 	}
