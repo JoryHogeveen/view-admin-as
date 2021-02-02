@@ -390,6 +390,31 @@ abstract class VAA_Util
 	}
 
 	/**
+	 * JSON request check.
+	 *
+	 * @since   1.8.x
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  bool
+	 */
+	public static function is_json_request( $key = null, $type = 'post' ) {
+		if ( function_exists( 'wp_is_json_request' ) ) {
+			$is_json = wp_is_json_request();
+		} else {
+			// Fallback to referer.
+			$is_json = ( false !== strpos( (string) wp_get_referer(), '/wp-json/' ) );
+		}
+		if ( $is_json ) {
+			return self::is_request( $key, $type );
+		}
+		return false;
+	}
+
+	/**
 	 * AJAX request check.
 	 *
 	 * @since   1.7.0
