@@ -520,6 +520,28 @@ final class VAA_API extends VAA_Util
 		return (bool) ( is_customize_preview() && is_admin() );
 	}
 
+
+	/**
+	 * Is this a block editor page?
+	 *
+	 * @since   1.8.x
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return bool
+	 */
+	public static function is_block_editor() {
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return false;
+		}
+		$screen = get_current_screen();
+		if ( method_exists( $screen, 'is_block_editor' ) ) {
+			return $screen->is_block_editor();
+		}
+		return false;
+	}
+
 	/**
 	 * Backwards compat method for apply_shortcodes() since WP 5.4.
 	 * @todo  deprecate when 5.4 is the minimum version of WP.
