@@ -89,12 +89,17 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6.0
 	 * @since   1.6.2  Check for customizer preview.
 	 * @since   1.7.6  Add customizer support by only enabling it in the container, not the preview window.
+	 * @since   1.8.x  Add JSON, AJAX and REST support.
 	 * @access  public
 	 * @return  void
 	 */
 	public function vaa_toolbar_init() {
-		// Stop if the admin bar is already showing or we're in the customizer preview window.
-		if ( is_admin_bar_showing() || ( ! is_admin() && is_customize_preview() ) ) {
+		if (
+			VAA_API::is_toolbar_showing()
+			|| VAA_API::doing_ajax()
+			|| VAA_API::is_json_request()
+			|| ( ! is_admin() && is_customize_preview() )
+		) {
 			return;
 		}
 
