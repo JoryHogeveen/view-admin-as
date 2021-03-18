@@ -3,7 +3,7 @@ Contributors: keraweb
 Donate link: https://www.keraweb.nl/donate.php?for=view-admin-as
 Tags: admin, view, roles, users, switch, user switching, role switching, capabilities, caps, screen settings, defaults, visitor
 Requires at least: 4.1
-Tested up to: 5.5
+Tested up to: 5.7
 Requires PHP: 5.2.4
 Stable tag: 1.8.6
 
