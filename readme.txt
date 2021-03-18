@@ -209,6 +209,17 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
+= 1.8.7 =
+
+*	**Enhancement:** Added hooks `vaa_view_admin_as_reset_all_views`, `vaa_view_admin_as_cleanup_views`, `vaa_view_admin_as_reset_view`, `vaa_view_admin_as_update_view`.
+*	**Enhancement/Compatibility:** Fix compatibility issue with MetaSlider block preview (JSON/AJAX requests) [#117](https://github.com/JoryHogeveen/view-admin-as/issues/117)
+*	**Compatibility:** Fixed issues with capability filters overwriting available capabilities.
+*	**Compatibility:** Remove redundant canonical tag. [#119](https://github.com/JoryHogeveen/view-admin-as/issues/119)
+*	**Fixed:** Missing textdomain parameter.
+*	**Refactor:** Enhance view type classes.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/118)
+
 = 1.8.6 =
 
 *	**Compatibility:** WordPress 5.4 `apply_shortcodes()` function. [#111](https://github.com/JoryHogeveen/view-admin-as/issues/111)
@@ -232,7 +243,7 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 *	**Enhancement:** Role Manager: Reload when in a user view and the user's role has been modified. [#105](https://github.com/JoryHogeveen/view-admin-as/issues/105)
 *	**Compatibility:** WordPress 5.2 admin bar arrow icon update. [WP Core #37513](https://core.trac.wordpress.org/ticket/37513)
 *	**Compatibility:** [Dark Mode](https://nl.wordpress.org/plugins/dark-mode/) ([Github](https://github.com/danieltj27/Dark-Mode))
-*	**Fix:** Role Defaults: Only return screen setting overwrite if found. [#104](https://github.com/JoryHogeveen/view-admin-as/issues/104) 
+*	**Fix:** Role Defaults: Only return screen setting overwrite if found. [#104](https://github.com/JoryHogeveen/view-admin-as/issues/104)
 *	**API:** Added API method `is_view_active()`. ([Documentation](https://github.com/JoryHogeveen/view-admin-as/wiki/PHP-API#is_view_active))
 
 Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/106)
@@ -279,7 +290,7 @@ Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull
 *	**Enhancement:** Stop using the `rel` attribute for view type data.
 *	**Enhancement:** Access validation logic.
 *	**Compatibility:** Patch Yoast SEO compatibility. [Yoast SEO #9365](https://github.com/Yoast/wordpress-seo/pull/9365)
-*	**Refactoring:** Action/Filter hook manager class. [#77](https://github.com/JoryHogeveen/view-admin-as/issues/77) 
+*	**Refactoring:** Action/Filter hook manager class. [#77](https://github.com/JoryHogeveen/view-admin-as/issues/77)
 *	**Refactoring:** Refactor all view types as separate modules. [#84](https://github.com/JoryHogeveen/view-admin-as/issues/84)
 *	**Fix:** Use `prop` instead of `attr` for `checked` attributes in checkbox inputs.
 *	**Updated/Added:** Screenshots.
