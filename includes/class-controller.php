@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.0
- * @version 1.8.3
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
@@ -285,7 +285,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	/**
 	 * Update the view titles for default views like `visitor` if selected.
 	 *
-	 * @since   1.8.x
+	 * @since   1.8.7
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @param   array  $view    The view data.
@@ -442,7 +442,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @since   1.8.3   Made public.
-	 * @since   1.8.x   Add action.
+	 * @since   1.8.7   Add action.
 	 * @access  public
 	 *
 	 * @return  bool
@@ -468,7 +468,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			/**
 			 * Fires after a view has been updated for a user.
 			 *
-			 * @since 1.8.x
+			 * @since 1.8.7
 			 * @param \WP_User $user       User object.
 			 * @param array    $view_data  View data.
 			 * @param string   $session    User session.
@@ -484,7 +484,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
-	 * @since   1.8.x   Add action.
+	 * @since   1.8.7   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -519,7 +519,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				/**
 				 * Fires after a view has been reset for a user.
 				 *
-				 * @since 1.8.x
+				 * @since 1.8.7
 				 * @param \WP_User $user           User object.
 				 * @param array    $old_view_data  Removed view data.
 				 * @param string   $session        User session.
@@ -537,7 +537,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
-	 * @since   1.8.x   Add action.
+	 * @since   1.8.7   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -578,7 +578,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				/**
 				 * Fires after old views have been cleaned for a user.
 				 *
-				 * @since 1.8.x
+				 * @since 1.8.7
 				 * @param  \WP_User  $user       User object.
 				 * @param  array     $views      Current views.
 				 * @param  array     $old_views  Old views.
@@ -595,7 +595,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
-	 * @since   1.8.x   Add action.
+	 * @since   1.8.7   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -628,7 +628,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				/**
 				 * Fires after all views have been reset for a user.
 				 *
-				 * @since  1.8.x
+				 * @since  1.8.7
 				 * @param  \WP_User  $user       User object.
 				 * @param  array     $old_views  Old views.
 				 */

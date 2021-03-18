@@ -22,7 +22,7 @@ if ( class_exists( 'WP_Admin_Bar' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @version 1.8.0
+ * @version 1.8.7
  * @see     wp-includes/class-wp-admin-bar.php
  * @uses    \WP_Admin_Bar Extends class
  */
@@ -89,7 +89,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 	 * @since   1.6.0
 	 * @since   1.6.2  Check for customizer preview.
 	 * @since   1.7.6  Add customizer support by only enabling it in the container, not the preview window.
-	 * @since   1.8.x  Add JSON, AJAX and REST support.
+	 * @since   1.8.7  Add JSON, AJAX and REST support.
 	 * @access  public
 	 * @return  void
 	 */

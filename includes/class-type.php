@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.8.0
- * @version 1.8.0
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
@@ -311,7 +311,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.8.0
-	 * @since   1.8.x  Added second required `$view` param and convert to default method.
+	 * @since   1.8.7  Added second required `$view` param and convert to default method.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @param   array  $view    The view data.
@@ -399,7 +399,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Get the view title.
 	 *
-	 * @since   1.8.x
+	 * @since   1.8.7
 	 * @param   string  $key  The data key.
 	 * @return  string
 	 */

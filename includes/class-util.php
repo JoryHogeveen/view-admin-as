@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.8.5
- * @version 1.8.5
+ * @version 1.8.7
  */
 abstract class VAA_Util
 {
@@ -392,7 +392,7 @@ abstract class VAA_Util
 	/**
 	 * JSON request check.
 	 *
-	 * @since   1.8.x
+	 * @since   1.8.7
 	 * @access  public
 	 * @static
 	 * @api

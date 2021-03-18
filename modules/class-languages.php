@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.5
- * @version 1.8.0
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
@@ -141,7 +141,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.7.5
 	 * @since   1.8.0  Renamed from `vaa_admin_bar_view_titles()`.
-	 * @since   1.8.x  Added second required `$view` param.
+	 * @since   1.8.7  Added second required `$view` param.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @param   array  $view    View data.

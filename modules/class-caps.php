@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.3.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.3
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
@@ -123,7 +123,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.8.0
-	 * @since   1.8.x  Added second required `$view` param.
+	 * @since   1.8.7  Added second required `$view` param.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
 	 * @param   array  $view    Current view data.
@@ -142,7 +142,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	/**
 	 * Get the view title.
 	 *
-	 * @since   1.8.x
+	 * @since   1.8.7
 	 * @param   string  $key  The data key.
 	 * @return  string
 	 */

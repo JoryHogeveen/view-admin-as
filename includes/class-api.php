@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @version 1.8.6
+ * @version 1.8.7
  * @uses    \VAA_Util Extends class
  */
 final class VAA_API extends VAA_Util
@@ -191,7 +191,7 @@ final class VAA_API extends VAA_Util
 	/**
 	 * Get the human readable name(s) of a view.
 	 *
-	 * @since   1.8.x
+	 * @since   1.8.7
 	 * @access  public
 	 * @static
 	 * @api
@@ -224,7 +224,7 @@ final class VAA_API extends VAA_Util
 		 * 90:  locale (Languages)
 		 * 999: role defaults (appends an icon)
 		 *
-		 * @since  1.8.x
+		 * @since  1.8.7
 		 *
 		 * @param  array  $titles   The current title(s).
 		 * @param  array  $view     The view data.
@@ -524,7 +524,7 @@ final class VAA_API extends VAA_Util
 	/**
 	 * Is this a block editor page?
 	 *
-	 * @since   1.8.x
+	 * @since   1.8.7
 	 * @access  public
 	 * @static
 	 * @api
