@@ -133,7 +133,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		) );
 
 		// Load our admin bar nodes and force the location.
-		do_action( 'vaa_toolbar_menu', $this, 'top-secondary' );
+		view_admin_as()->hooks()->do_action( 'vaa_toolbar_menu', $this, 'top-secondary' );
 
 		/**
 		 * Add classes to the toolbar menu (front only).
