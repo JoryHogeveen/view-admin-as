@@ -168,7 +168,7 @@ abstract class VAA_View_Admin_As_Base
 	 * @see     \VAA_View_Admin_As_Hooks::do_action()
 	 * @inheritdoc
 	 */
-	public function do_action( $tag, $value ) {
+	public function do_action( $tag ) {
 		return call_user_func_array( array( view_admin_as()->hooks(), 'do_action' ), func_get_args() );
 	}
 

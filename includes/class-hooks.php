@@ -49,20 +49,19 @@ class VAA_View_Admin_As_Hooks
 	protected $_logged_actions = array();
 
 	/**
-	 * Calls the callback functions that have been added to a filter hook.
+	 * Calls the callback functions that have been added to the hook tag.
 	 * This method will also log the initial call and store the params.
 	 *
 	 * @since   1.8.7
-	 * @param   string  $tag      The name of the filter hook.
-	 * @param   mixed   $value    The value to filter.
+	 * @param   string  $tag      The name of the hook.
 	 * @param   mixed   ...$args  Additional parameters to pass to the callback functions.
 	 * @return  mixed   The filtered value after all hooked functions are applied to it.
 	 */
-	public function do_action( $tag, $value ) {
+	public function do_action( $tag ) {
 		$args = func_get_args();
 
 		$log = $args;
-		array_shift( $log );
+		array_shift( $log ); // Remove tag.
 
 		if ( API::debug() ) {
 			$log['callstack'] = debug_backtrace();
