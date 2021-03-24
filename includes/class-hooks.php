@@ -63,6 +63,11 @@ class VAA_View_Admin_As_Hooks
 
 		$log = $args;
 		array_shift( $log );
+
+		if ( API::debug() ) {
+			$log['callstack'] = debug_backtrace();
+		}
+
 		if ( ! isset( $this->_logged_actions[ $tag ] ) ) {
 			$this->_logged_actions[ $tag ] = array();
 		}
