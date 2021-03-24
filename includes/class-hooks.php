@@ -497,20 +497,20 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Convert object types into object class names instead of full object data.
 	 * @since   1.8.0
-	 * @param   array  $hooks  The collection of hooks (that is, actions or filters).
+	 * @param   array  $array  The collection of arrays that might contain objects.
 	 * @return  array
 	 */
-	protected function _convert_callback( $hooks ) {
-		foreach ( (array) $hooks as $key => $val ) {
+	protected function _convert_callback( $array ) {
+		foreach ( (array) $array as $key => $val ) {
 			if ( is_object( $val ) ) {
-				$hooks[ $key ] = get_class( $val );
+				$array[ $key ] = get_class( $val );
 				continue;
 			}
 			if ( is_array( $val ) ) {
-				$hooks[ $key ] = $this->_convert_callback( $val );
+				$array[ $key ] = $this->_convert_callback( $val );
 			}
 		}
-		return $hooks;
+		return $array;
 	}
 
 } // End class VAA_View_Admin_As_Hooks.
