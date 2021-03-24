@@ -63,7 +63,7 @@ class VAA_View_Admin_As_Hooks
 		$log = $args;
 		array_shift( $log ); // Remove tag.
 
-		if ( API::debug() ) {
+		if ( VAA_API::debug() ) {
 			$log['callstack'] = debug_backtrace();
 		}
 
