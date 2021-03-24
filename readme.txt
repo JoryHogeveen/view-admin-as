@@ -215,7 +215,7 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 *	**Enhancement/Compatibility:** Fix compatibility issue with MetaSlider block preview (JSON/AJAX requests) [#117](https://github.com/JoryHogeveen/view-admin-as/issues/117)
 *	**Compatibility:** Fixed issues with capability filters overwriting available capabilities.
 *	**Compatibility:** Remove redundant canonical tag. [#119](https://github.com/JoryHogeveen/view-admin-as/issues/119)
-*	**Fixed:** WordPress 5.7 UI compatibility.
+*	**Compatibility:** WordPress 5.7 UI.
 *	**Fixed:** Missing textdomain parameter.
 *	**Refactor:** Added action logs.
 *	**Refactor:** Enhance view type classes.

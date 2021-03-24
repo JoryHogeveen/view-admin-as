@@ -94,7 +94,7 @@ class VAA_View_Admin_As_Hooks
 		$log = VAA_API::get_array_data( $this->_logged_actions, $tag );
 		if ( isset( $this->_logged_actions[ $tag ] ) && is_int( $occurrence ) ) {
 			// Subtract one since the counter starts at 0;
-			$occurrence -= 1;
+			$occurrence--;
 			$log = VAA_API::get_array_data( $log, $occurrence );
 		}
 		return $log;
