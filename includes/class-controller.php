@@ -419,9 +419,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			}
 
 			// Browse mode.
-			$meta = $this->store->get_userMeta( 'views' );
-			if ( isset( $meta[ $this->store->get_curUserSession() ]['view'] ) ) {
-				return $this->validate_view_data( $meta[ $this->store->get_curUserSession() ]['view'] );
+			$meta    = $this->store->get_userMeta( 'views' );
+			$session = $this->store->get_curUserSession();
+			if ( isset( $meta[ $session ]['view'] ) ) {
+				return $this->validate_view_data( $meta[ $session ]['view'] );
 			}
 
 		} elseif ( 'single' === $view_mode ) {
