@@ -88,14 +88,18 @@ class VAA_View_Admin_As_Hooks
 	 * @since   1.8.7
 	 * @param   string  $tag         The name of the action hook.
 	 * @param   int     $occurrence  The # time it was fired.
+	 * @param   bool    $objects     Return the full object of a callback? Default: false, can cause PHP memory issues.
 	 * @return  array
 	 */
-	public function get_action_log( $tag, $occurrence = null ) {
+	public function get_action_log( $tag = null, $occurrence = null, $objects = false ) {
 		$log = VAA_API::get_array_data( $this->_logged_actions, $tag );
-		if ( isset( $this->_logged_actions[ $tag ] ) && is_int( $occurrence ) ) {
+		if ( $log && is_int( $occurrence ) ) {
 			// Subtract one since the counter starts at 0;
 			$occurrence--;
 			$log = VAA_API::get_array_data( $log, $occurrence );
+		}
+		if ( ! $objects ) {
+			$log = $this->_convert_callback( $log );
 		}
 		return $log;
 	}
