@@ -451,6 +451,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	public function update_view() {
 		$return    = false;
 		$view_data = $this->validate_view_data( $this->store->get_view() );
+
 		if ( $view_data ) {
 			$meta    = $this->store->get_userMeta( 'views' );
 			$session = $this->store->get_curUserSession();
@@ -476,6 +477,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			 */
 			$this->do_action( 'vaa_view_admin_as_update_view', $this->store->get_curUser(), $view_data, $session );
 		}
+
 		return $return;
 	}
 
@@ -528,7 +530,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				$this->do_action( 'vaa_view_admin_as_reset_view', $user, $old_view_data, $session );
 			}
 		}
-		// No meta found, no reset needed.
+
 		return $return;
 	}
 
@@ -587,7 +589,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				$this->do_action( 'vaa_view_admin_as_cleanup_views', $user, $views, $old_views );
 			}
 		}
-		// No meta found, no cleanup needed.
+
 		return $return;
 	}
 
@@ -637,7 +639,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				$this->do_action( 'vaa_view_admin_as_reset_all_views', $user, $old_views );
 			}
 		}
-		// No meta found, no reset needed.
+
 		return $return;
 	}
 
