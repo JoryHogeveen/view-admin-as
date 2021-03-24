@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @link    https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters
  * @since   1.8.0
- * @version 1.8.2
+ * @version 1.8.7
  */
 class VAA_View_Admin_As_Hooks
 {
@@ -38,6 +38,67 @@ class VAA_View_Admin_As_Hooks
 	 * @var     array  $filters  The filters registered with WordPress.
 	 */
 	protected $_filters = array();
+
+	/**
+	 * Log of actions run through this instance.
+	 *
+	 * @since   1.8.7
+	 * @access  protected
+	 * @var     array  $filters  Actions run through this instance.
+	 */
+	protected $_logged_actions = array();
+
+	/**
+	 * Calls the callback functions that have been added to a filter hook.
+	 * This method will also log the initial call and store the params.
+	 *
+	 * @since   1.8.7
+	 * @param   string  $tag      The name of the filter hook.
+	 * @param   mixed   $value    The value to filter.
+	 * @param   mixed   ...$args  Additional parameters to pass to the callback functions.
+	 * @return  mixed   The filtered value after all hooked functions are applied to it.
+	 */
+	public function do_action( $tag, $value ) {
+		$args = func_get_args();
+
+		$log = $args;
+		array_shift( $log );
+		if ( ! isset( $this->_logged_actions[ $tag ] ) ) {
+			$this->_logged_actions[ $tag ] = array();
+		}
+		$this->_logged_actions[ $tag ][] = $log;
+
+		return call_user_func_array( 'do_action', $args );
+	}
+
+	/**
+	 * Retrieve the number of times an action is fired.
+	 *
+	 * @since   1.8.7
+	 * @param   string  $tag  The name of the action hook.
+	 * @return  int     The number of times action hook $tag is fired.
+	 */
+	public function did_action( $tag ) {
+		return did_action( $tag );
+	}
+
+	/**
+	 * Get the arguments from a specific action that has been fired.
+	 *
+	 * @since   1.8.7
+	 * @param   string  $tag         The name of the action hook.
+	 * @param   int     $occurrence  The # time it was fired.
+	 * @return  array
+	 */
+	public function get_action_log( $tag, $occurrence = null ) {
+		$log = VAA_API::get_array_data( $this->_logged_actions, $tag );
+		if ( isset( $this->_logged_actions[ $tag ] ) && is_int( $occurrence ) ) {
+			// Subtract one since the counter starts at 0;
+			$occurrence -= 1;
+			$log = VAA_API::get_array_data( $log, $occurrence );
+		}
+		return $log;
+	}
 
 	/**
 	 * Convert callable into an identifier.
