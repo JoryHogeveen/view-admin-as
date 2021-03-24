@@ -64,7 +64,7 @@ if (
 			),
 			'href'   => false,
 			'meta'   => array(
-				'class' => 'auto-height',
+				'class' => 'auto-height ab-vaa-select',
 			),
 		)
 	);
