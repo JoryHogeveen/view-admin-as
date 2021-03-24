@@ -532,4 +532,18 @@ abstract class VAA_Util
 		return $value;
 	}
 
+	/**
+	 * Check if debug is enabled.
+	 *
+	 * @since   1.8.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return bool
+	 */
+	public static function debug() {
+		return defined( 'WP_DEBUG' ) && WP_DEBUG;
+	}
+
 } // End class VAA_Util.
