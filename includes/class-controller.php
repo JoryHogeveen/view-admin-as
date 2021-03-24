@@ -83,26 +83,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function init() {
 
-		/**
-		 * Reset view to default if something goes wrong.
-		 *
-		 * @since    0.1.0
-		 * @since    1.2.0  Only check for key
-		 * @example  http://www.your.domain/wp-admin/?reset-view
-		 */
-		if ( VAA_API::is_request( 'reset-view', 'get' ) ) {
-			$this->reset_view();
-		}
-		/**
-		 * Clear all user views.
-		 *
-		 * @since    1.3.4
-		 * @example  http://www.your.domain/wp-admin/?reset-all-views
-		 */
-		if ( VAA_API::is_request( 'reset-all-views', 'get' ) ) {
-			$this->reset_all_views();
-		}
-
 		// Reset hook.
 		$this->add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
 
@@ -121,6 +101,26 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			// Admin selector ajax return (fallback).
 			$this->add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 			//$this->add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+		}
+
+		/**
+		 * Reset view to default if something goes wrong.
+		 *
+		 * @since    0.1.0
+		 * @since    1.2.0  Only check for key
+		 * @example  http://www.your.domain/wp-admin/?reset-view
+		 */
+		if ( VAA_API::is_request( 'reset-view', 'get' ) ) {
+			$this->reset_view();
+		}
+		/**
+		 * Clear all user views.
+		 *
+		 * @since    1.3.4
+		 * @example  http://www.your.domain/wp-admin/?reset-all-views
+		 */
+		if ( VAA_API::is_request( 'reset-all-views', 'get' ) ) {
+			$this->reset_all_views();
 		}
 	}
 
