@@ -394,7 +394,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar, $root );
 
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
@@ -450,7 +450,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar, $root );
 	}
 
 	/**

@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.0
  * @since   1.7.0  Class got split up: data handling/updating is now in VAA_View_Admin_As_Controller.
- * @version 1.8.4
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
@@ -118,7 +118,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * @since  1.6.3
 		 * @param  array
 		 */
-		do_action( 'vaa_view_admin_as_do_view', $this->store->get_view() );
+		$this->do_action( 'vaa_view_admin_as_do_view', $this->store->get_view() );
 
 		/**
 		 * Force own locale on view.
@@ -233,7 +233,7 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * @since  1.6.4  Renamed from `vaa_view_admin_as_modify_current_user`.
 		 * @param  \WP_User  $user        The modified user object.
 		 */
-		do_action( 'vaa_view_admin_as_modify_user', $user );
+		$this->do_action( 'vaa_view_admin_as_modify_user', $user );
 	}
 
 	/**

@@ -370,7 +370,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
 
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-actions.php';
 
@@ -392,7 +392,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, $main_root );
 
 		$done = true;
 	}

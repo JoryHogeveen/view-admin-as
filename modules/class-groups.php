@@ -556,7 +556,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_groups_before', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_groups_before', $admin_bar, $root );
 
 		// Add the groups.
 		foreach ( $this->get_groups() as $group_key => $group ) {
@@ -602,7 +602,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_groups_after', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_groups_after', $admin_bar, $root );
 	}
 
 	/**

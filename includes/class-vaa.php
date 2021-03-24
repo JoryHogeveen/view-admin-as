@@ -261,7 +261,7 @@ final class VAA_View_Admin_As
 			 * @since  1.8.0
 			 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 			 */
-			do_action( 'vaa_view_admin_as_pre_init', $this );
+			$this->hooks()->do_action( 'vaa_view_admin_as_pre_init', $this );
 
 			$this->controller->init();
 			$this->view->init();
@@ -274,7 +274,7 @@ final class VAA_View_Admin_As
 			 * @since  1.5.0
 			 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 			 */
-			do_action( 'vaa_view_admin_as_init', $this );
+			$this->hooks()->do_action( 'vaa_view_admin_as_init', $this );
 
 		}
 	}
@@ -513,7 +513,7 @@ final class VAA_View_Admin_As
 		 * @since  1.6.2
 		 * @param  \VAA_View_Admin_As  $this  The main View Admin As object instance.
 		 */
-		do_action( 'vaa_view_admin_as_modules_loaded', $this );
+		$this->hooks()->do_action( 'vaa_view_admin_as_modules_loaded', $this );
 	}
 
 	/**

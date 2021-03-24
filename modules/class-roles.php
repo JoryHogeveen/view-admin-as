@@ -220,7 +220,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_roles_before', $admin_bar, $main_root );
+		$this->do_action( 'vaa_admin_bar_roles_before', $admin_bar, $main_root );
 
 		// Add the roles.
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-role-items.php';
@@ -235,7 +235,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_roles_after', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_roles_after', $admin_bar, $root, $main_root );
 
 		$done = true;
 	}

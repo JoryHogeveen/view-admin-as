@@ -474,7 +474,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			 * @param array    $view_data  View data.
 			 * @param string   $session    User session.
 			 */
-			do_action( 'vaa_view_admin_as_update_view', $this->store->get_curUser(), $view_data, $session );
+			$this->do_action( 'vaa_view_admin_as_update_view', $this->store->get_curUser(), $view_data, $session );
 		}
 		return $return;
 	}
@@ -525,7 +525,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				 * @param array    $old_view_data  Removed view data.
 				 * @param string   $session        User session.
 				 */
-				do_action( 'vaa_view_admin_as_reset_view', $user, $old_view_data, $session );
+				$this->do_action( 'vaa_view_admin_as_reset_view', $user, $old_view_data, $session );
 			}
 		}
 		// No meta found, no reset needed.
@@ -584,7 +584,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				 * @param  array     $views      Current views.
 				 * @param  array     $old_views  Old views.
 				 */
-				do_action( 'vaa_view_admin_as_cleanup_views', $user, $views, $old_views );
+				$this->do_action( 'vaa_view_admin_as_cleanup_views', $user, $views, $old_views );
 			}
 		}
 		// No meta found, no cleanup needed.
@@ -633,7 +633,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 				 * @param  \WP_User  $user       User object.
 				 * @param  array     $old_views  Old views.
 				 */
-				do_action( 'vaa_view_admin_as_reset_all_views', $user, $old_views );
+				$this->do_action( 'vaa_view_admin_as_reset_all_views', $user, $old_views );
 			}
 		}
 		// No meta found, no reset needed.

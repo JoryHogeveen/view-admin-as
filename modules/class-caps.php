@@ -324,7 +324,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, $main_root );
 
 		if ( $title_submenu ) {
 			$admin_bar->add_group( array(
@@ -381,7 +381,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item. ($root.'-manager')
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_manager_before', $admin_bar, $root . '-manager', $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_manager_before', $admin_bar, $root . '-manager', $main_root );
 
 		$admin_bar->add_group( array(
 			'id'     => $root . '-select',
@@ -401,7 +401,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $parent     The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $parent, $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $parent, $main_root );
 
 		// Add caps actions.
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-actions.php';
@@ -416,7 +416,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $parent     The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $parent, $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $parent, $main_root );
 
 		// Add the caps.
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-items.php';
@@ -431,7 +431,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_after', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_after', $admin_bar, $root, $main_root );
 
 		$done = true;
 	}
