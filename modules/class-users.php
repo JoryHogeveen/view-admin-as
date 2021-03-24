@@ -273,7 +273,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.8.0  Renamed from `ajax_handler()`.
 	 * @access  public
-	 * @param   null    $null    Null.
+	 * @param   mixed   $null    Null.
 	 * @param   mixed   $data    The ajax data for this module.
 	 * @param   string  $type    The view type.
 	 * @return  bool
@@ -297,7 +297,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.7.0
 	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
 	 * @access  public
-	 * @param   null   $null  Default return (invalid).
+	 * @param   mixed  $null  Default return (invalid).
 	 * @param   mixed  $data  The view data.
 	 * @return  mixed
 	 */
@@ -694,7 +694,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @see     \WP_User_Query::get_search_sql()
 	 * @link    https://developer.wordpress.org/reference/classes/wp_user_query/get_search_sql/
 	 *
-	 * @global  wpdb    $wpdb    WordPress database abstraction object.
+	 * @global  \wpdb   $wpdb    WordPress database abstraction object.
 	 * @param   string  $string  The string to search for.
 	 * @param   array   $cols    (optional) Set the columns to look in.
 	 * @return  string
