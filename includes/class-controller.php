@@ -509,7 +509,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			// Check if this user session has metadata.
 			if ( isset( $meta['views'][ $session ] ) ) {
 				// Store old view data for hooks.
-				$old_view_data = Util::get_array_data( $meta['views'][ $session ], 'view' );
+				$old_view_data = VAA_API::get_array_data( $meta['views'][ $session ], 'view' );
 				// Remove metadata from this session.
 				unset( $meta['views'][ $session ] );
 				// Update current metadata if it is the current user.
