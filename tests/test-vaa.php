@@ -41,6 +41,8 @@ class VAA_Tests extends VAA_UnitTestCase {
 	 * Tests for when the current user is an editor without VAA capabilities.
 	 */
 	function test_vaa_user_visitor() {
+		// Log out.
+		wp_set_current_user( 0 );
 		VAA_UnitTest_Factory::vaa_reinit();
 
 		// Tests
