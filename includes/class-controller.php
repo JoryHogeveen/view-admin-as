@@ -394,10 +394,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.5.0   Single mode.
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @since   1.7.0   Private method. Use store.
-	 * @access  private
+	 * @access  public
 	 * @return  array
 	 */
-	private function get_view() {
+	public function get_view() {
 
 		$view_mode = $this->store->get_userSettings( 'view_mode' );
 
