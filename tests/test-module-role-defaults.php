@@ -10,7 +10,7 @@
 
 view_admin_as()->include_file( VIEW_ADMIN_AS_DIR . 'modules/class-role-defaults.php', 'VAA_View_Admin_As_Role_Defaults' );
 
-class VAA_Module_Role_Defaults_UnitTest extends WP_UnitTestCase {
+class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 
 	/**
 	 * @return VAA_View_Admin_As_Role_Defaults

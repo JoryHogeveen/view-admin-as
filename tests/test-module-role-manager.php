@@ -12,7 +12,7 @@
 
 view_admin_as()->include_file( VIEW_ADMIN_AS_DIR . 'modules/class-role-manager.php', 'VAA_View_Admin_As_Role_Manager' );
 
-class VAA_Module_Role_Manager_UnitTest extends WP_UnitTestCase {
+class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 
 	/**
 	 * @return VAA_View_Admin_As_Role_Manager

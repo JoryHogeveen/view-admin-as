@@ -6,7 +6,21 @@
  * @package View_Admin_As
  */
 
-class VAA_UnitTest extends WP_UnitTestCase {
+class VAA_Tests extends VAA_UnitTestCase {
+
+	/**
+	 * @var VAA_View_Admin_As
+	 */
+	public $vaa_main = null;
+
+	/**
+	 * @var \View_Admin_As\Store
+	 */
+	public $vaa_store = null;
+
+///////////////////////////////////////////////
+//           VAA TESTS
+///////////////////////////////////////////////
 
 	/**
 	 * Check that activation doesn't break.

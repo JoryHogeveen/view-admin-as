@@ -47,6 +47,7 @@ require $_tests_dir . '/includes/bootstrap.php';
 echo 'Installing View Admin As' . PHP_EOL;
 
 require_once TEST_VAA_DIR . 'factory.php';
+require_once TEST_VAA_DIR . 'unittestcase.php';
 VAA_UnitTest_Factory::get_instance();
 
 if ( ! is_multisite() ) {
