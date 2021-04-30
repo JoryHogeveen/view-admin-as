@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.5.0
- * @version 1.8.4
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
@@ -129,36 +129,23 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 	 * @return  string
 	 */
 	public function get_admin_bar_menu_title() {
-		if ( ! $this->store->get_view() ) {
+		$view = (array) $this->store->get_view();
+		if ( ! $view ) {
 			return __( 'View As', VIEW_ADMIN_AS_DOMAIN );
 		}
 
-		$titles = array();
-
-		if ( $this->store->get_view( 'visitor' ) ) {
-			$titles[] = __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN );
-		}
+		$titles = VAA_API::get_view_titles();
 
 		/**
-		 * Filter what to show when a view is applied.
+		 * Filter what to show in the admin bar when a view is applied.
 		 *
-		 * @hooked
-		 * 5:   user
-		 * 8:   role
-		 * 10:  group (Groups)
-		 * 10:  rua_level (Restrict User Access)
-		 * 80:  caps
-		 * 90:  locale (Languages)
-		 * 999: role defaults (appends an icon)
-		 *
+		 * @see `vaa_view_admin_as_view_titles`
 		 * @since  1.7.5
-		 *
 		 * @param  array  $titles   The current title(s).
 		 * @param  array  $view     The view data.
-		 *
 		 * @return array|string
 		 */
-		$titles = apply_filters( 'vaa_admin_bar_view_titles', $titles, (array) $this->store->get_view() );
+		$titles = apply_filters( 'vaa_admin_bar_view_titles', $titles, $view );
 
 		if ( is_array( $titles ) ) {
 			if ( 1 < count( $titles ) ) {
@@ -191,7 +178,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param  string  $view    The view data.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_title', $title, (array) $this->store->get_view() );
+		$title = apply_filters( 'vaa_admin_bar_title', $title, $view );
 
 		return $title;
 	}
@@ -248,7 +235,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         self::$root  The current root item.
 		 * @param   string         self::$root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_menu_before', $admin_bar, self::$root, self::$root );
+		$this->do_action( 'vaa_admin_bar_menu_before', $admin_bar, self::$root, self::$root );
 
 		// Add reset button.
 		if ( VAA_API::is_view_active() ) {
@@ -282,7 +269,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         self::$root  The current root item.
 		 * @param   string         self::$root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_menu', $admin_bar, self::$root, self::$root );
+		$this->do_action( 'vaa_admin_bar_menu', $admin_bar, self::$root, self::$root );
 
 	}
 
@@ -361,7 +348,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         $root        The current root item.
 		 * @param   string         self::$root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_info_before', $admin_bar, $root, self::$root );
+		$this->do_action( 'vaa_admin_bar_info_before', $admin_bar, $root, self::$root );
 
 		/** @var VAA_View_Admin_As_UI $vaa_ui */
 		$vaa_ui = $this->vaa->get_ui( 'ui' );
@@ -398,7 +385,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         $root        The current root item.
 		 * @param   string         self::$root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_info_after', $admin_bar, $root, self::$root );
+		$this->do_action( 'vaa_admin_bar_info_after', $admin_bar, $root, self::$root );
 
 	}
 
@@ -436,7 +423,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         $root        The current root item.
 		 * @param   string         self::$root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_settings_before', $admin_bar, $root, self::$root );
+		$this->do_action( 'vaa_admin_bar_settings_before', $admin_bar, $root, self::$root );
 
 		// Add user setting nodes.
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-settings-user.php';
@@ -451,7 +438,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         $root        The current root item.
 		 * @param   string         self::$root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_settings_after', $admin_bar, $root, self::$root );
+		$this->do_action( 'vaa_admin_bar_settings_after', $admin_bar, $root, self::$root );
 	}
 
 	/**
@@ -557,7 +544,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         $root        The current root item.
 		 * @param   string         self::$root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_view_types', $admin_bar, $root, self::$root );
+		$this->do_action( 'vaa_admin_bar_view_types', $admin_bar, $root, self::$root );
 	}
 
 	/**
@@ -608,7 +595,7 @@ final class VAA_View_Admin_As_Admin_Bar extends VAA_View_Admin_As_Base
 		 * @param   string         $root        The current root item.
 		 * @param   string         self::$root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_modules', $admin_bar, $root, self::$root );
+		$this->do_action( 'vaa_admin_bar_modules', $admin_bar, $root, self::$root );
 	}
 
 	/**

@@ -28,6 +28,12 @@
 			"role": "Owner"
 		}
 	],
+	"funding": [
+		{
+			"type": "donation",
+			"url": "https://www.keraweb.nl/donate.php?for=view-admin-as"
+		}
+	],
 	"require": {
 		"composer/installers": "1.9.*",
 		"php": ">=5.6.20"

@@ -1154,7 +1154,7 @@ final class VAA_View_Admin_As_Role_Manager extends VAA_View_Admin_As_Module
 			'title'  => VAA_View_Admin_As_Form::do_checkbox( array(
 				'name'        => $root . '-export-roles-caps-only',
 				'label'       => __( 'Capabilities only', VIEW_ADMIN_AS_DOMAIN ),
-				'description' => __( 'Not compatible with the "All" option.' ),
+				'description' => __( 'Not compatible with the "All" option.', VIEW_ADMIN_AS_DOMAIN ),
 			) ),
 			'href'   => false,
 			'meta'   => array(

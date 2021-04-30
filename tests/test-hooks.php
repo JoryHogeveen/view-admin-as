@@ -8,7 +8,7 @@
  * @package View_Admin_As
  */
 
-class VAA_Hooks_UnitTest extends WP_UnitTestCase {
+class VAA_Hooks_UnitTest extends VAA_UnitTestCase {
 
 	/**
 	 * Test Hooks class methods

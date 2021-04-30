@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @version 1.8.6
+ * @version 1.8.7
  * @uses    \VAA_Util Extends class
  */
 final class VAA_API extends VAA_Util
@@ -186,6 +186,54 @@ final class VAA_API extends VAA_Util
 			return $store->get_view( $type );
 		}
 		return null;
+	}
+
+	/**
+	 * Get the human readable name(s) of a view.
+	 *
+	 * @since   1.8.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   array         $view  (optional) View data. Will use the current view if omitted.
+	 * @param   string|array  $type  (optional) A view type. Will return `null` if this view type is not active.
+	 * @return  array
+	 */
+	public static function get_view_titles( $view = array(), $type = null ) {
+		if ( ! $view ) {
+			$view = self::get_current_view();
+		}
+		$view = self::get_array_data( $view, $type );
+
+		if ( ! $view ) {
+			return array();
+		}
+
+		$titles = array();
+
+		/**
+		 * Filter what to show when a view is applied.
+		 *
+		 * @hooked
+		 * 5:   user
+		 * 8:   role
+		 * 10:  group (Groups)
+		 * 10:  rua_level (Restrict User Access)
+		 * 80:  caps
+		 * 90:  locale (Languages)
+		 * 999: role defaults (appends an icon)
+		 *
+		 * @since  1.8.7
+		 *
+		 * @param  array  $titles   The current title(s).
+		 * @param  array  $view     The view data.
+		 *
+		 * @return array
+		 */
+		$titles = apply_filters( 'vaa_view_admin_as_view_titles', $titles, $view );
+
+		return $titles;
 	}
 
 	/**
@@ -470,6 +518,28 @@ final class VAA_API extends VAA_Util
 	 */
 	public static function is_customizer_admin() {
 		return (bool) ( is_customize_preview() && is_admin() );
+	}
+
+
+	/**
+	 * Is this a block editor page?
+	 *
+	 * @since   1.8.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return bool
+	 */
+	public static function is_block_editor() {
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return false;
+		}
+		$screen = get_current_screen();
+		if ( method_exists( $screen, 'is_block_editor' ) ) {
+			return $screen->is_block_editor();
+		}
+		return false;
 	}
 
 	/**

@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.2
- * @version 1.8.3
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
@@ -474,19 +474,30 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Get the view title.
 	 *
-	 * @since   1.7.2
-	 * @since   1.7.5  Renamed from `vaa_viewing_as_title()`.
-	 * @access  public
-	 * @param   array  $titles  The current title(s).
-	 * @return  array
+	 * @since   1.8.7
+	 * @param   string  $key  The data key.
+	 * @return  string
 	 */
-	public function view_title( $titles = array() ) {
-		if ( $this->selected ) {
-			$titles[ $this->label_singular ] = $this->selected->name;
+	public function get_view_title( $key ) {
+		$title = $key;
+		$item  = $this->get_groups( $key );
+		if ( $item ) {
+			$title = $item->name;
 		}
-		return $titles;
+
+		/**
+		 * Change the display title for view type nodes.
+		 *
+		 * @since  1.8.0
+		 * @param  string  $title  Group title.
+		 * @param  string  $key    Group key.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
+
+		return $title;
 	}
 
 	/**
@@ -545,7 +556,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_groups_before', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_groups_before', $admin_bar, $root );
 
 		// Add the groups.
 		foreach ( $this->get_groups() as $group_key => $group ) {
@@ -591,7 +602,7 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_groups_after', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_groups_after', $admin_bar, $root );
 	}
 
 	/**

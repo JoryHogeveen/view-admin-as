@@ -22,7 +22,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.6
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
@@ -152,28 +152,27 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.8.0
+	 * @since   1.8.7  Added second required `$view` param and convert to default method.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    The view data.
 	 * @return  array
 	 */
-	public function view_title( $titles = array() ) {
-		$current = $this->validate_target_user( $this->selected );
-		if ( $current ) {
+	public function view_title( $titles, $view ) {
+		if ( isset( $view[ $this->type ] ) ) {
 
-			$type = $this->label_singular;
-			$user = $this->store->get_selectedUser();
+			$type  = $this->label_singular;
+			$title = $this->get_view_title( $view[ $this->type ] );
 
-			$titles[ $type ] = $this->get_view_title( $user );
+			if ( $title ) {
+				$titles[ $type ] = $title;
+			}
 
-			/**
-			 * Add the roles for the selected user to the view title?
-			 * Only done when a role view isn't selected.
-			 */
-			if ( ! $this->store->get_view( 'role' ) ) {
-				$titles[ $type ] .= $this->get_view_title_roles( $user );
+			if ( ! isset( $view['role'] ) ) {
+				$titles[ $type ] .= $this->get_view_title_roles( $view[ $this->type ] );
 			}
 		}
 		return $titles;
@@ -183,13 +182,20 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * Get the view title.
 	 *
 	 * @since   1.8.0
-	 * @param   \WP_User  $user
+	 * @param   int|\WP_User  $key
 	 * @return  string
 	 */
-	public function get_view_title( $user ) {
-		$title = $user->display_name;
-		if ( ! $title ) {
-			$title = $user->nickname;
+	public function get_view_title( $key ) {
+		$title = ( is_scalar( $key ) ) ? $key : '';
+		$user  = $key;
+		if ( ! $user instanceof \WP_User ) {
+			$user = $this->store->get_users( $user );
+		}
+		if ( $user ) {
+			$title = $user->display_name;
+			if ( ! $title ) {
+				$title = $user->nickname;
+			}
 		}
 
 		/**
@@ -197,10 +203,10 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 *
 		 * @since  1.8.0
 		 * @param  string    $title  User display name.
-		 * @param  \WP_User  $user   The user object.
+		 * @param  \WP_User  $key    The user ID.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $user );
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
 
 		return $title;
 	}
@@ -213,6 +219,12 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @return  string
 	 */
 	public function get_view_title_roles( $user ) {
+		if ( ! $user instanceof \WP_User ) {
+			$user = $this->store->get_users( $user );
+			if ( ! $user ) {
+				return '';
+			}
+		}
 
 		/**
 		 * Add the user roles to the user title?
@@ -261,7 +273,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 *
 	 * @since   1.8.0  Renamed from `ajax_handler()`.
 	 * @access  public
-	 * @param   null    $null    Null.
+	 * @param   mixed   $null    Null.
 	 * @param   mixed   $data    The ajax data for this module.
 	 * @param   string  $type    The view type.
 	 * @return  bool
@@ -285,7 +297,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @since   1.7.0
 	 * @since   1.8.0  Moved from `VAA_View_Admin_As_Controller`.
 	 * @access  public
-	 * @param   null   $null  Default return (invalid).
+	 * @param   mixed  $null  Default return (invalid).
 	 * @param   mixed  $data  The view data.
 	 * @return  mixed
 	 */
@@ -358,7 +370,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_users_before', $admin_bar, $root, $main_root );
 
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-user-actions.php';
 
@@ -380,7 +392,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_users_after', $admin_bar, $root, $main_root );
 
 		$done = true;
 	}
@@ -682,7 +694,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 	 * @see     \WP_User_Query::get_search_sql()
 	 * @link    https://developer.wordpress.org/reference/classes/wp_user_query/get_search_sql/
 	 *
-	 * @global  wpdb    $wpdb    WordPress database abstraction object.
+	 * @global  \wpdb   $wpdb    WordPress database abstraction object.
 	 * @param   string  $string  The string to search for.
 	 * @param   array   $cols    (optional) Set the columns to look in.
 	 * @return  string

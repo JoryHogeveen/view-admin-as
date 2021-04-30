@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.0
- * @version 1.8.3
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
@@ -83,6 +83,26 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 */
 	public function init() {
 
+		// Reset hook.
+		$this->add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
+
+		// Validation & update hooks for visitor view.
+		$this->add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
+		$this->add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
+		$this->add_filter( 'vaa_view_admin_as_view_titles', array( $this, 'filter_default_view_titles' ), 1, 2 );
+
+		// Get the current view.
+		$this->store->set_view( $this->get_view() );
+
+		// Short circuit needed for visitor view (BEFORE the current user is set).
+		if ( VAA_API::is_ajax_request( 'view_admin_as' ) ) {
+			$this->ajax_view_admin_as();
+		} else {
+			// Admin selector ajax return (fallback).
+			$this->add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+			//$this->add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
+		}
+
 		/**
 		 * Reset view to default if something goes wrong.
 		 *
@@ -101,25 +121,6 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 */
 		if ( VAA_API::is_request( 'reset-all-views', 'get' ) ) {
 			$this->reset_all_views();
-		}
-
-		// Reset hook.
-		$this->add_filter( 'view_admin_as_handle_ajax_reset', array( $this, 'reset_view' ) );
-
-		// Validation & update hooks for visitor view.
-		$this->add_filter( 'view_admin_as_validate_view_data_visitor', '__return_true' );
-		$this->add_filter( 'view_admin_as_update_view_visitor', array( $this, 'filter_update_view' ), 10, 3 );
-
-		// Get the current view.
-		$this->store->set_view( $this->get_view() );
-
-		// Short circuit needed for visitor view (BEFORE the current user is set).
-		if ( VAA_API::is_ajax_request( 'view_admin_as' ) ) {
-			$this->ajax_view_admin_as();
-		} else {
-			// Admin selector ajax return (fallback).
-			$this->add_action( 'wp_ajax_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
-			//$this->add_action( 'wp_ajax_nopriv_view_admin_as', array( $this, 'ajax_view_admin_as' ) );
 		}
 	}
 
@@ -282,6 +283,22 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	}
 
 	/**
+	 * Update the view titles for default views like `visitor` if selected.
+	 *
+	 * @since   1.8.7
+	 * @access  public
+	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    The view data.
+	 * @return  array
+	 */
+	public function filter_default_view_titles( $titles, $view ) {
+		if ( isset( $view['visitor'] ) ) {
+			$titles[] = __( 'Site visitor', VIEW_ADMIN_AS_DOMAIN );
+		}
+		return $titles;
+	}
+
+	/**
 	 * Check if the provided data is the same as the current view.
 	 *
 	 * @since   1.7.0
@@ -377,10 +394,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.5.0   Single mode.
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @since   1.7.0   Private method. Use store.
-	 * @access  private
+	 * @access  public
 	 * @return  array
 	 */
-	private function get_view() {
+	public function get_view() {
 
 		$view_mode = $this->store->get_userSettings( 'view_mode' );
 
@@ -402,9 +419,10 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			}
 
 			// Browse mode.
-			$meta = $this->store->get_userMeta( 'views' );
-			if ( isset( $meta[ $this->store->get_curUserSession() ]['view'] ) ) {
-				return $this->validate_view_data( $meta[ $this->store->get_curUserSession() ]['view'] );
+			$meta    = $this->store->get_userMeta( 'views' );
+			$session = $this->store->get_curUserSession();
+			if ( isset( $meta[ $session ]['view'] ) ) {
+				return $this->validate_view_data( $meta[ $session ]['view'] );
 			}
 
 		} elseif ( 'single' === $view_mode ) {
@@ -425,27 +443,42 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
 	 * @since   1.8.3   Made public.
+	 * @since   1.8.7   Add action.
 	 * @access  public
 	 *
 	 * @return  bool
 	 */
 	public function update_view() {
-		$data = $this->validate_view_data( $this->store->get_view() );
-		if ( $data ) {
-			$meta = $this->store->get_userMeta( 'views' );
+		$return    = false;
+		$view_data = $this->validate_view_data( $this->store->get_view() );
+
+		if ( $view_data ) {
+			$meta    = $this->store->get_userMeta( 'views' );
+			$session = $this->store->get_curUserSession();
 			// Make sure it is an array (no array means no valid data so we can safely clear it).
 			if ( ! is_array( $meta ) ) {
 				$meta = array();
 			}
 			// Add the new view metadata and expiration date.
-			$meta[ $this->store->get_curUserSession() ] = array(
-				'view'   => $data,
+			$meta[ $session ] = array(
+				'view'   => $view_data,
 				'expire' => ( time() + (int) $this->viewExpiration ),
 			);
 			// Update metadata (returns: true on success, false on failure).
-			return $this->store->update_userMeta( $meta, 'views', true );
+			$return = $this->store->update_userMeta( $meta, 'views', true );
+
+			/**
+			 * Fires after a view has been updated for a user.
+			 *
+			 * @since 1.8.7
+			 * @param \WP_User $user       User object.
+			 * @param array    $view_data  View data.
+			 * @param string   $session    User session.
+			 */
+			$this->do_action( 'vaa_view_admin_as_update_view', $this->store->get_curUser(), $view_data, $session );
 		}
-		return false;
+
+		return $return;
 	}
 
 	/**
@@ -454,6 +487,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.7   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -462,6 +496,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @return  bool
 	 */
 	public function reset_view( $user_login = null, $user = null ) {
+		$return = true;
 
 		if ( null === $user ) {
 			// Function is not triggered by the wp_login action hook.
@@ -469,21 +504,34 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		}
 		if ( ! empty( $user->ID ) ) {
 			// Do not use the store as it currently doesn't support a different user ID.
-			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
+			$meta    = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
+			$session = $this->store->get_curUserSession();
 			// Check if this user session has metadata.
-			if ( isset( $meta['views'][ $this->store->get_curUserSession() ] ) ) {
+			if ( isset( $meta['views'][ $session ] ) ) {
+				// Store old view data for hooks.
+				$old_view_data = VAA_API::get_array_data( $meta['views'][ $session ], 'view' );
 				// Remove metadata from this session.
-				unset( $meta['views'][ $this->store->get_curUserSession() ] );
+				unset( $meta['views'][ $session ] );
 				// Update current metadata if it is the current user.
 				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure).
-				return update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+				$return = update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+
+				/**
+				 * Fires after a view has been reset for a user.
+				 *
+				 * @since 1.8.7
+				 * @param \WP_User $user           User object.
+				 * @param array    $old_view_data  Removed view data.
+				 * @param string   $session        User session.
+				 */
+				$this->do_action( 'vaa_view_admin_as_reset_view', $user, $old_view_data, $session );
 			}
 		}
-		// No meta found, no reset needed.
-		return true;
+
+		return $return;
 	}
 
 	/**
@@ -492,6 +540,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.7   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -500,6 +549,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @return  bool
 	 */
 	public function cleanup_views( $user_login = null, $user = null ) {
+		$return = true;
 
 		if ( null === $user ) {
 			// Function is not triggered by the wp_login action hook.
@@ -510,6 +560,8 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, loop it.
 			if ( isset( $meta['views'] ) ) {
+				// Store old views for hooks.
+				$old_views = $meta['views'];
 
 				foreach ( (array) $meta['views'] as $key => $value ) {
 					// Check expiration date: if it doesn't exist or is in the past, remove it.
@@ -517,16 +569,28 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 						unset( $meta['views'][ $key ] );
 					}
 				}
+				$views = $meta['views'];
+
 				// Update current metadata if it is the current user.
 				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
 				// Update db metadata (returns: true on success, false on failure).
-				return update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+				$return = update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+
+				/**
+				 * Fires after old views have been cleaned for a user.
+				 *
+				 * @since 1.8.7
+				 * @param  \WP_User  $user       User object.
+				 * @param  array     $views      Current views.
+				 * @param  array     $old_views  Old views.
+				 */
+				$this->do_action( 'vaa_view_admin_as_cleanup_views', $user, $views, $old_views );
 			}
 		}
-		// No meta found, no cleanup needed.
-		return true;
+
+		return $return;
 	}
 
 	/**
@@ -534,6 +598,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.3.4
 	 * @since   1.6.0   Moved from `VAA_View_Admin_As`.
+	 * @since   1.8.7   Add action.
 	 * @access  public
 	 * @link    https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 	 *
@@ -542,26 +607,40 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 	 * @return  bool
 	 */
 	public function reset_all_views( $user_login = null, $user = null ) {
+		$return = true;
 
 		if ( null === $user ) {
 			// Function is not triggered by the wp_login action hook.
 			$user = $this->store->get_curUser();
 		}
 		if ( ! empty( $user->ID ) ) {
+			// Do not use the store as it currently doesn't support a different user ID.
 			$meta = get_user_meta( $user->ID, $this->store->get_userMetaKey(), true );
 			// If meta exists, reset it.
 			if ( isset( $meta['views'] ) ) {
+				// Store old views for hooks.
+				$old_views     = $meta['views'];
 				$meta['views'] = array();
 				// Update current metadata if it is the current user.
 				if ( $this->store->get_curUser() && (int) $this->store->get_curUser()->ID === (int) $user->ID ) {
 					$this->store->set_userMeta( $meta );
 				}
+
 				// Update db metadata (returns: true on success, false on failure).
-				return update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+				$return = update_user_meta( $user->ID, $this->store->get_userMetaKey(), $meta );
+
+				/**
+				 * Fires after all views have been reset for a user.
+				 *
+				 * @since  1.8.7
+				 * @param  \WP_User  $user       User object.
+				 * @param  array     $old_views  Old views.
+				 */
+				$this->do_action( 'vaa_view_admin_as_reset_all_views', $user, $old_views );
 			}
 		}
-		// No meta found, no reset needed.
-		return true;
+
+		return $return;
 	}
 
 	/**

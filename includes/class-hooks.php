@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @link    https://github.com/JoryHogeveen/view-admin-as/wiki/Actions-&-Filters
  * @since   1.8.0
- * @version 1.8.2
+ * @version 1.8.7
  */
 class VAA_View_Admin_As_Hooks
 {
@@ -38,6 +38,75 @@ class VAA_View_Admin_As_Hooks
 	 * @var     array  $filters  The filters registered with WordPress.
 	 */
 	protected $_filters = array();
+
+	/**
+	 * Log of actions run through this instance.
+	 *
+	 * @since   1.8.7
+	 * @access  protected
+	 * @var     array  $filters  Actions run through this instance.
+	 */
+	protected $_logged_actions = array();
+
+	/**
+	 * Calls the callback functions that have been added to the hook tag.
+	 * This method will also log the initial call and store the params.
+	 *
+	 * @since   1.8.7
+	 * @param   string  $tag      The name of the hook.
+	 * @param   mixed   ...$args  Additional parameters to pass to the callback functions.
+	 * @return  mixed   The filtered value after all hooked functions are applied to it.
+	 */
+	public function do_action( $tag ) {
+		$args = func_get_args();
+
+		$log = $args;
+		array_shift( $log ); // Remove tag.
+
+		if ( VAA_API::debug() ) {
+			$log['callstack'] = debug_backtrace();
+		}
+
+		if ( ! isset( $this->_logged_actions[ $tag ] ) ) {
+			$this->_logged_actions[ $tag ] = array();
+		}
+		$this->_logged_actions[ $tag ][] = $log;
+
+		return call_user_func_array( 'do_action', $args );
+	}
+
+	/**
+	 * Retrieve the number of times an action is fired.
+	 *
+	 * @since   1.8.7
+	 * @param   string  $tag  The name of the action hook.
+	 * @return  int     The number of times action hook $tag is fired.
+	 */
+	public function did_action( $tag ) {
+		return did_action( $tag );
+	}
+
+	/**
+	 * Get the arguments from a specific action that has been fired.
+	 *
+	 * @since   1.8.7
+	 * @param   string  $tag         The name of the action hook.
+	 * @param   int     $occurrence  The # time it was fired.
+	 * @param   bool    $objects     Return the full object of a callback? Default: false, can cause PHP memory issues.
+	 * @return  array
+	 */
+	public function get_action_log( $tag = null, $occurrence = null, $objects = false ) {
+		$log = VAA_API::get_array_data( $this->_logged_actions, $tag );
+		if ( $log && is_int( $occurrence ) ) {
+			// Subtract one since the counter starts at 0;
+			$occurrence--;
+			$log = VAA_API::get_array_data( $log, $occurrence );
+		}
+		if ( ! $objects ) {
+			$log = $this->_convert_callback( $log );
+		}
+		return $log;
+	}
 
 	/**
 	 * Convert callable into an identifier.
@@ -436,20 +505,20 @@ class VAA_View_Admin_As_Hooks
 	/**
 	 * Convert object types into object class names instead of full object data.
 	 * @since   1.8.0
-	 * @param   array  $hooks  The collection of hooks (that is, actions or filters).
+	 * @param   array  $array  The collection of arrays that might contain objects.
 	 * @return  array
 	 */
-	protected function _convert_callback( $hooks ) {
-		foreach ( (array) $hooks as $key => $val ) {
+	protected function _convert_callback( $array ) {
+		foreach ( (array) $array as $key => $val ) {
 			if ( is_object( $val ) ) {
-				$hooks[ $key ] = get_class( $val );
+				$array[ $key ] = get_class( $val );
 				continue;
 			}
 			if ( is_array( $val ) ) {
-				$hooks[ $key ] = $this->_convert_callback( $val );
+				$array[ $key ] = $this->_convert_callback( $val );
 			}
 		}
-		return $hooks;
+		return $array;
 	}
 
 } // End class VAA_View_Admin_As_Hooks.

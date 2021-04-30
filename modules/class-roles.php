@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   0.1.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.0
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
@@ -116,40 +116,31 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
-	 *
-	 * @since   1.8.0
-	 * @access  public
-	 * @param   array  $titles  The current title(s).
-	 * @return  array
-	 */
-	public function view_title( $titles = array() ) {
-		$current = $this->get_data( $this->selected );
-		if ( $current ) {
-			$titles[ $this->label_singular ] = $this->get_view_title( $current );
-		}
-		return $titles;
-	}
-
-	/**
 	 * Get the view title.
 	 *
 	 * @since   1.8.0
-	 * @param   \WP_Role  $role
+	 * @param   string|\WP_Role  $key
 	 * @return  string
 	 */
-	public function get_view_title( $role ) {
-		$title = $this->store->get_rolenames( $role->name );
+	public function get_view_title( $key ) {
+		$title = ( is_scalar( $key ) ) ? $key : '';
+		$role  = $key;
+		if ( ! $role instanceof \WP_Role ) {
+			$role = $this->store->get_roles( $role );
+		}
+		if ( $role ) {
+			$title = $this->store->get_rolenames( $role->name );
+		}
 
 		/**
 		 * Change the display title for role nodes.
 		 *
 		 * @since  1.8.0
 		 * @param  string    $title  Role name (translated).
-		 * @param  \WP_Role  $role   The role object.
+		 * @param  \WP_Role  $key    The role name.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $role );
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
 
 		return $title;
 	}
@@ -229,7 +220,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_roles_before', $admin_bar, $main_root );
+		$this->do_action( 'vaa_admin_bar_roles_before', $admin_bar, $main_root );
 
 		// Add the roles.
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-role-items.php';
@@ -244,7 +235,7 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_roles_after', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_roles_after', $admin_bar, $root, $main_root );
 
 		$done = true;
 	}

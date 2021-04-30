@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.0
- * @version 1.8.6
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
@@ -394,10 +394,10 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 			$caps = array_merge( (array) members_get_plugin_capabilities(), $caps );
 		}
 		// Get caps from multiple plugins through the Members filter.
-		$caps = apply_filters( 'members_get_capabilities', $caps );
+		$caps = array_merge( (array) apply_filters( 'members_get_capabilities', $caps ), $caps );
 
 		// Pods.
-		$caps = apply_filters( 'pods_roles_get_capabilities', $caps );
+		$caps = array_merge( (array) apply_filters( 'pods_roles_get_capabilities', $caps ), $caps );
 
 		return $caps;
 

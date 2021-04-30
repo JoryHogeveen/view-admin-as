@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.8.0
- * @version 1.8.0
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
@@ -221,6 +221,8 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		$this->add_filter( 'view_admin_as_update_view_' . $this->type, array( $this, 'update_view' ), $this->get_priority( 'update_view' ), 3 );
 
 		$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ), $this->get_priority( 'do_view' ) );
+
+		$this->add_filter( 'vaa_view_admin_as_view_titles', array( $this, 'view_title' ), $this->get_priority( 'view_title' ), 2 );
 	}
 
 	/**
@@ -235,8 +237,6 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		$this->selected = $this->store->get_view( $this->type );
 
 		if ( $this->selected ) {
-
-			$this->add_filter( 'vaa_admin_bar_view_titles', array( $this, 'view_title' ), $this->get_priority( 'view_title' ) );
 			return true;
 		}
 		return false;
@@ -290,16 +290,6 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	abstract public function validate_view_data( $null, $data = null );
 
 	/**
-	 * Change the VAA admin bar menu title.
-	 *
-	 * @since   1.8.0
-	 * @access  public
-	 * @param   array  $titles  The current title(s).
-	 * @return  array
-	 */
-	abstract public function view_title( $titles = array() );
-
-	/**
 	 * Add the admin bar items.
 	 *
 	 * @since   1.8.0
@@ -316,6 +306,26 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 * @access  private
 	 */
 	abstract public function store_data();
+
+	/**
+	 * Update the view titles if this view is selected.
+	 *
+	 * @since   1.8.0
+	 * @since   1.8.7  Added second required `$view` param and convert to default method.
+	 * @access  public
+	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    The view data.
+	 * @return  array
+	 */
+	public function view_title( $titles, $view ) {
+		if ( isset( $view[ $this->type ] ) ) {
+			$title = $this->get_view_title( $view[ $this->type ] );
+			if ( $title ) {
+				$titles[ $this->label_singular ] = $title;
+			}
+		}
+		return $titles;
+	}
 
 	/**
 	 * Set the view type data.
@@ -384,6 +394,29 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 */
 	public function get_description() {
 		return $this->description;
+	}
+
+	/**
+	 * Get the view title.
+	 *
+	 * @since   1.8.7
+	 * @param   string  $key  The data key.
+	 * @return  string
+	 */
+	public function get_view_title( $key ) {
+		$title = $this->get_data( $key );
+
+		/**
+		 * Change the display title for view type nodes.
+		 *
+		 * @since  1.8.0
+		 * @param  string  $title  View title.
+		 * @param  string  $key    View data key.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
+
+		return $title;
 	}
 
 	/**

@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.3.0  View type existed in core.
  * @since   1.8.0  Created this class.
- * @version 1.8.3
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
@@ -120,18 +120,46 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.8.0
+	 * @since   1.8.7  Added second required `$view` param.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    Current view data.
 	 * @return  array
 	 */
-	public function view_title( $titles = array() ) {
-		if ( $this->selected ) {
-			$titles[] = $this->label;
+	public function view_title( $titles, $view ) {
+		if ( isset( $view[ $this->type ] ) ) {
+			$title = $this->get_view_title( $view[ $this->type ] );
+			if ( $title ) {
+				$titles[ /* No need for view type key. */ ] = $title;
+			}
 		}
 		return $titles;
+	}
+
+	/**
+	 * Get the view title.
+	 *
+	 * @since   1.8.7
+	 * @param   string  $key  The data key.
+	 * @return  string
+	 */
+	public function get_view_title( $key ) {
+		$title = $this->label;
+
+		/**
+		 * Change the display title for view type nodes.
+		 *
+		 * @since  1.8.0
+		 * @param  string  $title  View title.
+		 * @param  string  $key    View data key.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
+
+		return $title;
 	}
 
 	/**
@@ -296,7 +324,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_before', $admin_bar, $root, $main_root );
 
 		if ( $title_submenu ) {
 			$admin_bar->add_group( array(
@@ -353,7 +381,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item. ($root.'-manager')
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_manager_before', $admin_bar, $root . '-manager', $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_manager_before', $admin_bar, $root . '-manager', $main_root );
 
 		$admin_bar->add_group( array(
 			'id'     => $root . '-select',
@@ -373,7 +401,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $parent     The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $parent, $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_actions_before', $admin_bar, $parent, $main_root );
 
 		// Add caps actions.
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-actions.php';
@@ -388,7 +416,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $parent     The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $parent, $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_actions_after', $admin_bar, $parent, $main_root );
 
 		// Add the caps.
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-caps-items.php';
@@ -403,7 +431,7 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 		 * @param   string         $root       The current root item.
 		 * @param   string         $main_root  The main root item.
 		 */
-		do_action( 'vaa_admin_bar_caps_after', $admin_bar, $root, $main_root );
+		$this->do_action( 'vaa_admin_bar_caps_after', $admin_bar, $root, $main_root );
 
 		$done = true;
 	}

@@ -110,7 +110,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 		$this->store->update_optionData( wp_parse_args( $this->store->get_optionData(), $defaults ) );
 
 		// Main update finished, hook used to update modules.
-		do_action( 'vaa_view_admin_as_db_update' );
+		$this->do_action( 'vaa_view_admin_as_db_update' );
 	}
 
 	/**

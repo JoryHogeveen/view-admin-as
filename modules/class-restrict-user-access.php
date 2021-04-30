@@ -21,7 +21,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.6.4
- * @version 1.8.4
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
@@ -286,23 +286,30 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Get the view title.
 	 *
-	 * @since   1.6.4
-	 * @since   1.7.5  Renamed from `vaa_viewing_as_title()`.
-	 * @since   1.8.0  Renamed from `vaa_admin_bar_view_titles()`.
-	 * @access  public
-	 * @param   array  $titles  The current title(s).
-	 * @return  array
+	 * @since   1.8.7
+	 * @param   string  $key  The data key.
+	 * @return  string
 	 */
-	public function view_title( $titles = array() ) {
-
-		$current = $this->get_levels( $this->selected );
-		if ( $current ) {
-
-			$titles[ $this->label_singular ] = $current->post_title;
+	public function get_view_title( $key ) {
+		$title = $key;
+		$item  = $this->get_levels( $key );
+		if ( $item ) {
+			$title = $item->post_title;
 		}
-		return $titles;
+
+		/**
+		 * Change the display title for view type nodes.
+		 *
+		 * @since  1.8.0
+		 * @param  string  $title  Level title.
+		 * @param  string  $key    Level key.
+		 * @return string
+		 */
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
+
+		return $title;
 	}
 
 	/**
@@ -387,7 +394,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_rua_levels_before', $admin_bar, $root );
 
 		// Add the levels.
 		foreach ( $this->get_levels() as $level ) {
@@ -443,7 +450,7 @@ final class VAA_View_Admin_As_RUA extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_rua_levels_after', $admin_bar, $root );
 	}
 
 	/**

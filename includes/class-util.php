@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.8.5
- * @version 1.8.5
+ * @version 1.8.7
  */
 abstract class VAA_Util
 {
@@ -390,6 +390,31 @@ abstract class VAA_Util
 	}
 
 	/**
+	 * JSON request check.
+	 *
+	 * @since   1.8.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @param   string  $key    The key to fetch.
+	 * @param   string  $type   The type of request.
+	 * @return  bool
+	 */
+	public static function is_json_request( $key = null, $type = 'post' ) {
+		if ( function_exists( 'wp_is_json_request' ) ) {
+			$is_json = wp_is_json_request();
+		} else {
+			// Fallback to referer.
+			$is_json = ( false !== strpos( (string) wp_get_referer(), '/wp-json/' ) );
+		}
+		if ( $is_json ) {
+			return self::is_request( $key, $type );
+		}
+		return false;
+	}
+
+	/**
 	 * AJAX request check.
 	 *
 	 * @since   1.7.0
@@ -505,6 +530,20 @@ abstract class VAA_Util
 			return $var;
 		}
 		return $value;
+	}
+
+	/**
+	 * Check if debug is enabled.
+	 *
+	 * @since   1.8.7
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return bool
+	 */
+	public static function debug() {
+		return defined( 'WP_DEBUG' ) && WP_DEBUG;
 	}
 
 } // End class VAA_Util.

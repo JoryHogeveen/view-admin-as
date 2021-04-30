@@ -16,7 +16,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   1.7.5
- * @version 1.8.0
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Type Extends class
  */
 class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
@@ -137,18 +137,22 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	}
 
 	/**
-	 * Change the VAA admin bar menu title.
+	 * Update the view titles if this view is selected.
 	 *
 	 * @since   1.7.5
 	 * @since   1.8.0  Renamed from `vaa_admin_bar_view_titles()`.
+	 * @since   1.8.7  Added second required `$view` param.
 	 * @access  public
 	 * @param   array  $titles  The current title(s).
+	 * @param   array  $view    View data.
 	 * @return  array
 	 */
-	public function view_title( $titles = array() ) {
-		$language = $this->get_data( $this->selected );
-		if ( $language ) {
-			$titles[ /* No need for view type key. */ ] = $this->get_view_title( $this->selected );
+	public function view_title( $titles, $view ) {
+		if ( isset( $view[ $this->type ] ) ) {
+			$title = $this->get_view_title( $view[ $this->type ] );
+			if ( $title ) {
+				$titles[ /* No need for view type key. */ ] = $title;
+			}
 		}
 		return $titles;
 	}
@@ -157,21 +161,21 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 	 * Get the view title.
 	 *
 	 * @since   1.8.0
-	 * @param   string  $locale  The locale.
+	 * @param   string  $key  The locale.
 	 * @return  string
 	 */
-	public function get_view_title( $locale ) {
-		$title = $this->get_data( $locale );
+	public function get_view_title( $key ) {
+		$title = $this->get_data( $key );
 
 		/**
 		 * Change the display title for language nodes.
 		 *
 		 * @since  1.8.0
-		 * @param  string  $title   Language (native).
-		 * @param  string  $locale  The locale.
+		 * @param  string  $title  Language (native).
+		 * @param  string  $key    The locale.
 		 * @return string
 		 */
-		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $locale );
+		$title = apply_filters( 'vaa_admin_bar_view_title_' . $this->type, $title, $key );
 
 		return $title;
 	}
@@ -226,7 +230,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_languages_before', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_languages_before', $admin_bar, $root );
 
 		// Add the levels.
 		include VIEW_ADMIN_AS_DIR . 'ui/templates/adminbar-language-items.php';
@@ -239,7 +243,7 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 		 * @param   \WP_Admin_Bar  $admin_bar   The toolbar object.
 		 * @param   string         $root        The current root item.
 		 */
-		do_action( 'vaa_admin_bar_languages_after', $admin_bar, $root );
+		$this->do_action( 'vaa_admin_bar_languages_after', $admin_bar, $root );
 	}
 
 	/**

@@ -18,7 +18,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.5.0
  * @since   1.7.3  Renamed from `VAA_View_Admin_As_Class_Base`.
- * @version 1.8.0
+ * @version 1.8.7
  */
 abstract class VAA_View_Admin_As_Base
 {
@@ -159,6 +159,17 @@ abstract class VAA_View_Admin_As_Base
 	 */
 	public function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
 		view_admin_as()->hooks()->add_filter( $hook, $callback, $priority, $accepted_args );
+	}
+
+	/**
+	 * Run action using this plugin hooks registry.
+	 *
+	 * @since   1.8.7
+	 * @see     \VAA_View_Admin_As_Hooks::do_action()
+	 * @inheritdoc
+	 */
+	public function do_action( $tag ) {
+		return call_user_func_array( array( view_admin_as()->hooks(), 'do_action' ), func_get_args() );
 	}
 
 	/**

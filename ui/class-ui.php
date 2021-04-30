@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.0
  * @since   1.7.0  Renamed from `VAA_View_Admin_As_Admin`.
- * @version 1.8.4
+ * @version 1.8.7
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
@@ -232,7 +232,7 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 		$current_url  = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $request_uri );
 		$filtered_url = remove_query_arg( $removable_query_args, $current_url );
 		?>
-		<link id="wp-vaa-canonical" rel="canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
+		<link id="wp-vaa-canonical" href="<?php echo esc_url( $filtered_url ); ?>" />
 		<script>
 			if ( window.history.replaceState ) {
 				window.history.replaceState( null, null, document.getElementById( 'wp-vaa-canonical' ).href + window.location.hash );
