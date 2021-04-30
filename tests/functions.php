@@ -29,12 +29,12 @@ function get_user_by( $field, $value ) {
 	// User doesn't exists in VAA factory, load it like normal.
 	// @todo Keep this synced with WP Core get_user_by()
 
-	$userdata = WP_User::get_data_by( $field, $value );
+	$userdata = \WP_User::get_data_by( $field, $value );
 
 	if ( !$userdata )
 		return false;
 
-	$user = new WP_User;
+	$user = new \WP_User;
 	$user->init( $userdata );
 
 	return $user;

@@ -44,7 +44,7 @@ class VAA_UnitTest_Factory {
 	/**
 	 * Set superior admin.
 	 */
-	static public function vaa_filter_superior_admin() {
+	public static function vaa_filter_superior_admin() {
 		//$user = get_user_by( 'id', 1 );
 		return 1; //$user->ID;
 	}
@@ -52,7 +52,7 @@ class VAA_UnitTest_Factory {
 	/**
 	 * Setup all test users.
 	 */
-	static public function add_users() {
+	public static function add_users() {
 		static $done = false;
 		if ( $done ) return;
 
