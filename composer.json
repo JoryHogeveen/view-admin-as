@@ -32,7 +32,7 @@
 		{
 			"type": "donation",
 			"url": "https://www.keraweb.nl/donate.php?for=view-admin-as"
-		},
+		}
 	],
 	"require": {
 		"composer/installers": "1.9.*",
