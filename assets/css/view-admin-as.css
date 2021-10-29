@@ -235,6 +235,11 @@
 #wpadminbar #wp-admin-bar-vaa .vaa-help:hover {cursor: help;}
 #wpadminbar #wp-admin-bar-vaa .vaa-help:hover .vaa-tooltip {display: inline-block; opacity: 1;}
 
+.rtl #wpadminbar #wp-admin-bar-vaa .vaa-help {float: left; margin: 0 5px 0 0;}
+.rtl #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + select,
+.rtl #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + input,
+.rtl #wpadminbar #wp-admin-bar-vaa .vaa-help ~ input + label {margin-right: inherit; margin-left: 20px;}
+
 /**
  * Auto max height
  * Min height = height of a single node
