@@ -261,11 +261,22 @@
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item {height: auto; line-height: normal;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-textarea .ab-item textarea {width: 100%; padding: 5px; margin-top: 5px; box-sizing: border-box; line-height: normal;}
 
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-input  .ab-item input,
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-file   .ab-item input,
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item input,
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-filter .ab-item input,
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-search .ab-item select,
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item select {margin: 5px 0;} /* Overwrite for .vaa-help */
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item label + input,
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-select .ab-item label + select {margin-top: 0; width: auto;}
+
 #wpadminbar #wp-admin-bar-vaa .ab-item input.vaa-wide,
 #wpadminbar #wp-admin-bar-vaa .ab-item select.vaa-wide {display: block; box-sizing: border-box; width: 100%; margin: 5px 0;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-item select + button.input-overlay,
 #wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {position: absolute; right: 10px; margin: 5px 0;}
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-item select + button.input-overlay,
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-item input + button.input-overlay {right: auto; left: 10px;}
 
 #wpadminbar #wp-admin-bar-vaa input.checkbox,
 #wpadminbar #wp-admin-bar-vaa input.radio {display: inline-block; height: 16px; width: 16px; vertical-align: text-bottom; box-sizing: border-box; cursor: pointer;}
@@ -280,8 +291,13 @@
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label:hover {cursor: pointer;}
 #wpadminbar #wp-admin-bar-vaa .ab-item input.radio + label + br {line-height: 0;}
 
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-item input.checkbox,
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-item input.radio {margin: 0 0 0 6px;}
+
 #wpadminbar #wp-admin-bar-vaa input.checkbox.vaa-right,
 #wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {position: absolute; top: 5px; right: 1em; z-index: 99;}
+.rtl #wpadminbar #wp-admin-bar-vaa input.checkbox.vaa-right,
+.rtl #wpadminbar #wp-admin-bar-vaa input.radio.vaa-right {right: auto; left: 1em;}
 
 #wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper {line-height: 20px;}
 #wpadminbar #wp-admin-bar-vaa .ab-item .vaa-radio-wrapper p.description,
