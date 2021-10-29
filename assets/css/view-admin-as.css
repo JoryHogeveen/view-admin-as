@@ -227,7 +227,7 @@
 	padding: 0;
 	font-size: 16px;
 	line-height: inherit !important;
-	margin: 0 0 0 5px
+	margin: 0 0 0 5px;
 }
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + select,
 #wpadminbar #wp-admin-bar-vaa .vaa-help ~ label + input,
