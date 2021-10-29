@@ -333,6 +333,8 @@
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle > .ab-item:hover {cursor: pointer;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle > .ab-item::after {display: block !important; content: "\f140"; font-family: 'dashicons'; position: absolute; top: 0; right: 10px; margin: 0; font-size: 20px; font-weight: normal; width: auto;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle.active > .ab-item::after {content: "\f142";}
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle > .ab-item {padding-left: 34px; padding-right: 10px;}
+.rtl #wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle > .ab-item::after {left: 10px; right: auto;}
 
 /**
  * Full width view
