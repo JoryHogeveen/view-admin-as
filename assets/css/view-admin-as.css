@@ -310,7 +310,7 @@
  */
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle > .ab-item {padding-right: 34px;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle > .ab-item:hover {cursor: pointer;}
-#wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle > .ab-item::after {content: "\f140"; font-family: 'dashicons'; position: absolute; right: 10px; margin: 0; font-size: 20px; font-weight: normal;}
+#wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle > .ab-item::after {display: block !important; content: "\f140"; font-family: 'dashicons'; position: absolute; top: 0; right: 10px; margin: 0; font-size: 20px; font-weight: normal; width: auto;}
 #wpadminbar #wp-admin-bar-vaa .ab-vaa-toggle.active > .ab-item::after {content: "\f142";}
 
 /**
