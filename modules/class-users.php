@@ -1063,7 +1063,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			}
 
 			// @since  1.7.6  Remove users who are not allowed to be edited by this user.
-			if ( ! current_user_can( 'edit_user', $user->ID ) ) {
+			if ( ! user_can( $user_id, 'edit_user', $user->ID ) ) {
 				unset( $users[ $user_key ] );
 				continue;
 			}
