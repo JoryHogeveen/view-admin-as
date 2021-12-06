@@ -1016,6 +1016,14 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			$users = array( $users );
 		}
 
+		// Fetch the current user.
+		if ( view_admin_as()->store()->is_curUser( $user_id ) ) {
+			$current_user = view_admin_as()->store()->get_curUser();
+		} else {
+			$current_user = get_userdata( $user_id );
+		}
+
+		// Load the super admins.
 		$super_admins = get_super_admins();
 		// Load the superior admins.
 		$superior_admins = VAA_API::get_superior_admins();
@@ -1063,7 +1071,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			}
 
 			// @since  1.7.6  Remove users who are not allowed to be edited by this user.
-			if ( ! user_can( $user_id, 'edit_user', $user->ID ) ) {
+			if ( ! user_can( $current_user, 'edit_user', $user->ID ) ) {
 				unset( $users[ $user_key ] );
 				continue;
 			}
