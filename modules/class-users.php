@@ -1017,7 +1017,7 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 		}
 
 		// Fetch the current user.
-		if ( view_admin_as()->store()->is_curUser( $user_id ) ) {
+		if ( ! $user_id || view_admin_as()->store()->is_curUser( $user_id ) ) {
 			$current_user = view_admin_as()->store()->get_curUser();
 		} else {
 			$current_user = get_userdata( $user_id );
