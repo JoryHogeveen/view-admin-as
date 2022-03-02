@@ -105,6 +105,16 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function init_after() {
 
+		// WP Rocket.
+		if ( API::is_view_active() ) {
+			if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+				define( 'DONOTCACHEPAGE', true );
+			}
+			if ( ! defined( 'DONOTROCKETOPTIMIZE' ) ) {
+				define( 'DONOTROCKETOPTIMIZE', true );
+			}
+		}
+
 		if ( VAA_API::is_user_modified() ) {
 			// Only apply the filter if the current user is modified.
 			$this->add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
