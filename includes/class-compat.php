@@ -106,7 +106,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	public function init_after() {
 
 		// WP Rocket.
-		if ( API::is_view_active() ) {
+		if ( VAA_API::is_view_active() || defined( 'VAA_DOING_AJAX' ) ) {
 			if ( ! defined( 'DONOTCACHEPAGE' ) ) {
 				define( 'DONOTCACHEPAGE', true );
 			}
