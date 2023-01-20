@@ -402,13 +402,7 @@ abstract class VAA_Util
 	 * @return  bool
 	 */
 	public static function is_json_request( $key = null, $type = 'post' ) {
-		if ( function_exists( 'wp_is_json_request' ) ) {
-			$is_json = wp_is_json_request();
-		} else {
-			// Fallback to referer.
-			$is_json = ( false !== strpos( (string) wp_get_referer(), '/wp-json/' ) );
-		}
-		if ( $is_json ) {
+		if ( self::doing_json() ) {
 			return self::is_request( $key, $type );
 		}
 		return false;
@@ -456,6 +450,7 @@ abstract class VAA_Util
 	 * Check if there is a request made.
 	 *
 	 * @since   1.7.0
+	 * @since   1.8.8  Support for any request type.
 	 * @access  public
 	 * @static
 	 * @api
@@ -465,12 +460,38 @@ abstract class VAA_Util
 	 * @return  bool
 	 */
 	public static function is_request( $key = null, $type = 'post' ) {
+		if ( ! $key && ! $type ) {
+			// Any request.
+			return true;
+		}
+		
 		// @codingStandardsIgnoreLine >> Ignore $_GET and $_POST issues.
 		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
 		if ( isset( $data[ $key ] ) ) {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Check if the current request is for JSON/REST.
+	 * Also check WP 5.0 function wp_is_json_request().
+	 *
+	 * @see wp_is_json_request()
+	 *
+	 * @since   1.8.8
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function doing_json() {
+		if ( function_exists( 'wp_is_json_request' ) ) {
+			return wp_is_json_request();
+		}
+		// Fallback to referer.
+		return ( false !== strpos( (string) wp_get_referer(), '/wp-json/' ) );
 	}
 
 	/**
