@@ -456,6 +456,7 @@ abstract class VAA_Util
 	 * Check if there is a request made.
 	 *
 	 * @since   1.7.0
+	 * @since   1.8.8  Support for any request type.
 	 * @access  public
 	 * @static
 	 * @api
@@ -465,6 +466,11 @@ abstract class VAA_Util
 	 * @return  bool
 	 */
 	public static function is_request( $key = null, $type = 'post' ) {
+		if ( ! $key && ! $type ) {
+			// Any request.
+			return true;
+		}
+		
 		// @codingStandardsIgnoreLine >> Ignore $_GET and $_POST issues.
 		$data = ( 'get' === strtolower( (string) $type ) ) ? $_GET : $_POST;
 		if ( isset( $data[ $key ] ) ) {
