@@ -190,8 +190,13 @@
 	vertical-align: middle;
 	cursor: pointer;
 }
+/* Prevent theme button overrides. */
 body:not(.wp-admin) #wpadminbar #wp-admin-bar-vaa button {
 	border: 1px solid transparent;
+}
+body:not(.wp-admin) #wpadminbar #wp-admin-bar-vaa button:before,
+body:not(.wp-admin) #wpadminbar #wp-admin-bar-vaa button:after {
+	display: none;
 }
 
 /**
