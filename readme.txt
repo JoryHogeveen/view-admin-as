@@ -209,6 +209,15 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
+= 1.8.8 =
+
+*	**Enhancement:** RTL support. [#122](https://github.com/JoryHogeveen/view-admin-as/issues/122)
+*	**Enhancement:** User context for checking the `edit_user` capability.
+*	**Enhancement:** Enhance front-end CSS by preventing theme overrides. [#120](https://github.com/JoryHogeveen/view-admin-as/issues/120)
+*	**Enhancement/Fix:** JSON/REST call checks.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/123)
+
 = 1.8.7 =
 
 *	**Enhancement:** Added hooks `vaa_view_admin_as_reset_all_views`, `vaa_view_admin_as_cleanup_views`, `vaa_view_admin_as_reset_view`, `vaa_view_admin_as_update_view`.
