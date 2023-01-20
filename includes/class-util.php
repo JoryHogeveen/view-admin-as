@@ -402,13 +402,7 @@ abstract class VAA_Util
 	 * @return  bool
 	 */
 	public static function is_json_request( $key = null, $type = 'post' ) {
-		if ( function_exists( 'wp_is_json_request' ) ) {
-			$is_json = wp_is_json_request();
-		} else {
-			// Fallback to referer.
-			$is_json = ( false !== strpos( (string) wp_get_referer(), '/wp-json/' ) );
-		}
-		if ( $is_json ) {
+		if ( self::doing_json() ) {
 			return self::is_request( $key, $type );
 		}
 		return false;
@@ -477,6 +471,27 @@ abstract class VAA_Util
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Check if the current request is for JSON/REST.
+	 * Also check WP 5.0 function wp_is_json_request().
+	 *
+	 * @see wp_is_json_request()
+	 *
+	 * @since   1.8.8
+	 * @access  public
+	 * @static
+	 * @api
+	 *
+	 * @return  bool
+	 */
+	public static function doing_json() {
+		if ( function_exists( 'wp_is_json_request' ) ) {
+			return wp_is_json_request();
+		}
+		// Fallback to referer.
+		return ( false !== strpos( (string) wp_get_referer(), '/wp-json/' ) );
 	}
 
 	/**
