@@ -97,7 +97,7 @@ final class VAA_View_Admin_As_Toolbar extends WP_Admin_Bar
 		if (
 			VAA_API::is_toolbar_showing()
 			|| VAA_API::doing_ajax()
-			|| VAA_API::is_json_request()
+			|| VAA_API::doing_json()
 			|| ( ! is_admin() && is_customize_preview() )
 		) {
 			return;
