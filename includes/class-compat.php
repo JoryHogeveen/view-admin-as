@@ -105,14 +105,19 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function init_after() {
 
-		// WP Rocket.
+		// Cache plugins.
 		if ( VAA_API::is_view_active() || defined( 'VAA_DOING_AJAX' ) ) {
+
+			// WP Rocket.
 			if ( ! defined( 'DONOTCACHEPAGE' ) ) {
 				define( 'DONOTCACHEPAGE', true );
 			}
 			if ( ! defined( 'DONOTROCKETOPTIMIZE' ) ) {
 				define( 'DONOTROCKETOPTIMIZE', true );
 			}
+			
+			// Litespeed.
+			do_action( 'litespeed_control_set_nocache', 'View Admin As' );
 		}
 
 		if ( VAA_API::is_user_modified() ) {
