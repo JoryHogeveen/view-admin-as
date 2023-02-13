@@ -108,11 +108,13 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		// Cache plugins.
 		if ( VAA_API::is_view_active() || defined( 'VAA_DOING_AJAX' ) ) {
 
-			// WP Rocket.
-			// @link https://github.com/wp-media/wp-rocket-helpers/blob/master/cache/wp-rocket-no-cache-for-admins/wp-rocket-no-cache-for-admins.php#L71-L83
+			// WP Rocket & WP Super Cache
 			if ( ! defined( 'DONOTCACHEPAGE' ) ) {
 				define( 'DONOTCACHEPAGE', true );
 			}
+
+			// WP Rocket.
+			// @link https://github.com/wp-media/wp-rocket-helpers/blob/master/cache/wp-rocket-no-cache-for-admins/wp-rocket-no-cache-for-admins.php#L71-L83
 			if ( ! defined( 'DONOTROCKETOPTIMIZE' ) ) {
 				define( 'DONOTROCKETOPTIMIZE', true );
 			}
