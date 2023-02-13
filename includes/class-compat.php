@@ -116,7 +116,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 				define( 'DONOTROCKETOPTIMIZE', true );
 			}
 			
-			// Litespeed.
+			// LiteSpeed.
 			do_action( 'litespeed_control_set_nocache', 'View Admin As' );
 		}
 
