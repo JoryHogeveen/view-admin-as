@@ -6,7 +6,7 @@
  * @author  Jory Hogeveen <info@keraweb.nl>
  * @package View_Admin_As
  * @since   0.1.0
- * @version 1.8.5
+ * @version 1.8.9
  * @preserve
  */
 /* eslint-enable no-extra-semi */
@@ -117,6 +117,14 @@ if ( 'undefined' === typeof VAA_View_Admin_As ) {
 		VAA_View_Admin_As.init_module_role_defaults();
 		VAA_View_Admin_As.init_module_role_manager();
 		VAA_View_Admin_As.init_auto_js();
+
+		/**
+		 * @since  1.8.9  Fix event bubbling for select options.
+		 * @see  https://github.com/JoryHogeveen/view-admin-as/issues/130
+		 */
+		$vaa.find( 'select' ).on( 'mouseleave', function( e ) {
+			e.stopPropagation();
+		} );
 
 		// Toggle content with title.
 		$vaa.find( '.ab-vaa-toggle' ).each( function() {
