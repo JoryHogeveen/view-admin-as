@@ -218,6 +218,13 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	public function remove_query_args() {
 		$removable_query_args = $this->filter_removable_query_args( array() );
 
+		// @since  1.8.9  Check if args actually exist.
+		foreach ( $removable_query_args as $index => $arg ) {
+			if ( ! isset( $_GET[ $arg ] ) ) {
+				unset( $removable_query_args[ $index ] );
+			}
+		}
+
 		if ( empty( $removable_query_args ) ) {
 			return;
 		}
