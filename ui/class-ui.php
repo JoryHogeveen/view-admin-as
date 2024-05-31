@@ -17,7 +17,7 @@ if ( ! defined( 'VIEW_ADMIN_AS_DIR' ) ) {
  * @package View_Admin_As
  * @since   1.6.0
  * @since   1.7.0  Renamed from `VAA_View_Admin_As_Admin`.
- * @version 1.8.7
+ * @version 1.8.9
  * @uses    \VAA_View_Admin_As_Base Extends class
  */
 final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
@@ -217,6 +217,13 @@ final class VAA_View_Admin_As_UI extends VAA_View_Admin_As_Base
 	 */
 	public function remove_query_args() {
 		$removable_query_args = $this->filter_removable_query_args( array() );
+
+		// @since  1.8.9  Check if args actually exist.
+		foreach ( $removable_query_args as $index => $arg ) {
+			if ( ! isset( $_GET[ $arg ] ) ) {
+				unset( $removable_query_args[ $index ] );
+			}
+		}
 
 		if ( empty( $removable_query_args ) ) {
 			return;
