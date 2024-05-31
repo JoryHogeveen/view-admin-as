@@ -1,0 +1,78 @@
+name: 'PHP Unit Tests'
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '**.php'
+      - 'composer.json'
+  push:
+    paths:
+      - '**.php'
+      - 'composer.json'
+
+# Cancel unfinished builds if a new commit is made before it's completed.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mariadb:latest
+        ports:
+          - '3306:3306'
+        env:
+          MYSQL_ROOT_PASSWORD: wordpress
+          MARIADB_INITDB_SKIP_TZINFO: 1
+          MYSQL_USER: wordpress
+          MYSQL_PASSWORD: wordpress
+          MYSQL_DATABASE: wordpress_test
+    strategy:
+      fail-fast: true
+      matrix:
+        php-versions: ['7.4', '8.1', '8.2', '8.3']
+    steps:
+      # Mandatory : fetch the current repository
+      -   name: Checkout repository
+          uses: actions/checkout@v3
+
+      # To be faster, use cache system for the Composer
+      -   name: Get Composer Cache Directory
+          id: composer-dev-cache
+          run: |
+              echo "::set-output name=dir::$(composer config cache-files-dir)"
+      -   name: Cache composer (vendor)
+          uses: actions/cache@v3
+          with:
+              path: ${{ steps.composer-dev-cache.outputs.dir }}
+              key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+              restore-keys: |
+                  ${{ runner.os }}-composer-
+
+      # Define the right PHP environment
+      # https://github.com/shivammathur/setup-php (community)
+      -   name: Environment for PHP
+          uses: shivammathur/setup-php@v2
+          with:
+              php-version: ${{ matrix.php-versions }}
+              coverage: none
+
+      - name: Install PHP Dependencies
+        uses: ramsey/composer-install@v2
+
+      - name: Set up WordPress and WordPress Test Library
+        uses: sjinks/setup-wordpress-test-library@master
+        with:
+          version: latest
+
+      - name: Verify MariaDB connection
+        run: |
+          while ! mysqladmin ping -h 127.0.0.1 -P ${{ job.services.mysql.ports[3306] }} --silent; do
+            sleep 1
+          done
+        timeout-minutes: 1
+
+      - name: Run tests
+        run: vendor/bin/phpunit
