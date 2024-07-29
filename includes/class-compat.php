@@ -468,7 +468,7 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 		$groups['view_admin_as'] = array(
 			'caption' => esc_html__( 'View Admin As', VIEW_ADMIN_AS_DOMAIN ),
 			'parent'  => 'custom',
-			'level'   => 3,
+			'level'   => 2,
 		);
 		return $groups;
 	}
