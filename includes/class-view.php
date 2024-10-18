@@ -222,6 +222,12 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	public function modify_user() {
+		static $running = false;
+		if ( $running ) {
+			// Prevent infinite loop.
+			return;
+		}
+		$running = true;
 
 		// Can be the current or selected WP_User object (depending on the user view).
 		$user = $this->store->get_selectedUser();
@@ -234,6 +240,8 @@ final class VAA_View_Admin_As_View extends VAA_View_Admin_As_Base
 		 * @param  \WP_User  $user        The modified user object.
 		 */
 		$this->do_action( 'vaa_view_admin_as_modify_user', $user );
+
+		$running = false;
 	}
 
 	/**
