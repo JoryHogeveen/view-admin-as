@@ -140,14 +140,14 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 
 		// @todo Patch if data only is possible.
 		$result = $class->import_role_defaults( $editor_import );
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		$import = array(
 			'editor' => $editor_import,
 		);
 
 		$result = $class->import_role_defaults( $import );
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 		$this->assertEquals( $import, $class->get_role_defaults() );
 
 		/**
@@ -157,7 +157,7 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 		$result = $class->import_role_defaults( $import );
 
 		// Should return error list array because of the invalid meta key.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		// Make sure the key doesn't exists in the role defaults.
 		unset( $import['editor']['invalid_key'] );
@@ -170,7 +170,7 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 		$overwrite['editor']['admin_color'] = 'dark';
 
 		$result = $class->import_role_defaults( $overwrite, 'merge' );
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		// Check export import overwrite.
 		$this->assertEquals( $overwrite, $class->export_role_defaults() );
@@ -180,7 +180,7 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 		 * Import append.
 		 */
 		$result = $class->import_role_defaults( $import, 'append' );
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		// Check export import append. Editor admin color should still be `dark`.
 		$this->assertEquals( $overwrite, $class->export_role_defaults() );
@@ -192,7 +192,7 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 			),
 		);
 		$result = $class->import_role_defaults( $import_admin );
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		/**
 		 * Check export for a single role.
@@ -225,13 +225,13 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 		 * Invalid, non existing role.
 		 */
 		$result = $class->copy_role_defaults( 'editor', 'non_existing_role' );
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		/**
 		 * Copy defaults.
 		 */
 		$result = $class->copy_role_defaults( 'editor', 'author' );
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		// Check if copy was actually successful. Also checks getting role defaults with role parameter.
 		$check = array(
@@ -260,7 +260,7 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 		 */
 		$result = $class->clear_role_defaults( 'non_existing_role' );
 		// @todo Currently still returns true, maybe return false if role doesn't exists?
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 		// Should still be the same.
 		$this->assertEquals( $defaults, $class->get_role_defaults() );
 
@@ -268,7 +268,7 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 		 * Clear defaults, single role.
 		 */
 		$result = $class->clear_role_defaults( 'author' );
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		$new_defaults = $defaults;
 		unset( $new_defaults['author'] );
@@ -279,7 +279,7 @@ class VAA_Module_Role_Defaults_UnitTest extends VAA_UnitTestCase {
 		 * Clear all.
 		 */
 		$result = $class->clear_role_defaults( '__all__' );
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		$this->assertEquals( array(), $class->get_role_defaults() );
 
