@@ -127,7 +127,7 @@ class VAA_API_UnitTest extends VAA_UnitTestCase {
 
 			// The above didn't cause an error :(
 			$this->assertTrue( false );
-		} catch ( Exception $e ) {
+		} catch ( Throwable $e ) {
 			// Above caused an error!
 			$this->assertTrue( true );
 		}
