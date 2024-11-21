@@ -16,7 +16,7 @@ class VAA_Controller_UnitTest extends VAA_UnitTestCase {
 		return view_admin_as()->controller();
 	}
 
-	protected function setUp() {
+	protected function setUp(): void {
 		parent::setUp();
 		add_action( 'vaa_view_admin_as_update_view', array( 'VAA_Controller_UnitTest', 'action_callback' ) );
 		add_action( 'vaa_view_admin_as_reset_view', array( 'VAA_Controller_UnitTest', 'action_callback' ) );
