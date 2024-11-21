@@ -142,7 +142,13 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		}
 
 		if ( $this->is_enabled() ) {
-			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'init' ) );
+			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'setup' ) );
+
+			if ( did_action( 'init' ) ) {
+				$this->init();
+			} else {
+				$this->add_action( 'init', array( $this, 'init' ) );
+			}
 		}
 	}
 
@@ -193,9 +199,9 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	 *
 	 * @since   1.8.0
 	 * @access  protected
-	 * @return  bool  Successful init?
+	 * @return  bool  Successful setup?
 	 */
-	public function init() {
+	public function setup() {
 
 		$this->store_data();
 
@@ -205,6 +211,17 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 		}
 
 		return false;
+	}
+
+	/**
+	 * Init module and hooks.
+	 *
+	 * @since   1.8.x
+	 * @access  protected
+	 * @return  bool  Successful init?
+	 */
+	public function init() {
+		return true;
 	}
 
 	/**
