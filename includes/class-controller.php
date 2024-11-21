@@ -112,6 +112,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 */
 		if ( VAA_API::is_request( 'reset-view', 'get' ) ) {
 			$this->reset_view();
+			$this->store->set_view( array() );
 		}
 		/**
 		 * Clear all user views.
@@ -121,6 +122,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 */
 		if ( VAA_API::is_request( 'reset-all-views', 'get' ) ) {
 			$this->reset_all_views();
+			$this->store->set_view( array() );
 		}
 	}
 
