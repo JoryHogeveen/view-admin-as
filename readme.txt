@@ -209,6 +209,13 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
+= 1.8.9 =
+
+*	**Fix:** Event bubbling for select elements [#130](https://github.com/JoryHogeveen/view-admin-as/issues/130)
+*	**Fix:** Check if removable query args exists before adding removal script on front-end
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/131)
+
 = 1.8.8 =
 
 *	**Enhancement:** RTL support. [#122](https://github.com/JoryHogeveen/view-admin-as/issues/122)
