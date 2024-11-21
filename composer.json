@@ -42,7 +42,8 @@
 		"phpmd/phpmd": "@stable",
 		"phpunit/phpunit": "^8",
 		"squizlabs/php_codesniffer": "2.*",
-		"phpcompatibility/phpcompatibility-wp": "*"
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"yoast/phpunit-polyfills": "3.0"
 	},
 	"extra": {
 		"installer-name": "view-admin-as"
