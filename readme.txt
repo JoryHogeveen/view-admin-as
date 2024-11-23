@@ -209,6 +209,15 @@ Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
 == Changelog ==
 
+= 1.8.10 =
+
+*	**Compatibility:** Move label initialization to fix `_load_textdomain_just_in_time` notice since WP 6.7.
+*	**Fix:** Clear view in current session when resetting manually.
+*	**Fix:** URE Integration: Fix the level at which the View Admin As group appears. [#135](https://github.com/JoryHogeveen/view-admin-as/pull/135) (credits @pbiron)
+*	**Tests:** Fix unit tests.
+
+Detailed info: [PR on GitHub](https://github.com/JoryHogeveen/view-admin-as/pull/136)
+
 = 1.8.9 =
 
 *	**Fix:** Event bubbling for select elements [#130](https://github.com/JoryHogeveen/view-admin-as/issues/130)
