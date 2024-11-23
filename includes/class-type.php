@@ -197,7 +197,8 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Setup module and hooks.
 	 *
-	 * @since   1.8.0
+	 * @since   1.8.0   Renamed from init()
+	 * @since   1.8.10
 	 * @access  protected
 	 * @return  bool  Successful setup?
 	 */
@@ -216,7 +217,7 @@ abstract class VAA_View_Admin_As_Type extends VAA_View_Admin_As_Base
 	/**
 	 * Init module and hooks.
 	 *
-	 * @since   1.8.x
+	 * @since   1.8.10
 	 * @access  protected
 	 * @return  bool  Successful init?
 	 */

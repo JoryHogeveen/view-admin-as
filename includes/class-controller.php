@@ -108,6 +108,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 *
 		 * @since    0.1.0
 		 * @since    1.2.0  Only check for key
+		 * @since    1.8.10 Reset view in store
 		 * @example  http://www.your.domain/wp-admin/?reset-view
 		 */
 		if ( VAA_API::is_request( 'reset-view', 'get' ) ) {
@@ -118,6 +119,7 @@ final class VAA_View_Admin_As_Controller extends VAA_View_Admin_As_Base
 		 * Clear all user views.
 		 *
 		 * @since    1.3.4
+		 * @since    1.8.10 Reset view in store
 		 * @example  http://www.your.domain/wp-admin/?reset-all-views
 		 */
 		if ( VAA_API::is_request( 'reset-all-views', 'get' ) ) {
