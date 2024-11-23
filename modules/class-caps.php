@@ -67,9 +67,15 @@ class VAA_View_Admin_As_Caps extends VAA_View_Admin_As_Type
 			'update_view'        => 10,
 			'do_view'            => 8,
 		);
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function init() {
 		$this->label          = __( 'Capabilities', VIEW_ADMIN_AS_DOMAIN );
 		$this->label_singular = __( 'Capability', VIEW_ADMIN_AS_DOMAIN );
+		return parent::init();
 	}
 
 	/**

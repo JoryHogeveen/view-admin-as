@@ -92,9 +92,6 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			'do_view'            => 2,
 		);
 
-		$this->label          = __( 'Users', VIEW_ADMIN_AS_DOMAIN );
-		$this->label_singular = __( 'User', VIEW_ADMIN_AS_DOMAIN );
-
 		$this->init_hooks();
 
 		if ( $this->is_enabled() ) {
@@ -121,6 +118,15 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			// @since  1.8.2  Use pre-init hook to allow modules to filter ajax return.
 			$this->add_action( 'vaa_view_admin_as_pre_init', array( $this, 'ajax_search_users' ) );
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function init() {
+		$this->label          = __( 'Users', VIEW_ADMIN_AS_DOMAIN );
+		$this->label_singular = __( 'User', VIEW_ADMIN_AS_DOMAIN );
+		return parent::init();
 	}
 
 	/**

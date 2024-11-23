@@ -87,10 +87,6 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 
 		$this->priorities['toolbar'] = 40;
 
-		$this->label          = $this->translate_remote( 'Groups' );
-		$this->label_singular = $this->translate_remote( 'Group' );
-		$this->description    = __( 'Plugin' ) . ': ' . $this->label;
-
 		// Add groups capabilities.
 		$this->capabilities[] = $this->cap;
 		if ( defined( 'GROUPS_ACCESS_GROUPS' ) ) {
@@ -112,9 +108,9 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 	 * @since   1.7.4
 	 * @access  private
 	 */
-	public function init() {
+	public function setup() {
 
-		if ( parent::init() ) {
+		if ( parent::setup() ) {
 
 			if ( defined( 'GROUPS_PLUGIN_URL' ) ) {
 				$this->icon = GROUPS_PLUGIN_URL . '/images/groups.png';
@@ -123,6 +119,16 @@ final class VAA_View_Admin_As_Groups extends VAA_View_Admin_As_Type
 			// Add this anyway.
 			$this->add_action( 'vaa_view_admin_as_do_view', array( $this, 'do_view' ) );
 		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function init() {
+		$this->label          = $this->translate_remote( 'Groups' );
+		$this->label_singular = $this->translate_remote( 'Group' );
+		$this->description    = __( 'Plugin' ) . ': ' . $this->label;
+		return parent::init();
 	}
 
 	/**

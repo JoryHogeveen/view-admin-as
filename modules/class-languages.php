@@ -74,9 +74,15 @@ class VAA_View_Admin_As_Languages extends VAA_View_Admin_As_Type
 			'update_view'        => 10,
 			'do_view'            => 10,
 		);
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function init() {
 		$this->label          = __( 'Languages', VIEW_ADMIN_AS_DOMAIN );
 		$this->label_singular = __( 'Language', VIEW_ADMIN_AS_DOMAIN );
+		return parent::init();
 	}
 
 	/**

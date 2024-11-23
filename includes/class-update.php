@@ -61,7 +61,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 	 * @return  void
 	 */
 	public function maybe_db_update() {
-		$db_version = strtolower( $this->store->get_optionData( 'db_version' ) );
+		$db_version = strtolower( (string) $this->store->get_optionData( 'db_version' ) );
 		if ( ! $db_version ) {
 			self::$fresh_install = true;
 		}
@@ -83,7 +83,7 @@ final class VAA_View_Admin_As_Update extends VAA_View_Admin_As_Base
 			'db_version' => $this->store->get_dbVersion(),
 		);
 
-		$current_db_version = strtolower( $this->store->get_optionData( 'db_version' ) );
+		$current_db_version = strtolower( (string) $this->store->get_optionData( 'db_version' ) );
 
 		// No need to run update script if it's a clean installation.
 		if ( $current_db_version ) {

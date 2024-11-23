@@ -77,9 +77,15 @@ class VAA_View_Admin_As_Roles extends VAA_View_Admin_As_Type
 			'update_view'        => 10,
 			'do_view'            => 5,
 		);
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	public function init() {
 		$this->label          = __( 'Roles', VIEW_ADMIN_AS_DOMAIN );
 		$this->label_singular = __( 'Role', VIEW_ADMIN_AS_DOMAIN );
+		return parent::init();
 	}
 
 	/**

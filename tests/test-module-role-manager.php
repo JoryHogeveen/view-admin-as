@@ -102,7 +102,7 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 		 */
 		$result = $class->import_roles( 'test' );
 		// We expect an error string.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		$caps = array(
 			'read' => array( 'yay' ),
@@ -110,7 +110,7 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 		);
 		$result = $class->import_roles( $caps );
 		// We expect an error array.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		/**
 		 * Correct.
@@ -123,7 +123,7 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 		$result = $class->import_roles( array(
 			'data' => array( $role => $caps ),
 		) );
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		$test_import = get_role( $role );
 
@@ -144,14 +144,14 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 		 */
 		$result = $class->clone_role( 'non_existing_role', $role );
 		// We expect an error string.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		/**
 		 * Correct.
 		 */
 		$result = $class->clone_role( 'editor', $role );
 		// We expect an error string.
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		$editor = get_role( 'editor' );
 		$test_clone = get_role( $role );
@@ -173,24 +173,24 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 		 */
 		$result = $class->rename_role( 'non_existing_role', $rename );
 		// We expect an error string.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		/**
 		 * Correct.
 		 */
 		$result = $class->rename_role( 'editor', $rename );
 		// We expect an error string.
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		$editor = get_role( 'editor' );
 		// The editor name should be the new name.
-		$this->assertEquals( $editor->name, $rename );
+		$this->assertSame( $editor->name, $rename );
 
 		// Revert change.
 		$class->rename_role( 'editor', 'Editor' );
 		$editor = get_role( 'editor' );
 		// Verify that the role is renamed.
-		$this->assertEquals( $editor->name, 'Editor' );
+		$this->assertSame( $editor->name, 'Editor' );
 
 	}
 
@@ -208,18 +208,18 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 		 */
 		$result = $class->delete_role( 'non_existing_role' );
 		// We expect an error string.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		/**
 		 * Protected roles.
 		 */
 		$result = $class->delete_role( 'administrator' );
 		// We expect an error string.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		$result = $class->delete_role( get_option( 'default_role' ) );
 		// We expect an error string.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		/**
 		 * Correct.
@@ -258,11 +258,11 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 		 */
 		$result = $class->delete_role( 'editor', 'non_existing_role' );
 		// We expect an error string.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		$result = $class->delete_role( 'editor', 'editor' );
 		// We expect an error string.
-		$this->assertNotEquals( true, $result );
+		$this->assertNotSame( true, $result );
 
 		/**
 		 * Correct.
@@ -271,7 +271,7 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 
 		$result = $class->delete_role( 'editor', 'test_migrate' );
 		// Should be ok!
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		/**
 		 * Revert
@@ -284,7 +284,7 @@ class VAA_Module_Role_Manager_UnitTest extends VAA_UnitTestCase {
 			'new_role' => 'editor',
 		) );
 		// Should be ok!
-		$this->assertEquals( true, $result );
+		$this->assertSame( true, $result );
 
 		// Load all roles again after removal.
 		VAA_UnitTest_Factory::vaa_reinit();
