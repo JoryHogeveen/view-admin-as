@@ -105,6 +105,25 @@ final class VAA_View_Admin_As_Compat extends VAA_View_Admin_As_Base
 	 */
 	public function init_after() {
 
+		// Cache plugins.
+		if ( VAA_API::is_view_active() || defined( 'VAA_DOING_AJAX' ) ) {
+
+			// WP Rocket & WP Super Cache
+			if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+				define( 'DONOTCACHEPAGE', true );
+			}
+
+			// WP Rocket.
+			// @link https://github.com/wp-media/wp-rocket-helpers/blob/master/cache/wp-rocket-no-cache-for-admins/wp-rocket-no-cache-for-admins.php#L71-L83
+			if ( ! defined( 'DONOTROCKETOPTIMIZE' ) ) {
+				define( 'DONOTROCKETOPTIMIZE', true );
+			}
+			
+			// LiteSpeed.
+			// @link https://docs.litespeedtech.com/lscache/lscwp/api/#set-current-page-as-non-cacheable
+			do_action( 'litespeed_control_set_nocache', 'View Admin As' );
+		}
+
 		if ( VAA_API::is_user_modified() ) {
 			// Only apply the filter if the current user is modified.
 			$this->add_filter( 'pods_is_admin', array( $this, 'filter_pods_caps_check' ), 99, 2 );
