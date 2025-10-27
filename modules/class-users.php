@@ -595,6 +595,15 @@ class VAA_View_Admin_As_Users extends VAA_View_Admin_As_Type
 			);
 		}
 
+		/**
+		 * Change the user query limit
+		 * @see    $this::store_data()
+		 * @since  1.8.11
+		 * @param  int  $limit  Default: 100.
+		 * @return int
+		 */
+		$args['limit'] = apply_filters( 'view_admin_as_user_query_limit', 100 );
+
 		$return_type = ( isset( $args['return'] ) ) ? $args['return'] : 'objects';
 
 		$this->is_ajax_search = true;
