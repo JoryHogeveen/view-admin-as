@@ -34,30 +34,33 @@ jobs:
       matrix:
         php-versions: ['7.4', '8.1', '8.2', '8.3']
     steps:
+      - name: Install subversion
+        run: sudo apt-get install -y subversion
+
       # Mandatory : fetch the current repository
-      -   name: Checkout repository
-          uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       # To be faster, use cache system for the Composer
-      -   name: Get Composer Cache Directory
-          id: composer-dev-cache
-          run: |
-              echo "::set-output name=dir::$(composer config cache-files-dir)"
-      -   name: Cache composer (vendor)
-          uses: actions/cache@v3
-          with:
-              path: ${{ steps.composer-dev-cache.outputs.dir }}
-              key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-              restore-keys: |
-                  ${{ runner.os }}-composer-
+      - name: Get Composer Cache Directory
+        id: composer-dev-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Cache composer (vendor)
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-dev-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
 
       # Define the right PHP environment
       # https://github.com/shivammathur/setup-php (community)
-      -   name: Environment for PHP
-          uses: shivammathur/setup-php@v2
-          with:
-              php-version: ${{ matrix.php-versions }}
-              coverage: none
+      - name: Environment for PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          coverage: none
 
       - name: Install PHP Dependencies
         uses: ramsey/composer-install@v2
