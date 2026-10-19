@@ -3,7 +3,7 @@ Contributors: keraweb
 Donate link: https://www.keraweb.nl/donate.php?for=view-admin-as
 Tags: admin, capabilities, roles, users, switch
 Requires at least: 4.1
-Tested up to: 6.7
+Tested up to: 7.1
 Requires PHP: 5.2.4
 Stable tag: 1.8.10
 
