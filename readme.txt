@@ -192,6 +192,9 @@ Note: if your admin users aren't safe, this plugin is the last one to worry abou
 = 8. Does this plugin work as a must-use plugin (mu-plugin)? =
 Yes, see *Install as a must-use plugin* on the *Installation* tab.
 
+= 9. Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the View Admin As plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/9e5fbee0-da3f-49e0-bf7d-ba8d275db02c). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Screenshots ==
 
 1. Default dropdown
